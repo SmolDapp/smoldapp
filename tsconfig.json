@@ -1,0 +1,55 @@
+{
+  "compilerOptions": {
+    "rootDirs": ["."],
+    "baseUrl": ".",
+    /* Basic Options */
+    "target": "esnext",
+    "module": "esnext",
+    "lib": [
+      "es6",
+      "es7",
+      "esnext",
+      "dom"
+    ],
+    "allowJs": true,
+    "jsx": "preserve",
+    "removeComments": false,
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "inlineSourceMap": true,
+    "inlineSources": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "incremental": true,
+    "isolatedModules": true
+  },
+  "exclude": [
+    "node_modules"
+  ],
+  "include": [
+    "**/*.css",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.d.tsx",
+    "public",
+    "postcss.config.js",
+    "tailwind.config.js",
+    "next.config.js",
+    "theme.config.js",
+    ".eslintrc.js"
+  ]
+}
