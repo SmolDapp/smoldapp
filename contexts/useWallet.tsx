@@ -57,7 +57,7 @@ export const WalletContextApp = memo(function WalletContextApp({children}: {chil
 	}, [safeChainID, tokenList]);
 
 	const	{data: balances, update, updateSome, nonce, isLoading} = useBalances({
-		provider: getProvider(1337) || provider || getProvider(1),
+		provider: provider || getProvider(1),
 		tokens: availableTokens
 	});
 
