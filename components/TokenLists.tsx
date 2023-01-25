@@ -189,8 +189,8 @@ function TokenListsBox(): ReactElement {
 			value={selected}
 			onChange={(value): void => set_selected(value)}>
 			<div className={'relative'}>
-				<div className={'grid w-3/4 grid-cols-12 flex-row items-center justify-between gap-6'}>
-					<div className={'col-span-9'}>
+				<div className={'grid w-full grid-cols-12 flex-row items-center justify-between gap-4 md:w-3/4 md:gap-6'}>
+					<div className={'col-span-12 md:col-span-9'}>
 						<Listbox.Button className={'box-100 relative w-full cursor-pointer rounded-sm py-2 pl-2 pr-10 text-left text-sm'}>
 							<span className={'block truncate'}>
 								{selected.map((each): string => each.name).join(', ')}&nbsp;
@@ -203,7 +203,7 @@ function TokenListsBox(): ReactElement {
 							</span>
 						</Listbox.Button>
 					</div>
-					<div className={'col-span-3'}>
+					<div className={'col-span-12 md:col-span-3'}>
 						<Button
 							onClick={(): void => set_tokenList(tokenListTokensRef.current)}
 							className={'yearn--button !w-[160px] rounded-md !text-sm'}
@@ -217,8 +217,8 @@ function TokenListsBox(): ReactElement {
 					leave={'transition ease-in duration-100'}
 					leaveFrom={'opacity-100'}
 					leaveTo={'opacity-0'}>
-					<div className={'absolute z-50 mt-1 grid w-3/4 grid-cols-12 gap-6'}>
-						<Listbox.Options className={'box-0 col-span-9 max-h-60 w-full overflow-auto rounded-sm'}>
+					<div className={'absolute z-50 -mt-12 grid w-full grid-cols-12 gap-4 md:mt-1 md:w-3/4 md:gap-6'}>
+						<Listbox.Options className={'box-0 col-span-12 max-h-60 w-full overflow-auto rounded-sm md:col-span-9'}>
 							{tokenLists.map((list, listIdx): ReactElement => (
 								<Listbox.Option
 									key={listIdx}

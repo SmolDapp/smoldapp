@@ -15,15 +15,15 @@ function	ViewWallet(): ReactElement {
 
 	return (
 		<div className={'box-0 grid w-full grid-cols-12 overflow-hidden'}>
-			<div className={'col-span-12 flex flex-col p-6 text-neutral-900'}>
-				<div className={'w-3/4'}>
+			<div className={'col-span-12 flex flex-col p-4 text-neutral-900 md:p-6'}>
+				<div className={'w-full md:w-3/4'}>
 					<b>{'Connect your Wallet'}</b>
 					<p className={'text-sm text-neutral-500'}>
 						{'Connect your wallet to start using the Migratooor. Once connected, you will be able to select a destination and migrate your tokens.'}
 					</p>
 				</div>
-				<div className={'col-span-12 mt-6 grid grid-cols-12 gap-6'}>
-					<div className={'relative col-span-3'}>
+				<div className={'col-span-12 mt-6 grid grid-cols-12 gap-4 md:gap-6'}>
+					<div className={'relative col-span-6 md:col-span-3'}>
 						<CardWithIcon
 							isSelected={walletProvider === 'INJECTED'}
 							icon={detectedWalletProvider.icon}
@@ -35,7 +35,7 @@ function	ViewWallet(): ReactElement {
 								});
 							}} />
 					</div>
-					<div className={'relative col-span-3'}>
+					<div className={'relative col-span-6 md:col-span-3'}>
 						<CardWithIcon
 							isSelected={walletProvider === 'WALLET_CONNECT'}
 							icon={<IconWalletWalletConnect />}

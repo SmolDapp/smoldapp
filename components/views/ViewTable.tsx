@@ -139,7 +139,7 @@ function	TokenRow({address: tokenAddress, balance}: {balance: TMinBalanceData, a
 					onChange={(): void => set_selected(isSelected ? selected.filter((item: TAddress): boolean => item !== tokenAddress) : [...selected, tokenAddress])}
 					className={'checkbox cursor-pointer'} />
 			</div>
-			<div className={'yearn--table-token-section h-14 border-r border-neutral-200 pl-8'}>
+			<div className={'yearn--table-token-section h-14 border-0 border-neutral-200 pl-8 md:border-r'}>
 				<div className={'yearn--table-token-section-item'}>
 					<div className={'yearn--table-token-section-item-image'}>
 						<ImageWithFallback
@@ -170,7 +170,7 @@ function	TokenRow({address: tokenAddress, balance}: {balance: TMinBalanceData, a
 
 			<div className={'yearn--table-data-section'}>
 				<div className={'yearn--table-data-section-item md:col-span-10 md:px-6'} datatype={'number'}>
-					<label className={'yearn--table-data-section-item-label'}>{'Move to new wallet'}</label>
+					<label className={'yearn--table-data-section-item-label'}>{'Amount to migrate'}</label>
 					<div className={'box-0 flex h-10 w-full items-center p-2'}>
 						<div
 							className={'flex h-10 w-full flex-row items-center justify-between py-4 px-0'}
@@ -258,16 +258,16 @@ function	DonateRow({shouldDonateETH, set_shouldDonateETH, amountToDonate, set_am
 	return (
 		<div
 			onClick={(): void => set_shouldDonateETH((shouldDonateETH: boolean): boolean => !shouldDonateETH)}
-			className={`relative col-span-12 mb-0 border-x-2 bg-neutral-0 px-6 py-2 text-neutral-900 transition-colors hover:bg-neutral-100 ${shouldDonateETH ? 'border-neutral-900' : 'border-transparent'}`}>
-			<div className={'grid h-14 grid-cols-9'}>
-				<div className={'col-span-3 flex flex-row items-center space-x-4 border-r border-neutral-200'}>
+			className={`relative col-span-12 mb-0 border-x-2 bg-neutral-0 px-3 py-2 pb-4 text-neutral-900 transition-colors hover:bg-neutral-100 md:px-6 md:pb-2 ${shouldDonateETH ? 'border-neutral-900' : 'border-transparent'}`}>
+			<div className={'grid grid-cols-12 md:grid-cols-9'}>
+				<div className={'col-span-12 flex h-14 flex-row items-center space-x-4 border-0 border-r border-neutral-200 md:col-span-3'}>
 					<input
 						type={'checkbox'}
 						checked={shouldDonateETH}
 						className={'checkbox cursor-pointer'} />
 					<b>{'Donate ETH'}</b>
 				</div>
-				<div className={'col-span-5 flex flex-row items-center px-6'}>
+				<div className={'col-span-12 flex flex-row items-center px-6 md:col-span-5'}>
 					<div
 						onClick={(e): void => e.stopPropagation()}
 						className={'box-0 flex h-10 w-full items-center p-2'}>
@@ -292,7 +292,7 @@ function	DonateRow({shouldDonateETH, set_shouldDonateETH, amountToDonate, set_am
 				</div>
 				<div
 					onClick={(e): void => e.stopPropagation()}
-					className={'col-span-1 flex w-full flex-row items-center'}>
+					className={'col-span-1 hidden w-full flex-row items-center md:flex'}>
 					<Button
 						className={'yearn--button-smaller !w-full'}
 						isBusy={txStatus.pending}
@@ -319,7 +319,6 @@ function	CustomTokenBox(): ReactElement {
 	const	checkDestinationValidity = useCallback(async (): Promise<void> => {
 		if (!isZeroAddress(toAddress(erc20Address))) {
 			set_isLoading(true);
-			//Fetch ERC20 token data
 			const	erc20Contract = new ethers.Contract(erc20Address, [
 				'function symbol() external view returns (string)',
 				'function decimals() external view returns (uint8)'
@@ -356,8 +355,8 @@ function	CustomTokenBox(): ReactElement {
 	}, [checkDestinationValidity]);
 
 	return (
-		<div className={'mt-6 grid w-3/4 grid-cols-12 flex-row items-center justify-between gap-6'}>
-			<div className={'box-100 grow-1 col-span-9 flex h-10 w-full items-center p-2'}>
+		<div className={'mt-6 grid w-full grid-cols-12 flex-row items-center justify-between gap-4 md:w-3/4 md:gap-6'}>
+			<div className={'box-100 grow-1 col-span-12 flex h-10 w-full items-center p-2 md:col-span-9'}>
 				<div className={'flex h-10 w-full flex-row items-center justify-between py-4 px-0'}>
 					<input
 						aria-invalid={!isValidERC20}
@@ -379,7 +378,7 @@ function	CustomTokenBox(): ReactElement {
 					</div>
 				</div>
 			</div>
-			<div className={'col-span-3'}>
+			<div className={'col-span-12 md:col-span-3'}>
 				<Button
 					className={'yearn--button !w-[160px] rounded-md !text-sm'}
 					disabled={!isAddress(erc20Address) || !isValidERC20 || !validERC20Data.current}
@@ -536,17 +535,17 @@ function	ViewTable(): ReactElement {
 	}
 
 	return (
-		<div id={'select'} className={'mb-[800px] pt-10'}>
-			<div className={'box-0 mb-6 grid w-full grid-cols-12 overflow-hidden'}>
-				<div className={'col-span-12 flex flex-col p-6 pb-0 text-neutral-900'}>
-					<div className={'w-3/4'}>
+		<div id={'select'} className={'mb-32 pt-10 md:mb-[800px]'}>
+			<div className={'box-0 relative mb-6 grid w-full grid-cols-12 overflow-hidden'}>
+				<div className={'col-span-12 flex flex-col p-4 pb-0 text-neutral-900 md:p-6'}>
+					<div className={'w-full md:w-3/4'}>
 						<b>{'Select the tokens to migrate'}</b>
 						<p className={'text-sm text-neutral-500'}>
 							{'Select the tokens you want to migrate to another wallet. You can migrate all your tokens at once or select individual tokens.'}
 						</p>
 					</div>
 				</div>
-				<div className={'col-span-12 flex flex-col border-b border-neutral-200 p-6 text-neutral-900'}>
+				<div className={'col-span-12 flex flex-col border-b border-neutral-200 p-4 text-neutral-900 md:p-6'}>
 					<details className={'box-0'}>
 						<summary className={'py-4 px-6 transition-colors hover:bg-neutral-100'}>
 							<p className={'text-sm text-neutral-500'}>
@@ -556,7 +555,7 @@ function	ViewTable(): ReactElement {
 								</span>
 							</p>
 						</summary>
-						<div className={'p-6 pt-2'}>
+						<div className={'p-4 md:p-6 md:pt-2'}>
 							<CustomListSettings />
 						</div>
 					</details>
@@ -592,7 +591,7 @@ function	ViewTable(): ReactElement {
 					set_amountToDonate={set_amountToDonate} />
 
 
-				<div className={'col-span-12 flex w-full max-w-4xl flex-row items-center justify-between bg-neutral-900 p-6 text-neutral-0'}>
+				<div className={'fixed inset-x-0 bottom-0 z-50 col-span-12 flex w-full max-w-4xl flex-row items-center justify-between bg-neutral-900 p-4 text-neutral-0 md:relative md:p-6'}>
 					<div className={''}>
 						<b>{`Migrate ${selected.length} tokens`}</b>
 					</div>

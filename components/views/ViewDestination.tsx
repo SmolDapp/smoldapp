@@ -73,21 +73,19 @@ function	ViewDestination(): ReactElement {
 		}
 	}, [destination]);
 
-
-	console.log(destinationAddress);
 	return (
 		<div id={'destination'} className={'pt-10'}>
 			<div
 				className={'box-0 grid w-full grid-cols-12 overflow-hidden'}>
-				<div className={'col-span-12 flex flex-col p-6 text-neutral-900'}>
-					<div className={'w-3/4'}>
+				<div className={'col-span-12 flex flex-col p-4 text-neutral-900 md:p-6'}>
+					<div className={'w-full md:w-3/4'}>
 						<b>{'Destination'}</b>
 						<p className={'text-sm text-neutral-500'}>
 							{'Enter the address where you want to migrate your funds to. Be sure to double check the address before proceeding.'}
 						</p>
 					</div>
-					<div className={'mt-6 grid w-3/4 grid-cols-12 flex-row items-center justify-between gap-6'}>
-						<div className={'box-100 grow-1 col-span-9 flex h-10 w-full items-center p-2'}>
+					<div className={'mt-6 grid w-full grid-cols-12 flex-row items-center justify-between gap-4 md:w-3/4 md:gap-6'}>
+						<div className={'box-100 grow-1 col-span-12 flex h-10 w-full items-center p-2 md:col-span-9'}>
 							<div className={'flex h-10 w-full flex-row items-center justify-between py-4 px-0'}>
 								<input
 									aria-invalid={!isValidDestination}
@@ -113,12 +111,11 @@ function	ViewDestination(): ReactElement {
 								</div>
 							</div>
 						</div>
-						<div className={'col-span-3'}>
+						<div className={'col-span-12 md:col-span-3'}>
 							<Button
 								className={'yearn--button !w-[160px] rounded-md !text-sm'}
 								onClick={(): void => {
 									if (destination.endsWith('.eth')) {
-										console.log(toAddress(validishDestination));
 										set_destinationAddress(toAddress(validishDestination));
 									} else if (isAddress(destination)) {
 										set_destinationAddress(toAddress(destination));

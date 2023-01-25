@@ -8,47 +8,11 @@
 }
 @layer base {
 
-#swap {
-	@apply scroll-mt-12 mb-0 md:mb-44;
-}
+.max-w-4xl {@apply max-w-[888px] px-4;}
+
 
 .font-number {
 	@apply font-mono tabular-nums;
-}
-
-/* 🔵 - Yearn Finance ******************************************************************************
-	** AppBox is the style used to make the nices animations on the home page feel nice and smooth
-	** A custom overwrite is required for dark/light mode
-	***************************************************************************************************/
-.appBox {
-	--x-px: calc(var(--x) * 1px);
-	--y-px: calc(var(--y) * 1px);
-	--opacity: var(--opacity);
-	--color: hsl(var(--color-neutral-300));
-	@apply relative flex aspect-video h-full w-full cursor-pointer flex-col items-center border border-neutral-300/50 p-6 shadow shadow-transparent transition-all duration-[400ms];
-
-	&:before,
-	&:after {
-		@apply pointer-events-none block absolute inset-[0px] z-[-1];
-		content: "";
-		z-index: -1;
-		opacity: var(--opacity);
-		background: radial-gradient(
-			1200px circle at var(--x-px) var(--y-px),
-			var(--color),
-			transparent 40%
-		);
-		transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-	}
-	&:before {
-		@apply pointer-events-none z-[-1];
-	}
-}
-:root.dark {
-	& .appBox {
-		--color: hsl(var(--color-neutral-100));
-		@apply border-neutral-100/30;
-	}
 }
 
 .yearn--button {
@@ -109,7 +73,7 @@
 	@apply col-span-6 grid grid-cols-1 gap-x-0 md:grid-cols-12 gap-y-2 md:gap-y-0 mb-4 md:mb-0;
 }
 .yearn--table-data-section-item-label {
-	@apply inline text-start text-neutral-500 md:hidden text-sm;
+	@apply inline text-start text-neutral-500 md:hidden text-xs ml-1;
 }
 .yearn--table-data-section-item-value {
 	@apply text-neutral-900;
