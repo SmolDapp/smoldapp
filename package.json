@@ -1,5 +1,5 @@
 {
-	"name": "docudroid",
+	"name": "migratooor",
 	"version": "0.0.1",
 	"private": false,
 	"homepage": "./",
@@ -14,7 +14,8 @@
 	"dependencies": {
 		"@headlessui/react": "^1.7.7",
 		"@next/font": "^13.1.3",
-		"@yearn-finance/web-lib": "^0.17.110",
+		"@react-hookz/web": "^22.0.0",
+		"@yearn-finance/web-lib": "^0.17.119",
 		"axios": "^1.2.3",
 		"ethcall": "^4.8.13",
 		"ethers": "^5.7.2",

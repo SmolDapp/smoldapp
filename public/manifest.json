@@ -1,11 +1,11 @@
 {
-	"name": "DocuDroid",
-	"short_name": "DocuDroid",
-	"description": "Don't waste any more time on tedious tech writing tasks - join the future with Docudroid.",
+	"name": "Migratooor",
+	"short_name": "Migratooor",
+	"description": "Migrate your tokens from one wallet to another in a few clicks.",
 	"iconPath": "./favicons/favicon.svg",
 	"locale": "en-US",
-	"uri": "https://docudroid.org/",
-	"og": "https://docudroid.org/og.jpeg",
+	"uri": "https://migratooor.ycorpo.com/",
+	"og": "https://migratooor.ycorpo.com/og.jpeg",
 	"twitter": "@docudroid",
 	"icons": [
 		{

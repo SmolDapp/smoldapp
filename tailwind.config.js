@@ -22,7 +22,7 @@ module.exports = {
 				sans: ['var(--inter-font)', 'Inter', 'Roboto', ...defaultTheme.fontFamily.sans],
 				aeonik: ['var(--inter-font)', 'Inter', 'Roboto', ...defaultTheme.fontFamily.sans],
 				roboto: ['var(--inter-font)', 'Inter', 'Roboto', ...defaultTheme.fontFamily.sans],
-				mono: ['Roboto Mono', ...defaultTheme.fontFamily.mono]
+				mono: ['Source Code Pro', ...defaultTheme.fontFamily.mono]
 			},
 			fontSize: {
 				'xxs': ['10px', '16px']

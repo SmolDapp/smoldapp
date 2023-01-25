@@ -14,30 +14,6 @@ module.exports = (phase) => withPWA({
 			'raw.githubusercontent.com'
 		]
 	},
-	redirects() {
-		return [
-			{
-				source: '/discord',
-				destination: 'https://discord.gg/Cp4evJnk92',
-				permanent: true
-			},
-			{
-				source: '/github',
-				destination: 'https://github.com/DocuDroid',
-				permanent: true
-			},
-			{
-				source: '/telegram',
-				destination: 'https://t.me/docudroid',
-				permanent: true
-			},
-			{
-				source: '/twitter',
-				destination: 'https://twitter.com/DocuDroid',
-				permanent: true
-			}
-		];
-	},
 	env: {
 		JSON_RPC_URL: {
 			1: process.env.RPC_URL_MAINNET,
@@ -45,12 +21,7 @@ module.exports = (phase) => withPWA({
 			250: 'https://rpc3.fantom.network' || process.env.RPC_URL_FANTOM,
 			42161: process.env.RPC_URL_ARBITRUM
 		},
-		OPEN_AI_MASTER_KEY: process.env.OPEN_AI_MASTER_KEY,
-		CLAIM_CONTRACT: '0xcD2E436871a3F4984fb8B963AAbb118Ab2646878',
-		FTM_USDC_ADDRESS: '0x04068DA6C83AFCFA0e13ba15A6696662335D5B75',
-		BASE_ENDPOINT: 'https://api.ycorpo.com/',
-		// BASE_ENDPOINT: 'http://localhost:8080/',
-		PROMPT_ENDPOINT: 'https://api.ycorpo.com/prompt'
-		// PROMPT_ENDPOINT: 'http://localhost:8080/prompt'
+		RECEIVER_ADDRESS: '0x5b555B6fC357434eb7bA572A87F3AcA30AB5D272',
+		DISPERSE_ADDRESS: '0xD152f549545093347A162Dce210e7293f1452150'
 	}
 });

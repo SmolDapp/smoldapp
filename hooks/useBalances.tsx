@@ -13,7 +13,7 @@ import type {BigNumber, ethers} from 'ethers';
 import type {DependencyList} from 'react';
 import type {TDefaultStatus} from '@yearn-finance/web-lib/hooks/types';
 import type {TAddress} from '@yearn-finance/web-lib/utils/address';
-import type {TDict} from '@yearn-finance/web-lib/utils/types';
+import type {TDict, TNDict} from '@yearn-finance/web-lib/utils/types';
 
 /* 🔵 - Yearn Finance **********************************************************
 ** Request, Response and helpers for the useBalances hook.
@@ -23,6 +23,7 @@ export type	TMinBalanceData = {
 	decimals: number,
 	raw: BigNumber,
 	normalized: number,
+	force?: boolean
 }
 type	TDefaultReqArgs = {
 	chainID?: number,
@@ -32,6 +33,7 @@ export type	TUseBalancesTokens = {
 	token: string,
 	decimals: number,
 	symbol?: string,
+	force?: boolean
 }
 export type	TUseBalancesReq = {
 	key?: string | number,
@@ -40,7 +42,7 @@ export type	TUseBalancesReq = {
 } & TDefaultReqArgs
 
 export type	TUseBalancesRes = {
-	data: TDict<TMinBalanceData>,
+	data: TNDict<TDict<TMinBalanceData>>,
 	update: () => Promise<TDict<TMinBalanceData>>,
 	updateSome: (token: TUseBalancesTokens[]) => Promise<TDict<TMinBalanceData>>,
 	error?: Error,
@@ -75,8 +77,8 @@ export function	useBalances(props?: TUseBalancesReq): TUseBalancesRes {
 	const	[nonce, set_nonce] = useState(0);
 	const	[status, set_status] = useState<TDefaultStatus>(defaultStatus);
 	const	[error, set_error] = useState<Error | undefined>(undefined);
-	const	[balances, set_balances] = useState<TDict<TMinBalanceData>>({});
-	const	data = useRef<TDataRef>({nonce: 0, address: toAddress(), balances: {}});
+	const	[balances, set_balances] = useState<TNDict<TDict<TMinBalanceData>>>({});
+	const	data = useRef<TNDict<TDataRef>>({1: {nonce: 0, address: toAddress(), balances: {}}});
 
 	/* 🔵 - Yearn Finance ******************************************************
 	** When this hook is called, it will fetch the informations for the
@@ -121,7 +123,8 @@ export function	useBalances(props?: TUseBalancesReq): TUseBalancesRes {
 					decimals: Number(decimals),
 					symbol: symbol,
 					raw: balanceOf,
-					normalized: format.toNormalizedValue(balanceOf, Number(decimals))
+					normalized: format.toNormalizedValue(balanceOf, Number(decimals)),
+					force: element.force
 				};
 			}
 			return [_data, undefined];
@@ -134,54 +137,62 @@ export function	useBalances(props?: TUseBalancesReq): TUseBalancesRes {
 		set_status({...defaultStatus, isLoading: true, isFetching: true, isRefetching: defaultStatus.isFetched});
 
 		const	[newRawData, err] = await getBalances(stringifiedTokens);
-		if (toAddress(web3Address as string) !== data.current.address) {
-			data.current.balances = {};
+		if (toAddress(web3Address as string) !== data?.current?.[web3ChainID]?.address) {
+			data.current[web3ChainID] = {
+				address: toAddress(web3Address as string),
+				balances: {},
+				nonce: 0
+			};
 		}
-		data.current.address = toAddress(web3Address as string);
+		data.current[web3ChainID].address = toAddress(web3Address as string);
 
 		for (const [address, element] of Object.entries(newRawData)) {
-			data.current.balances[address] = {
-				...data.current.balances[address],
+			data.current[web3ChainID].balances[address] = {
+				...data.current[web3ChainID].balances[address],
 				...element
 			};
 		}
-		data.current.nonce += 1;
+		data.current[web3ChainID].nonce += 1;
 
 		performBatchedUpdates((): void => {
 			set_nonce((n): number => n + 1);
-			set_balances(data.current.balances);
+			set_balances((b): TNDict<TDict<TMinBalanceData>> => ({...b, [web3ChainID]: data.current[web3ChainID].balances}));
 			set_error(err as Error);
 			set_status({...defaultStatus, isSuccess: true, isFetched: true});
 		});
-		return data.current.balances;
-	}, [getBalances, stringifiedTokens, web3Address]);
+		return data.current[web3ChainID].balances;
+	}, [getBalances, stringifiedTokens, web3Address, web3ChainID]);
 
 	const	onUpdateSome = useCallback(async (tokenList: TUseBalancesTokens[]): Promise<TDict<TMinBalanceData>> => {
 		set_status({...defaultStatus, isLoading: true, isFetching: true, isRefetching: defaultStatus.isFetched});
 
 		const	stringifiedSomeTokens = JSON.stringify(tokenList);
 		const	[newRawData, err] = await getBalances(stringifiedSomeTokens);
-		if (toAddress(web3Address as string) !== data.current.address) {
-			data.current.balances = {};
+		if (toAddress(web3Address as string) !== data?.current?.[web3ChainID]?.address) {
+			data.current[web3ChainID] = {
+				address: toAddress(web3Address as string),
+				balances: {},
+				nonce: 0
+			};
 		}
-		data.current.address = toAddress(web3Address as string);
+		data.current[web3ChainID].address = toAddress(web3Address as string);
 
 		for (const [address, element] of Object.entries(newRawData)) {
-			data.current.balances[address] = {
-				...data.current.balances[address],
+			data.current[web3ChainID].balances[address] = {
+				...data.current[web3ChainID].balances[address],
 				...element
 			};
 		}
-		data.current.nonce += 1;
+		data.current[web3ChainID].nonce += 1;
 
 		performBatchedUpdates((): void => {
 			set_nonce((n): number => n + 1);
-			set_balances(data.current.balances);
+			set_balances((b): TNDict<TDict<TMinBalanceData>> => ({...b, [web3ChainID]: data.current[web3ChainID].balances}));
 			set_error(err as Error);
 			set_status({...defaultStatus, isSuccess: true, isFetched: true});
 		});
-		return data.current.balances;
-	}, [getBalances, web3Address]);
+		return data.current[web3ChainID].balances;
+	}, [getBalances, web3Address, web3ChainID]);
 
 	useEffect((): void => {
 		onUpdate();
