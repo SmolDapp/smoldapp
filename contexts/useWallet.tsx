@@ -36,7 +36,7 @@ const	defaultProps = {
 const	WalletContext = createContext<TWalletContext>(defaultProps);
 export const WalletContextApp = memo(function WalletContextApp({children}: {children: ReactElement}): ReactElement {
 	const	{tokenList} = useSelected();
-	const	{provider} = useWeb3();
+	const	{provider, chainID} = useWeb3();
 	const	{onLoadStart, onLoadDone} = useUI();
 	const	{safeChainID} = useChainID();
 
@@ -83,11 +83,11 @@ export const WalletContextApp = memo(function WalletContextApp({children}: {chil
 	**	Setup and render the Context provider to use in the app.
 	***************************************************************************/
 	const	contextValue = useMemo((): TWalletContext => ({
-		balances: balances[safeChainID],
+		balances: balances[chainID],
 		balancesNonce: nonce,
 		isLoading: isLoading || false,
 		refresh: onRefresh
-	}), [balances, isLoading, onRefresh, nonce, safeChainID]);
+	}), [balances, isLoading, onRefresh, nonce, chainID]);
 
 	return (
 		<WalletContext.Provider value={contextValue}>
