@@ -11,7 +11,6 @@ import {isAddress} from 'ethers/lib/utils';
 import {disperseEther} from 'utils/actions/disperseEth';
 import {sendEther} from 'utils/actions/sendEth';
 import {transfer} from 'utils/actions/transferToken';
-import {Inter} from '@next/font/google';
 import {useMountEffect, useUpdateEffect} from '@react-hookz/web';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
@@ -32,13 +31,6 @@ import type {ChangeEvent, Dispatch, ReactElement, SetStateAction} from 'react';
 import type {TAddress} from '@yearn-finance/web-lib/utils/address';
 import type {TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import type {TDict} from '@yearn-finance/web-lib/utils/types';
-
-const inter = Inter({
-	weight: ['400', '700'],
-	subsets: ['latin'],
-	display: 'swap',
-	variable: '--inter-font'
-});
 
 function handleInputChangeEventValue(e: React.ChangeEvent<HTMLInputElement>, decimals?: number): TNormalizedBN {
 	const	{valueAsNumber, value} = e.target;
@@ -411,7 +403,7 @@ function	CustomTokenBox(): ReactElement {
 
 function	CustomListSettings(): ReactElement {
 	return (
-		<div id={'select'} className={`${inter.variable}`}>
+		<div id={'select'}>
 			<div className={'grid w-full grid-cols-12'}>
 				<div className={'col-span-12 flex flex-col text-neutral-900'}>
 					<div className={'mb-4 w-full text-sm'}>

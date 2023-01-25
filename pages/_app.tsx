@@ -20,17 +20,20 @@ const inter = Inter({
 
 function	MyApp(props: AppProps): ReactElement {
 	return (
-		<WithYearn>
-			<SelectedContextApp>
-				<WalletContextApp>
-					<MenuContextApp>
-						<main className={`flex h-screen flex-col ${inter.variable}`}>
-							<AppWrapper {...props} />
-						</main>
-					</MenuContextApp>
-				</WalletContextApp>
-			</SelectedContextApp>
-		</WithYearn>
+		<>
+			<style jsx global>{`html {font-family: ${inter.style.fontFamily};}`}</style>
+			<WithYearn>
+				<SelectedContextApp>
+					<WalletContextApp>
+						<MenuContextApp>
+							<main className={`flex h-screen flex-col ${inter.variable}`}>
+								<AppWrapper {...props} />
+							</main>
+						</MenuContextApp>
+					</WalletContextApp>
+				</SelectedContextApp>
+			</WithYearn>
+		</>
 	);
 }
 
