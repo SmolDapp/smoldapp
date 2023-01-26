@@ -13,8 +13,6 @@ Migratooor is an easy and secure way to move all your Ethereum and ERC20 tokens 
 
 Migratooor employs the [ethers](https://docs.ethers.org/v5/) library to transfer ERC20 tokens from one wallet to another. This generates all the transactions needed to securely move your tokens to the wallet of your choosing!
 
-![](https://i.imgur.com/eWUBoSM.png)
-
 
 ## How To Use Migratooor
 
