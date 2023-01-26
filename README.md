@@ -1,6 +1,6 @@
 # Migratooor
 
-![](https://i.imgur.com/rxFv43B.png)
+![./public/og.png](./public/og.png)
 
 > The safest way to transfer all your ERC20 tokens at once!
 
