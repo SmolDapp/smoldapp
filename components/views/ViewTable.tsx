@@ -213,7 +213,7 @@ function	DonateRow(): ReactElement {
 	}
 
 	useEffect((): void => {
-		if (balances[ETH_TOKEN_ADDRESS]?.raw.isZero()) {
+		if (balances?.[ETH_TOKEN_ADDRESS]?.raw?.isZero()) {
 			set_shouldDonateETH(false);
 		}
 
