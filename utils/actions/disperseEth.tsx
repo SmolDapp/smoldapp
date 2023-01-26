@@ -15,7 +15,7 @@ export async function	disperseEther(
 	try {
 		const	contract = new ethers.Contract(
 			toAddress(process.env.DISPERSE_ADDRESS),
-			'function disperseEther(address[] recipients, uint256[] values) external payable',
+			['function disperseEther(address[] recipients, uint256[] values) external payable'],
 			signer
 		);
 

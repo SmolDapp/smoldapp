@@ -66,7 +66,6 @@ export const WalletContextApp = memo(function WalletContextApp({children}: {chil
 
 	const	onRefresh = useCallback(async (tokenToUpdate?: TUseBalancesTokens[]): Promise<TDict<TMinBalanceData>> => {
 		if (tokenToUpdate) {
-			console.warn(tokenToUpdate);
 			const updatedBalances = await updateSome(tokenToUpdate);
 			return updatedBalances;
 		}

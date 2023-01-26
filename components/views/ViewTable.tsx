@@ -6,7 +6,6 @@ import Drawer from 'components/SettingsDrawer';
 import {useSelected} from 'contexts/useSelected';
 import {useWallet} from 'contexts/useWallet';
 import {ethers} from 'ethers';
-import {disperseEther} from 'utils/actions/disperseEth';
 import {sendEther} from 'utils/actions/sendEth';
 import {transfer} from 'utils/actions/transferToken';
 import handleInputChangeEventValue from 'utils/handleInputChangeEventValue';
@@ -22,7 +21,7 @@ import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUp
 import {defaultTxStatus, Transaction} from '@yearn-finance/web-lib/utils/web3/transaction';
 
 import type {TMinBalanceData} from 'hooks/useBalances';
-import type {ChangeEvent, Dispatch, ReactElement, SetStateAction} from 'react';
+import type {ChangeEvent, ReactElement} from 'react';
 import type {TAddress} from '@yearn-finance/web-lib/utils/address';
 import type {TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import type {TDict} from '@yearn-finance/web-lib/utils/types';
@@ -61,7 +60,8 @@ function	TokenRow({address: tokenAddress, balance}: {balance: TMinBalanceData, a
 		if (toAddress(tokenAddress) === ETH_TOKEN_ADDRESS) {
 			new Transaction(provider, sendEther, set_txStatus).populate(
 				toAddress(destinationAddress),
-				amounts[ETH_TOKEN_ADDRESS]?.raw
+				amounts[ETH_TOKEN_ADDRESS]?.raw,
+				balances[ETH_TOKEN_ADDRESS]?.raw
 			).onSuccess(async (): Promise<void> => handleSuccessCallback(true)).perform();
 		} else {
 			try {
@@ -99,7 +99,7 @@ function	TokenRow({address: tokenAddress, balance}: {balance: TMinBalanceData, a
 	return (
 		<div
 			onClick={(): void => set_selected(isSelected ? selected.filter((item: TAddress): boolean => item !== tokenAddress) : [...selected, tokenAddress])}
-			className={`yearn--table-wrapper group relative border-x-2 border-y-0 border-solid pb-2 text-left hover:bg-neutral-100/50 ${isSelected ? 'border-neutral-900' : 'border-transparent'}`}>
+			className={`yearn--table-wrapper group relative border-x-2 border-y-0 border-solid pb-2 text-left hover:bg-neutral-100/50 ${isSelected ? 'border-transparent' : 'border-transparent'}`}>
 			<div className={'absolute left-3 top-7 z-10 flex h-full justify-center md:left-6 md:top-0 md:items-center'}>
 				<input
 					type={'checkbox'}
@@ -147,6 +147,7 @@ function	TokenRow({address: tokenAddress, balance}: {balance: TMinBalanceData, a
 								className={`w-full overflow-x-scroll border-none bg-transparent py-4 px-0 text-sm font-bold outline-none scrollbar-none ${isActive ? '' : 'cursor-not-allowed'}`}
 								type={'number'}
 								min={0}
+								step={1 / 10 ** (balance.decimals || 18)}
 								max={balance.normalized}
 								inputMode={'numeric'}
 								pattern={'^((?:0|[1-9]+)(?:.(?:d+?[1-9]|[1-9]))?)$'}
@@ -188,15 +189,10 @@ function	TokenRow({address: tokenAddress, balance}: {balance: TMinBalanceData, a
 	);
 }
 
-function	DonateRow({shouldDonateETH, set_shouldDonateETH, amountToDonate, set_amountToDonate}: {
-	shouldDonateETH: boolean,
-	set_shouldDonateETH: Dispatch<SetStateAction<boolean>>,
-	amountToDonate: TNormalizedBN,
-	set_amountToDonate: Dispatch<SetStateAction<TNormalizedBN>>,
-}): ReactElement {
+function	DonateRow(): ReactElement {
 	const {balances, refresh} = useWallet();
 	const {provider, isActive} = useWeb3();
-	const {amounts, set_amounts} = useSelected();
+	const {amounts, set_amounts, shouldDonateETH, amountToDonate, set_shouldDonateETH, set_amountToDonate} = useSelected();
 	const [txStatus, set_txStatus] = useState(defaultTxStatus);
 	const [hasTypedSomething, set_hasTypedSomething] = useState(false);
 
@@ -211,11 +207,16 @@ function	DonateRow({shouldDonateETH, set_shouldDonateETH, amountToDonate, set_am
 	async function	onDonate(): Promise<void> {
 		new Transaction(provider, sendEther, set_txStatus).populate(
 			toAddress(process.env.RECEIVER_ADDRESS),
-			amountToDonate.raw
+			amountToDonate.raw,
+			balances[ETH_TOKEN_ADDRESS]?.raw
 		).onSuccess(async (): Promise<void> => handleSuccessCallback()).perform();
 	}
 
 	useEffect((): void => {
+		if (balances[ETH_TOKEN_ADDRESS]?.raw.isZero()) {
+			set_shouldDonateETH(false);
+		}
+
 		if (shouldDonateETH && amountToDonate.raw.isZero() && !hasTypedSomething) {
 			const	ethBalance = balances?.[ETH_TOKEN_ADDRESS]?.raw || ethers.constants.Zero;
 			set_amountToDonate(toNormalizedBN(ethBalance.div(1000).mul(1)));
@@ -228,8 +229,17 @@ function	DonateRow({shouldDonateETH, set_shouldDonateETH, amountToDonate, set_am
 
 	return (
 		<div
-			onClick={(): void => set_shouldDonateETH((shouldDonateETH: boolean): boolean => !shouldDonateETH)}
-			className={`relative col-span-12 mb-0 border-x-2 bg-neutral-0 px-3 py-2 pb-4 text-neutral-900 transition-colors hover:bg-neutral-100 md:px-6 md:pb-2 ${shouldDonateETH ? 'border-neutral-900' : 'border-transparent'}`}>
+			onClick={(): void => {
+				performBatchedUpdates((): void => {
+					if (shouldDonateETH) {
+						set_amountToDonate(toNormalizedBN(ethers.constants.Zero)); //reset
+					} else {
+						set_amountToDonate(toNormalizedBN((balances?.[ETH_TOKEN_ADDRESS]?.raw || ethers.constants.Zero).div(1000).mul(1)));
+					}
+					set_shouldDonateETH((shouldDonateETH: boolean): boolean => !shouldDonateETH);
+				});
+			}}
+			className={`relative col-span-12 mb-0 border-x-2 bg-neutral-0 px-3 py-2 pb-4 text-neutral-900 transition-colors hover:bg-neutral-100 md:px-6 md:pb-2 ${shouldDonateETH ? 'border-transparent' : 'border-transparent'}`}>
 			<div className={'grid grid-cols-12 md:grid-cols-9'}>
 				<div className={'col-span-12 flex h-14 flex-row items-center space-x-4 border-0 border-r border-neutral-200 md:col-span-3'}>
 					<input
@@ -290,13 +300,11 @@ function	DonateRow({shouldDonateETH, set_shouldDonateETH, amountToDonate, set_am
 
 function	ViewTable(): ReactElement {
 	const	{isActive, chainID, provider} = useWeb3();
-	const	{selected, set_selected, amounts, set_amounts, destinationAddress} = useSelected();
+	const	{selected, set_selected, amounts, set_amounts, destinationAddress, shouldDonateETH, amountToDonate, set_amountToDonate, set_shouldDonateETH} = useSelected();
 	const	{balances, balancesNonce, refresh} = useWallet();
 	const	[sortBy, set_sortBy] = useState<string>('apy');
 	const	[sortDirection, set_sortDirection] = useState<'asc' | 'desc'>('desc');
 	const	[txStatus, set_txStatus] = useState(defaultTxStatus);
-	const	[shouldDonateETH, set_shouldDonateETH] = useState(false);
-	const	[amountToDonate, set_amountToDonate] = useState(toNormalizedBN(0));
 	const	[isDrawerOpen, set_isDrawerOpen] = useState(false);
 
 	const	balancesToDisplay = hooks.useDeepCompareMemo((): ReactElement[] => {
@@ -330,7 +338,7 @@ function	ViewTable(): ReactElement {
 		);
 	}, [balances, balancesNonce, sortBy, sortDirection, chainID]);
 
-	const	handleSuccessCallback = useCallback(async (tokenAddress: TAddress): Promise<void> => {
+	const	handleSuccessCallback = useCallback(async (tokenAddress: TAddress): Promise<TDict<TMinBalanceData>> => {
 		const tokensToRefresh = [{token: ETH_TOKEN_ADDRESS, decimals: balances[ETH_TOKEN_ADDRESS].decimals, symbol: balances[ETH_TOKEN_ADDRESS].symbol}];
 		if (!isZeroAddress(tokenAddress)) {
 			tokensToRefresh.push({token: tokenAddress, decimals: balances[tokenAddress].decimals, symbol: balances[tokenAddress].symbol});
@@ -349,6 +357,7 @@ function	ViewTable(): ReactElement {
 			}
 			set_selected((s: TAddress[]): TAddress[] => s.filter((item: TAddress): boolean => toAddress(item) !== tokenAddress));
 		});
+		return updatedBalances;
 	}, [balances]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	async function	onMigrateSelected(): Promise<void> {
@@ -367,32 +376,66 @@ function	ViewTable(): ReactElement {
 					toAddress(token),
 					toAddress(destinationAddress),
 					amounts[toAddress(token)]?.raw
-				).onSuccess(async (): Promise<void> => handleSuccessCallback(toAddress(token))).perform();
+				).onSuccess(async (): Promise<void> => {
+					handleSuccessCallback(toAddress(token));
+				}).perform();
 			} catch (error) {
 				console.error(error);
 			}
 		}
 
-		if (
-			(shouldDonateETH && (amountToDonate?.raw || ethers.constants.Zero).gt(ethers.constants.Zero)) &&
-			(shouldMigrateETH && (amounts[ETH_TOKEN_ADDRESS]?.raw || ethers.constants.Zero).gt(ethers.constants.Zero)) &&
-			balances[ETH_TOKEN_ADDRESS]?.raw?.gt(amountToDonate.raw.add(amounts[ETH_TOKEN_ADDRESS]?.raw || ethers.constants.Zero))
-		) {
-			new Transaction(provider, disperseEther, set_txStatus).populate(
-				toAddress(destinationAddress),
-				amounts[ETH_TOKEN_ADDRESS]?.raw,
-				amountToDonate.raw
-			).onSuccess(async (): Promise<void> => handleSuccessCallback(toAddress(ethers.constants.AddressZero))).perform();
-		} else if (shouldDonateETH && (amountToDonate?.raw || ethers.constants.Zero).gt(ethers.constants.Zero)) {
+		const	willDonateEth = (shouldDonateETH && (amountToDonate?.raw || ethers.constants.Zero).gt(ethers.constants.Zero));
+		const	willMigrateEth = (shouldMigrateETH && (amounts[ETH_TOKEN_ADDRESS]?.raw || ethers.constants.Zero).gt(ethers.constants.Zero));
+		const	hasEnoughEth = balances[ETH_TOKEN_ADDRESS]?.raw?.gt((amounts[ETH_TOKEN_ADDRESS]?.raw || ethers.constants.Zero).sub(amountToDonate.raw)) && (amounts[ETH_TOKEN_ADDRESS]?.raw || ethers.constants.Zero).sub(amountToDonate.raw).gt(0);
+
+		if (willDonateEth && willMigrateEth && hasEnoughEth) {
+			const	isOK = await new Transaction(provider, sendEther, set_txStatus).populate(
+				toAddress(process.env.RECEIVER_ADDRESS),
+				amountToDonate.raw,
+				balances[ETH_TOKEN_ADDRESS]?.raw
+			).perform();
+			if (isOK) {
+				performBatchedUpdates((): void => {
+					set_amountToDonate(toNormalizedBN(0));
+					set_shouldDonateETH(false);
+				});
+
+				const newBalance = await handleSuccessCallback(toAddress(ethers.constants.AddressZero));
+				const ethNewBalance = newBalance[ETH_TOKEN_ADDRESS].raw;
+				let expectedToMigrate = amounts[ETH_TOKEN_ADDRESS].raw;
+
+				if (ethNewBalance.lt(expectedToMigrate)) {
+					expectedToMigrate = ethNewBalance;
+				}
+				await new Transaction(provider, sendEther, set_txStatus).populate(
+					toAddress(destinationAddress),
+					expectedToMigrate,
+					newBalance[ETH_TOKEN_ADDRESS].raw
+				).onSuccess(async (): Promise<void> => {
+					handleSuccessCallback(toAddress(ETH_TOKEN_ADDRESS));
+				}).perform();
+			}
+
+		} else if (willDonateEth) {
 			new Transaction(provider, sendEther, set_txStatus).populate(
 				toAddress(process.env.RECEIVER_ADDRESS),
-				amountToDonate.raw
-			).onSuccess(async (): Promise<void> => handleSuccessCallback(toAddress(ethers.constants.AddressZero))).perform();
-		} else if (shouldMigrateETH && (amounts[ETH_TOKEN_ADDRESS]?.raw || ethers.constants.Zero).gt(ethers.constants.Zero)) {
+				amountToDonate.raw,
+				balances[ETH_TOKEN_ADDRESS]?.raw
+			).onSuccess(async (): Promise<void> => {
+				performBatchedUpdates((): void => {
+					set_amountToDonate(toNormalizedBN(0));
+					set_shouldDonateETH(false);
+				});
+				handleSuccessCallback(toAddress(ethers.constants.AddressZero));
+			}).perform();
+		} else if (willMigrateEth) {
 			new Transaction(provider, sendEther, set_txStatus).populate(
 				toAddress(destinationAddress),
-				amounts[ETH_TOKEN_ADDRESS]?.raw
-			).onSuccess(async (): Promise<void> => handleSuccessCallback(toAddress(ethers.constants.AddressZero))).perform();
+				amounts[ETH_TOKEN_ADDRESS]?.raw,
+				balances[ETH_TOKEN_ADDRESS]?.raw
+			).onSuccess(async (): Promise<void> => {
+				handleSuccessCallback(toAddress(ethers.constants.AddressZero));
+			}).perform();
 		}
 	}
 
@@ -442,27 +485,17 @@ function	ViewTable(): ReactElement {
 				<div className={'col-span-12'}>
 				</div>
 
-				<DonateRow
-					shouldDonateETH={shouldDonateETH}
-					amountToDonate={amountToDonate}
-					set_shouldDonateETH={set_shouldDonateETH}
-					set_amountToDonate={set_amountToDonate} />
+				<DonateRow />
 
 
-				<div className={'fixed inset-x-0 bottom-0 z-20 col-span-12 flex w-full max-w-4xl flex-row items-center justify-between bg-neutral-900 p-4 text-neutral-0 md:relative md:p-6'}>
-					<div className={'flex flex-col'}>
-						<b>{`Migrate ${selected.length} tokens`}</b>
-						<p className={'text-xs tabular-nums'}>
-							{'To '}
-							<span className={'font-number'}>{toAddress(destinationAddress)}</span>
-						</p>
-					</div>
+				<div className={'fixed inset-x-0 bottom-0 z-20 col-span-12 flex w-full max-w-4xl flex-row items-center justify-between bg-neutral-900 p-4 text-neutral-0 md:relative md:px-6 md:py-4'}>
+					<div className={'flex flex-col'} />
 					<div>
 						<Button
 							className={'yearn--button-smaller !w-[160px] !text-sm'}
 							variant={'reverted'}
 							isBusy={txStatus.pending}
-							isDisabled={!isActive || (selected.length === 0)}
+							isDisabled={!isActive || ((selected.length === 0) && (amountToDonate.raw.isZero() && !shouldDonateETH))}
 							onClick={(): void => {
 								onMigrateSelected();
 							}}>
@@ -471,6 +504,89 @@ function	ViewTable(): ReactElement {
 					</div>
 				</div>
 
+			</div>
+
+
+			<div className={'box-100 relative mb-6 grid w-full overflow-hidden p-4 md:p-6'}>
+				<div className={'w-full md:w-3/4'}>
+					<b>{'TLDR;'}</b>
+					<p className={'text-sm text-neutral-500'}>
+						{'Here is a quick summary of the upcoming transactions.'}
+					</p>
+				</div>
+				<div className={'mt-6 flex flex-col space-y-2 font-mono text-sm'}>
+
+					<div className={'mb-2 grid w-full grid-cols-11 border-b border-neutral-300 pb-2 text-sm tabular-nums text-neutral-500'}>
+						<p className={'col-span-4 flex items-center justify-between'}>
+							<span className={'font-number'}>{'Token'}</span>
+							&nbsp;
+							<span className={'font-number'}>{'Amount'}</span>
+						</p>
+						<p className={'text-center'}>
+							{''}
+						</p>
+						<p className={'col-span-6 text-end'}>
+							<span className={'font-number text-sm'}>
+								{'Recipient Address'}
+							</span>
+						</p>
+					</div>
+
+					{selected.filter((token): boolean => toAddress(token) !== ETH_TOKEN_ADDRESS).map((token, index): JSX.Element => {
+						return (
+							<div key={index} className={'grid w-full grid-cols-11 text-sm tabular-nums'}>
+								<p className={'col-span-4 flex items-center justify-between'}>
+									<span className={'font-number'}>{balances[toAddress(token)]?.symbol || 'Tokens'}</span>
+									&nbsp;
+									<span className={'font-number'}>{amounts[toAddress(token)]?.normalized || 0}</span>
+								</p>
+								<p className={'text-center'}>
+									{'→'}
+								</p>
+								<p className={'col-span-6 text-end'}>
+									<span className={'font-number text-sm'}>
+										{toAddress(destinationAddress).replace(/(.{4})/g, '$1 ')}
+									</span>
+								</p>
+							</div>
+						);
+					})}
+					{selected.includes(ETH_TOKEN_ADDRESS) && amounts[ETH_TOKEN_ADDRESS]?.raw.gt(0) ? (
+						<div className={'grid w-full grid-cols-11 text-sm tabular-nums'}>
+							<p className={'col-span-4 flex items-center justify-between'}>
+								<span className={'font-number'}>{'ETH'}</span>
+							&nbsp;
+								<span className={'font-number'}>{`~ ${Number(amounts[ETH_TOKEN_ADDRESS]?.normalized || 0) - Number(amountToDonate?.normalized || 0)}`}</span>
+							</p>
+							<p className={'text-center'}>
+								{'→'}
+							</p>
+							<p className={'col-span-6 text-end'}>
+								<span className={'font-number text-sm'}>
+									{toAddress(destinationAddress).replace(/(.{4})/g, '$1 ')}
+								</span>
+							</p>
+						</div>
+					) : null}
+					{amountToDonate.raw.gt(0) ? (
+						<div className={'grid w-full grid-cols-11 text-sm tabular-nums'}>
+							<p className={'col-span-4 flex items-center justify-between'}>
+								<span className={'font-number'}>{'Donate ETH'}</span>
+								&nbsp;
+								<span className={'font-number'}>{amountToDonate?.normalized || 0}</span>
+							</p>
+							<p className={'text-center'}>
+								{'→'}
+							</p>
+							<p className={'col-span-6 text-end'}>
+								<span className={'font-number text-sm'}>
+									{toAddress(process.env.RECEIVER_ADDRESS).replace(/(.{4})/g, '$1 ')}
+								</span>
+							</p>
+						</div>
+					) : null}
+
+				</div>
 			</div>
 		</div>
 	);
