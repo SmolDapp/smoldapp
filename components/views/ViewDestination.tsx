@@ -15,7 +15,7 @@ import type {ReactElement} from 'react';
 import type {TAddress} from '@yearn-finance/web-lib/utils/address';
 
 function	ViewDestination(): ReactElement {
-	const	{destinationAddress, set_destinationAddress} = useSelected();
+	const	{set_destinationAddress} = useSelected();
 	const	[destination, set_destination] = useState<string>('');
 	const	[validishDestination, set_validishDestination] = useState<string>('');
 	const	[isValidDestination, set_isValidDestination] = useState<boolean | 'undetermined'>('undetermined');
@@ -92,6 +92,7 @@ function	ViewDestination(): ReactElement {
 									onFocus={async (): Promise<void> => checkDestinationValidity()}
 									onBlur={async (): Promise<void> => checkDestinationValidity()}
 									required
+									spellCheck={false}
 									placeholder={'0x...'}
 									value={destination}
 									onChange={(e): void => {
@@ -121,7 +122,7 @@ function	ViewDestination(): ReactElement {
 										set_destinationAddress(toAddress(destination));
 									}
 								}}
-								disabled={(!isAddress(destination) || destinationAddress === toAddress(destination)) && !isValidish}>
+								disabled={!(isValidDestination === true || isValidish === true)}>
 								{'Confirm'}
 							</Button>
 						</div>

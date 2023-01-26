@@ -11,8 +11,31 @@ module.exports = (phase) => withPWA({
 		unoptimized: process.env.IPFS_BUILD === 'true' || phase === PHASE_EXPORT, //Exporting image does not support optimization
 		domains: [
 			'rawcdn.githack.com',
-			'raw.githubusercontent.com'
+			'raw.githubusercontent.com',
+			'ipfs.io',
+			's3.amazonaws.com',
+			'1inch.exchange',
+			'hut34.io',
+			'www.coingecko.com',
+			'defiprime.com',
+			'cdn.furucombo.app',
+			'gemini.com',
+			'messari.io',
+			'ethereum-optimism.github.io',
+			'tryroll.com',
+			'logo.assets.tkn.eth.limo',
+			'umaproject.org',
+			'cloudflare-ipfs.com'
 		]
+	},
+	redirects() {
+		return [
+			{
+				source: '/github',
+				destination: 'https://github.com/Majorfi/migratooor',
+				permanent: true
+			}
+		];
 	},
 	env: {
 		JSON_RPC_URL: {

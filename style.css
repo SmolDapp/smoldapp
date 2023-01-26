@@ -1,6 +1,9 @@
 @import '@yearn-finance/web-lib/style.next.css';
 @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400,700&display=swap');
 
+:root {
+	--default-rounded: 6px;
+}
 * {@apply scroll-smooth font-sans}
 
 .font-mono {
@@ -9,7 +12,6 @@
 @layer base {
 
 .max-w-4xl {@apply max-w-[888px] px-4;}
-
 
 .font-number {
 	@apply font-mono tabular-nums;
@@ -67,7 +69,7 @@
 	@apply flex flex-row items-center space-x-4 md:space-x-6;
 }
 .yearn--table-token-section-item-image {
-	@apply h-8 min-h-[32px] w-8 min-w-[32px] rounded-full bg-neutral-200 md:flex md:h-10 md:w-10;
+	@apply h-8 min-h-[32px] w-8 min-w-[32px] md:flex md:h-10 md:w-10;
 }
 .yearn--table-data-section {
 	@apply col-span-6 grid grid-cols-1 gap-x-0 md:grid-cols-12 gap-y-2 md:gap-y-0 mb-4 md:mb-0;
@@ -202,13 +204,6 @@ details {
 		@apply transition-colors hover:bg-neutral-200;
 	}
 }
-.box-200 {
-	@apply bg-neutral-200 border border-neutral-300;
-	&.hover {
-		@apply transition-colors hover:bg-neutral-300;
-	}
-}
-
 .checkbox {
 	@apply text-neutral-900 accent-neutral-900 rounded-sm;
 }

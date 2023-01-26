@@ -1,63 +1,31 @@
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import IconCheck from 'components/icons/IconCheck';
-import IconCircleCross from 'components/icons/IconCircleCross';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import IconInfo from 'components/icons/IconInfo';
+import {ImageWithFallback} from 'components/ImageWithFallback';
 import ListHead from 'components/ListHead';
-import TokenListsBox from 'components/TokenLists';
+import Drawer from 'components/SettingsDrawer';
 import {useSelected} from 'contexts/useSelected';
 import {useWallet} from 'contexts/useWallet';
 import {ethers} from 'ethers';
-import {isAddress} from 'ethers/lib/utils';
 import {disperseEther} from 'utils/actions/disperseEth';
 import {sendEther} from 'utils/actions/sendEth';
 import {transfer} from 'utils/actions/transferToken';
+import handleInputChangeEventValue from 'utils/handleInputChangeEventValue';
 import {useMountEffect, useUpdateEffect} from '@react-hookz/web';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {hooks} from '@yearn-finance/web-lib/hooks';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
-import IconLoader from '@yearn-finance/web-lib/icons/IconLoader';
 import {isZeroAddress, toAddress, truncateHex} from '@yearn-finance/web-lib/utils/address';
 import {ETH_TOKEN_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
 import {toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUpdates';
-import {getProvider} from '@yearn-finance/web-lib/utils/web3/providers';
 import {defaultTxStatus, Transaction} from '@yearn-finance/web-lib/utils/web3/transaction';
 
-import {ImageWithFallback} from '../ImageWithFallback';
-
-import type {TMinBalanceData, TUseBalancesTokens} from 'hooks/useBalances';
+import type {TMinBalanceData} from 'hooks/useBalances';
 import type {ChangeEvent, Dispatch, ReactElement, SetStateAction} from 'react';
 import type {TAddress} from '@yearn-finance/web-lib/utils/address';
 import type {TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import type {TDict} from '@yearn-finance/web-lib/utils/types';
-
-function handleInputChangeEventValue(e: React.ChangeEvent<HTMLInputElement>, decimals?: number): TNormalizedBN {
-	const	{valueAsNumber, value} = e.target;
-	const	amount = valueAsNumber;
-	if (isNaN(amount)) {
-		return ({raw: ethers.constants.Zero, normalized: ''});
-	}
-	if (amount === 0) {
-		let		amountStr = value.replace(/,/g, '.').replace(/[^0-9.]/g, '');
-		const	amountParts = amountStr.split('.');
-		if ((amountParts[0])?.length > 1 && Number(amountParts[0]) === 0) {
-			//
-		} else {
-			//check if we have 0 everywhere
-			if (amountParts.every((part: string): boolean => Number(part) === 0)) {
-				if (amountParts.length === 2) {
-					amountStr = amountParts[0] + '.' + amountParts[1].slice(0, decimals);
-				}
-				const	raw = ethers.utils.parseUnits(amountStr || '0', decimals);
-				return ({raw: raw, normalized: amountStr || '0'});
-			}
-		}
-	}
-
-	const	raw = ethers.utils.parseUnits(amount.toString() || '0', decimals);
-	return ({raw: raw, normalized: amount.toString() || '0'});
-}
 
 function	TokenRow({address: tokenAddress, balance}: {balance: TMinBalanceData, address: TAddress}): ReactElement {
 	const {balances} = useWallet();
@@ -157,7 +125,7 @@ function	TokenRow({address: tokenAddress, balance}: {balance: TMinBalanceData, a
 								<div className={'tooltip'}>
 									<IconInfo className={'h-[14px] w-[14px] text-neutral-900'} />
 									<span className={'tooltiptext text-xs'}>
-										<p>{'This amount will be reduced by the sum of the transaction fees incurred during the migration of other tokens,  as well as any eventual donations.'}</p>
+										<p>{'This amount will be reduced by the sum of the transaction fees incurred during the migration of other tokens, as well as any eventual donations.'}</p>
 									</span>
 								</div>
 							) : null}
@@ -230,6 +198,7 @@ function	DonateRow({shouldDonateETH, set_shouldDonateETH, amountToDonate, set_am
 	const {provider, isActive} = useWeb3();
 	const {amounts, set_amounts} = useSelected();
 	const [txStatus, set_txStatus] = useState(defaultTxStatus);
+	const [hasTypedSomething, set_hasTypedSomething] = useState(false);
 
 	const	handleSuccessCallback = useCallback(async (): Promise<void> => {
 		const tokensToRefresh = [{token: ETH_TOKEN_ADDRESS, decimals: balances[ETH_TOKEN_ADDRESS].decimals, symbol: balances[ETH_TOKEN_ADDRESS].symbol}];
@@ -247,11 +216,13 @@ function	DonateRow({shouldDonateETH, set_shouldDonateETH, amountToDonate, set_am
 	}
 
 	useEffect((): void => {
-		if (shouldDonateETH && amountToDonate.raw.isZero()) {
+		if (shouldDonateETH && amountToDonate.raw.isZero() && !hasTypedSomething) {
 			const	ethBalance = balances?.[ETH_TOKEN_ADDRESS]?.raw || ethers.constants.Zero;
 			set_amountToDonate(toNormalizedBN(ethBalance.div(1000).mul(1)));
-		} else if (!shouldDonateETH) {
-			set_amountToDonate(toNormalizedBN(ethers.constants.Zero));
+		} else if (!shouldDonateETH && !amountToDonate.raw.isZero()) {
+			set_shouldDonateETH(true);
+		} else if (amountToDonate.raw.isZero() && hasTypedSomething) {
+			set_shouldDonateETH(false);
 		}
 	}, [amountToDonate.raw, balances, shouldDonateETH]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -266,6 +237,12 @@ function	DonateRow({shouldDonateETH, set_shouldDonateETH, amountToDonate, set_am
 						checked={shouldDonateETH}
 						className={'checkbox cursor-pointer'} />
 					<b>{'Donate ETH'}</b>
+					<div className={'tooltip !ml-2'}>
+						<IconInfo className={'h-[14px] w-[14px] text-neutral-900'} />
+						<span className={'tooltiptext z-[100000] text-xs'}>
+							<p>{'The Migratooor is completely free and doesn\'t charge any fees. However, if you\'d like to support us and help us create new features, you can donate some ETH!'}</p>
+						</span>
+					</div>
 				</div>
 				<div className={'col-span-12 flex flex-row items-center px-6 md:col-span-5'}>
 					<div
@@ -285,7 +262,10 @@ function	DonateRow({shouldDonateETH, set_shouldDonateETH, amountToDonate, set_am
 									if (newAmount.raw.gt(balances[ETH_TOKEN_ADDRESS].raw)) {
 										newAmount = balances[ETH_TOKEN_ADDRESS];
 									}
-									set_amountToDonate(newAmount);
+									performBatchedUpdates((): void => {
+										set_hasTypedSomething(true);
+										set_amountToDonate(newAmount);
+									});
 								}} />
 						</div>
 					</div>
@@ -308,125 +288,6 @@ function	DonateRow({shouldDonateETH, set_shouldDonateETH, amountToDonate, set_am
 	);
 }
 
-function	CustomTokenBox(): ReactElement {
-	const	{provider} = useWeb3();
-	const	{refresh} = useWallet();
-	const	[erc20Address, set_erc20Address] = useState<string>('');
-	const	[isValidERC20, set_isValidERC20] = useState<boolean>(false);
-	const	[isLoading, set_isLoading] = useState<boolean>(false);
-	const	validERC20Data = useRef<TUseBalancesTokens | undefined>();
-
-	const	checkDestinationValidity = useCallback(async (): Promise<void> => {
-		if (!isZeroAddress(toAddress(erc20Address))) {
-			set_isLoading(true);
-			const	erc20Contract = new ethers.Contract(erc20Address, [
-				'function symbol() external view returns (string)',
-				'function decimals() external view returns (uint8)'
-			], provider || getProvider(1));
-			const	result = await Promise.allSettled([erc20Contract.symbol(), erc20Contract.decimals()]);
-			const	erc20Symbol = result[0].status === 'fulfilled' ? result[0].value : '';
-			const	erc20Decimals = result[1].status === 'fulfilled' ? result[1].value : 0;
-
-			if (erc20Symbol === '0' && erc20Decimals === 0) {
-				performBatchedUpdates((): void => {
-					set_isLoading(false);
-					set_isValidERC20(false);
-				});
-			} else {
-				performBatchedUpdates(async (): Promise<void> => {
-					set_isLoading(false);
-					set_isValidERC20(true);
-					validERC20Data.current = {
-						token: erc20Address,
-						symbol: erc20Symbol,
-						decimals: erc20Decimals,
-						force: true
-					};
-				});
-			}
-		} else {
-			set_isValidERC20(false);
-		}
-	}, [erc20Address, provider]);
-
-	useUpdateEffect((): void => {
-		set_isValidERC20(false);
-		checkDestinationValidity();
-	}, [checkDestinationValidity]);
-
-	return (
-		<div className={'mt-6 grid w-full grid-cols-12 flex-row items-center justify-between gap-4 md:w-3/4 md:gap-6'}>
-			<div className={'box-100 grow-1 col-span-12 flex h-10 w-full items-center p-2 md:col-span-9'}>
-				<div className={'flex h-10 w-full flex-row items-center justify-between py-4 px-0'}>
-					<input
-						aria-invalid={!isValidERC20}
-						onBlur={async (): Promise<void> => checkDestinationValidity()}
-						required
-						placeholder={'0x...'}
-						value={erc20Address}
-						onChange={(e): void => set_erc20Address(e.target.value)}
-						className={'w-full overflow-x-scroll border-none bg-transparent py-4 px-0 font-mono text-sm outline-none scrollbar-none'}
-						type={'text'} />
-				</div>
-				<div className={'pointer-events-none relative h-4 w-4'}>
-					<IconCheck
-						className={`absolute h-4 w-4 text-[#16a34a] transition-opacity ${isValidERC20 ? 'opacity-100' : 'opacity-0'}`} />
-					<IconCircleCross
-						className={`absolute h-4 w-4 text-[#e11d48] transition-opacity ${(!isValidERC20 && erc20Address !== '' && !isLoading) ? 'opacity-100' : 'opacity-0'}`} />
-					<div className={'absolute inset-0 flex items-center justify-center'}>
-						<IconLoader className={`h-4 w-4 animate-spin text-neutral-900 transition-opacity ${isLoading ? 'opacity-100' : 'opacity-0'}`} />
-					</div>
-				</div>
-			</div>
-			<div className={'col-span-12 md:col-span-3'}>
-				<Button
-					className={'yearn--button !w-[160px] rounded-md !text-sm'}
-					disabled={!isAddress(erc20Address) || !isValidERC20 || !validERC20Data.current}
-					onClick={(): void => {
-						if (validERC20Data.current) {
-							refresh([validERC20Data.current]).then((): void => {
-								performBatchedUpdates((): void => {
-									set_erc20Address('');
-									set_isValidERC20(false);
-								});
-							});
-						}
-
-					}}>
-					{'Add token'}
-				</Button>
-			</div>
-		</div>
-	);
-}
-
-function	CustomListSettings(): ReactElement {
-	return (
-		<div id={'select'}>
-			<div className={'grid w-full grid-cols-12'}>
-				<div className={'col-span-12 flex flex-col text-neutral-900'}>
-					<div className={'mb-4 w-full text-sm'}>
-						<b>{'Select your tokenlists or include individual tokens'}</b>
-						<p className={'text-xs text-neutral-500'}>
-							{'Token Lists is a community-led initiative to improve discoverability, reputation and trust in ERC20 token lists in a manner that is inclusive, transparent, and decentralized. This regroups popular tokens for easy access.'}
-						</p>
-					</div>
-					<div>
-						<TokenListsBox />
-						<div className={'relative my-4 flex h-[1px] w-full items-center justify-center bg-neutral-200'}>
-							<div className={'absolute flex items-center justify-center bg-neutral-0 px-2 text-sm text-neutral-500'}>
-								{'or'}
-							</div>
-
-						</div>
-						<CustomTokenBox />
-					</div>
-				</div>
-			</div>
-		</div>
-	);
-}
-
 function	ViewTable(): ReactElement {
 	const	{isActive, chainID, provider} = useWeb3();
 	const	{selected, set_selected, amounts, set_amounts, destinationAddress} = useSelected();
@@ -436,6 +297,7 @@ function	ViewTable(): ReactElement {
 	const	[txStatus, set_txStatus] = useState(defaultTxStatus);
 	const	[shouldDonateETH, set_shouldDonateETH] = useState(false);
 	const	[amountToDonate, set_amountToDonate] = useState(toNormalizedBN(0));
+	const	[isDrawerOpen, set_isDrawerOpen] = useState(false);
 
 	const	balancesToDisplay = hooks.useDeepCompareMemo((): ReactElement[] => {
 		return (
@@ -545,20 +407,16 @@ function	ViewTable(): ReactElement {
 						</p>
 					</div>
 				</div>
-				<div className={'col-span-12 flex flex-col border-b border-neutral-200 p-4 text-neutral-900 md:p-6'}>
-					<details className={'box-0'}>
-						<summary className={'py-4 px-6 transition-colors hover:bg-neutral-100'}>
-							<p className={'text-sm text-neutral-500'}>
-								{'You want more control over the list of available tokens? '}
-								<span className={'cursor-pointer text-sm text-neutral-500 underline hover:text-neutral-900'}>
-									{'Customize your list here!'}
-								</span>
-							</p>
-						</summary>
-						<div className={'p-4 md:p-6 md:pt-2'}>
-							<CustomListSettings />
-						</div>
-					</details>
+				<div className={'col-span-12 -mt-4 flex flex-col border-b border-neutral-200 px-4 pb-6 text-neutral-900 md:px-6'}>
+					<p className={'text-sm text-neutral-500'}>
+						{'You want more control over the list of available tokens? '}
+						<span
+							className={'cursor-pointer text-sm text-neutral-500 underline hover:text-neutral-900'}
+							onClick={(): void => set_isDrawerOpen(true)}>
+							{'Customize your list here!'}
+						</span>
+					</p>
+					<Drawer isDrawerOpen={isDrawerOpen} set_isDrawerOpen={set_isDrawerOpen} />
 				</div>
 
 				<div className={'col-span-12'}>
@@ -591,9 +449,13 @@ function	ViewTable(): ReactElement {
 					set_amountToDonate={set_amountToDonate} />
 
 
-				<div className={'fixed inset-x-0 bottom-0 z-50 col-span-12 flex w-full max-w-4xl flex-row items-center justify-between bg-neutral-900 p-4 text-neutral-0 md:relative md:p-6'}>
-					<div className={''}>
+				<div className={'fixed inset-x-0 bottom-0 z-20 col-span-12 flex w-full max-w-4xl flex-row items-center justify-between bg-neutral-900 p-4 text-neutral-0 md:relative md:p-6'}>
+					<div className={'flex flex-col'}>
 						<b>{`Migrate ${selected.length} tokens`}</b>
+						<p className={'text-xs tabular-nums'}>
+							{'To '}
+							<span className={'font-number'}>{toAddress(destinationAddress)}</span>
+						</p>
 					</div>
 					<div>
 						<Button

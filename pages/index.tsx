@@ -1,9 +1,10 @@
-import React, {useLayoutEffect} from 'react';
+import React from 'react';
 import ViewDestination from 'components/views/ViewDestination';
 import ViewTable from 'components/views/ViewTable';
 import ViewWallet from 'components/views/ViewWallet';
 import {useSelected} from 'contexts/useSelected';
 import {motion} from 'framer-motion';
+import {useIsomorphicLayoutEffect} from '@react-hookz/web';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {isZeroAddress} from '@yearn-finance/web-lib/utils/address';
 
@@ -20,7 +21,7 @@ function	Home(): ReactElement {
 	const	{isActive, address} = useWeb3();
 	const	{destinationAddress} = useSelected();
 
-	useLayoutEffect((): void => {
+	useIsomorphicLayoutEffect((): void => {
 		if (!isZeroAddress(destinationAddress)) {
 			setTimeout((): void => {
 				document.getElementById('select')?.scrollIntoView({behavior: 'smooth'});

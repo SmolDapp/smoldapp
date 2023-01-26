@@ -13,19 +13,22 @@ import {useSelected} from './useSelected';
 import type {TMinBalanceData, TUseBalancesTokens} from 'hooks/useBalances';
 import type {ReactElement} from 'react';
 import type {TDict} from '@yearn-finance/web-lib/utils/types';
+import type {TTokenInfo} from './useSelected';
 
 export type	TWalletContext = {
 	balances: TDict<TMinBalanceData>,
 	balancesNonce: number,
 	isLoading: boolean,
 	refresh: (tokenList?: TUseBalancesTokens[]) => Promise<TDict<TMinBalanceData>>,
+	refreshWithList: (tokenList: TDict<TTokenInfo>) => Promise<TDict<TMinBalanceData>>,
 }
 
 const	defaultProps = {
 	balances: {},
 	balancesNonce: 0,
 	isLoading: true,
-	refresh: async (): Promise<TDict<TMinBalanceData>> => ({})
+	refresh: async (): Promise<TDict<TMinBalanceData>> => ({}),
+	refreshWithList: async (): Promise<TDict<TMinBalanceData>> => ({})
 };
 
 
@@ -63,6 +66,7 @@ export const WalletContextApp = memo(function WalletContextApp({children}: {chil
 
 	const	onRefresh = useCallback(async (tokenToUpdate?: TUseBalancesTokens[]): Promise<TDict<TMinBalanceData>> => {
 		if (tokenToUpdate) {
+			console.warn(tokenToUpdate);
 			const updatedBalances = await updateSome(tokenToUpdate);
 			return updatedBalances;
 		}
@@ -70,6 +74,23 @@ export const WalletContextApp = memo(function WalletContextApp({children}: {chil
 		return updatedBalances;
 
 	}, [update, updateSome]);
+
+	const	onRefreshWithList = useCallback(async (newTokenList: TDict<TTokenInfo>): Promise<TDict<TMinBalanceData>> => {
+		const	withDefaultTokens = [...Object.values(newTokenList)];
+		const	tokens: TUseBalancesTokens[] = [];
+		withDefaultTokens
+			.filter((token): boolean => token.chainId === safeChainID)
+			.forEach((token): void => {
+				tokens.push({token: token.address, decimals: Number(token.decimals), symbol: token.symbol});
+			});
+		const	tokensToFetch = tokens.filter((token): boolean => {
+			return !availableTokens.find((availableToken): boolean => availableToken.token === token.token);
+		});
+		if (tokensToFetch.length > 0) {
+			return await onRefresh(tokensToFetch);
+		}
+		return balances[chainID];
+	}, [balances, chainID, onRefresh, safeChainID, availableTokens]);
 
 	useClientEffect((): void => {
 		if (isLoading) {
@@ -86,8 +107,9 @@ export const WalletContextApp = memo(function WalletContextApp({children}: {chil
 		balances: balances[chainID],
 		balancesNonce: nonce,
 		isLoading: isLoading || false,
-		refresh: onRefresh
-	}), [balances, isLoading, onRefresh, nonce, chainID]);
+		refresh: onRefresh,
+		refreshWithList: onRefreshWithList
+	}), [balances, isLoading, onRefresh, nonce, chainID, onRefreshWithList]);
 
 	return (
 		<WalletContext.Provider value={contextValue}>
