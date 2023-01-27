@@ -1,4 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import Link from 'next/link';
 import IconInfo from 'components/icons/IconInfo';
 import {ImageWithFallback} from 'components/ImageWithFallback';
 import ListHead from 'components/ListHead';
@@ -13,7 +14,9 @@ import {useMountEffect, useUpdateEffect} from '@react-hookz/web';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {hooks} from '@yearn-finance/web-lib/hooks';
+import {useChain} from '@yearn-finance/web-lib/hooks/useChain';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
+import IconLinkOut from '@yearn-finance/web-lib/icons/IconLinkOut';
 import {isZeroAddress, toAddress, truncateHex} from '@yearn-finance/web-lib/utils/address';
 import {ETH_TOKEN_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
 import {toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
@@ -34,6 +37,7 @@ function	TokenRow({address: tokenAddress, balance}: {balance: TMinBalanceData, a
 	const {safeChainID} = useChainID();
 	const [txStatus, set_txStatus] = useState(defaultTxStatus);
 	const isSelected = useMemo((): boolean => selected.includes(tokenAddress), [selected, tokenAddress]);
+	const chain = useChain();
 
 	const	handleSuccessCallback = useCallback(async (onlyETH: boolean): Promise<void> => {
 		const tokensToRefresh = [{token: ETH_TOKEN_ADDRESS, decimals: balances[ETH_TOKEN_ADDRESS].decimals, symbol: balances[ETH_TOKEN_ADDRESS].symbol}];
@@ -130,7 +134,17 @@ function	TokenRow({address: tokenAddress, balance}: {balance: TMinBalanceData, a
 								</div>
 							) : null}
 						</div>
-						<p className={'font-mono text-xs text-neutral-500'}>{truncateHex(tokenAddress, 10)}</p>
+						{toAddress(tokenAddress) === ETH_TOKEN_ADDRESS ? (
+							<p className={'font-mono text-xs text-neutral-500'}>{truncateHex(tokenAddress, 8)}</p>
+						) : (
+							<Link
+								href={`${chain.getCurrent()?.block_explorer}/address/${tokenAddress}`}
+								onClick={(e): void => e.stopPropagation()}
+								className={'flex cursor-pointer flex-row items-center space-x-2 text-neutral-500 transition-colors hover:text-neutral-900 hover:underline'}>
+								<p className={'font-mono text-xs'}>{truncateHex(tokenAddress, 8)}</p>
+								<IconLinkOut className={'h-3 w-3'} />
+							</Link>
+						)}
 					</div>
 				</div>
 			</div>
@@ -195,6 +209,7 @@ function	DonateRow(): ReactElement {
 	const {amounts, set_amounts, shouldDonateETH, amountToDonate, set_shouldDonateETH, set_amountToDonate} = useSelected();
 	const [txStatus, set_txStatus] = useState(defaultTxStatus);
 	const [hasTypedSomething, set_hasTypedSomething] = useState(false);
+	const chain = useChain();
 
 	const	handleSuccessCallback = useCallback(async (): Promise<void> => {
 		const tokensToRefresh = [{token: ETH_TOKEN_ADDRESS, decimals: balances[ETH_TOKEN_ADDRESS].decimals, symbol: balances[ETH_TOKEN_ADDRESS].symbol}];
@@ -246,11 +261,11 @@ function	DonateRow(): ReactElement {
 						type={'checkbox'}
 						checked={shouldDonateETH}
 						className={'checkbox cursor-pointer'} />
-					<b>{'Donate ETH'}</b>
+					<b>{`Donate ${chain.getCurrent()?.coin || 'ETH'}`}</b>
 					<div className={'tooltip !ml-2'}>
 						<IconInfo className={'h-[14px] w-[14px] text-neutral-900'} />
 						<span className={'tooltiptext z-[100000] text-xs'}>
-							<p>{'The Migratooor is completely free and doesn\'t charge any fees. However, if you\'d like to support us and help us create new features, you can donate some ETH!'}</p>
+							<p>{`The Migratooor is completely free and doesn't charge any fees. However, if you'd like to support us and help us create new features, you can donate some ${chain.getCurrent()?.coin || 'ETH'}!`}</p>
 						</span>
 					</div>
 				</div>
@@ -306,6 +321,7 @@ function	ViewTable(): ReactElement {
 	const	[sortDirection, set_sortDirection] = useState<'asc' | 'desc'>('desc');
 	const	[txStatus, set_txStatus] = useState(defaultTxStatus);
 	const	[isDrawerOpen, set_isDrawerOpen] = useState(false);
+	const	chain = useChain();
 
 	const	balancesToDisplay = hooks.useDeepCompareMemo((): ReactElement[] => {
 		return (
@@ -554,7 +570,7 @@ function	ViewTable(): ReactElement {
 					{selected.includes(ETH_TOKEN_ADDRESS) && amounts[ETH_TOKEN_ADDRESS]?.raw.gt(0) ? (
 						<div className={'grid w-full grid-cols-11 text-sm tabular-nums'}>
 							<p className={'col-span-4 flex items-center justify-between'}>
-								<span className={'font-number'}>{'ETH'}</span>
+								<span className={'font-number'}>{chain.getCurrent()?.coin || 'ETH'}</span>
 							&nbsp;
 								<span className={'font-number'}>{`~ ${Number(amounts[ETH_TOKEN_ADDRESS]?.normalized || 0) - Number(amountToDonate?.normalized || 0)}`}</span>
 							</p>
@@ -571,7 +587,7 @@ function	ViewTable(): ReactElement {
 					{amountToDonate.raw.gt(0) ? (
 						<div className={'grid w-full grid-cols-11 text-sm tabular-nums'}>
 							<p className={'col-span-4 flex items-center justify-between'}>
-								<span className={'font-number'}>{'Donate ETH'}</span>
+								<span className={'font-number'}>{`Donate ${chain.getCurrent()?.coin || 'ETH'}`}</span>
 								&nbsp;
 								<span className={'font-number'}>{amountToDonate?.normalized || 0}</span>
 							</p>
