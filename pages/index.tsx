@@ -1,11 +1,10 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {useRouter} from 'next/router';
 import ViewDestination from 'components/views/ViewDestination';
 import ViewTable from 'components/views/ViewTable';
 import ViewTLDR from 'components/views/ViewTLDR';
 import ViewWallet from 'components/views/ViewWallet';
 import {motion} from 'framer-motion';
-import {useIsomorphicLayoutEffect} from '@react-hookz/web';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 
 import type {ReactElement} from 'react';
@@ -21,17 +20,22 @@ function	Home(): ReactElement {
 	const	{isActive, address} = useWeb3();
 	const	router = useRouter();
 
-	useIsomorphicLayoutEffect((): void => {
+	useEffect((): void => {
 		if (isActive && address) {
-			router.replace('#destination', '#destination', {shallow: true, scroll: false});
+			router.replace({pathname: '/', hash: 'destination'}, undefined, {shallow: true, scroll: false});
+		} else if (!isActive || !address) {
+			router.replace({pathname: '/', hash: 'wallet'}, undefined, {shallow: true, scroll: false});
 		}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [address, isActive]);
 
 	const	withHashDestination = router.asPath.includes('#destination');
 	const	withHashSelect = router.asPath.includes('#select');
 
 	return (
-		<div key={'MigrateTable'} className={'mx-auto mt-10 min-h-screen w-full'}>
+		<div
+			key={'MigrateTable'}
+			className={'mx-auto w-full pb-[10vh] md:pb-[50vh]'}>
 			<div className={'grid gap-2'}>
 				<ViewWallet />
 				<motion.div
@@ -44,12 +48,10 @@ function	Home(): ReactElement {
 					initial={'initial'}
 					animate={withHashSelect ? 'enter' : 'initial'}
 					variants={thumbnailVariants}>
-					{withHashSelect || withHashDestination ? (
-						<>
-							<ViewTable />
-							<ViewTLDR />
-						</>
-					) : null}
+					<>
+						<ViewTable />
+						<ViewTLDR />
+					</>
 				</motion.div>
 			</div>
 		</div>

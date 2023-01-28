@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useMemo, useState} from 'react';
 import Link from 'next/link';
 import IconInfo from 'components/icons/IconInfo';
 import {ImageWithFallback} from 'components/ImageWithFallback';
@@ -19,7 +19,7 @@ import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import IconLinkOut from '@yearn-finance/web-lib/icons/IconLinkOut';
 import {isZeroAddress, toAddress, truncateHex} from '@yearn-finance/web-lib/utils/address';
 import {ETH_TOKEN_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
-import {toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
+import {toNormalizedBN, Zero} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUpdates';
 import {defaultTxStatus, Transaction} from '@yearn-finance/web-lib/utils/web3/transaction';
 
@@ -191,7 +191,7 @@ function	TokenRow({address: tokenAddress, balance}: {balance: TMinBalanceData, a
 					<Button
 						className={'yearn--button-smaller !w-full'}
 						isBusy={txStatus.pending}
-						isDisabled={!isActive || ((amounts[toAddress(tokenAddress)]?.raw || ethers.constants.Zero).isZero())}
+						isDisabled={!isActive || ((amounts[toAddress(tokenAddress)]?.raw || Zero).isZero())}
 						onClick={(): void => {
 							onTransfer();
 						}}>
@@ -208,7 +208,6 @@ function	DonateRow(): ReactElement {
 	const {provider, isActive} = useWeb3();
 	const {amounts, set_amounts, shouldDonateETH, amountToDonate, set_shouldDonateETH, set_amountToDonate} = useSelected();
 	const [txStatus, set_txStatus] = useState(defaultTxStatus);
-	const [hasTypedSomething, set_hasTypedSomething] = useState(false);
 	const chain = useChain();
 
 	const	handleSuccessCallback = useCallback(async (): Promise<void> => {
@@ -227,33 +226,21 @@ function	DonateRow(): ReactElement {
 		).onSuccess(async (): Promise<void> => handleSuccessCallback()).perform();
 	}
 
-	useEffect((): void => {
-		if (balances?.[ETH_TOKEN_ADDRESS]?.raw?.isZero()) {
-			set_shouldDonateETH(false);
-		}
-
-		if (shouldDonateETH && amountToDonate.raw.isZero() && !hasTypedSomething) {
-			const	ethBalance = balances?.[ETH_TOKEN_ADDRESS]?.raw || ethers.constants.Zero;
-			set_amountToDonate(toNormalizedBN(ethBalance.div(1000).mul(1)));
-		} else if (!shouldDonateETH && !amountToDonate.raw.isZero()) {
-			set_shouldDonateETH(true);
-		} else if (amountToDonate.raw.isZero() && hasTypedSomething) {
-			set_shouldDonateETH(false);
-		}
-	}, [amountToDonate.raw, balances, shouldDonateETH]); // eslint-disable-line react-hooks/exhaustive-deps
+	const	onSelect = useCallback((): void => {
+		performBatchedUpdates((): void => {
+			if (shouldDonateETH) {
+				set_amountToDonate(toNormalizedBN(Zero)); //reset
+			} else {
+				set_amountToDonate(toNormalizedBN((balances?.[ETH_TOKEN_ADDRESS]?.raw || Zero).div(1000).mul(1)));
+			}
+			set_shouldDonateETH((shouldDonateETH: boolean): boolean => !shouldDonateETH);
+		});
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [balances, shouldDonateETH]);
 
 	return (
 		<div
-			onClick={(): void => {
-				performBatchedUpdates((): void => {
-					if (shouldDonateETH) {
-						set_amountToDonate(toNormalizedBN(ethers.constants.Zero)); //reset
-					} else {
-						set_amountToDonate(toNormalizedBN((balances?.[ETH_TOKEN_ADDRESS]?.raw || ethers.constants.Zero).div(1000).mul(1)));
-					}
-					set_shouldDonateETH((shouldDonateETH: boolean): boolean => !shouldDonateETH);
-				});
-			}}
+			onClick={onSelect}
 			className={`relative col-span-12 mb-0 border-x-2 bg-neutral-0 px-3 py-2 pb-4 text-neutral-900 transition-colors hover:bg-neutral-100 md:px-6 md:pb-2 ${shouldDonateETH ? 'border-transparent' : 'border-transparent'}`}>
 			<div className={'grid grid-cols-12 md:grid-cols-9'}>
 				<div className={'col-span-12 flex h-14 flex-row items-center space-x-4 border-0 border-neutral-200 md:col-span-3 md:border-r'}>
@@ -272,24 +259,28 @@ function	DonateRow(): ReactElement {
 				<div className={'col-span-12 flex flex-row items-center px-1 md:col-span-5 md:px-6'}>
 					<div
 						onClick={(e): void => e.stopPropagation()}
-						className={'box-0 flex h-10 w-full items-center p-2'}>
+						className={`flex h-10 w-full items-center p-2 ${(balances?.[ETH_TOKEN_ADDRESS]?.raw || Zero)?.isZero() ? 'box-100' : 'box-0'}`}>
 						<div className={'flex h-10 w-full flex-row items-center justify-between py-4 px-0'}>
 							<input
 								className={'w-full overflow-x-scroll border-none bg-transparent py-4 px-0 text-sm font-bold outline-none scrollbar-none'}
 								type={'number'}
 								min={0}
 								max={balances?.[ETH_TOKEN_ADDRESS]?.normalized || 0}
+								disabled={(balances?.[ETH_TOKEN_ADDRESS]?.raw || Zero)?.isZero()}
 								inputMode={'numeric'}
 								pattern={'^((?:0|[1-9]+)(?:.(?:d+?[1-9]|[1-9]))?)$'}
 								value={amountToDonate?.normalized ?? '0'}
 								onChange={(e: ChangeEvent<HTMLInputElement>): void => {
+									if ((balances?.[ETH_TOKEN_ADDRESS]?.raw || Zero)?.isZero()) {
+										return;
+									}
 									let	newAmount = handleInputChangeEventValue(e, balances[ETH_TOKEN_ADDRESS]?.decimals || 18);
-									if (newAmount.raw.gt(balances[ETH_TOKEN_ADDRESS].raw)) {
+									if (newAmount.raw.gt(balances[ETH_TOKEN_ADDRESS]?.raw || Zero)) {
 										newAmount = balances[ETH_TOKEN_ADDRESS];
 									}
 									performBatchedUpdates((): void => {
-										set_hasTypedSomething(true);
 										set_amountToDonate(newAmount);
+										set_shouldDonateETH(newAmount.raw.gt(Zero));
 									});
 								}} />
 						</div>
@@ -301,7 +292,7 @@ function	DonateRow(): ReactElement {
 					<Button
 						className={'yearn--button-smaller !w-full'}
 						isBusy={txStatus.pending}
-						isDisabled={!isActive || ((amounts[ETH_TOKEN_ADDRESS]?.raw || ethers.constants.Zero).isZero())}
+						isDisabled={!isActive || ((amounts[ETH_TOKEN_ADDRESS]?.raw || Zero).isZero())}
 						onClick={(): void => {
 							onDonate();
 						}}>
@@ -379,7 +370,7 @@ function	ViewTable(): ReactElement {
 		let	shouldMigrateETH = false;
 		const	allSelected = [...selected];
 		for (const token of allSelected) {
-			if ((amounts[toAddress(token)]?.raw || ethers.constants.Zero).isZero()) {
+			if ((amounts[toAddress(token)]?.raw || Zero).isZero()) {
 				continue;
 			}
 			if (toAddress(token) === ETH_TOKEN_ADDRESS) { //Migrate ETH at the end
@@ -399,9 +390,9 @@ function	ViewTable(): ReactElement {
 			}
 		}
 
-		const	willDonateEth = (shouldDonateETH && (amountToDonate?.raw || ethers.constants.Zero).gt(ethers.constants.Zero));
-		const	willMigrateEth = (shouldMigrateETH && (amounts[ETH_TOKEN_ADDRESS]?.raw || ethers.constants.Zero).gt(ethers.constants.Zero));
-		const	hasEnoughEth = balances[ETH_TOKEN_ADDRESS]?.raw?.gt((amounts[ETH_TOKEN_ADDRESS]?.raw || ethers.constants.Zero).sub(amountToDonate.raw)) && (amounts[ETH_TOKEN_ADDRESS]?.raw || ethers.constants.Zero).sub(amountToDonate.raw).gt(0);
+		const	willDonateEth = (shouldDonateETH && (amountToDonate?.raw || Zero).gt(Zero));
+		const	willMigrateEth = (shouldMigrateETH && (amounts[ETH_TOKEN_ADDRESS]?.raw || Zero).gt(Zero));
+		const	hasEnoughEth = balances[ETH_TOKEN_ADDRESS]?.raw?.gt((amounts[ETH_TOKEN_ADDRESS]?.raw || Zero).sub(amountToDonate.raw)) && (amounts[ETH_TOKEN_ADDRESS]?.raw || Zero).sub(amountToDonate.raw).gt(0);
 
 		if (willDonateEth && willMigrateEth && hasEnoughEth) {
 			const	isOK = await new Transaction(provider, sendEther, set_txStatus).populate(

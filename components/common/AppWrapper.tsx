@@ -39,7 +39,7 @@ function	WithLayout(props: AppProps): ReactElement {
 
 	return (
 		<React.Fragment>
-			<div id={'app'} className={'mx-auto mb-0 flex min-h-[200vh] w-full max-w-4xl flex-col'}>
+			<div id={'app'} className={'mx-auto mb-0 flex min-h-screen w-full max-w-4xl flex-col'}>
 				<Header />
 				<AnimatePresence mode={'wait'}>
 					<motion.div
