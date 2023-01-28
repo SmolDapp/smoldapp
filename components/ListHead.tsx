@@ -30,7 +30,7 @@ function	ListHead({items, dataClassName, sortBy, sortDirection, onSort}: TListHe
 
 	const	[first, ...rest] = items;
 	return (
-		<div className={'grid w-full grid-cols-1 pt-4'}>
+		<div className={'grid w-full grid-cols-1 pt-2 md:pt-4'}>
 			<div className={'yearn--table-head-wrapper'}>
 				<div className={'yearn--table-head-token-section'}>
 					<button

@@ -125,7 +125,7 @@ function	ViewDestination(): ReactElement {
 									} else if (isAddress(destination)) {
 										set_destinationAddress(toAddress(destination));
 									}
-									router.replace('#review', '#review', {shallow: true, scroll: false});
+									router.replace('#select', '#select', {shallow: true, scroll: false});
 								}}
 								disabled={!(isValidDestination === true || isValidish === true)}>
 								{'Confirm'}

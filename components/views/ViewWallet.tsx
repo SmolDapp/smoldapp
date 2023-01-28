@@ -35,7 +35,7 @@ function	ViewWallet(): ReactElement {
 								onClick={async (): Promise<void> => {
 									set_walletProvider('INJECTED');
 									try {
-										router.replace('#select', '#select', {shallow: true, scroll: false});
+										router.replace('#destination', '#destination', {shallow: true, scroll: false});
 									} catch {
 										//
 									}
@@ -50,7 +50,7 @@ function	ViewWallet(): ReactElement {
 								onClick={async (): Promise<void> => {
 									set_walletProvider('WALLET_CONNECT');
 									try {
-										router.replace('#select', '#select', {shallow: true, scroll: false});
+										router.replace('#destination', '#destination', {shallow: true, scroll: false});
 									} catch {
 										//
 									}

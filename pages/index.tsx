@@ -23,13 +23,12 @@ function	Home(): ReactElement {
 
 	useIsomorphicLayoutEffect((): void => {
 		if (isActive && address) {
-			router.replace('#select', '#select', {shallow: true, scroll: false});
+			router.replace('#destination', '#destination', {shallow: true, scroll: false});
 		}
 	}, [address, isActive]);
 
-	const	withHashSelect = router.asPath.includes('#select');
 	const	withHashDestination = router.asPath.includes('#destination');
-	const	withHashReview = router.asPath.includes('#review');
+	const	withHashSelect = router.asPath.includes('#select');
 
 	return (
 		<div key={'MigrateTable'} className={'mx-auto mt-10 min-h-screen w-full'}>
@@ -37,21 +36,20 @@ function	Home(): ReactElement {
 				<ViewWallet />
 				<motion.div
 					initial={'initial'}
-					animate={withHashSelect || withHashDestination || withHashReview ? 'enter' : 'initial'}
-					variants={thumbnailVariants}>
-					{withHashSelect || withHashDestination || withHashReview ? <ViewTable /> : null}
-				</motion.div>
-				<motion.div
-					initial={'initial'}
-					animate={withHashDestination || withHashReview ? 'enter' : 'initial'}
+					animate={withHashSelect || withHashDestination ? 'enter' : 'initial'}
 					variants={thumbnailVariants}>
 					<ViewDestination />
 				</motion.div>
 				<motion.div
 					initial={'initial'}
-					animate={withHashReview ? 'enter' : 'initial'}
+					animate={withHashSelect ? 'enter' : 'initial'}
 					variants={thumbnailVariants}>
-					<ViewTLDR />
+					{withHashSelect || withHashDestination ? (
+						<>
+							<ViewTable />
+							<ViewTLDR />
+						</>
+					) : null}
 				</motion.div>
 			</div>
 		</div>
