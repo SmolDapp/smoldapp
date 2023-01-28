@@ -104,7 +104,7 @@ export const SelectedContextApp = ({children}: {children: React.ReactElement}): 
 		set_shouldDonateETH,
 		amountToDonate,
 		set_amountToDonate
-	}), [selected, set_selected, amounts, set_amounts, destinationAddress, set_destinationAddress, walletProvider, set_walletProvider, tokenList, set_tokenList, shouldDonateETH, set_shouldDonateETH, amountToDonate, set_amountToDonate]);
+	}), [selected, amounts, destinationAddress, walletProvider, tokenList, shouldDonateETH, amountToDonate]);
 
 	return (
 		<SelectedContext.Provider value={contextValue}>

@@ -1,12 +1,12 @@
 import React from 'react';
+import {useRouter} from 'next/router';
 import ViewDestination from 'components/views/ViewDestination';
 import ViewTable from 'components/views/ViewTable';
+import ViewTLDR from 'components/views/ViewTLDR';
 import ViewWallet from 'components/views/ViewWallet';
-import {useSelected} from 'contexts/useSelected';
 import {motion} from 'framer-motion';
 import {useIsomorphicLayoutEffect} from '@react-hookz/web';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
-import {isZeroAddress} from '@yearn-finance/web-lib/utils/address';
 
 import type {ReactElement} from 'react';
 
@@ -19,23 +19,17 @@ const thumbnailVariants = {
 
 function	Home(): ReactElement {
 	const	{isActive, address} = useWeb3();
-	const	{destinationAddress} = useSelected();
+	const	router = useRouter();
 
 	useIsomorphicLayoutEffect((): void => {
-		if (!isZeroAddress(destinationAddress)) {
-			setTimeout((): void => {
-				document.getElementById('select')?.scrollIntoView({behavior: 'smooth'});
-			}, 100);
-		} else if (isActive && address) {
-			setTimeout((): void => {
-				document.getElementById('destination')?.scrollIntoView({behavior: 'smooth'});
-			}, 100);
-		} else {
-			setTimeout((): void => {
-				window.scrollTo({top: 0, behavior: 'smooth'});
-			}, 100);
+		if (isActive && address) {
+			router.replace('#select', '#select', {shallow: true, scroll: false});
 		}
-	}, [destinationAddress, address, isActive]);
+	}, [address, isActive]);
+
+	const	withHashSelect = router.asPath.includes('#select');
+	const	withHashDestination = router.asPath.includes('#destination');
+	const	withHashReview = router.asPath.includes('#review');
 
 	return (
 		<div key={'MigrateTable'} className={'mx-auto mt-10 min-h-screen w-full'}>
@@ -43,15 +37,21 @@ function	Home(): ReactElement {
 				<ViewWallet />
 				<motion.div
 					initial={'initial'}
-					animate={isActive && address ? 'enter' : 'initial'}
+					animate={withHashSelect || withHashDestination || withHashReview ? 'enter' : 'initial'}
+					variants={thumbnailVariants}>
+					{withHashSelect || withHashDestination || withHashReview ? <ViewTable /> : null}
+				</motion.div>
+				<motion.div
+					initial={'initial'}
+					animate={withHashDestination || withHashReview ? 'enter' : 'initial'}
 					variants={thumbnailVariants}>
 					<ViewDestination />
 				</motion.div>
 				<motion.div
 					initial={'initial'}
-					animate={!isZeroAddress(destinationAddress) ? 'enter' : 'initial'}
+					animate={withHashReview ? 'enter' : 'initial'}
 					variants={thumbnailVariants}>
-					<ViewTable />
+					<ViewTLDR />
 				</motion.div>
 			</div>
 		</div>
