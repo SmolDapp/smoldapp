@@ -1,4 +1,5 @@
 import React, {useCallback, useState} from 'react';
+import {useRouter} from 'next/router';
 import IconCheck from 'components/icons/IconCheck';
 import IconCircleCross from 'components/icons/IconCircleCross';
 import {useSelected} from 'contexts/useSelected';
@@ -16,6 +17,7 @@ import type {TAddress} from '@yearn-finance/web-lib/utils/address';
 
 function	ViewDestination(): ReactElement {
 	const	{set_destinationAddress} = useSelected();
+	const	router = useRouter();
 	const	[destination, set_destination] = useState<string>('');
 	const	[validishDestination, set_validishDestination] = useState<string>('');
 	const	[isValidDestination, set_isValidDestination] = useState<boolean | 'undetermined'>('undetermined');
@@ -74,12 +76,14 @@ function	ViewDestination(): ReactElement {
 	}, [destination]);
 
 	return (
-		<div id={'destination'} className={'pt-10'}>
+		<section id={'destination'} className={'pt-10'}>
 			<div
 				className={'box-0 grid w-full grid-cols-12 overflow-hidden'}>
 				<div className={'col-span-12 flex flex-col p-4 text-neutral-900 md:p-6'}>
 					<div className={'w-full md:w-3/4'}>
-						<b>{'Destination'}</b>
+						<a href={'#destination'}>
+							<b>{'Destination'}</b>
+						</a>
 						<p className={'text-sm text-neutral-500'}>
 							{'Enter the address where you want to migrate your funds to. Be sure to double check the address before proceeding.'}
 						</p>
@@ -121,6 +125,7 @@ function	ViewDestination(): ReactElement {
 									} else if (isAddress(destination)) {
 										set_destinationAddress(toAddress(destination));
 									}
+									router.replace('#select', undefined, {shallow: true, scroll: false});
 								}}
 								disabled={!(isValidDestination === true || isValidish === true)}>
 								{'Confirm'}
@@ -129,7 +134,7 @@ function	ViewDestination(): ReactElement {
 					</div>
 				</div>
 			</div>
-		</div>
+		</section>
 	);
 }
 

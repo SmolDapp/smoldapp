@@ -1,12 +1,11 @@
-import React from 'react';
+import React, {useEffect} from 'react';
+import {useRouter} from 'next/router';
 import ViewDestination from 'components/views/ViewDestination';
 import ViewTable from 'components/views/ViewTable';
+import ViewTLDR from 'components/views/ViewTLDR';
 import ViewWallet from 'components/views/ViewWallet';
-import {useSelected} from 'contexts/useSelected';
 import {motion} from 'framer-motion';
-import {useIsomorphicLayoutEffect} from '@react-hookz/web';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
-import {isZeroAddress} from '@yearn-finance/web-lib/utils/address';
 
 import type {ReactElement} from 'react';
 
@@ -19,39 +18,40 @@ const thumbnailVariants = {
 
 function	Home(): ReactElement {
 	const	{isActive, address} = useWeb3();
-	const	{destinationAddress} = useSelected();
+	const	router = useRouter();
 
-	useIsomorphicLayoutEffect((): void => {
-		if (!isZeroAddress(destinationAddress)) {
-			setTimeout((): void => {
-				document.getElementById('select')?.scrollIntoView({behavior: 'smooth'});
-			}, 100);
-		} else if (isActive && address) {
-			setTimeout((): void => {
-				document.getElementById('destination')?.scrollIntoView({behavior: 'smooth'});
-			}, 100);
-		} else {
-			setTimeout((): void => {
-				window.scrollTo({top: 0, behavior: 'smooth'});
-			}, 100);
+	useEffect((): void => {
+		if (isActive && address) {
+			router.replace({pathname: '/', hash: 'destination'}, undefined, {shallow: true, scroll: false});
+		} else if (!isActive || !address) {
+			router.replace({pathname: '/', hash: 'wallet'}, undefined, {shallow: true, scroll: false});
 		}
-	}, [destinationAddress, address, isActive]);
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [address, isActive]);
+
+	const	withHashDestination = router.asPath.includes('#destination');
+	const	withHashSelect = router.asPath.includes('#select');
 
 	return (
-		<div key={'MigrateTable'} className={'mx-auto mt-10 min-h-screen w-full'}>
+		<div
+			key={'MigrateTable'}
+			className={'mx-auto w-full pb-[10vh] md:pb-[50vh]'}>
 			<div className={'grid gap-2'}>
 				<ViewWallet />
 				<motion.div
 					initial={'initial'}
-					animate={isActive && address ? 'enter' : 'initial'}
+					animate={withHashSelect || withHashDestination ? 'enter' : 'initial'}
 					variants={thumbnailVariants}>
 					<ViewDestination />
 				</motion.div>
 				<motion.div
 					initial={'initial'}
-					animate={!isZeroAddress(destinationAddress) ? 'enter' : 'initial'}
+					animate={withHashSelect ? 'enter' : 'initial'}
 					variants={thumbnailVariants}>
-					<ViewTable />
+					<>
+						<ViewTable />
+						<ViewTLDR />
+					</>
 				</motion.div>
 			</div>
 		</div>

@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useMemo, useState} from 'react';
 import Link from 'next/link';
 import IconInfo from 'components/icons/IconInfo';
 import {ImageWithFallback} from 'components/ImageWithFallback';
@@ -19,7 +19,7 @@ import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import IconLinkOut from '@yearn-finance/web-lib/icons/IconLinkOut';
 import {isZeroAddress, toAddress, truncateHex} from '@yearn-finance/web-lib/utils/address';
 import {ETH_TOKEN_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
-import {toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
+import {toNormalizedBN, Zero} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUpdates';
 import {defaultTxStatus, Transaction} from '@yearn-finance/web-lib/utils/web3/transaction';
 
@@ -191,7 +191,7 @@ function	TokenRow({address: tokenAddress, balance}: {balance: TMinBalanceData, a
 					<Button
 						className={'yearn--button-smaller !w-full'}
 						isBusy={txStatus.pending}
-						isDisabled={!isActive || ((amounts[toAddress(tokenAddress)]?.raw || ethers.constants.Zero).isZero())}
+						isDisabled={!isActive || ((amounts[toAddress(tokenAddress)]?.raw || Zero).isZero())}
 						onClick={(): void => {
 							onTransfer();
 						}}>
@@ -208,7 +208,6 @@ function	DonateRow(): ReactElement {
 	const {provider, isActive} = useWeb3();
 	const {amounts, set_amounts, shouldDonateETH, amountToDonate, set_shouldDonateETH, set_amountToDonate} = useSelected();
 	const [txStatus, set_txStatus] = useState(defaultTxStatus);
-	const [hasTypedSomething, set_hasTypedSomething] = useState(false);
 	const chain = useChain();
 
 	const	handleSuccessCallback = useCallback(async (): Promise<void> => {
@@ -227,36 +226,24 @@ function	DonateRow(): ReactElement {
 		).onSuccess(async (): Promise<void> => handleSuccessCallback()).perform();
 	}
 
-	useEffect((): void => {
-		if (balances?.[ETH_TOKEN_ADDRESS]?.raw?.isZero()) {
-			set_shouldDonateETH(false);
-		}
-
-		if (shouldDonateETH && amountToDonate.raw.isZero() && !hasTypedSomething) {
-			const	ethBalance = balances?.[ETH_TOKEN_ADDRESS]?.raw || ethers.constants.Zero;
-			set_amountToDonate(toNormalizedBN(ethBalance.div(1000).mul(1)));
-		} else if (!shouldDonateETH && !amountToDonate.raw.isZero()) {
-			set_shouldDonateETH(true);
-		} else if (amountToDonate.raw.isZero() && hasTypedSomething) {
-			set_shouldDonateETH(false);
-		}
-	}, [amountToDonate.raw, balances, shouldDonateETH]); // eslint-disable-line react-hooks/exhaustive-deps
+	const	onSelect = useCallback((): void => {
+		performBatchedUpdates((): void => {
+			if (shouldDonateETH) {
+				set_amountToDonate(toNormalizedBN(Zero)); //reset
+			} else {
+				set_amountToDonate(toNormalizedBN((balances?.[ETH_TOKEN_ADDRESS]?.raw || Zero).div(1000).mul(1)));
+			}
+			set_shouldDonateETH((shouldDonateETH: boolean): boolean => !shouldDonateETH);
+		});
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [balances, shouldDonateETH]);
 
 	return (
 		<div
-			onClick={(): void => {
-				performBatchedUpdates((): void => {
-					if (shouldDonateETH) {
-						set_amountToDonate(toNormalizedBN(ethers.constants.Zero)); //reset
-					} else {
-						set_amountToDonate(toNormalizedBN((balances?.[ETH_TOKEN_ADDRESS]?.raw || ethers.constants.Zero).div(1000).mul(1)));
-					}
-					set_shouldDonateETH((shouldDonateETH: boolean): boolean => !shouldDonateETH);
-				});
-			}}
+			onClick={onSelect}
 			className={`relative col-span-12 mb-0 border-x-2 bg-neutral-0 px-3 py-2 pb-4 text-neutral-900 transition-colors hover:bg-neutral-100 md:px-6 md:pb-2 ${shouldDonateETH ? 'border-transparent' : 'border-transparent'}`}>
 			<div className={'grid grid-cols-12 md:grid-cols-9'}>
-				<div className={'col-span-12 flex h-14 flex-row items-center space-x-4 border-0 border-r border-neutral-200 md:col-span-3'}>
+				<div className={'col-span-12 flex h-14 flex-row items-center space-x-4 border-0 border-neutral-200 md:col-span-3 md:border-r'}>
 					<input
 						type={'checkbox'}
 						checked={shouldDonateETH}
@@ -269,27 +256,31 @@ function	DonateRow(): ReactElement {
 						</span>
 					</div>
 				</div>
-				<div className={'col-span-12 flex flex-row items-center px-6 md:col-span-5'}>
+				<div className={'col-span-12 flex flex-row items-center px-1 md:col-span-5 md:px-6'}>
 					<div
 						onClick={(e): void => e.stopPropagation()}
-						className={'box-0 flex h-10 w-full items-center p-2'}>
+						className={`flex h-10 w-full items-center p-2 ${(balances?.[ETH_TOKEN_ADDRESS]?.raw || Zero)?.isZero() ? 'box-100' : 'box-0'}`}>
 						<div className={'flex h-10 w-full flex-row items-center justify-between py-4 px-0'}>
 							<input
 								className={'w-full overflow-x-scroll border-none bg-transparent py-4 px-0 text-sm font-bold outline-none scrollbar-none'}
 								type={'number'}
 								min={0}
 								max={balances?.[ETH_TOKEN_ADDRESS]?.normalized || 0}
+								disabled={(balances?.[ETH_TOKEN_ADDRESS]?.raw || Zero)?.isZero()}
 								inputMode={'numeric'}
 								pattern={'^((?:0|[1-9]+)(?:.(?:d+?[1-9]|[1-9]))?)$'}
 								value={amountToDonate?.normalized ?? '0'}
 								onChange={(e: ChangeEvent<HTMLInputElement>): void => {
+									if ((balances?.[ETH_TOKEN_ADDRESS]?.raw || Zero)?.isZero()) {
+										return;
+									}
 									let	newAmount = handleInputChangeEventValue(e, balances[ETH_TOKEN_ADDRESS]?.decimals || 18);
-									if (newAmount.raw.gt(balances[ETH_TOKEN_ADDRESS].raw)) {
+									if (newAmount.raw.gt(balances[ETH_TOKEN_ADDRESS]?.raw || Zero)) {
 										newAmount = balances[ETH_TOKEN_ADDRESS];
 									}
 									performBatchedUpdates((): void => {
-										set_hasTypedSomething(true);
 										set_amountToDonate(newAmount);
+										set_shouldDonateETH(newAmount.raw.gt(Zero));
 									});
 								}} />
 						</div>
@@ -301,7 +292,7 @@ function	DonateRow(): ReactElement {
 					<Button
 						className={'yearn--button-smaller !w-full'}
 						isBusy={txStatus.pending}
-						isDisabled={!isActive || ((amounts[ETH_TOKEN_ADDRESS]?.raw || ethers.constants.Zero).isZero())}
+						isDisabled={!isActive || ((amounts[ETH_TOKEN_ADDRESS]?.raw || Zero).isZero())}
 						onClick={(): void => {
 							onDonate();
 						}}>
@@ -314,14 +305,13 @@ function	DonateRow(): ReactElement {
 }
 
 function	ViewTable(): ReactElement {
-	const	{isActive, chainID, provider} = useWeb3();
+	const	{provider, isActive, chainID} = useWeb3();
 	const	{selected, set_selected, amounts, set_amounts, destinationAddress, shouldDonateETH, amountToDonate, set_amountToDonate, set_shouldDonateETH} = useSelected();
-	const	{balances, balancesNonce, refresh} = useWallet();
+	const	{balances, refresh, balancesNonce} = useWallet();
 	const	[sortBy, set_sortBy] = useState<string>('apy');
 	const	[sortDirection, set_sortDirection] = useState<'asc' | 'desc'>('desc');
-	const	[txStatus, set_txStatus] = useState(defaultTxStatus);
 	const	[isDrawerOpen, set_isDrawerOpen] = useState(false);
-	const	chain = useChain();
+	const	[txStatus, set_txStatus] = useState(defaultTxStatus);
 
 	const	balancesToDisplay = hooks.useDeepCompareMemo((): ReactElement[] => {
 		return (
@@ -380,7 +370,7 @@ function	ViewTable(): ReactElement {
 		let	shouldMigrateETH = false;
 		const	allSelected = [...selected];
 		for (const token of allSelected) {
-			if ((amounts[toAddress(token)]?.raw || ethers.constants.Zero).isZero()) {
+			if ((amounts[toAddress(token)]?.raw || Zero).isZero()) {
 				continue;
 			}
 			if (toAddress(token) === ETH_TOKEN_ADDRESS) { //Migrate ETH at the end
@@ -400,9 +390,9 @@ function	ViewTable(): ReactElement {
 			}
 		}
 
-		const	willDonateEth = (shouldDonateETH && (amountToDonate?.raw || ethers.constants.Zero).gt(ethers.constants.Zero));
-		const	willMigrateEth = (shouldMigrateETH && (amounts[ETH_TOKEN_ADDRESS]?.raw || ethers.constants.Zero).gt(ethers.constants.Zero));
-		const	hasEnoughEth = balances[ETH_TOKEN_ADDRESS]?.raw?.gt((amounts[ETH_TOKEN_ADDRESS]?.raw || ethers.constants.Zero).sub(amountToDonate.raw)) && (amounts[ETH_TOKEN_ADDRESS]?.raw || ethers.constants.Zero).sub(amountToDonate.raw).gt(0);
+		const	willDonateEth = (shouldDonateETH && (amountToDonate?.raw || Zero).gt(Zero));
+		const	willMigrateEth = (shouldMigrateETH && (amounts[ETH_TOKEN_ADDRESS]?.raw || Zero).gt(Zero));
+		const	hasEnoughEth = balances[ETH_TOKEN_ADDRESS]?.raw?.gt((amounts[ETH_TOKEN_ADDRESS]?.raw || Zero).sub(amountToDonate.raw)) && (amounts[ETH_TOKEN_ADDRESS]?.raw || Zero).sub(amountToDonate.raw).gt(0);
 
 		if (willDonateEth && willMigrateEth && hasEnoughEth) {
 			const	isOK = await new Transaction(provider, sendEther, set_txStatus).populate(
@@ -456,29 +446,28 @@ function	ViewTable(): ReactElement {
 	}
 
 	return (
-		<div id={'select'} className={'mb-32 pt-10 md:mb-[800px]'}>
-			<div className={'box-0 relative mb-6 grid w-full grid-cols-12 overflow-hidden'}>
-				<div className={'col-span-12 flex flex-col p-4 pb-0 text-neutral-900 md:p-6'}>
+		<section id={'select'} className={'pt-10'}>
+			<div className={'box-0 relative grid w-full grid-cols-12 overflow-hidden'}>
+				<div className={'col-span-12 flex flex-col p-4 text-neutral-900 md:p-6 md:pb-4'}>
 					<div className={'w-full md:w-3/4'}>
-						<b>{'Select the tokens to migrate'}</b>
+						<a href={'#select'}>
+							<b>{'Select the tokens to migrate'}</b>
+						</a>
 						<p className={'text-sm text-neutral-500'}>
 							{'Select the tokens you want to migrate to another wallet. You can migrate all your tokens at once or select individual tokens.'}
 						</p>
+						<p className={'pt-4 text-sm text-neutral-500'}>
+							{'You want more control over the list of available tokens? '}
+							<span
+								className={'cursor-pointer text-sm text-neutral-700 underline hover:text-neutral-900'}
+								onClick={(): void => set_isDrawerOpen(true)}>
+								{'Customize your list here!'}
+							</span>
+						</p>
 					</div>
 				</div>
-				<div className={'col-span-12 -mt-4 flex flex-col border-b border-neutral-200 px-4 pb-6 text-neutral-900 md:px-6'}>
-					<p className={'text-sm text-neutral-500'}>
-						{'You want more control over the list of available tokens? '}
-						<span
-							className={'cursor-pointer text-sm text-neutral-500 underline hover:text-neutral-900'}
-							onClick={(): void => set_isDrawerOpen(true)}>
-							{'Customize your list here!'}
-						</span>
-					</p>
-					<Drawer isDrawerOpen={isDrawerOpen} set_isDrawerOpen={set_isDrawerOpen} />
-				</div>
 
-				<div className={'col-span-12'}>
+				<div className={'col-span-12 border-t border-neutral-200'}>
 					<ListHead
 						sortBy={sortBy}
 						sortDirection={sortDirection}
@@ -503,108 +492,22 @@ function	ViewTable(): ReactElement {
 
 				<DonateRow />
 
-
 				<div className={'fixed inset-x-0 bottom-0 z-20 col-span-12 flex w-full max-w-4xl flex-row items-center justify-between bg-neutral-900 p-4 text-neutral-0 md:relative md:px-6 md:py-4'}>
 					<div className={'flex flex-col'} />
 					<div>
 						<Button
-							className={'yearn--button-smaller !w-[160px] !text-sm'}
+							className={'yearn--button-smaller !w-fit !text-sm'}
 							variant={'reverted'}
 							isBusy={txStatus.pending}
-							isDisabled={!isActive || ((selected.length === 0) && (amountToDonate.raw.isZero() && !shouldDonateETH))}
-							onClick={(): void => {
-								onMigrateSelected();
-							}}>
+							isDisabled={!isActive || ((selected.length === 0) && (amountToDonate.raw.isZero() && amountToDonate.raw.isZero()))}
+							onClick={async (): Promise<void> => onMigrateSelected()}>
 							{'Migrate selected'}
 						</Button>
 					</div>
 				</div>
-
 			</div>
-
-
-			<div className={'box-100 relative mb-6 grid w-full overflow-hidden p-4 md:p-6'}>
-				<div className={'w-full md:w-3/4'}>
-					<b>{'TLDR;'}</b>
-					<p className={'text-sm text-neutral-500'}>
-						{'Here is a quick summary of the upcoming transactions.'}
-					</p>
-				</div>
-				<div className={'mt-6 flex flex-col space-y-2 font-mono text-sm'}>
-
-					<div className={'mb-2 grid w-full grid-cols-11 border-b border-neutral-300 pb-2 text-sm tabular-nums text-neutral-500'}>
-						<p className={'col-span-4 flex items-center justify-between'}>
-							<span className={'font-number'}>{'Token'}</span>
-							&nbsp;
-							<span className={'font-number'}>{'Amount'}</span>
-						</p>
-						<p className={'text-center'}>
-							{''}
-						</p>
-						<p className={'col-span-6 text-end'}>
-							<span className={'font-number text-sm'}>
-								{'Recipient Address'}
-							</span>
-						</p>
-					</div>
-
-					{selected.filter((token): boolean => toAddress(token) !== ETH_TOKEN_ADDRESS).map((token, index): JSX.Element => {
-						return (
-							<div key={index} className={'grid w-full grid-cols-11 text-sm tabular-nums'}>
-								<p className={'col-span-4 flex items-center justify-between'}>
-									<span className={'font-number'}>{balances[toAddress(token)]?.symbol || 'Tokens'}</span>
-									&nbsp;
-									<span className={'font-number'}>{amounts[toAddress(token)]?.normalized || 0}</span>
-								</p>
-								<p className={'text-center'}>
-									{'→'}
-								</p>
-								<p className={'col-span-6 text-end'}>
-									<span className={'font-number text-sm'}>
-										{toAddress(destinationAddress).replace(/(.{4})/g, '$1 ')}
-									</span>
-								</p>
-							</div>
-						);
-					})}
-					{selected.includes(ETH_TOKEN_ADDRESS) && amounts[ETH_TOKEN_ADDRESS]?.raw.gt(0) ? (
-						<div className={'grid w-full grid-cols-11 text-sm tabular-nums'}>
-							<p className={'col-span-4 flex items-center justify-between'}>
-								<span className={'font-number'}>{chain.getCurrent()?.coin || 'ETH'}</span>
-							&nbsp;
-								<span className={'font-number'}>{`~ ${Number(amounts[ETH_TOKEN_ADDRESS]?.normalized || 0) - Number(amountToDonate?.normalized || 0)}`}</span>
-							</p>
-							<p className={'text-center'}>
-								{'→'}
-							</p>
-							<p className={'col-span-6 text-end'}>
-								<span className={'font-number text-sm'}>
-									{toAddress(destinationAddress).replace(/(.{4})/g, '$1 ')}
-								</span>
-							</p>
-						</div>
-					) : null}
-					{amountToDonate.raw.gt(0) ? (
-						<div className={'grid w-full grid-cols-11 text-sm tabular-nums'}>
-							<p className={'col-span-4 flex items-center justify-between'}>
-								<span className={'font-number'}>{`Donate ${chain.getCurrent()?.coin || 'ETH'}`}</span>
-								&nbsp;
-								<span className={'font-number'}>{amountToDonate?.normalized || 0}</span>
-							</p>
-							<p className={'text-center'}>
-								{'→'}
-							</p>
-							<p className={'col-span-6 text-end'}>
-								<span className={'font-number text-sm'}>
-									{toAddress(process.env.RECEIVER_ADDRESS).replace(/(.{4})/g, '$1 ')}
-								</span>
-							</p>
-						</div>
-					) : null}
-
-				</div>
-			</div>
-		</div>
+			<Drawer isDrawerOpen={isDrawerOpen} set_isDrawerOpen={set_isDrawerOpen} />
+		</section>
 	);
 }
 export default ViewTable;
