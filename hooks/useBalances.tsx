@@ -117,13 +117,13 @@ export function	useBalances(props?: TUseBalancesReq): TUseBalancesRes {
 			const	results = await ethcallProvider.tryAll(calls);
 			let		rIndex = 0;
 			for (const element of tokens) {
-				const	{token, decimals, symbol} = element;
+				const	{token, symbol, decimals} = element;
 				const	balanceOf = results[rIndex++] as BigNumber;
 				_data[toAddress(token)] = {
-					decimals: Number(decimals),
+					decimals: Number(decimals || 18),
 					symbol: symbol,
 					raw: balanceOf,
-					normalized: format.toNormalizedValue(balanceOf, Number(decimals)),
+					normalized: format.toNormalizedValue(balanceOf, Number(decimals || 18)),
 					force: element.force
 				};
 			}

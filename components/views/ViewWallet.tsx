@@ -1,13 +1,17 @@
 import React, {useCallback, useMemo} from 'react';
+import dynamic from 'next/dynamic';
 import {useRouter} from 'next/router';
-import CardWithIcon from 'components/CardWithIcon';
 import IconWalletLedger from 'components/icons/IconWalletLedger';
 import {useSelected} from 'contexts/useSelected';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {useInjectedWallet} from '@yearn-finance/web-lib/hooks/useInjectedWallet';
 import IconWalletWalletConnect from '@yearn-finance/web-lib/icons/IconWalletWalletConnect';
 
+import type {TCardWithIcon} from 'components/CardWithIcon';
+import type {LoaderComponent} from 'next/dynamic';
 import type {ReactElement} from 'react';
+
+const CardWithIcon = dynamic<TCardWithIcon>(async (): LoaderComponent<TCardWithIcon> => import('../CardWithIcon'), {ssr: false});
 
 function	ViewWallet(): ReactElement {
 	const	{onConnect, walletType} = useWeb3();

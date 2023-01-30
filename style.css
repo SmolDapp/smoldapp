@@ -3,6 +3,7 @@
 
 :root {
 	--default-rounded: 6px;
+	@apply scroll-p-20;
 }
 * {@apply scroll-smooth font-sans}
 
@@ -16,6 +17,19 @@
 .font-number {
 	@apply font-mono tabular-nums;
 }
+
+.yearn--header {
+	@apply !p-0 !h-14;
+}
+
+.yearn--shadow {
+	box-shadow: none !important;
+	@apply border-solid border border-neutral-200 rounded-md;
+}
+.yearn--listbox-menu-item {
+	@apply hover:!bg-neutral-100/80;
+}
+
 
 .yearn--button {
 	@apply rounded-md;

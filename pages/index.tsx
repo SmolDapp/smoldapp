@@ -47,7 +47,8 @@ function	Home(): ReactElement {
 				<motion.div
 					initial={'initial'}
 					animate={withHashSelect ? 'enter' : 'initial'}
-					variants={thumbnailVariants}>
+					variants={thumbnailVariants}
+					className={withHashSelect ? '' : 'pointer-events-none'}>
 					<>
 						<ViewTable />
 						<ViewTLDR />
