@@ -1,10 +1,11 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {useRouter} from 'next/router';
 import ViewDestination from 'components/views/ViewDestination';
 import ViewTable from 'components/views/ViewTable';
 import ViewTLDR from 'components/views/ViewTLDR';
 import ViewWallet from 'components/views/ViewWallet';
 import {motion} from 'framer-motion';
+import {useUpdateEffect} from '@react-hookz/web';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 
 import type {ReactElement} from 'react';
@@ -17,11 +18,11 @@ const thumbnailVariants = {
 };
 
 function	Home(): ReactElement {
-	const	{isActive, address} = useWeb3();
+	const	{isActive, address, walletType} = useWeb3();
 	const	router = useRouter();
 
-	useEffect((): void => {
-		if (isActive && address) {
+	useUpdateEffect((): void => {
+		if (isActive && address || walletType === 'EMBED_LEDGER') {
 			router.replace({pathname: '/', hash: 'destination'}, undefined, {shallow: true, scroll: false});
 		} else if (!isActive || !address) {
 			router.replace({pathname: '/', hash: 'wallet'}, undefined, {shallow: true, scroll: false});

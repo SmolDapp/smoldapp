@@ -61,9 +61,9 @@ function	ViewWallet(): ReactElement {
 								isSelected={walletProvider === 'INJECTED' || walletType === 'INJECTED' || walletType === 'EMBED_LEDGER'}
 								icon={detectedWallet.icon}
 								label={detectedWallet.name}
-								onClick={async (): Promise<void> => onSelectWallet('INJECTED')} />
+								onClick={async (): Promise<void> => walletType === 'EMBED_LEDGER' ? undefined : onSelectWallet('INJECTED')} />
 						</div>
-						<div className={'relative col-span-6 md:col-span-3'}>
+						<div className={`relative col-span-6 md:col-span-3 ${walletType === 'EMBED_LEDGER' ? 'hidden' : 'flex'}`}>
 							<CardWithIcon
 								isSelected={walletProvider === 'WALLET_CONNECT' || walletType === 'WALLET_CONNECT'}
 								icon={<IconWalletWalletConnect />}
