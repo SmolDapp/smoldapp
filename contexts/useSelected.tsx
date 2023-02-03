@@ -69,7 +69,7 @@ export const SelectedContextApp = ({children}: {children: React.ReactElement}): 
 	const	[amountToDonate, set_amountToDonate] = useState(toNormalizedBN(0));
 
 	useMountEffect((): void => {
-		axios.get('https://tokenlist.zerion.eth.link').then((response): void => {
+		axios.get('https://raw.githubusercontent.com/Migratooor/tokenLists/main/lists/coingecko.json').then((response): void => {
 			const	tokenListResponse = response.data as TTokenList;
 			const	tokenListTokens: TDict<TTokenInfo> = {};
 			for (const eachToken of tokenListResponse.tokens) {
