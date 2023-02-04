@@ -13,12 +13,10 @@ function	ViewTLDR(): ReactElement {
 	const	chain = useChain();
 
 	return (
-		<section id={'review'} className={'pt-4 pb-10'}>
-			<div className={'box-100 relative grid w-full overflow-hidden !rounded-b-none p-4 md:p-6'}>
+		<section className={'pt-4 pb-10'}>
+			<div id={'review'} className={'box-100 relative grid w-full overflow-hidden !rounded-b-none p-4 md:p-6'}>
 				<div className={'w-full md:w-3/4'}>
-					<a href={'#review'}>
-						<b>{'TLDR;'}</b>
-					</a>
+					<b>{'TLDR;'}</b>
 					<p className={'text-sm text-neutral-500'}>
 						{'Here is a quick summary of the upcoming transactions.'}
 					</p>

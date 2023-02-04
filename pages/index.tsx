@@ -1,55 +1,40 @@
 import React from 'react';
-import {useRouter} from 'next/router';
-import ViewDestination from 'components/views/ViewDestination';
-import ViewTable from 'components/views/ViewTable';
-import ViewTLDR from 'components/views/ViewTLDR';
+import ViewDestination from 'components/views/migratooor/ViewDestination';
+import ViewTable from 'components/views/migratooor/ViewTable';
+import ViewTLDR from 'components/views/migratooor/ViewTLDR';
 import ViewWallet from 'components/views/ViewWallet';
+import {SelectedContextApp, Step, useSelected} from 'contexts/useSelected';
+import thumbnailVariants from 'utils/animations';
 import {motion} from 'framer-motion';
-import {useUpdateEffect} from '@react-hookz/web';
-import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 
 import type {ReactElement} from 'react';
 
-const transition = {duration: 0.3, ease: [0.17, 0.67, 0.83, 1]};
-const thumbnailVariants = {
-	initial: {y: 20, opacity: 0, transition},
-	enter: {y: 0, opacity: 1, transition},
-	exit: {y: -20, opacity: 0, transition}
-};
-
 function	Home(): ReactElement {
-	const	{isActive, address, walletType} = useWeb3();
-	const	router = useRouter();
-
-	useUpdateEffect((): void => {
-		if (isActive && address || walletType === 'EMBED_LEDGER') {
-			router.replace({pathname: '/', hash: 'destination'}, undefined, {shallow: true, scroll: false});
-		} else if (!isActive || !address) {
-			router.replace({pathname: '/', hash: 'wallet'}, undefined, {shallow: true, scroll: false});
-		}
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [address, isActive]);
-
-	const	withHashDestination = router.asPath.includes('#destination');
-	const	withHashSelect = router.asPath.includes('#select');
+	const	{currentStep, set_currentStep} = useSelected();
 
 	return (
 		<div
 			key={'MigrateTable'}
 			className={'mx-auto w-full pb-[10vh] md:pb-[50vh]'}>
 			<div className={'grid gap-2'}>
-				<ViewWallet />
+				<ViewWallet
+					onSelect={(): void => {
+						set_currentStep(Step.SELECTOR);
+						document?.getElementById('destination')?.scrollIntoView({behavior: 'smooth', block: 'center'});
+					}} />
+
 				<motion.div
 					initial={'initial'}
-					animate={withHashSelect || withHashDestination ? 'enter' : 'initial'}
+					animate={[Step.SELECTOR, Step.CONFIRMATION, Step.DESTINATION].includes(currentStep) ? 'enter' : 'initial'}
 					variants={thumbnailVariants}>
 					<ViewDestination />
 				</motion.div>
+
 				<motion.div
 					initial={'initial'}
-					animate={withHashSelect ? 'enter' : 'initial'}
+					animate={[Step.SELECTOR, Step.CONFIRMATION].includes(currentStep) ? 'enter' : 'initial'}
 					variants={thumbnailVariants}
-					className={withHashSelect ? '' : 'pointer-events-none'}>
+					className={[Step.SELECTOR, Step.CONFIRMATION].includes(currentStep) ? '' : 'pointer-events-none'}>
 					<>
 						<ViewTable />
 						<ViewTLDR />
@@ -60,4 +45,11 @@ function	Home(): ReactElement {
 	);
 }
 
-export default Home;
+export default function Wrapper(): ReactElement {
+	return (
+		<SelectedContextApp>
+			<Home />
+		</SelectedContextApp>
+	);
+}
+

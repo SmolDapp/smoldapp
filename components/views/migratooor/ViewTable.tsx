@@ -3,10 +3,8 @@ import Link from 'next/link';
 import IconInfo from 'components/icons/IconInfo';
 import {ImageWithFallback} from 'components/ImageWithFallback';
 import ListHead from 'components/ListHead';
-import Drawer from 'components/SettingsDrawer';
 import {useSelected} from 'contexts/useSelected';
 import {useWallet} from 'contexts/useWallet';
-import {ethers} from 'ethers';
 import {sendEther} from 'utils/actions/sendEth';
 import {transfer} from 'utils/actions/transferToken';
 import handleInputChangeEventValue from 'utils/handleInputChangeEventValue';
@@ -17,7 +15,7 @@ import {hooks} from '@yearn-finance/web-lib/hooks';
 import {useChain} from '@yearn-finance/web-lib/hooks/useChain';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import IconLinkOut from '@yearn-finance/web-lib/icons/IconLinkOut';
-import {isZeroAddress, toAddress, truncateHex} from '@yearn-finance/web-lib/utils/address';
+import {addressZero, isZeroAddress, toAddress, truncateHex} from '@yearn-finance/web-lib/utils/address';
 import {ETH_TOKEN_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
 import {toNormalizedBN, Zero} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUpdates';
@@ -158,7 +156,7 @@ function	TokenRow({address: tokenAddress, balance}: {balance: TMinBalanceData, a
 							className={'flex h-10 w-full flex-row items-center justify-between py-4 px-0'}
 							onClick={(e): void => e.stopPropagation()}>
 							<input
-								className={`w-full overflow-x-scroll border-none bg-transparent py-4 px-0 text-sm font-bold outline-none scrollbar-none ${isActive ? '' : 'cursor-not-allowed'}`}
+								className={`scrollbar-none w-full overflow-x-scroll border-none bg-transparent py-4 px-0 text-sm font-bold outline-none ${isActive ? '' : 'cursor-not-allowed'}`}
 								type={'number'}
 								min={0}
 								step={1 / 10 ** (balance.decimals || 18)}
@@ -178,7 +176,7 @@ function	TokenRow({address: tokenAddress, balance}: {balance: TMinBalanceData, a
 								onClick={(): void => {
 									set_amounts((amounts): TDict<TNormalizedBN> => ({...amounts, [toAddress(tokenAddress)]: balance}));
 								}}
-								className={'ml-2 cursor-pointer rounded-sm border border-neutral-900 bg-neutral-100 px-2 py-1 text-xxs text-neutral-900 transition-colors hover:bg-neutral-900 hover:text-neutral-0'}>
+								className={'text-xxs hover:text-neutral-0 ml-2 cursor-pointer rounded-sm border border-neutral-900 bg-neutral-100 px-2 py-1 text-neutral-900 transition-colors hover:bg-neutral-900'}>
 								{'max'}
 							</button>
 						</div>
@@ -241,7 +239,7 @@ function	DonateRow(): ReactElement {
 	return (
 		<div
 			onClick={onSelect}
-			className={`relative col-span-12 mb-0 border-x-2 bg-neutral-0 px-3 py-2 pb-4 text-neutral-900 transition-colors hover:bg-neutral-100 md:px-6 md:pb-2 ${shouldDonateETH ? 'border-transparent' : 'border-transparent'}`}>
+			className={`bg-neutral-0 relative col-span-12 mb-0 border-x-2 px-3 py-2 pb-4 text-neutral-900 transition-colors hover:bg-neutral-100 md:px-6 md:pb-2 ${shouldDonateETH ? 'border-transparent' : 'border-transparent'}`}>
 			<div className={'grid grid-cols-12 md:grid-cols-9'}>
 				<div className={'col-span-12 flex h-14 flex-row items-center space-x-4 border-0 border-neutral-200 md:col-span-3 md:border-r'}>
 					<input
@@ -262,7 +260,7 @@ function	DonateRow(): ReactElement {
 						className={`flex h-10 w-full items-center p-2 ${(balances?.[ETH_TOKEN_ADDRESS]?.raw || Zero)?.isZero() ? 'box-100' : 'box-0'}`}>
 						<div className={'flex h-10 w-full flex-row items-center justify-between py-4 px-0'}>
 							<input
-								className={'w-full overflow-x-scroll border-none bg-transparent py-4 px-0 text-sm font-bold outline-none scrollbar-none'}
+								className={'scrollbar-none w-full overflow-x-scroll border-none bg-transparent py-4 px-0 text-sm font-bold outline-none'}
 								type={'number'}
 								min={0}
 								max={balances?.[ETH_TOKEN_ADDRESS]?.normalized || 0}
@@ -310,7 +308,6 @@ function	ViewTable(): ReactElement {
 	const	{balances, refresh, balancesNonce} = useWallet();
 	const	[sortBy, set_sortBy] = useState<string>('apy');
 	const	[sortDirection, set_sortDirection] = useState<'asc' | 'desc'>('desc');
-	const	[isDrawerOpen, set_isDrawerOpen] = useState(false);
 	const	[txStatus, set_txStatus] = useState(defaultTxStatus);
 
 	const	balancesToDisplay = hooks.useDeepCompareMemo((): ReactElement[] => {
@@ -406,7 +403,7 @@ function	ViewTable(): ReactElement {
 					set_shouldDonateETH(false);
 				});
 
-				const newBalance = await handleSuccessCallback(toAddress(ethers.constants.AddressZero));
+				const newBalance = await handleSuccessCallback(toAddress(addressZero));
 				const ethNewBalance = newBalance[ETH_TOKEN_ADDRESS].raw;
 				let expectedToMigrate = amounts[ETH_TOKEN_ADDRESS].raw;
 
@@ -432,7 +429,7 @@ function	ViewTable(): ReactElement {
 					set_amountToDonate(toNormalizedBN(0));
 					set_shouldDonateETH(false);
 				});
-				handleSuccessCallback(toAddress(ethers.constants.AddressZero));
+				handleSuccessCallback(toAddress(addressZero));
 			}).perform();
 		} else if (willMigrateEth) {
 			new Transaction(provider, sendEther, set_txStatus).populate(
@@ -440,29 +437,19 @@ function	ViewTable(): ReactElement {
 				amounts[ETH_TOKEN_ADDRESS]?.raw,
 				balances[ETH_TOKEN_ADDRESS]?.raw
 			).onSuccess(async (): Promise<void> => {
-				handleSuccessCallback(toAddress(ethers.constants.AddressZero));
+				handleSuccessCallback(toAddress(addressZero));
 			}).perform();
 		}
 	}
 
 	return (
-		<section id={'select'} className={'pt-10'}>
-			<div className={'box-0 relative grid w-full grid-cols-12 overflow-hidden'}>
+		<section className={'pt-10'}>
+			<div id={'select'} className={'box-0 relative grid w-full grid-cols-12 overflow-hidden'}>
 				<div className={'col-span-12 flex flex-col p-4 text-neutral-900 md:p-6 md:pb-4'}>
 					<div className={'w-full md:w-3/4'}>
-						<a href={'#select'}>
-							<b>{'Select the tokens to migrate'}</b>
-						</a>
+						<b>{'Select the tokens to migrate'}</b>
 						<p className={'text-sm text-neutral-500'}>
 							{'Select the tokens you want to migrate to another wallet. You can migrate all your tokens at once or select individual tokens.'}
-						</p>
-						<p className={'pt-4 text-sm text-neutral-500'}>
-							{'You want more control over the list of available tokens? '}
-							<span
-								className={'cursor-pointer text-sm text-neutral-700 underline hover:text-neutral-900'}
-								onClick={(): void => set_isDrawerOpen(true)}>
-								{'Customize your list here!'}
-							</span>
 						</p>
 					</div>
 				</div>
@@ -487,12 +474,9 @@ function	ViewTable(): ReactElement {
 					</div>
 				</div>
 
-				<div className={'col-span-12'}>
-				</div>
-
 				<DonateRow />
 
-				<div className={'fixed inset-x-0 bottom-0 z-20 col-span-12 flex w-full max-w-4xl flex-row items-center justify-between bg-neutral-900 p-4 text-neutral-0 md:relative md:px-6 md:py-4'}>
+				<div className={'text-neutral-0 fixed inset-x-0 bottom-0 z-20 col-span-12 flex w-full max-w-4xl flex-row items-center justify-between bg-neutral-900 p-4 md:relative md:px-6 md:py-4'}>
 					<div className={'flex flex-col'} />
 					<div>
 						<Button
@@ -506,8 +490,8 @@ function	ViewTable(): ReactElement {
 					</div>
 				</div>
 			</div>
-			<Drawer isDrawerOpen={isDrawerOpen} set_isDrawerOpen={set_isDrawerOpen} />
 		</section>
 	);
 }
+
 export default ViewTable;

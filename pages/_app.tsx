@@ -1,7 +1,7 @@
 import React from 'react';
 import AppWrapper from 'components/common/AppWrapper';
 import {MenuContextApp} from 'contexts/useMenu';
-import {SelectedContextApp} from 'contexts/useSelected';
+import {TokenListContextApp} from 'contexts/useTokenList';
 import {WalletContextApp} from 'contexts/useWallet';
 import {Inter} from '@next/font/google';
 import {WithYearn} from '@yearn-finance/web-lib/contexts/WithYearn';
@@ -23,7 +23,7 @@ function	MyApp(props: AppProps): ReactElement {
 		<>
 			<style jsx global>{`html {font-family: ${inter.style.fontFamily};}`}</style>
 			<WithYearn>
-				<SelectedContextApp>
+				<TokenListContextApp>
 					<WalletContextApp>
 						<MenuContextApp>
 							<main className={`flex h-screen flex-col ${inter.variable}`}>
@@ -31,7 +31,7 @@ function	MyApp(props: AppProps): ReactElement {
 							</main>
 						</MenuContextApp>
 					</WalletContextApp>
-				</SelectedContextApp>
+				</TokenListContextApp>
 			</WithYearn>
 		</>
 	);

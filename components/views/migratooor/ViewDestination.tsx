@@ -1,8 +1,7 @@
 import React, {useCallback, useState} from 'react';
-import {useRouter} from 'next/router';
 import IconCheck from 'components/icons/IconCheck';
 import IconCircleCross from 'components/icons/IconCircleCross';
-import {useSelected} from 'contexts/useSelected';
+import {Step, useSelected} from 'contexts/useSelected';
 import {ethers} from 'ethers';
 import {isAddress} from 'ethers/lib/utils';
 import {useUpdateEffect} from '@react-hookz/web';
@@ -16,8 +15,7 @@ import type {ReactElement} from 'react';
 import type {TAddress} from '@yearn-finance/web-lib/utils/address';
 
 function	ViewDestination(): ReactElement {
-	const	{set_destinationAddress} = useSelected();
-	const	router = useRouter();
+	const	{set_destinationAddress, set_currentStep} = useSelected();
 	const	[destination, set_destination] = useState<string>('');
 	const	[validishDestination, set_validishDestination] = useState<string>('');
 	const	[isValidDestination, set_isValidDestination] = useState<boolean | 'undetermined'>('undetermined');
@@ -76,8 +74,9 @@ function	ViewDestination(): ReactElement {
 	}, [destination]);
 
 	return (
-		<section id={'destination'} className={'pt-10'}>
+		<section className={'pt-10'}>
 			<div
+				id={'destination'}
 				className={'box-0 grid w-full grid-cols-12 overflow-hidden'}>
 				<div className={'col-span-12 flex flex-col p-4 text-neutral-900 md:p-6'}>
 					<div className={'w-full md:w-3/4'}>
@@ -88,7 +87,9 @@ function	ViewDestination(): ReactElement {
 							{'Enter the address where you want to migrate your funds to. Be sure to double check the address before proceeding.'}
 						</p>
 					</div>
-					<div className={'mt-6 grid w-full grid-cols-12 flex-row items-center justify-between gap-4 md:w-3/4 md:gap-6'}>
+					<form
+						onSubmit={async (e): Promise<void> => e.preventDefault()}
+						className={'mt-6 grid w-full grid-cols-12 flex-row items-center justify-between gap-4 md:w-3/4 md:gap-6'}>
 						<div className={'box-100 grow-1 col-span-12 flex h-10 w-full items-center p-2 md:col-span-9'}>
 							<div className={'flex h-10 w-full flex-row items-center justify-between py-4 px-0'}>
 								<input
@@ -103,7 +104,7 @@ function	ViewDestination(): ReactElement {
 										set_isValidDestination('undetermined');
 										set_destination(e.target.value);
 									}}
-									className={'w-full overflow-x-scroll border-none bg-transparent py-4 px-0 font-mono text-sm font-bold outline-none scrollbar-none'}
+									className={'scrollbar-none w-full overflow-x-scroll border-none bg-transparent py-4 px-0 font-mono text-sm font-bold outline-none'}
 									type={'text'} />
 							</div>
 							<div className={'pointer-events-none relative h-4 w-4'}>
@@ -125,13 +126,13 @@ function	ViewDestination(): ReactElement {
 									} else if (isAddress(destination)) {
 										set_destinationAddress(toAddress(destination));
 									}
-									router.replace('#select', undefined, {shallow: true, scroll: false});
+									set_currentStep(Step.SELECTOR);
 								}}
 								disabled={!(isValidDestination === true || isValidish === true)}>
 								{'Confirm'}
 							</Button>
 						</div>
-					</div>
+					</form>
 				</div>
 			</div>
 		</section>

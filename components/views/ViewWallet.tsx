@@ -1,8 +1,7 @@
 import React, {useCallback, useMemo} from 'react';
 import dynamic from 'next/dynamic';
-import {useRouter} from 'next/router';
 import IconWalletLedger from 'components/icons/IconWalletLedger';
-import {useSelected} from 'contexts/useSelected';
+import useWallet from 'contexts/useWallet';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {useInjectedWallet} from '@yearn-finance/web-lib/hooks/useInjectedWallet';
 import IconWalletWalletConnect from '@yearn-finance/web-lib/icons/IconWalletWalletConnect';
@@ -13,16 +12,19 @@ import type {ReactElement} from 'react';
 
 const CardWithIcon = dynamic<TCardWithIcon>(async (): LoaderComponent<TCardWithIcon> => import('../CardWithIcon'), {ssr: false});
 
-function	ViewWallet(): ReactElement {
+type TViewWalletProps = {
+	onSelect: () => void;
+};
+
+function	ViewWallet({onSelect}: TViewWalletProps): ReactElement {
 	const	{onConnect, walletType} = useWeb3();
 	const	detectedWalletProvider = useInjectedWallet();
-	const	{walletProvider, set_walletProvider} = useSelected();
-	const	router = useRouter();
+	const	{walletProvider, set_walletProvider} = useWallet();
 
 	const	onSelectWallet = useCallback(async (walletType: string): Promise<void> => {
 		try {
 			set_walletProvider(walletType);
-			router.replace('#destination', undefined, {shallow: true, scroll: false});
+			onSelect();
 			await onConnect(walletType, (e): void => console.error(e), (): void => undefined);
 		} catch {
 			//

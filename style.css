@@ -3,9 +3,11 @@
 
 :root {
 	--default-rounded: 6px;
-	@apply scroll-p-20;
+	@apply scroll-pt-20;
 }
-* {@apply scroll-smooth font-sans}
+* {
+	@apply scroll-smooth font-sans;
+}
 
 .font-mono {
 	font-family: 'Source Code Pro', monospace !important;
@@ -185,6 +187,32 @@ details {
 }
 }
 
+
+.loader-900 {
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background-color: #000000;
+	box-shadow: 16px 0 #000000, -16px 0 #000000;
+	position: relative;
+	animation: flash 1s ease-out infinite alternate;
+}
+
+@keyframes flash {
+	0% {
+		background-color: #AAAAAA;
+		box-shadow: 12px 0 #AAAAAA, -12px 0 #000000;
+	}
+	50% {
+		background-color: #000000;
+		box-shadow: 12px 0 #AAAAAA, -12px 0 #AAAAAA;
+	}
+	100% {
+		background-color: #AAAAAA;
+		box-shadow: 12px 0 #000000, -12px 0 #AAAAAA;
+	}
+}
+
 [type='checkbox'],
 [type='checkbox']:focus {
 	@apply outline-none focus:outline-none focus:ring-0 active:ring-0;
@@ -271,4 +299,12 @@ details {
 
 details:last-of-type {
 	@apply border-b;
+}
+
+details {
+	@apply border-b-0;
+}
+
+details[open] {
+  @apply bg-neutral-100
 }

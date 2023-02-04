@@ -1,6 +1,5 @@
-import React, {createContext, useContext, useEffect, useMemo, useState} from 'react';
-import axios from 'axios';
-import {useMountEffect} from '@react-hookz/web';
+import React, {createContext, useContext, useMemo, useState} from 'react';
+import {useUpdateEffect} from '@react-hookz/web';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
@@ -11,83 +10,81 @@ import type {TAddress} from '@yearn-finance/web-lib/utils/address';
 import type {TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import type {TDict} from '@yearn-finance/web-lib/utils/types';
 
-export type TTokenInfo = {
-	chainId: number,
-	address: TAddress,
-	name: string,
-	symbol: string,
-	decimals: number,
-	tags: []
-};
-export type TTokenList = {
-	name: string;
-	tokens: TTokenInfo[];
+export enum	Step {
+	WALLET = 'wallet',
+	DESTINATION = 'destination',
+	SELECTOR = 'selector',
+	CONFIRMATION = 'confirmation'
 }
 
 export type TSelected = {
 	selected: TAddress[],
 	amounts: TDict<TNormalizedBN>,
 	destinationAddress: TAddress,
-	walletProvider: string,
-	tokenList: TDict<TTokenInfo>,
 	shouldDonateETH: boolean,
 	amountToDonate: TNormalizedBN,
+	currentStep: Step,
 	set_selected: Dispatch<SetStateAction<TAddress[]>>,
 	set_amounts: Dispatch<SetStateAction<TDict<TNormalizedBN>>>,
 	set_destinationAddress: Dispatch<SetStateAction<TAddress>>,
-	set_walletProvider: Dispatch<SetStateAction<string>>,
-	set_tokenList: Dispatch<SetStateAction<TDict<TTokenInfo>>>,
 	set_shouldDonateETH: Dispatch<SetStateAction<boolean>>,
-	set_amountToDonate: Dispatch<SetStateAction<TNormalizedBN>>
+	set_amountToDonate: Dispatch<SetStateAction<TNormalizedBN>>,
+	set_currentStep: Dispatch<SetStateAction<Step>>
 }
 const	defaultProps: TSelected = {
 	selected: [],
 	amounts: {},
 	destinationAddress: toAddress(),
-	walletProvider: 'NONE',
-	tokenList: {},
 	shouldDonateETH: false,
 	amountToDonate: toNormalizedBN(0),
+	currentStep: Step.WALLET,
 	set_selected: (): void => undefined,
 	set_amounts: (): void => undefined,
 	set_destinationAddress: (): void => undefined,
-	set_walletProvider: (): void => undefined,
-	set_tokenList: (): void => undefined,
 	set_shouldDonateETH: (): void => undefined,
-	set_amountToDonate: (): void => undefined
+	set_amountToDonate: (): void => undefined,
+	set_currentStep: (): void => undefined
 };
 
 const	SelectedContext = createContext<TSelected>(defaultProps);
 export const SelectedContextApp = ({children}: {children: React.ReactElement}): React.ReactElement => {
-	const	{isActive} = useWeb3();
-	const	[walletProvider, set_walletProvider] = useState('NONE');
+	const	{address, isActive, walletType} = useWeb3();
 	const	[destinationAddress, set_destinationAddress] = useState<TAddress>(toAddress());
 	const	[selected, set_selected] = useState<TAddress[]>([]);
 	const	[amounts, set_amounts] = useState<TDict<TNormalizedBN>>({});
-	const	[tokenList, set_tokenList] = useState<TDict<TTokenInfo>>({});
 	const	[shouldDonateETH, set_shouldDonateETH] = useState(false);
 	const	[amountToDonate, set_amountToDonate] = useState(toNormalizedBN(0));
+	const	[currentStep, set_currentStep] = useState<Step>(Step.WALLET);
 
-	useMountEffect((): void => {
-		axios.get('https://raw.githubusercontent.com/Migratooor/tokenLists/main/lists/coingecko.json').then((response): void => {
-			const	tokenListResponse = response.data as TTokenList;
-			const	tokenListTokens: TDict<TTokenInfo> = {};
-			for (const eachToken of tokenListResponse.tokens) {
-				tokenListTokens[toAddress(eachToken.address)] = eachToken;
-			}
-		});
-	});
-
-	useEffect((): void => {
+	useUpdateEffect((): void => {
 		if (!isActive) {
 			performBatchedUpdates((): void => {
 				set_selected([]);
 				set_amounts({});
 				set_destinationAddress(toAddress());
-				set_walletProvider('NONE');
 			});
 		}
 	}, [isActive]);
+
+	useUpdateEffect((): void => {
+		if (isActive && address) {
+			set_currentStep(Step.DESTINATION);
+		} else if (!isActive || !address) {
+			set_currentStep(Step.WALLET);
+		}
+	}, [address, isActive]);
+
+	useUpdateEffect((): void => {
+		setTimeout((): void => {
+			if (currentStep === Step.WALLET && walletType !== 'EMBED_LEDGER') {
+				document?.getElementById('wallet')?.scrollIntoView({behavior: 'smooth', block: 'start'});
+			} else if (currentStep === Step.DESTINATION || walletType === 'EMBED_LEDGER') {
+				document?.getElementById('destination')?.scrollIntoView({behavior: 'smooth', block: 'start'});
+			} else if (currentStep === Step.SELECTOR) {
+				document?.getElementById('select')?.scrollIntoView({behavior: 'smooth', block: 'start'});
+			}
+		}, 200);
+	}, [currentStep]);
 
 	const	contextValue = useMemo((): TSelected => ({
 		selected,
@@ -96,15 +93,13 @@ export const SelectedContextApp = ({children}: {children: React.ReactElement}): 
 		set_amounts,
 		destinationAddress,
 		set_destinationAddress,
-		walletProvider,
-		set_walletProvider,
-		tokenList,
-		set_tokenList,
 		shouldDonateETH,
 		set_shouldDonateETH,
 		amountToDonate,
-		set_amountToDonate
-	}), [selected, amounts, destinationAddress, walletProvider, tokenList, shouldDonateETH, amountToDonate]);
+		set_amountToDonate,
+		currentStep,
+		set_currentStep
+	}), [selected, amounts, destinationAddress, shouldDonateETH, amountToDonate, currentStep]);
 
 	return (
 		<SelectedContext.Provider value={contextValue}>
