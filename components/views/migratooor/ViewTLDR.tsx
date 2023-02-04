@@ -1,5 +1,5 @@
 import React from 'react';
-import {useSelected} from 'contexts/useSelected';
+import {useMigratooor} from 'contexts/useMigratooor';
 import {useWallet} from 'contexts/useWallet';
 import {useChain} from '@yearn-finance/web-lib/hooks/useChain';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
@@ -8,7 +8,7 @@ import {ETH_TOKEN_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
 import type {ReactElement} from 'react';
 
 function	ViewTLDR(): ReactElement {
-	const	{selected, amounts, destinationAddress, amountToDonate} = useSelected();
+	const	{selected, amounts, destinationAddress, amountToDonate} = useMigratooor();
 	const	{balances} = useWallet();
 	const	chain = useChain();
 

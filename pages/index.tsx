@@ -3,14 +3,14 @@ import ViewDestination from 'components/views/migratooor/ViewDestination';
 import ViewTable from 'components/views/migratooor/ViewTable';
 import ViewTLDR from 'components/views/migratooor/ViewTLDR';
 import ViewWallet from 'components/views/ViewWallet';
-import {SelectedContextApp, Step, useSelected} from 'contexts/useSelected';
+import {MigratooorContextApp, Step, useMigratooor} from 'contexts/useMigratooor';
 import thumbnailVariants from 'utils/animations';
 import {motion} from 'framer-motion';
 
 import type {ReactElement} from 'react';
 
 function	Home(): ReactElement {
-	const	{currentStep, set_currentStep} = useSelected();
+	const	{currentStep, set_currentStep} = useMigratooor();
 
 	return (
 		<div
@@ -47,9 +47,9 @@ function	Home(): ReactElement {
 
 export default function Wrapper(): ReactElement {
 	return (
-		<SelectedContextApp>
+		<MigratooorContextApp>
 			<Home />
-		</SelectedContextApp>
+		</MigratooorContextApp>
 	);
 }
 

@@ -3,7 +3,7 @@ import Link from 'next/link';
 import IconInfo from 'components/icons/IconInfo';
 import {ImageWithFallback} from 'components/ImageWithFallback';
 import ListHead from 'components/ListHead';
-import {useSelected} from 'contexts/useSelected';
+import {useMigratooor} from 'contexts/useMigratooor';
 import {useWallet} from 'contexts/useWallet';
 import {sendEther} from 'utils/actions/sendEth';
 import {transfer} from 'utils/actions/transferToken';
@@ -29,7 +29,7 @@ import type {TDict} from '@yearn-finance/web-lib/utils/types';
 
 function	TokenRow({address: tokenAddress, balance}: {balance: TMinBalanceData, address: TAddress}): ReactElement {
 	const {balances} = useWallet();
-	const {selected, set_selected, amounts, set_amounts, destinationAddress} = useSelected();
+	const {selected, set_selected, amounts, set_amounts, destinationAddress} = useMigratooor();
 	const {refresh} = useWallet();
 	const {provider, chainID, isActive} = useWeb3();
 	const {safeChainID} = useChainID();
@@ -204,7 +204,7 @@ function	TokenRow({address: tokenAddress, balance}: {balance: TMinBalanceData, a
 function	DonateRow(): ReactElement {
 	const {balances, refresh} = useWallet();
 	const {provider, isActive} = useWeb3();
-	const {amounts, set_amounts, shouldDonateETH, amountToDonate, set_shouldDonateETH, set_amountToDonate} = useSelected();
+	const {amounts, set_amounts, shouldDonateETH, amountToDonate, set_shouldDonateETH, set_amountToDonate} = useMigratooor();
 	const [txStatus, set_txStatus] = useState(defaultTxStatus);
 	const chain = useChain();
 
@@ -304,7 +304,7 @@ function	DonateRow(): ReactElement {
 
 function	ViewTable(): ReactElement {
 	const	{provider, isActive, chainID} = useWeb3();
-	const	{selected, set_selected, amounts, set_amounts, destinationAddress, shouldDonateETH, amountToDonate, set_amountToDonate, set_shouldDonateETH} = useSelected();
+	const	{selected, set_selected, amounts, set_amounts, destinationAddress, shouldDonateETH, amountToDonate, set_amountToDonate, set_shouldDonateETH} = useMigratooor();
 	const	{balances, refresh, balancesNonce} = useWallet();
 	const	[sortBy, set_sortBy] = useState<string>('apy');
 	const	[sortDirection, set_sortDirection] = useState<'asc' | 'desc'>('desc');

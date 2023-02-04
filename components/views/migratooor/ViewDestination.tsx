@@ -1,7 +1,7 @@
 import React, {useCallback, useState} from 'react';
 import IconCheck from 'components/icons/IconCheck';
 import IconCircleCross from 'components/icons/IconCircleCross';
-import {Step, useSelected} from 'contexts/useSelected';
+import {Step, useMigratooor} from 'contexts/useMigratooor';
 import {ethers} from 'ethers';
 import {isAddress} from 'ethers/lib/utils';
 import {useUpdateEffect} from '@react-hookz/web';
@@ -15,7 +15,7 @@ import type {ReactElement} from 'react';
 import type {TAddress} from '@yearn-finance/web-lib/utils/address';
 
 function	ViewDestination(): ReactElement {
-	const	{set_destinationAddress, set_currentStep} = useSelected();
+	const	{set_destinationAddress, set_currentStep} = useMigratooor();
 	const	[destination, set_destination] = useState<string>('');
 	const	[validishDestination, set_validishDestination] = useState<string>('');
 	const	[isValidDestination, set_isValidDestination] = useState<boolean | 'undetermined'>('undetermined');

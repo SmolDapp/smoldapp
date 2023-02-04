@@ -46,8 +46,8 @@ const	defaultProps: TSelected = {
 	set_currentStep: (): void => undefined
 };
 
-const	SelectedContext = createContext<TSelected>(defaultProps);
-export const SelectedContextApp = ({children}: {children: React.ReactElement}): React.ReactElement => {
+const	MigratooorContext = createContext<TSelected>(defaultProps);
+export const MigratooorContextApp = ({children}: {children: React.ReactElement}): React.ReactElement => {
 	const	{address, isActive, walletType} = useWeb3();
 	const	[destinationAddress, set_destinationAddress] = useState<TAddress>(toAddress());
 	const	[selected, set_selected] = useState<TAddress[]>([]);
@@ -102,11 +102,11 @@ export const SelectedContextApp = ({children}: {children: React.ReactElement}): 
 	}), [selected, amounts, destinationAddress, shouldDonateETH, amountToDonate, currentStep]);
 
 	return (
-		<SelectedContext.Provider value={contextValue}>
+		<MigratooorContext.Provider value={contextValue}>
 			{children}
-		</SelectedContext.Provider>
+		</MigratooorContext.Provider>
 	);
 };
 
 
-export const useSelected = (): TSelected => useContext(SelectedContext);
+export const useMigratooor = (): TSelected => useContext(MigratooorContext);
