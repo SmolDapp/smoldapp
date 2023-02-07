@@ -21,7 +21,7 @@ async function performCall({
 	address,
 	tokens
 }: TPerformCall): Promise<[TDict<TMinBalanceData>, Error | undefined]> {
-	const	currentProvider = getProvider(1337 || chainID);
+	const	currentProvider = getProvider(chainID);
 	const	ethcallProvider = await newEthCallProvider(currentProvider);
 
 	const	calls = [];
