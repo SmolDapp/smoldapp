@@ -1,5 +1,5 @@
 import React, {createContext, useContext, useMemo, useState} from 'react';
-import {useUpdateEffect} from '@react-hookz/web';
+import {useMountEffect, useUpdateEffect} from '@react-hookz/web';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
@@ -74,16 +74,37 @@ export const MigratooorContextApp = ({children}: {children: React.ReactElement})
 		}
 	}, [address, isActive]);
 
-	useUpdateEffect((): void => {
+	useMountEffect((): void => {
 		setTimeout((): void => {
 			if (currentStep === Step.WALLET && walletType !== 'EMBED_LEDGER') {
 				document?.getElementById('wallet')?.scrollIntoView({behavior: 'smooth', block: 'start'});
 			} else if (currentStep === Step.DESTINATION || walletType === 'EMBED_LEDGER') {
 				document?.getElementById('destination')?.scrollIntoView({behavior: 'smooth', block: 'start'});
 			} else if (currentStep === Step.SELECTOR) {
-				document?.getElementById('select')?.scrollIntoView({behavior: 'smooth', block: 'start'});
+				document?.getElementById('selector')?.scrollIntoView({behavior: 'smooth', block: 'start'});
 			}
-		}, 200);
+		}, 0);
+	});
+
+	useUpdateEffect((): void => {
+		setTimeout((): void => {
+			let currentStepContainer;
+			const scalooor = document?.getElementById('scalooor');
+			const headerHeight = 96;
+
+			if (currentStep === Step.WALLET && walletType !== 'EMBED_LEDGER') {
+				currentStepContainer = document?.getElementById('wallet');
+			} else if (currentStep === Step.DESTINATION || walletType === 'EMBED_LEDGER') {
+				currentStepContainer = document?.getElementById('destination');
+			} else if (currentStep === Step.SELECTOR) {
+				currentStepContainer = document?.getElementById('selector');
+			}
+			const	currentElementHeight = currentStepContainer?.offsetHeight;
+			if (scalooor?.style) {
+				scalooor.style.height = `calc(100vh - ${currentElementHeight}px - ${headerHeight}px + 16px)`;
+			}
+			currentStepContainer?.scrollIntoView({behavior: 'smooth', block: 'start'});
+		}, 100);
 	}, [currentStep]);
 
 	const	contextValue = useMemo((): TSelected => ({
@@ -103,7 +124,10 @@ export const MigratooorContextApp = ({children}: {children: React.ReactElement})
 
 	return (
 		<MigratooorContext.Provider value={contextValue}>
-			{children}
+			<div id={'MiratooorView'} className={'mx-auto w-full overflow-hidden'}>
+				{children}
+				<div id={'scalooor'} />
+			</div>
 		</MigratooorContext.Provider>
 	);
 };

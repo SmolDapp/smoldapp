@@ -13,6 +13,7 @@ export type TTokenInfo = {
 	name: string,
 	symbol: string,
 	decimals: number,
+	logoURI: string,
 };
 export type TTokenList = {
 	name: string;
@@ -33,12 +34,13 @@ export const TokenListContextApp = ({children}: {children: React.ReactElement}):
 	const	[tokenList, set_tokenList] = useState<TDict<TTokenInfo>>({});
 
 	useMountEffect((): void => {
-		axios.get('https://raw.githubusercontent.com/Migratooor/tokenLists/main/lists/coingecko.json').then((response): void => {
+		axios.get('https://raw.githubusercontent.com/Migratooor/tokenLists/main/lists/tokenlistooor.json').then((response): void => {
 			const	tokenListResponse = response.data as TTokenList;
 			const	tokenListTokens: TDict<TTokenInfo> = {};
 			for (const eachToken of tokenListResponse.tokens) {
 				tokenListTokens[toAddress(eachToken.address)] = eachToken;
 			}
+			// set_tokenList(tokenListTokens);
 		});
 	});
 

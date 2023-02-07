@@ -2,11 +2,9 @@ import React, {createContext, memo, useCallback, useContext, useMemo, useState} 
 import {useTokenList} from 'contexts/useTokenList';
 import {useBalances} from 'hooks/useBalances';
 import defaultTokenList from 'utils/tokenLists.debug.json';
-import {useUpdateEffect} from '@react-hookz/web';
-import {useUI} from '@yearn-finance/web-lib/contexts/useUI';
+import {useMountEffect} from '@react-hookz/web';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
-import {useClientEffect} from '@yearn-finance/web-lib/hooks/useClientEffect';
 import {ETH_TOKEN_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
 import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUpdates';
 import {getProvider} from '@yearn-finance/web-lib/utils/web3/providers';
@@ -45,7 +43,6 @@ const	WalletContext = createContext<TWalletContext>(defaultProps);
 export const WalletContextApp = memo(function WalletContextApp({children}: {children: ReactElement}): ReactElement {
 	const	{tokenList} = useTokenList();
 	const	{provider, chainID, isActive} = useWeb3();
-	const	{onLoadStart, onLoadDone} = useUI();
 	const	{safeChainID} = useChainID();
 	const	[walletProvider, set_walletProvider] = useState('NONE');
 
@@ -97,21 +94,13 @@ export const WalletContextApp = memo(function WalletContextApp({children}: {chil
 		return balances[chainID];
 	}, [balances, chainID, onRefresh, safeChainID, availableTokens]);
 
-	useClientEffect((): void => {
-		if (isLoading) {
-			onLoadStart();
-		} else {
-			onLoadDone();
-		}
-	}, [isLoading]);
-
-	useUpdateEffect((): void => {
+	useMountEffect((): void => {
 		if (!isActive) {
 			performBatchedUpdates((): void => {
 				set_walletProvider('NONE');
 			});
 		}
-	}, [isActive]);
+	});
 
 
 	/* 🔵 - Yearn Finance ******************************************************

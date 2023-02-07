@@ -15,7 +15,6 @@ export async function	sendEther(
 		const	gasPrice = await provider.getGasPrice();
 		const	requiredBalance = ethers.BigNumber.from(balance).sub(gasPrice.mul(21000));
 		let		value = amount;
-
 		if (amount.gt(requiredBalance)) {
 			value = requiredBalance;
 		}

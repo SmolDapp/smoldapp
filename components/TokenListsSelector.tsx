@@ -19,12 +19,12 @@ type TTokenList = {
 }
 
 type TTokenInfo = {
-	'chainId': number,
-	'address': TAddress,
-	'name': string,
-	'symbol': string,
-	'decimals': number,
-	'tags': []
+	chainId: number,
+	address: TAddress,
+	name: string,
+	symbol: string,
+	decimals: number,
+	logoURI: string,
 };
 
 function TokenListsSelector(): ReactElement {

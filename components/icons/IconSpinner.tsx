@@ -6,7 +6,7 @@ function	IconSpinner(props: React.SVGProps<SVGSVGElement>): ReactElement {
 	return (
 		<svg
 			{...props}
-			className={'animate-spin text-neutral-900 w-4 h-4'}
+			className={'h-4 w-4 animate-spin text-neutral-900'}
 			xmlns={'http://www.w3.org/2000/svg'}
 			fill={'none'}
 			viewBox={'0 0 24 24'}>
@@ -16,7 +16,7 @@ function	IconSpinner(props: React.SVGProps<SVGSVGElement>): ReactElement {
 				cy={'12'}
 				r={'10'}
 				stroke={'currentColor'}
-				stroke-width={'4'}>
+				strokeWidth={'4'}>
 			</circle>
 			<path
 				className={'opacity-75'}

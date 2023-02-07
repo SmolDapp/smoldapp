@@ -443,54 +443,52 @@ function	ViewTable(): ReactElement {
 	}
 
 	return (
-		<section className={'pt-10'}>
-			<div id={'select'} className={'box-0 relative grid w-full grid-cols-12 overflow-hidden'}>
-				<div className={'col-span-12 flex flex-col p-4 text-neutral-900 md:p-6 md:pb-4'}>
-					<div className={'w-full md:w-3/4'}>
-						<b>{'Select the tokens to migrate'}</b>
-						<p className={'text-sm text-neutral-500'}>
-							{'Select the tokens you want to migrate to another wallet. You can migrate all your tokens at once or select individual tokens.'}
-						</p>
-					</div>
-				</div>
-
-				<div className={'col-span-12 border-t border-neutral-200'}>
-					<ListHead
-						sortBy={sortBy}
-						sortDirection={sortDirection}
-						onSort={(newSortBy, newSortDirection): void => {
-							performBatchedUpdates((): void => {
-								set_sortBy(newSortBy);
-								set_sortDirection(newSortDirection as 'asc' | 'desc');
-							});
-						}}
-						items={[
-							{label: 'Token', value: 'name', sortable: true},
-							{label: 'Amount', value: 'balance', sortable: false, className: 'col-span-10 md:pl-5', datatype: 'text'},
-							{label: '', value: '', sortable: false, className: 'col-span-2'}
-						]} />
-					<div>
-						{balancesToDisplay}
-					</div>
-				</div>
-
-				<DonateRow />
-
-				<div className={'text-neutral-0 fixed inset-x-0 bottom-0 z-20 col-span-12 flex w-full max-w-4xl flex-row items-center justify-between bg-neutral-900 p-4 md:relative md:px-6 md:py-4'}>
-					<div className={'flex flex-col'} />
-					<div>
-						<Button
-							className={'yearn--button-smaller !w-fit !text-sm'}
-							variant={'reverted'}
-							isBusy={txStatus.pending}
-							isDisabled={!isActive || ((selected.length === 0) && (amountToDonate.raw.isZero() && amountToDonate.raw.isZero()))}
-							onClick={async (): Promise<void> => onMigrateSelected()}>
-							{'Migrate selected'}
-						</Button>
-					</div>
+		<div className={'box-0 relative grid w-full grid-cols-12 overflow-hidden'}>
+			<div className={'col-span-12 flex flex-col p-4 text-neutral-900 md:p-6 md:pb-4'}>
+				<div className={'w-full md:w-3/4'}>
+					<b>{'Select the tokens to migrate'}</b>
+					<p className={'text-sm text-neutral-500'}>
+						{'Select the tokens you want to migrate to another wallet. You can migrate all your tokens at once or select individual tokens.'}
+					</p>
 				</div>
 			</div>
-		</section>
+
+			<div className={'col-span-12 border-t border-neutral-200'}>
+				<ListHead
+					sortBy={sortBy}
+					sortDirection={sortDirection}
+					onSort={(newSortBy, newSortDirection): void => {
+						performBatchedUpdates((): void => {
+							set_sortBy(newSortBy);
+							set_sortDirection(newSortDirection as 'asc' | 'desc');
+						});
+					}}
+					items={[
+						{label: 'Token', value: 'name', sortable: true},
+						{label: 'Amount', value: 'balance', sortable: false, className: 'col-span-10 md:pl-5', datatype: 'text'},
+						{label: '', value: '', sortable: false, className: 'col-span-2'}
+					]} />
+				<div>
+					{balancesToDisplay}
+				</div>
+			</div>
+
+			<DonateRow />
+
+			<div className={'text-neutral-0 fixed inset-x-0 bottom-0 z-20 col-span-12 flex w-full max-w-4xl flex-row items-center justify-between bg-neutral-900 p-4 md:relative md:px-6 md:py-4'}>
+				<div className={'flex flex-col'} />
+				<div>
+					<Button
+						className={'yearn--button-smaller !w-fit !text-sm'}
+						variant={'reverted'}
+						isBusy={txStatus.pending}
+						isDisabled={!isActive || ((selected.length === 0) && (amountToDonate.raw.isZero() && amountToDonate.raw.isZero()))}
+						onClick={async (): Promise<void> => onMigrateSelected()}>
+						{'Migrate selected'}
+					</Button>
+				</div>
+			</div>
+		</div>
 	);
 }
 

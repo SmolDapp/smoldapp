@@ -97,7 +97,7 @@
 	@apply text-neutral-900;
 }
 .yearn--table-data-section-item {
-	@apply col-span-1 flex h-auto flex-col md:flex-row justify-between pt-0 px-0 md:h-14 md:py-2;
+	@apply col-span-1 flex h-auto flex-col justify-between pt-0 px-0 md:h-14 md:py-2;
 	&[datatype="number"] {
 		@apply md:justify-end font-number;
 		& > .yearn--table-data-section-item-value {

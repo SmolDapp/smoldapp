@@ -13,34 +13,30 @@ function	Home(): ReactElement {
 	const	{currentStep, set_currentStep} = useMigratooor();
 
 	return (
-		<div
-			key={'MigrateTable'}
-			className={'mx-auto w-full pb-[10vh] md:pb-[50vh]'}>
-			<div className={'grid gap-2'}>
-				<ViewWallet
-					onSelect={(): void => {
-						set_currentStep(Step.SELECTOR);
-						document?.getElementById('destination')?.scrollIntoView({behavior: 'smooth', block: 'center'});
-					}} />
+		<div className={'grid'}>
+			<ViewWallet
+				onSelect={(): void => {
+					set_currentStep(Step.DESTINATION);
+					document?.getElementById('destination')?.scrollIntoView({behavior: 'smooth', block: 'center'});
+				}} />
 
-				<motion.div
-					initial={'initial'}
-					animate={[Step.SELECTOR, Step.CONFIRMATION, Step.DESTINATION].includes(currentStep) ? 'enter' : 'initial'}
-					variants={thumbnailVariants}>
-					<ViewDestination />
-				</motion.div>
+			<motion.div
+				initial={'initial'}
+				animate={[Step.SELECTOR, Step.CONFIRMATION, Step.DESTINATION].includes(currentStep) ? 'enter' : 'initial'}
+				variants={thumbnailVariants}>
+				<ViewDestination />
+			</motion.div>
 
-				<motion.div
-					initial={'initial'}
-					animate={[Step.SELECTOR, Step.CONFIRMATION].includes(currentStep) ? 'enter' : 'initial'}
-					variants={thumbnailVariants}
-					className={[Step.SELECTOR, Step.CONFIRMATION].includes(currentStep) ? '' : 'pointer-events-none'}>
-					<>
-						<ViewTable />
-						<ViewTLDR />
-					</>
-				</motion.div>
-			</div>
+			<motion.div
+				initial={'initial'}
+				animate={[Step.SELECTOR, Step.CONFIRMATION].includes(currentStep) ? 'enter' : 'initial'}
+				variants={thumbnailVariants}
+				className={[Step.SELECTOR, Step.CONFIRMATION].includes(currentStep) ? '' : 'pointer-events-none'}>
+				<section id={'selector'} className={'mt-10'}>
+					<ViewTable />
+					<ViewTLDR />
+				</section>
+			</motion.div>
 		</div>
 	);
 }

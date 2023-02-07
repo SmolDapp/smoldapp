@@ -1,5 +1,4 @@
 import React from 'react';
-import Footer from 'components/common/Footer';
 import Header from 'components/common/Header';
 import Meta from 'components/common/Meta';
 import thumbnailVariants from 'utils/animations';
@@ -29,7 +28,6 @@ function	AppWrapper(props: AppProps): ReactElement {
 							{...pageProps} />
 					</motion.div>
 				</AnimatePresence>
-				<Footer />
 			</div>
 		</React.Fragment>
 	);

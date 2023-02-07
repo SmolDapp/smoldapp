@@ -14,7 +14,7 @@ export default function SettingsDrawer({isDrawerOpen, set_isDrawerOpen}: {
 		<Transition.Root show={isDrawerOpen} as={Fragment}>
 			<Dialog
 				as={'div'}
-				className={'relative z-10'}
+				className={'relative z-50'}
 				onClose={set_isDrawerOpen}>
 				<Transition.Child
 					as={Fragment}
