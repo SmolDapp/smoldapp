@@ -205,7 +205,7 @@ export function	useBalances(props?: TUseBalancesReq): TUseBalancesRes {
 		for (const chunkTokens of chunks) {
 			const	[newRawData, err] = await getBalances(
 				provider,
-				providers.getProvider(1337 || props?.chainID || web3ChainID || 1),
+				providers.getProvider(props?.chainID || web3ChainID || 1),
 				web3Address,
 				chunkTokens
 			);
