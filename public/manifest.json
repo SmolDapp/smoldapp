@@ -4,9 +4,9 @@
 	"description": "Quickly migrate your crypto assets from one wallet to another!",
 	"iconPath": "./favicons/favicon.svg",
 	"locale": "en-US",
-	"uri": "https://migratooor.ycorpo.com/",
-	"og": "https://migratooor.ycorpo.com/og.png",
-	"twitter": "@docudroid",
+	"uri": "https://migratooor.com/",
+	"og": "https://migratooor.com/og.png",
+	"twitter": "@migratooor",
 	"icons": [
 		{
 			"src": "./favicons/android-icon-192x192.png",

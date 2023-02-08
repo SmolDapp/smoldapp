@@ -74,7 +74,6 @@ function	Meta(): ReactElement {
 					sizes={'167x167'}
 					href={'/favicons/apple-icon-167x167.png'} />
 
-
 				<meta name={'robots'} content={'index,nofollow'} />
 				<meta name={'googlebot'} content={'index,nofollow'} />
 				<meta charSet={'utf-8'} />

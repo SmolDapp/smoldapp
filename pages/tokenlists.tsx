@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import {DefaultSeo} from 'next-seo';
 import {MigratooorContextApp} from 'contexts/useMigratooor';
 import dayjs, {extend} from 'dayjs';
 import dayjsDuration from 'dayjs/plugin/duration.js';
@@ -168,7 +169,7 @@ function Hero({summary}: {summary: TTokenListSummary | undefined}): ReactElement
 						{'Tokenlistooor'}
 					</h1>
 					<p className={'mt-4 text-base leading-normal text-neutral-500 md:mt-6 md:text-lg md:leading-8'}>
-						{'Generate token lists that fulfill your needs! Tokenlistooor is a fork of Uniswap Tokenlists, with focus on adding more automation and extra features.'}
+						{'Up to date token lists that fulfill your needs! Tokenlistooor is a fork of Uniswap Tokenlists, with focus on adding more automation and extra features.'}
 					</p>
 					<div className={'mt-6 flex items-center gap-x-6 md:mt-10'}>
 						<Link href={'https://github.com/migratooor/tokenlists/'} target={'_blank'}>
@@ -244,7 +245,34 @@ function	Home(): ReactElement {
 export default function Wrapper(): ReactElement {
 	return (
 		<MigratooorContextApp>
-			<Home />
+			<>
+				<DefaultSeo
+					title={'Tokenlistooor'}
+					defaultTitle={'Tokenlistooor'}
+					description={'Up to date token lists that fulfill your needs! Tokenlistooor is a fork of Uniswap Tokenlists, with focus on adding more automation and extra features.'}
+					openGraph={{
+						type: 'website',
+						locale: 'en-US',
+						url: 'https://migratooor.com/tokenlists/',
+						site_name: 'Tokenlistooor',
+						title: 'Tokenlistooor',
+						description: 'Up to date token lists that fulfill your needs! Tokenlistooor is a fork of Uniswap Tokenlists, with focus on adding more automation and extra features.',
+						images: [
+							{
+								url: 'https://migratooor.com/og_tokenlistooor.png',
+								width: 800,
+								height: 400,
+								alt: 'tokenListooor'
+							}
+						]
+					}}
+					twitter={{
+						handle: '@migratooor',
+						site: '@migratooor',
+						cardType: 'summary_large_image'
+					}} />
+				<Home />
+			</>
 		</MigratooorContextApp>
 	);
 }
