@@ -297,16 +297,20 @@ details {
 	}
 }
 
-details:last-of-type {
+.detailsSweep:last-of-type {
 	@apply border-b;
 }
 
-details {
+.detailsSweep {
 	@apply border-b-0;
 }
 
-details[open] {
+.detailsSweep[open] {
   @apply bg-neutral-100
+}
+
+.detailsTokenList[open] {
+  @apply bg-neutral-0
 }
 
 
