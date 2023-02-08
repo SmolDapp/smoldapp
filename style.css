@@ -308,3 +308,13 @@ details {
 details[open] {
   @apply bg-neutral-100
 }
+
+
+.featureGrid {
+    width: 100%;
+    grid-auto-columns: 1fr;
+    grid-column-gap: 10px;
+    grid-row-gap: 10px;
+    grid-template-columns: repeat(18, minmax(0, 1fr));
+    grid-template-rows: auto auto;
+}
