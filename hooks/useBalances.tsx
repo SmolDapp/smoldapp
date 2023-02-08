@@ -150,7 +150,6 @@ export function	useBalances(props?: TUseBalancesReq): TUseBalancesRes {
 	const	stringifiedTokens = useMemo((): string => JSON.stringify(props?.tokens || []), [props?.tokens]);
 
 	const	updateBalancesFromWorker = useCallback((newRawData: TDict<TMinBalanceData>, err?: Error): TDict<TMinBalanceData> => {
-		console.warn(newRawData, err);
 		if (toAddress(web3Address as string) !== data?.current?.[web3ChainID]?.address) {
 			data.current[web3ChainID] = {
 				address: toAddress(web3Address as string),
@@ -304,13 +303,12 @@ export function	useBalances(props?: TUseBalancesReq): TUseBalancesRes {
 		if (!isActive || !web3Address) {
 			return;
 		}
-		onUpdate();
-		// set_status({...defaultStatus, isLoading: true, isFetching: true, isRefetching: defaultStatus.isFetched});
-		// onLoadStart();
+		set_status({...defaultStatus, isLoading: true, isFetching: true, isRefetching: defaultStatus.isFetched});
+		onLoadStart();
 
-		// const	tokens = JSON.parse(stringifiedTokens) || [];
-		// const	chainID = 1337 || props?.chainID || web3ChainID || 1;
-		// workerRef?.current?.postMessage({chainID, address: web3Address, tokens});
+		const	tokens = JSON.parse(stringifiedTokens) || [];
+		const	chainID = 1337 || props?.chainID || web3ChainID || 1;
+		workerRef?.current?.postMessage({chainID, address: web3Address, tokens});
 	}, [stringifiedTokens, isActive, web3Address]);
 
 	const	contextValue = useMemo((): TUseBalancesRes => ({

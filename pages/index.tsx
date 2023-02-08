@@ -13,7 +13,7 @@ function	Home(): ReactElement {
 	const	{currentStep, set_currentStep} = useMigratooor();
 
 	return (
-		<div className={'grid'}>
+		<div className={'mx-auto grid w-full max-w-4xl'}>
 			<ViewWallet
 				onSelect={(): void => {
 					set_currentStep(Step.DESTINATION);
