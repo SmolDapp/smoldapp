@@ -8,6 +8,7 @@ import {useTimer} from 'hooks/useTimer';
 import relativeTimeFormat from 'utils/time';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import IconGithub from '@yearn-finance/web-lib/icons/IconSocialGithub';
+import {copyToClipboard} from '@yearn-finance/web-lib/utils/helpers';
 
 import type {TTokenListSummary} from 'pages/tokenlists';
 import type {ReactElement} from 'react';
@@ -81,8 +82,22 @@ function TokenListHero({summary}: {summary: TTokenListSummary | undefined}): Rea
 					</div>
 				</div>
 				<div className={'hidden w-full items-center justify-center pl-0 md:flex md:pl-20'}>
-					<div className={'flex items-center justify-center'}>
-						<div className={'box-0 relative flex flex-col p-6'}>
+					<div className={'flex flex-col items-center justify-center space-y-4'}>
+						<button
+							onClick={(): void => copyToClipboard('https://raw.githubusercontent.com/Migratooor/tokenLists/main/lists/tokenlistooor.json')}
+							className={'box-0 group relative flex w-full cursor-pointer flex-col justify-center text-ellipsis !border-dashed !border-neutral-300 px-4 py-2 transition-colors hover:!bg-neutral-100'}>
+							<p className={'font-number text-ellipsis text-base'}>
+								{'tokenlistooor.json'}
+							</p>
+							<div className={'absolute right-4'}>
+								<svg
+									xmlns={'http://www.w3.org/2000/svg'}
+									viewBox={'0 0 512 512'}
+									className={'h-4 w-4 text-neutral-300 transition-colors group-hover:text-neutral-900'}><path d={'M224 0c-35.3 0-64 28.7-64 64V288c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64H224zM64 160c-35.3 0-64 28.7-64 64V448c0 35.3 28.7 64 64 64H288c35.3 0 64-28.7 64-64V384H304v64c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V224c0-8.8 7.2-16 16-16h64V160H64z'} fill={'currentColor'}/>
+								</svg>
+							</div>
+						</button>
+						<div className={'box-0 relative flex flex-col p-4'}>
 							<div>
 								<b suppressHydrationWarning className={'font-number text-xl'}>{time}</b>
 								<p className={'pt-2 text-xs text-neutral-400'}>{'The next automatic update is just around the corner! Our lists are updated automatically with each new commit or every Sunday at midday, without any manual input.'}</p>

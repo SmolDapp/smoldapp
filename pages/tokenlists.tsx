@@ -1,13 +1,10 @@
-import React, {useState} from 'react';
+import React, {useMemo, useState} from 'react';
 import {DefaultSeo} from 'next-seo';
-import IconChevronBoth from 'components/icons/IconChevronBoth';
 import TokenListCard, {LegacyTokenListCard} from 'components/TokenListCard';
 import TokenListHero from 'components/TokenListHero';
 import {MigratooorContextApp} from 'contexts/useMigratooor';
 import LEGACY_TOKEN_LISTS from 'utils/legacyTokenLists';
-import axios from 'axios';
 import {motion} from 'framer-motion';
-import {useMountEffect} from '@react-hookz/web';
 
 import type {ReactElement} from 'react';
 
@@ -45,30 +42,65 @@ const variants = {
 	initial: {y: 60, opacity: 0}
 };
 
-function	Home(): ReactElement {
-	const	[allLists, set_allLists] = useState<TTokenListItem[]>([]);
-	const	[summary, set_summary] = useState<TTokenListSummary>();
+function	Home({summary}: {summary: TTokenListSummary}): ReactElement {
+	const	allLists = summary.lists;
+	const	[typeOfList, set_typeOfList] = useState<'tokens' | 'pools' | 'legacy'>('tokens');
 
-	useMountEffect((): void => {
-		axios.get('https://api.github.com/repos/migratooor/tokenlists/commits?sha=main&per_page=1')
-			.then((response): void => {
-				const	gihubCallResponse = (response.data as [{sha: string}]);
-				const	[{sha}] = gihubCallResponse;
-				axios.get(`https://raw.githubusercontent.com/Migratooor/tokenLists/${sha}/lists/summary.json`)
-					.then((response): void => {
-						const	tokenListResponse = response.data as TTokenListSummary;
-						set_allLists(tokenListResponse.lists);
-						set_summary(tokenListResponse);
-					});
-			});
-	});
+	const	{tokens, pools} = useMemo((): {tokens: TTokenListItem[], pools: TTokenListItem[]} => {
+		const	tokens: TTokenListItem[] = [];
+		const	pools: TTokenListItem[] = [];
+		// Token Pairs
+		allLists.forEach((list: TTokenListItem): void => {
+			if (list.name.toLowerCase().includes('token pair')) {
+				pools.push(list);
+			} else {
+				tokens.push(list);
+			}
+		});
+		return ({tokens, pools});
+	}, [allLists]);
 
+
+	const	listToRender = typeOfList === 'tokens' ? tokens : typeOfList === 'pools' ? pools : undefined;
 	return (
 		<>
 			<TokenListHero summary={summary} />
+			<div className={'mx-auto mt-10 grid w-full max-w-4xl'}>
+				<menu className={'mb-4 flex flex-row justify-end text-xs'}>
+					<button
+						onClick={(): void => set_typeOfList('tokens')}
+						className={`transition-colors ${typeOfList === 'tokens' ? 'text-neutral-700' : 'cursor-pointer text-neutral-400/80 hover:text-neutral-700'}`}>
+						{'Tokens'}
+					</button>
+					&nbsp;<p className={'text-neutral-400/80'}>{'/'}</p>&nbsp;
+					<button
+						onClick={(): void => set_typeOfList('pools')}
+						className={`transition-colors ${typeOfList === 'pools' ? 'text-neutral-700' : 'cursor-pointer text-neutral-400/80 hover:text-neutral-700'}`}>
+						{'Pools'}
+					</button>
+					&nbsp;<p className={'text-neutral-400/80'}>{'/'}</p>&nbsp;
+					<button
+						onClick={(): void => set_typeOfList('legacy')}
+						className={`transition-colors ${typeOfList === 'legacy' ? 'text-neutral-700' : 'cursor-pointer text-neutral-400/80 hover:text-neutral-700'}`}>
+						{'Legacy'}
+					</button>
+				</menu>
+			</div>
 			<div className={'mx-auto grid w-full max-w-4xl'}>
-				<div id={'tokenlistooor'} className={'mt-10 grid grid-cols-1 gap-6 pb-32 md:grid-cols-3'}>
-					{(allLists || []).map((tokenListItem: TTokenListItem, i: number): ReactElement => (
+				<div id={'tokenlistooor'} className={'grid grid-cols-1 gap-6 pb-32 md:grid-cols-3'}>
+					{typeOfList === 'legacy' ? (
+						(LEGACY_TOKEN_LISTS || []).map((tokenListItem, i): ReactElement => (
+							<motion.div
+								key={tokenListItem.name}
+								custom={i}
+								initial={'initial'}
+								whileInView={'enter'}
+								variants={variants}
+								className={'box-0 relative flex w-full pt-4 md:pt-6'}>
+								<LegacyTokenListCard item={tokenListItem} />
+							</motion.div>
+						))
+					) : (listToRender || []).map((tokenListItem: TTokenListItem, i: number): ReactElement => (
 						<motion.div
 							key={tokenListItem.name}
 							custom={i}
@@ -80,35 +112,12 @@ function	Home(): ReactElement {
 						</motion.div>
 					))}
 				</div>
-				<div className={'mb-32'}>
-					<details className={'rounded-default detailsTokenList mb-0 flex w-full flex-col justify-center'}>
-						<summary className={'box-0 flex flex-col items-start py-2 transition-colors hover:bg-neutral-100'}>
-							<div className={'flex w-full flex-row items-center justify-between'}>
-								<b className={'text-left text-sm'}>
-									{'Legacy lists'}
-								</b>
-								<div>
-									<IconChevronBoth className={'h-4 w-4 text-neutral-500 transition-colors group-hover:text-neutral-900'} />
-								</div>
-							</div>
-						</summary>
-
-
-						<div className={'grid grid-cols-1 gap-6 pt-6 md:grid-cols-3'}>
-							{(LEGACY_TOKEN_LISTS || []).map((tokenListItem): ReactElement => (
-								<div key={tokenListItem.name} className={'box-0 relative flex w-full pt-4 md:pt-6'}>
-									<LegacyTokenListCard item={tokenListItem} />
-								</div>
-							))}
-						</div>
-					</details>
-				</div>
 			</div>
 		</>
 	);
 }
 
-export default function Wrapper(): ReactElement {
+export default function Wrapper({summary}: {summary: TTokenListSummary}): ReactElement {
 	return (
 		<MigratooorContextApp>
 			<>
@@ -137,9 +146,19 @@ export default function Wrapper(): ReactElement {
 						site: '@migratooor',
 						cardType: 'summary_large_image'
 					}} />
-				<Home />
+				<Home summary={summary} />
 			</>
 		</MigratooorContextApp>
 	);
 }
 
+Wrapper.getInitialProps = async (): Promise<unknown> => {
+	const	shaRes = await fetch('https://api.github.com/repos/migratooor/tokenlists/commits?sha=main&per_page=1');
+	const	shaJson = await shaRes.json();
+	const	gihubCallResponse = (shaJson as [{sha: string}]);
+	const	[{sha}] = gihubCallResponse;
+	const	listRes = await fetch(`https://raw.githubusercontent.com/Migratooor/tokenLists/${sha}/lists/summary.json`);
+	const	tokenListResponse = await listRes.json();
+
+	return {summary: tokenListResponse};
+};

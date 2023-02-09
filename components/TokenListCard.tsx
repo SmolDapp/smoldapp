@@ -41,7 +41,7 @@ function TokenListCard({item}: {item: TTokenListItem}): ReactElement {
 				<div className={'border-y border-dashed border-neutral-200'}>
 					<div className={'flex flex-row items-center justify-between py-2 px-4 transition-colors md:px-6'}>
 						<small className={'text-neutral-500'}>{'Tokens '}</small>
-						<b>{`${formatAmount(item.tokenCount, 0, 0)}`}</b>
+						<b suppressHydrationWarning>{`${formatAmount(item.tokenCount, 0, 0)}`}</b>
 					</div>
 				</div>
 				<div className={'border-y border-dashed border-neutral-200'}>
