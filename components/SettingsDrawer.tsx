@@ -14,7 +14,7 @@ export default function SettingsDrawer({isDrawerOpen, set_isDrawerOpen}: {
 		<Transition.Root show={isDrawerOpen} as={Fragment}>
 			<Dialog
 				as={'div'}
-				className={'relative z-50'}
+				className={'relative z-40'}
 				onClose={set_isDrawerOpen}>
 				<Transition.Child
 					as={Fragment}
@@ -39,13 +39,13 @@ export default function SettingsDrawer({isDrawerOpen, set_isDrawerOpen}: {
 								leaveFrom={'translate-x-0'}
 								leaveTo={'translate-x-full'}>
 								<Dialog.Panel className={'pointer-events-auto w-screen md:max-w-lg'}>
-									<div className={'box-0 flex h-full flex-col overflow-y-scroll !rounded-none'}>
+									<div className={'box-0 flex h-full flex-col overflow-y-scroll !rounded-none !border-l-neutral-200'}>
 										<div className={'mb-4 border-b border-neutral-200 pb-4'}>
 											<div>
 												<section aria-label={'tokenLists'} className={'w-full p-6 pt-4'}>
-													<b>{'Select your tokenlists or include individual tokens'}</b>
+													<b>{'Add a token'}</b>
 													<p className={'text-xs text-neutral-500'}>
-														{'Token Lists is a community-led initiative to improve discoverability, reputation and trust in ERC20 token lists in a manner that is inclusive, transparent, and decentralized. This regroups popular tokens for easy access.'}
+														{'Enter a token address to add it to the migratooor list!'}
 													</p>
 													<div className={'mt-6'}>
 														<CustomTokenSelector />

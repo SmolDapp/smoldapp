@@ -3,12 +3,12 @@ import SmallButton from 'components/common/SmallButton';
 import IconCheck from 'components/icons/IconCheck';
 import {ImageWithFallback} from 'components/ImageWithFallback';
 import {useWallet} from 'contexts/useWallet';
-import TOKEN_LISTS from 'utils/tokenLists';
 import axios from 'axios';
-import {useThrottledCallback} from '@react-hookz/web';
+import {useMountEffect, useThrottledCallback} from '@react-hookz/web';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUpdates';
 
+import type {TTokenListItem, TTokenListSummary} from 'pages/tokenlists';
 import type {ReactElement} from 'react';
 import type {TAddress} from '@yearn-finance/web-lib/utils/address';
 import type {TDict} from '@yearn-finance/web-lib/utils/types';
@@ -27,28 +27,44 @@ type TTokenInfo = {
 	logoURI: string,
 };
 
+async function fetchTokenListSummary(): Promise<TTokenListSummary> {
+	const	shaRes = await fetch('https://api.github.com/repos/migratooor/tokenlists/commits?sha=main&per_page=1');
+	const	shaJson = await shaRes.json();
+	const	gihubCallResponse = (shaJson as [{sha: string}]);
+	const	[{sha}] = gihubCallResponse;
+	const	listRes = await fetch(`https://raw.githubusercontent.com/Migratooor/tokenLists/${sha}/lists/summary.json`);
+	const	tokenListResponse = await listRes.json();
+	return tokenListResponse as TTokenListSummary;
+}
+
 function TokenListsSelector(): ReactElement {
 	const {refreshWithList} = useWallet();
-	const [isRefreshing, set_isRefreshing] = useState<TDict<boolean>>({});
 	const tokenListRef = useRef<TDict<TTokenList>>({});
 	const tokenListFetchedRef = useRef<TDict<boolean>>({});
 	const tokenListTokensRef = useRef<TDict<TTokenInfo>>({});
-	const [selected, set_selected] = useState([TOKEN_LISTS[0], TOKEN_LISTS[1]]);
+	const [selected, set_selected] = useState<TTokenListItem[]>([]);
+	const [isRefreshing, set_isRefreshing] = useState<TDict<boolean>>({});
+	const [tokenlists, set_tokenlists] = useState<TTokenListSummary | undefined>(undefined);
+
+	useMountEffect((): void => {
+		fetchTokenListSummary().then((tokenListSummary): void => {
+			performBatchedUpdates((): void => {
+				set_tokenlists(tokenListSummary);
+				set_selected(tokenListSummary.lists.filter((list): boolean => list.name === 'Tokenlistooor Token List'));
+			});
+		});
+	});
 
 	const	fetchTokenListData = useThrottledCallback(async (): Promise<void> =>{
 		const	calls = [];
 		//Fetch only the one missings
 		for (const eachList of selected) {
 			if (!tokenListFetchedRef.current[eachList.name]) {
-				calls.push(axios(eachList.uri));
+				calls.push(axios(eachList.URI));
 			}
 		}
 		const	results = await axios.all(calls);
 		let		resultIndex = 0;
-
-		for (const iterator of results) {
-			console.log(iterator.data.logoURI);
-		}
 
 		//Save them in a ref so we can use them later, excluding the ones we already have
 		for (const eachList of selected) {
@@ -76,7 +92,7 @@ function TokenListsSelector(): ReactElement {
 
 	return (
 		<div className={'grid gap-4'}>
-			{TOKEN_LISTS.map((list, listIdx): ReactElement => (
+			{(tokenlists?.lists || []).map((list, listIdx): ReactElement => (
 				<div key={listIdx}>
 					<div className={'yearn--table-token-section-item w-full'}>
 						<div className={'yearn--table-token-section-item-image'}>
@@ -85,7 +101,8 @@ function TokenListsSelector(): ReactElement {
 								width={40}
 								height={40}
 								quality={90}
-								src={list.imageSrc}
+								unoptimized
+								src={list.logoURI?.startsWith('ipfs://') ? `https://ipfs.io/ipfs/${list.logoURI.replace('ipfs://', '')}` : list.logoURI}
 								loading={'eager'} />
 						</div>
 						<div className={'grow'}>
@@ -113,11 +130,11 @@ function TokenListsSelector(): ReactElement {
 							</div>
 							<div className={'w-full max-w-[240px] truncate md:max-w-xs'}>
 								<a
-									href={list.uri}
+									href={list.URI}
 									target={'_blank'}
 									rel={'noopener noreferrer'}
 									className={'cursor-pointer font-mono text-xs text-neutral-500 transition-colors hover:text-neutral-900'}>
-									{list.uri}
+									{`${list.URI.replace('https://raw.githubusercontent.com/Migratooor/tokenLists/main/lists/', '')}`}
 								</a>
 							</div>
 						</div>

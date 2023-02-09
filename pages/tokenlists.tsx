@@ -49,9 +49,8 @@ function	Home({summary}: {summary: TTokenListSummary}): ReactElement {
 	const	{tokens, pools} = useMemo((): {tokens: TTokenListItem[], pools: TTokenListItem[]} => {
 		const	tokens: TTokenListItem[] = [];
 		const	pools: TTokenListItem[] = [];
-		// Token Pairs
 		allLists.forEach((list: TTokenListItem): void => {
-			if (list.name.toLowerCase().includes('token pair')) {
+			if (list.name.toLowerCase().includes('token pool')) {
 				pools.push(list);
 			} else {
 				tokens.push(list);
