@@ -3,6 +3,7 @@ import Balancer from 'react-wrap-balancer';
 import Link from 'next/link';
 import LogoMigratooor from 'components/icons/LogoMigratooor';
 import LogoTokenlistooor from 'components/icons/LogoTokenlistooor';
+import {Button} from '@yearn-finance/web-lib/components/Button';
 import {useClientEffect} from '@yearn-finance/web-lib/hooks/useClientEffect';
 
 import type {ReactElement} from 'react';
@@ -82,17 +83,29 @@ function	Index(): ReactElement {
 						</p>
 					</div>
 				</div>
-				<div className={'my-8'}>
+				<div className={'mt-8 mb-2'}>
 					<p className={'text-center text-lg md:text-2xl'}>
 						{'The registry for small, simple, and secure dapps for all your needs.'}
 					</p>
 				</div>
-				<div className={'mb-12'}>
+				<div className={'mb-8'}>
 					<p className={'text-center text-sm text-neutral-500 md:text-base'}>
 						<Balancer>
 							{'With an always growing list of dapps, it\'s difficult to find the right one for you. Smol Dapp is a registry of quality dapps build by trusted members of the community.'}
 						</Balancer>
 					</p>
+				</div>
+				<div className={'mb-12 flex flex-row items-center justify-center space-x-6'}>
+					<Link href={'https://twitter.com/smoldapp'}>
+						<Button className={'w-[140px]'}>
+							{'Twitter'}
+						</Button>
+					</Link>
+					<Link href={'https://t.me/smoldapp'}>
+						<Button className={'w-[140px]'}>
+							{'Telegram'}
+						</Button>
+					</Link>
 				</div>
 			</div>
 			<section className={'grid grid-cols-1 gap-10 md:grid-cols-2'}>
