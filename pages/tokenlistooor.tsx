@@ -141,8 +141,8 @@ export default function Wrapper({summary}: {summary: TTokenListSummary}): ReactE
 						]
 					}}
 					twitter={{
-						handle: '@migratooor',
-						site: '@migratooor',
+						handle: '@smoldapp',
+						site: '@smoldapp',
 						cardType: 'summary_large_image'
 					}} />
 				<Home summary={summary} />

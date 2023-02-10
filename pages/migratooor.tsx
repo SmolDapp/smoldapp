@@ -67,8 +67,8 @@ export default function Wrapper(): ReactElement {
 						]
 					}}
 					twitter={{
-						handle: '@migratooor',
-						site: '@migratooor',
+						handle: '@smoldapp',
+						site: '@smoldapp',
 						cardType: 'summary_large_image'
 					}} />
 				<Home />

@@ -1,12 +1,12 @@
 {
 	"name": "Smol Dapp",
-	"short_name": "Migratooor",
+	"short_name": "SmolDapp",
 	"description": "The registry for small, simple, and secure dapps for all your needs.",
 	"iconPath": "./favicons/favicon.svg",
 	"locale": "en-US",
 	"uri": "https://smold.app/",
 	"og": "https://smold.app/og.png",
-	"twitter": "@migratooor",
+	"twitter": "@smoldapp",
 	"icons": [
 		{
 			"src": "./favicons/android-icon-192x192.png",
