@@ -127,13 +127,13 @@ export default function Wrapper({summary}: {summary: TTokenListSummary}): ReactE
 					openGraph={{
 						type: 'website',
 						locale: 'en-US',
-						url: 'https://migratooor.com/tokenlists/',
+						url: 'https://tokenlistooor.com/',
 						site_name: 'Tokenlistooor',
 						title: 'Tokenlistooor',
 						description: 'Up to date token lists that fulfill your needs! Tokenlistooor is a fork of Uniswap Tokenlists, with focus on adding more automation and extra features.',
 						images: [
 							{
-								url: 'https://migratooor.com/og_tokenlistooor.png',
+								url: 'https://tokenlistooor.com/og_tokenlistooor.png',
 								width: 800,
 								height: 400,
 								alt: 'tokenListooor'

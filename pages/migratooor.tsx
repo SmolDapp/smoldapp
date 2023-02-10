@@ -1,4 +1,5 @@
 import React from 'react';
+import {DefaultSeo} from 'next-seo';
 import ViewDestination from 'components/views/migratooor/ViewDestination';
 import ViewTable from 'components/views/migratooor/ViewTable';
 import ViewTLDR from 'components/views/migratooor/ViewTLDR';
@@ -44,7 +45,34 @@ function	Home(): ReactElement {
 export default function Wrapper(): ReactElement {
 	return (
 		<MigratooorContextApp>
-			<Home />
+			<>
+				<DefaultSeo
+					title={'Migratooor'}
+					defaultTitle={'Migratooor'}
+					description={'The easiest way to migrate your tokens from one wallet to another.'}
+					openGraph={{
+						type: 'website',
+						locale: 'en-US',
+						url: 'https://migratooor.com',
+						site_name: 'Migratooor',
+						title: 'Migratooor',
+						description: 'The easiest way to migrate your tokens from one wallet to another.',
+						images: [
+							{
+								url: 'https://migratooor.com/og_migratooor.png',
+								width: 800,
+								height: 400,
+								alt: 'migratooor'
+							}
+						]
+					}}
+					twitter={{
+						handle: '@migratooor',
+						site: '@migratooor',
+						cardType: 'summary_large_image'
+					}} />
+				<Home />
+			</>
 		</MigratooorContextApp>
 	);
 }
