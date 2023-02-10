@@ -1,11 +1,11 @@
 {
-	"name": "Migratooor",
+	"name": "Smol Dapp",
 	"short_name": "Migratooor",
-	"description": "Quickly migrate your crypto assets from one wallet to another!",
+	"description": "The registry for small, simple, and secure dapps for all your needs.",
 	"iconPath": "./favicons/favicon.svg",
 	"locale": "en-US",
-	"uri": "https://migratooor.com/",
-	"og": "https://migratooor.com/og.png",
+	"uri": "https://smold.app/",
+	"og": "https://smold.app/og.png",
 	"twitter": "@migratooor",
 	"icons": [
 		{
