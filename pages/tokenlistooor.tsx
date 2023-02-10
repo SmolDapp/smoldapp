@@ -68,19 +68,19 @@ function	Home({summary}: {summary: TTokenListSummary}): ReactElement {
 				<menu className={'mb-4 flex flex-row justify-end text-xs'}>
 					<button
 						onClick={(): void => set_typeOfList('tokens')}
-						className={`transition-colors ${typeOfList === 'tokens' ? 'text-neutral-700' : 'cursor-pointer text-neutral-400/80 hover:text-neutral-700'}`}>
+						className={`transition-colors ${typeOfList === 'tokens' ? 'text-neutral-700' : 'cursor-pointer text-neutral-500/80 hover:text-neutral-700'}`}>
 						{'Tokens'}
 					</button>
-					&nbsp;<p className={'text-neutral-400/80'}>{'/'}</p>&nbsp;
+					&nbsp;<p className={'text-neutral-500/80'}>{'/'}</p>&nbsp;
 					<button
 						onClick={(): void => set_typeOfList('pools')}
-						className={`transition-colors ${typeOfList === 'pools' ? 'text-neutral-700' : 'cursor-pointer text-neutral-400/80 hover:text-neutral-700'}`}>
+						className={`transition-colors ${typeOfList === 'pools' ? 'text-neutral-700' : 'cursor-pointer text-neutral-500/80 hover:text-neutral-700'}`}>
 						{'Pools'}
 					</button>
-					&nbsp;<p className={'text-neutral-400/80'}>{'/'}</p>&nbsp;
+					&nbsp;<p className={'text-neutral-500/80'}>{'/'}</p>&nbsp;
 					<button
 						onClick={(): void => set_typeOfList('legacy')}
-						className={`transition-colors ${typeOfList === 'legacy' ? 'text-neutral-700' : 'cursor-pointer text-neutral-400/80 hover:text-neutral-700'}`}>
+						className={`transition-colors ${typeOfList === 'legacy' ? 'text-neutral-700' : 'cursor-pointer text-neutral-500/80 hover:text-neutral-700'}`}>
 						{'Legacy'}
 					</button>
 				</menu>

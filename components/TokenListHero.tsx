@@ -10,7 +10,7 @@ import {Button} from '@yearn-finance/web-lib/components/Button';
 import IconGithub from '@yearn-finance/web-lib/icons/IconSocialGithub';
 import {copyToClipboard} from '@yearn-finance/web-lib/utils/helpers';
 
-import type {TTokenListSummary} from 'pages/tokenlists';
+import type {TTokenListSummary} from 'pages/tokenlistooor';
 import type {ReactElement} from 'react';
 
 extend(relativeTime);
@@ -23,34 +23,6 @@ function TokenListHero({summary}: {summary: TTokenListSummary | undefined}): Rea
 
 	return (
 		<div className={'bg-neutral-0 relative isolate overflow-hidden'}>
-			<svg
-				className={'absolute inset-0 -z-10 h-full w-full stroke-neutral-900/10 [mask-image:radial-gradient(100%_100%_at_top_right,black,transparent)]'}
-				aria-hidden={'true'}>
-				<defs>
-					<pattern
-						id={'983e3e4c-de6d-4c3f-8d64-b9761d1534cc'}
-						width={200}
-						height={200}
-						x={'50%'}
-						y={-1}
-						patternUnits={'userSpaceOnUse'}>
-						<path d={'M.5 200V.5H200'} fill={'none'} />
-					</pattern>
-				</defs>
-				<svg
-					x={'50%'}
-					y={-1}
-					className={'overflow-visible fill-neutral-200/20'}>
-					<path
-						d={'M-200 0h201v201h-201Z M600 0h201v201h-201Z M-400 600h201v201h-201Z M200 800h201v201h-201Z'}
-						strokeWidth={0} />
-				</svg>
-				<rect
-					width={'100%'}
-					height={'100%'}
-					strokeWidth={0}
-					fill={'url(#983e3e4c-de6d-4c3f-8d64-b9761d1534cc)'} />
-			</svg>
 			<div className={'mx-auto grid max-w-4xl grid-cols-1 px-6 pt-10 pb-0 md:grid-cols-2 md:pb-10 md:pt-20'}>
 				<div className={'w-full'}>
 					<div>
@@ -100,7 +72,7 @@ function TokenListHero({summary}: {summary: TTokenListSummary | undefined}): Rea
 						<div className={'box-0 relative flex flex-col p-4'}>
 							<div>
 								<b suppressHydrationWarning className={'font-number text-xl'}>{time}</b>
-								<p className={'pt-2 text-xs text-neutral-400'}>{'The next automatic update is just around the corner! Our lists are updated automatically with each new commit or every Sunday at midday, without any manual input.'}</p>
+								<p className={'pt-2 text-xs text-neutral-500'}>{'The next automatic update is just around the corner! Our lists are updated automatically with each new commit or every Sunday at midday, without any manual input.'}</p>
 							</div>
 						</div>
 					</div>

@@ -5,6 +5,19 @@
 	--default-rounded: 6px;
 	@apply scroll-pt-20;
 }
+:root.dark {
+	--color-neutral-900: 229 34% 100%;
+	--color-neutral-800: 229 34% 96%;
+	--color-neutral-700: 229 34% 92%;
+	--color-neutral-600: 229 34% 90%;
+	--color-neutral-500: 229 34% 90%;
+	--color-neutral-400: 229 34% 48%;
+	--color-neutral-300: 229 34% 36%;
+	--color-neutral-200: 229 34% 24%;
+	--color-neutral-100: 229 34% 16%;
+	--color-neutral-0: 229 34% 13%;
+}
+
 * {
 	@apply scroll-smooth font-sans;
 }
@@ -24,10 +37,6 @@
 	@apply !p-0 !h-14;
 }
 
-.yearn--shadow {
-	box-shadow: none !important;
-	@apply border-solid border border-neutral-200 rounded-md;
-}
 .yearn--listbox-menu-item {
 	@apply hover:!bg-neutral-100/80;
 }
@@ -48,6 +57,14 @@
 .yearn--button-smaller {
 	@apply !rounded-md;
 }
+:root.dark {
+	& .yearn--button-smaller {
+		&[data-variant="reverted"] {
+			&:not(:disabled):not([aria-busy="true"]):hover {@apply !bg-neutral-100;}
+		}
+	}
+}
+
 
 /* 🔵 - Yearn Finance ******************************************************************************
 ** Table
@@ -74,7 +91,6 @@
 		}
 	}
 }
-
 .yearn--table-wrapper {
 	@apply grid w-full grid-cols-1 border-t border-neutral-200 py-2 px-4 md:grid-cols-9 md:border-none md:px-6;
 }
@@ -107,30 +123,6 @@
 }
 .yearn--table-label {
 	@apply inline text-start text-neutral-500 md:hidden;
-}
-
-.yearn--shadow {
-	box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.16);
-}
-
-.yearn--next-switch {
-	@apply relative flex h-[18px] w-8 border-neutral-500 rounded-full cursor-pointer transition-colors ease-in-out duration-200 p-0 items-center border-2;
-	&[aria-checked="true"] {
-		@apply bg-neutral-400 border-neutral-900;
-		& > div {
-			@apply bg-neutral-900;
-		}
-	}
-	&[aria-checked="false"] {
-		@apply bg-transparent border-neutral-600;
-		& > div {
-			@apply bg-neutral-600;
-		}
-	}
-
-	& > div {
-		@apply mx-1 pointer-events-none inline-block h-2 w-2 rounded-full transition ease-in-out duration-200;
-	}
 }
 
 /* 🔵 - Yearn Finance ******************************************************************************
@@ -218,6 +210,13 @@ details {
 	@apply outline-none focus:outline-none focus:ring-0 active:ring-0;
 	box-shadow: none !important;
 }
+:root.dark {
+	& [type='checkbox'],
+	& [type='checkbox']:focus {
+		@apply text-neutral-0 border-neutral-300 focus:border-neutral-300;
+	}
+}
+
 
 
 .yearn--tab {
@@ -321,4 +320,97 @@ details {
     grid-row-gap: 10px;
     grid-template-columns: repeat(18, minmax(0, 1fr));
     grid-template-rows: auto auto;
+}
+
+
+/**************************************************************************************************
+** AppBox is the style used to make the nices animations on the home page feel nice and smooth
+** A custom overwrite is required for dark/light mode
+**************************************************************************************************/
+.appBox {
+	--x-px: calc(var(--x) * 1px);
+	--y-px: calc(var(--y) * 1px);
+	--opacity: var(--opacity);
+	--color: hsl(var(--color-neutral-100));
+	@apply relative flex aspect-video h-full w-full cursor-pointer flex-col items-start border border-neutral-300/50 p-6 shadow shadow-transparent transition-all duration-[400ms] rounded-default;
+
+	&:before,
+	&:after {
+		@apply pointer-events-none block absolute inset-[0px] z-[-1];
+		content: "";
+		z-index: -1;
+		opacity: var(--opacity);
+		background: radial-gradient(
+			1200px circle at var(--x-px) var(--y-px),
+			var(--color),
+			transparent 40%
+		);
+		transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+	&:before {
+		@apply pointer-events-none z-[-1];
+	}
+}
+:root.dark {
+	& .appBox {
+		--color: hsl(var(--color-neutral-100));
+		@apply border-neutral-200/60;
+	}
+}
+
+
+/**************************************************************************************************
+** The WordWrapper css is used for the animation with the text in the header. This animation require
+** letters to be splitted and a custom css is required to make it work.
+***************************************************************************************************/
+.wordWrapper {
+	display: inline-block;
+	vertical-align: top;
+	margin: 0;
+}
+.word {
+	@apply absolute text-neutral-900 font-bold text-5xl md:text-8xl uppercase text-center flex justify-center items-center w-[300px] md:w-[600px];
+	opacity: 0;
+}
+.wordCenter {
+	@apply absolute text-center flex justify-center items-center;
+	opacity: 0;
+}
+.wordLeft {
+	@apply absolute text-left flex justify-start items-center;
+	opacity: 0;
+}
+.letter {
+	display: inline-block;
+	position: relative;
+	float: left;
+	transform: translateZ(25px);
+	transform-origin: 50% 50% 25px;
+}
+.letter.out {
+	transform: rotateX(90deg);
+	transition: transform 0.32s cubic-bezier(0.55, 0.055, 0.675, 0.19);
+}
+.letter.behind {
+	transform: rotateX(-90deg);
+}
+.letter.in {
+	transform: rotateX(0deg);
+	transition: transform 0.38s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.patternSVG {
+	@apply absolute inset-0 -z-10 h-full w-full stroke-neutral-500/10 [mask-image:radial-gradient(100%_100%_at_top_right,black,transparent)];
+}
+.patternSVGSquares {
+	@apply overflow-visible fill-neutral-200/20;
+}
+
+:root.dark {
+	& .patternSVG {
+		@apply stroke-neutral-300/20
+	}
+	& .patternSVGSquares {
+		@apply fill-neutral-100/60;
+	}
 }

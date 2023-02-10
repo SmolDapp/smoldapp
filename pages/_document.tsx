@@ -1,5 +1,6 @@
 import React from 'react';
 import Document, {Head, Html, Main, NextScript} from 'next/document';
+import PatternBackground from 'components/icons/PatternBackground';
 
 import type {DocumentContext, DocumentInitialProps} from 'next/document';
 import type {ReactElement} from 'react';
@@ -16,8 +17,8 @@ const modeScript = `
     let isDarkMode = window.localStorage.isDarkMode === 'true' || (!('isDarkMode' in window.localStorage) && isSystemDarkMode)
 
     if (isDarkMode) {
-      document.documentElement.classList.remove('dark')
-    //   document.documentElement.classList.add('dark')
+    //   document.documentElement.classList.remove('dark')
+      document.documentElement.classList.add('dark')
     } else {
       document.documentElement.classList.remove('dark')
     }
@@ -51,6 +52,7 @@ class MyDocument extends Document {
 					<script dangerouslySetInnerHTML={{__html: modeScript}} />
 				</Head>
 				<body className={'bg-neutral-0 transition-colors duration-150'}>
+					<PatternBackground />
 					<Main />
 					<NextScript />
 				</body>

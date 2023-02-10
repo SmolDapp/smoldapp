@@ -8,7 +8,7 @@ import {useMountEffect, useThrottledCallback} from '@react-hookz/web';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUpdates';
 
-import type {TTokenListItem, TTokenListSummary} from 'pages/tokenlists';
+import type {TTokenListItem, TTokenListSummary} from 'pages/tokenlistooor';
 import type {ReactElement} from 'react';
 import type {TAddress} from '@yearn-finance/web-lib/utils/address';
 import type {TDict} from '@yearn-finance/web-lib/utils/types';

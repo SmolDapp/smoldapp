@@ -475,7 +475,7 @@ function	ViewTable(): ReactElement {
 
 			<DonateRow />
 
-			<div className={'text-neutral-0 fixed inset-x-0 bottom-0 z-20 col-span-12 flex w-full max-w-4xl flex-row items-center justify-between bg-neutral-900 p-4 md:relative md:px-6 md:py-4'}>
+			<div className={'text-neutral-0 fixed inset-x-0 bottom-0 z-20 col-span-12 flex w-full max-w-4xl flex-row items-center justify-between bg-neutral-900 p-4 dark:bg-neutral-200 md:relative md:px-6 md:py-4'}>
 				<div className={'flex flex-col'} />
 				<div>
 					<Button

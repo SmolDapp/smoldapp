@@ -6,7 +6,7 @@ import relativeTime from 'dayjs/plugin/relativeTime.js';
 import weekday from 'dayjs/plugin/weekday.js';
 import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
 
-import type {TTokenListItem} from 'pages/tokenlists';
+import type {TTokenListItem} from 'pages/tokenlistooor';
 import type {ReactElement} from 'react';
 
 extend(relativeTime);
@@ -27,7 +27,7 @@ function TokenListCard({item}: {item: TTokenListItem}): ReactElement {
 					width={36}
 					height={36}
 					alt={''} />
-				<div className={'flex flex-col text-end text-xs text-neutral-400'}>
+				<div className={'flex flex-col text-end text-xs text-neutral-500'}>
 					<small>{`v${item.version.major}.${item.version.minor}.${item.version.patch}`}</small>
 				</div>
 			</div>
