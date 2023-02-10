@@ -37,14 +37,14 @@ function TokenListCard({item}: {item: TTokenListItem}): ReactElement {
 					{item.description || `A list of token for ${item.name}`}
 				</p>
 			</div>
-			<div className={'font-number mt-auto grid w-full divide-y divide-dashed divide-neutral-200 pt-6 text-left text-sm'}>
+			<div className={'font-number mt-auto grid w-full pt-6 text-left text-sm'}>
 				<div className={'border-y border-dashed border-neutral-200'}>
 					<div className={'flex flex-row items-center justify-between py-2 px-4 transition-colors md:px-6'}>
 						<small className={'text-neutral-500'}>{'Tokens '}</small>
 						<b suppressHydrationWarning>{`${formatAmount(item.tokenCount, 0, 0)}`}</b>
 					</div>
 				</div>
-				<div className={'border-y border-dashed border-neutral-200'}>
+				<div className={'border-t border-dashed border-neutral-200'}>
 					<span className={'flex cursor-pointer flex-row items-center justify-between py-2 px-4 transition-colors group-hover:bg-neutral-100 md:px-6'}>
 						<small className={'text-neutral-500'}>{'Link '}</small>
 						<b className={'group-hover:underline'}>
