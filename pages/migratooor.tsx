@@ -59,7 +59,7 @@ export default function Wrapper(): ReactElement {
 						description: 'The easiest way to migrate your tokens from one wallet to another.',
 						images: [
 							{
-								url: 'https://migratooor.com/og_migratooor.png',
+								url: 'https://smold.app/og_migratooor.png',
 								width: 800,
 								height: 400,
 								alt: 'migratooor'

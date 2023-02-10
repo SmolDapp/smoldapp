@@ -133,7 +133,7 @@ export default function Wrapper({summary}: {summary: TTokenListSummary}): ReactE
 						description: 'Up to date token lists that fulfill your needs! Tokenlistooor is a fork of Uniswap Tokenlists, with focus on adding more automation and extra features.',
 						images: [
 							{
-								url: 'https://tokenlistooor.com/og_tokenlistooor.png',
+								url: 'https://smold.app/og_tokenlistooor.png',
 								width: 800,
 								height: 400,
 								alt: 'tokenListooor'
