@@ -4,6 +4,7 @@ import IconWalletLedger from 'components/icons/IconWalletLedger';
 import useWallet from 'contexts/useWallet';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {useInjectedWallet} from '@yearn-finance/web-lib/hooks/useInjectedWallet';
+import IconWalletGnosis from '@yearn-finance/web-lib/icons/IconWalletGnosis';
 import IconWalletWalletConnect from '@yearn-finance/web-lib/icons/IconWalletWalletConnect';
 
 import type {TCardWithIcon} from 'components/CardWithIcon';
@@ -39,6 +40,12 @@ function	ViewWallet({onSelect}: TViewWalletProps): ReactElement {
 				icon: <IconWalletLedger />
 			});
 		}
+		if (walletType === 'EMBED_GNOSIS_SAFE') {
+			return ({
+				name: 'Gnosis Safe',
+				icon: <IconWalletGnosis />
+			});
+		}
 		return ({
 			name: detectedWalletProvider.name,
 			icon: detectedWalletProvider.icon
@@ -60,12 +67,12 @@ function	ViewWallet({onSelect}: TViewWalletProps): ReactElement {
 					<div className={'col-span-12 mt-6 grid grid-cols-12 gap-4 md:gap-6'}>
 						<div className={'relative col-span-6 md:col-span-3'}>
 							<CardWithIcon
-								isSelected={walletProvider === 'INJECTED' || walletType === 'INJECTED' || walletType === 'EMBED_LEDGER'}
+								isSelected={walletProvider === 'INJECTED' || walletType === 'INJECTED' || ['EMBED_LEDGER', 'EMBED_GNOSIS_SAFE'].includes(walletType)}
 								icon={detectedWallet.icon}
 								label={detectedWallet.name}
-								onClick={async (): Promise<void> => walletType === 'EMBED_LEDGER' ? undefined : onSelectWallet('INJECTED')} />
+								onClick={async (): Promise<void> => ['EMBED_LEDGER', 'EMBED_GNOSIS_SAFE'].includes(walletType) ? undefined : onSelectWallet('INJECTED')} />
 						</div>
-						<div className={`relative col-span-6 md:col-span-3 ${walletType === 'EMBED_LEDGER' ? 'hidden' : 'flex'}`}>
+						<div className={`relative col-span-6 md:col-span-3 ${['EMBED_LEDGER', 'EMBED_GNOSIS_SAFE'].includes(walletType) ? 'hidden' : 'flex'}`}>
 							<CardWithIcon
 								isSelected={walletProvider === 'WALLET_CONNECT' || walletType === 'WALLET_CONNECT'}
 								icon={<IconWalletWalletConnect />}

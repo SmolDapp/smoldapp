@@ -1,4 +1,4 @@
-import React, {createContext, useContext, useMemo, useState} from 'react';
+import React, {createContext, useContext, useEffect, useMemo, useState} from 'react';
 import {useMountEffect, useUpdateEffect} from '@react-hookz/web';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
@@ -66,19 +66,21 @@ export const MigratooorContextApp = ({children}: {children: React.ReactElement})
 		}
 	}, [isActive]);
 
-	useUpdateEffect((): void => {
-		if (isActive && address) {
+	useEffect((): void => {
+		const isEmbedWallet = ['EMBED_LEDGER', 'EMBED_GNOSIS_SAFE'].includes(walletType);
+		if ((isActive && address) || isEmbedWallet) {
 			set_currentStep(Step.DESTINATION);
 		} else if (!isActive || !address) {
 			set_currentStep(Step.WALLET);
 		}
-	}, [address, isActive]);
+	}, [address, isActive, walletType]);
 
 	useMountEffect((): void => {
 		setTimeout((): void => {
-			if (currentStep === Step.WALLET && walletType !== 'EMBED_LEDGER') {
+			const	isEmbedWallet = ['EMBED_LEDGER', 'EMBED_GNOSIS_SAFE'].includes(walletType);
+			if (currentStep === Step.WALLET && !isEmbedWallet) {
 				document?.getElementById('wallet')?.scrollIntoView({behavior: 'smooth', block: 'start'});
-			} else if (currentStep === Step.DESTINATION || walletType === 'EMBED_LEDGER') {
+			} else if (currentStep === Step.DESTINATION || isEmbedWallet) {
 				document?.getElementById('destination')?.scrollIntoView({behavior: 'smooth', block: 'start'});
 			} else if (currentStep === Step.SELECTOR) {
 				document?.getElementById('selector')?.scrollIntoView({behavior: 'smooth', block: 'start'});
@@ -89,12 +91,13 @@ export const MigratooorContextApp = ({children}: {children: React.ReactElement})
 	useUpdateEffect((): void => {
 		setTimeout((): void => {
 			let currentStepContainer;
+			const isEmbedWallet = ['EMBED_LEDGER', 'EMBED_GNOSIS_SAFE'].includes(walletType);
 			const scalooor = document?.getElementById('scalooor');
 			const headerHeight = 96;
 
-			if (currentStep === Step.WALLET && walletType !== 'EMBED_LEDGER') {
+			if (currentStep === Step.WALLET && !isEmbedWallet) {
 				currentStepContainer = document?.getElementById('wallet');
-			} else if (currentStep === Step.DESTINATION || walletType === 'EMBED_LEDGER') {
+			} else if (currentStep === Step.DESTINATION || isEmbedWallet) {
 				currentStepContainer = document?.getElementById('destination');
 			} else if (currentStep === Step.SELECTOR) {
 				currentStepContainer = document?.getElementById('selector');
@@ -105,7 +108,7 @@ export const MigratooorContextApp = ({children}: {children: React.ReactElement})
 			}
 			currentStepContainer?.scrollIntoView({behavior: 'smooth', block: 'start'});
 		}, 100);
-	}, [currentStep]);
+	}, [currentStep, walletType]);
 
 	const	contextValue = useMemo((): TSelected => ({
 		selected,

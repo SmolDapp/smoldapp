@@ -40,7 +40,7 @@ export const TokenListContextApp = ({children}: {children: React.ReactElement}):
 			for (const eachToken of tokenListResponse.tokens) {
 				tokenListTokens[toAddress(eachToken.address)] = eachToken;
 			}
-			// set_tokenList(tokenListTokens);
+			set_tokenList(tokenListTokens);
 		});
 	});
 
