@@ -286,8 +286,7 @@ export function	useBalances(props?: TUseBalancesReq): TUseBalancesRes {
 	** onMount, we need to init the worker and set the onmessage handler.
 	**************************************************************************/
 	useMountEffect((): VoidFunction => {
-		workerRef.current = new Worker(new URL('../utils/fetchBalances.ts', import.meta.url));
-		workerRef.current.onerror = (event): void => console.log(event),
+		workerRef.current = new Worker(new URL('./useBalances.worker.tsx', import.meta.url));
 		workerRef.current.onmessage = (event: MessageEvent<[TDict<TMinBalanceData>, Error | undefined]>): void => {
 			updateBalancesFromWorker(event.data[0], event.data[1]);
 		};
@@ -307,7 +306,15 @@ export function	useBalances(props?: TUseBalancesReq): TUseBalancesRes {
 		onLoadStart();
 
 		const	tokens = JSON.parse(stringifiedTokens) || [];
-		const	chainID = 1337 || props?.chainID || web3ChainID || 1;
+		const	chainID = props?.chainID || web3ChainID || 1;
+		if (workerRef?.current) {
+			workerRef.current.onerror = (event): void => {
+				//fallback to default behavior
+				console.error(event);
+				onLoadDone();
+				onUpdateSome(tokens);
+			};
+		}
 		workerRef?.current?.postMessage({chainID, address: web3Address, tokens});
 	}, [stringifiedTokens, isActive, web3Address]);
 
