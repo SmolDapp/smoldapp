@@ -82,10 +82,12 @@ function	TokenRow({address: tokenAddress, balance}: {balance: TMinBalanceData, a
 	}
 
 	const	updateAmountOnChangeChain = useCallback((): void => {
+		// balance.normalized
 		set_amounts((amounts: TDict<TNormalizedBN>): TDict<TNormalizedBN> => ({
 			...amounts,
-			[toAddress(tokenAddress)]: toNormalizedBN(balance.raw)
+			[toAddress(tokenAddress)]: toNormalizedBN(balance.raw, balance.decimals || 18)
 		}));
+		console.log(amounts[toAddress(tokenAddress)]);
 	}, [tokenAddress, balance]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	useMountEffect((): void => {
