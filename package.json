@@ -13,6 +13,7 @@
 	},
 	"dependencies": {
 		"@gnosis.pm/gp-v2-contracts": "^1.1.2",
+		"@gnosis.pm/safe-apps-react-sdk": "^4.6.2",
 		"@headlessui/react": "^1.7.8",
 		"@next/font": "^13.1.6",
 		"@react-hookz/web": "^22.0.0",
@@ -29,7 +30,8 @@
 		"react-dom": "^18.2.0",
 		"react-wrap-balancer": "^0.4.0",
 		"swr": "^2.0.3",
-		"tailwindcss": "^3.2.4"
+		"tailwindcss": "^3.2.4",
+		"web3-eth-abi": "^1.8.2"
 	},
 	"devDependencies": {
 		"@types/node": "^18.11.18",

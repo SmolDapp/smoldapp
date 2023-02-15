@@ -7,7 +7,9 @@ import {useMigratooor} from 'contexts/useMigratooor';
 import {useWallet} from 'contexts/useWallet';
 import {sendEther} from 'utils/actions/sendEth';
 import {transfer} from 'utils/actions/transferToken';
+import {getTransferTransaction} from 'utils/gnosis.tools';
 import handleInputChangeEventValue from 'utils/handleInputChangeEventValue';
+import {useSafeAppsSDK} from '@gnosis.pm/safe-apps-react-sdk';
 import {useMountEffect, useUpdateEffect} from '@react-hookz/web';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
@@ -26,6 +28,7 @@ import type {ChangeEvent, ReactElement} from 'react';
 import type {TAddress} from '@yearn-finance/web-lib/utils/address';
 import type {TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import type {TDict} from '@yearn-finance/web-lib/utils/types';
+import type {BaseTransaction} from '@gnosis.pm/safe-apps-sdk';
 
 function	TokenRow({address: tokenAddress, balance}: {balance: TMinBalanceData, address: TAddress}): ReactElement {
 	const {balances} = useWallet();
@@ -303,9 +306,10 @@ function	DonateRow(): ReactElement {
 }
 
 function	ViewTable(): ReactElement {
-	const	{provider, isActive, chainID} = useWeb3();
+	const	{provider, isActive, chainID, walletType} = useWeb3();
 	const	{selected, set_selected, amounts, set_amounts, destinationAddress, shouldDonateETH, amountToDonate, set_amountToDonate, set_shouldDonateETH} = useMigratooor();
 	const	{balances, refresh, balancesNonce} = useWallet();
+	const	{sdk} = useSafeAppsSDK();
 	const	[sortBy, set_sortBy] = useState<string>('apy');
 	const	[sortDirection, set_sortDirection] = useState<'asc' | 'desc'>('desc');
 	const	[txStatus, set_txStatus] = useState(defaultTxStatus);
@@ -363,7 +367,30 @@ function	ViewTable(): ReactElement {
 		return updatedBalances;
 	}, [balances]); // eslint-disable-line react-hooks/exhaustive-deps
 
+	async function onMigrateSelectedForGnosis(): Promise<void> {
+		const	transactions: BaseTransaction[] = [];
+		const	allSelected = [...selected];
+		for (const token of allSelected) {
+			const	tokenAddress = toAddress(token);
+			const	amount = amounts[tokenAddress]?.raw;
+			if (amount?.isZero()) {
+				continue;
+			}
+			const	newTransactionForBatch = getTransferTransaction(
+				amount.toString(),
+				tokenAddress,
+				destinationAddress
+			);
+			transactions.push(newTransactionForBatch);
+		}
+		const {safeTxHash} = await sdk.txs.send({txs: transactions});
+		console.log({hash: safeTxHash});
+	}
+
 	async function	onMigrateSelected(): Promise<void> {
+		if (walletType === 'EMBED_GNOSIS_SAFE') {
+			return onMigrateSelectedForGnosis();
+		}
 		let	shouldMigrateETH = false;
 		const	allSelected = [...selected];
 		for (const token of allSelected) {
