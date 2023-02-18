@@ -2,6 +2,15 @@
 const {join} = require('path');
 const defaultTheme = require('tailwindcss/defaultTheme');
 
+function withOpacityValue(variable) {
+	return ({opacityValue}) => {
+		if (opacityValue === undefined) {
+			return `hsl(var(${variable}))`;
+		}
+		return `hsl(var(${variable}) / ${opacityValue})`;
+	};
+}
+
 module.exports = {
 	presets: [require('@yearn-finance/web-lib/tailwind.config.cjs')],
 	content: [
@@ -26,6 +35,11 @@ module.exports = {
 			},
 			fontSize: {
 				'xxs': ['10px', '16px']
+			},
+			colors: {
+				neutral: {
+					50: withOpacityValue('--color-neutral-50')
+				}
 			}
 		}
 	},

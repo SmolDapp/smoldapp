@@ -3,7 +3,9 @@
 
 :root {
 	--default-rounded: 6px;
+	--color-neutral-50: 0 0% 98%;
 	@apply scroll-pt-20;
+
 }
 :root.dark {
 	--color-neutral-900: 229 34% 100%;
@@ -15,6 +17,7 @@
 	--color-neutral-300: 229 34% 36%;
 	--color-neutral-200: 229 34% 24%;
 	--color-neutral-100: 229 34% 16%;
+	--color-neutral-50: 229 34% 8%;
 	--color-neutral-0: 229 34% 13%;
 }
 
@@ -245,6 +248,12 @@ details {
 		@apply transition-colors hover:bg-neutral-200;
 	}
 }
+.box-200 {
+	@apply bg-neutral-200 border border-neutral-200 rounded-md;
+	&.hover {
+		@apply transition-colors hover:bg-neutral-200;
+	}
+}
 .checkbox {
 	@apply text-neutral-900 accent-neutral-900 rounded-sm;
 }
@@ -296,16 +305,24 @@ details {
 	}
 }
 
-.detailsSweep:last-of-type {
-	@apply border-b;
-}
-
 .detailsSweep {
 	@apply border-b-0;
+	&:last-of-type {
+		@apply border-b;
+	}
+	&[open] {
+		@apply bg-neutral-100;
+	}
 }
 
-.detailsSweep[open] {
-  @apply bg-neutral-100
+.detailsMigrate {
+	@apply border-b-0 hover:bg-neutral-50;
+	&:last-of-type {
+		@apply border-b;
+	}
+	&[open] {
+		@apply bg-neutral-50;
+	}
 }
 
 .detailsTokenList[open] {
