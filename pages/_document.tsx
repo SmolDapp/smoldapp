@@ -17,8 +17,8 @@ const modeScript = `
     let isDarkMode = window.localStorage.isDarkMode === 'true' || (!('isDarkMode' in window.localStorage) && isSystemDarkMode)
 
     if (isDarkMode) {
-    //   document.documentElement.classList.remove('dark')
-      document.documentElement.classList.add('dark')
+      document.documentElement.classList.remove('dark')
+    //   document.documentElement.classList.add('dark')
     } else {
       document.documentElement.classList.remove('dark')
     }

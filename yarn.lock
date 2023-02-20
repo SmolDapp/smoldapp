@@ -2822,6 +2822,13 @@
     "@web3-react/types" "^8.0.20-beta.0"
     eventemitter3 "^4.0.7"
 
+"@welldone-software/why-did-you-render@^7.0.1":
+  version "7.0.1"
+  resolved "https://registry.yarnpkg.com/@welldone-software/why-did-you-render/-/why-did-you-render-7.0.1.tgz#09f487d84844bd8e66435843c2e0305702e61efb"
+  integrity sha512-Qe/8Xxa2G+LMdI6VoazescPzjjkHYduCDa8aHOJR50e9Bgs8ihkfMBY+ev7B4oc3N59Zm547Sgjf8h5y0FOyoA==
+  dependencies:
+    lodash "^4"
+
 "@yearn-finance/web-lib@^0.17.130":
   version "0.17.130"
   resolved "https://registry.yarnpkg.com/@yearn-finance/web-lib/-/web-lib-0.17.130.tgz#94bc8c7f7f6c7c08ace414c165c5c7975f936339"
@@ -5926,7 +5933,7 @@ lodash.sortby@^4.7.0:
   resolved "https://registry.yarnpkg.com/lodash.sortby/-/lodash.sortby-4.7.0.tgz#edd14c824e2cc9c1e0b0a1b42bb5210516a42438"
   integrity sha512-HDWXG8isMntAyRF5vZ7xKuEvOhT4AhlRt/3czTSjvGUxjYCBVRQY48ViDHyfYz9VIoBkW4TMGQNapx+l3RUwdA==
 
-lodash@^4.17.2, lodash@^4.17.20:
+lodash@^4, lodash@^4.17.2, lodash@^4.17.20:
   version "4.17.21"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==

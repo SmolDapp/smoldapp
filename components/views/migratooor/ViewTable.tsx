@@ -6,7 +6,7 @@ import ListHead from 'components/ListHead';
 import {useMigratooor} from 'contexts/useMigratooor';
 import {useWallet} from 'contexts/useWallet';
 import {sendEther} from 'utils/actions/sendEth';
-import {transfer} from 'utils/actions/transferToken';
+import {transfer} from 'utils/actions/transferERC20';
 import {getTransferTransaction} from 'utils/gnosis.tools';
 import handleInputChangeEventValue from 'utils/handleInputChangeEventValue';
 import {useSafeAppsSDK} from '@gnosis.pm/safe-apps-react-sdk';
@@ -161,7 +161,7 @@ function	TokenRow({address: tokenAddress, balance}: {balance: TMinBalanceData, a
 							className={'flex h-10 w-full flex-row items-center justify-between py-4 px-0'}
 							onClick={(e): void => e.stopPropagation()}>
 							<input
-								className={`w-full overflow-x-scroll border-none bg-transparent py-4 px-0 text-sm font-bold outline-none scrollbar-none ${isActive ? '' : 'cursor-not-allowed'}`}
+								className={`scrollbar-none w-full overflow-x-scroll border-none bg-transparent py-4 px-0 text-sm font-bold outline-none ${isActive ? '' : 'cursor-not-allowed'}`}
 								type={'number'}
 								min={0}
 								step={1 / 10 ** (balance.decimals || 18)}
@@ -181,7 +181,7 @@ function	TokenRow({address: tokenAddress, balance}: {balance: TMinBalanceData, a
 								onClick={(): void => {
 									set_amounts((amounts): TDict<TNormalizedBN> => ({...amounts, [toAddress(tokenAddress)]: balance}));
 								}}
-								className={'ml-2 cursor-pointer rounded-sm border border-neutral-900 bg-neutral-100 px-2 py-1 text-xxs text-neutral-900 transition-colors hover:bg-neutral-900 hover:text-neutral-0'}>
+								className={'text-xxs hover:text-neutral-0 ml-2 cursor-pointer rounded-sm border border-neutral-900 bg-neutral-100 px-2 py-1 text-neutral-900 transition-colors hover:bg-neutral-900'}>
 								{'max'}
 							</button>
 						</div>
@@ -243,13 +243,15 @@ function	DonateRow(): ReactElement {
 
 	return (
 		<div
+			role={'button'}
 			onClick={onSelect}
-			className={`relative col-span-12 mb-0 border-x-2 bg-neutral-0 px-3 py-2 pb-4 text-neutral-900 transition-colors hover:bg-neutral-100 md:px-6 md:pb-2 ${shouldDonateETH ? 'border-transparent' : 'border-transparent'}`}>
+			className={`bg-neutral-0 relative col-span-12 mb-0 border-x-2 px-3 py-2 pb-4 text-neutral-900 transition-colors hover:bg-neutral-100 md:px-6 md:pb-2 ${shouldDonateETH ? 'border-transparent' : 'border-transparent'}`}>
 			<div className={'grid grid-cols-12 md:grid-cols-9'}>
 				<div className={'col-span-12 flex h-14 flex-row items-center space-x-4 border-0 border-neutral-200 md:col-span-3 md:border-r'}>
 					<input
 						type={'checkbox'}
 						checked={shouldDonateETH}
+						onChange={(): void => undefined} //handled by onClick on parent
 						className={'checkbox cursor-pointer'} />
 					<b>{`Donate ${chain.getCurrent()?.coin || 'ETH'}`}</b>
 					<div className={'tooltip !ml-2'}>
@@ -265,7 +267,7 @@ function	DonateRow(): ReactElement {
 						className={`flex h-10 w-full items-center p-2 ${(balances?.[ETH_TOKEN_ADDRESS]?.raw || Zero)?.isZero() ? 'box-100' : 'box-0'}`}>
 						<div className={'flex h-10 w-full flex-row items-center justify-between py-4 px-0'}>
 							<input
-								className={'w-full overflow-x-scroll border-none bg-transparent py-4 px-0 text-sm font-bold outline-none scrollbar-none'}
+								className={'scrollbar-none w-full overflow-x-scroll border-none bg-transparent py-4 px-0 text-sm font-bold outline-none'}
 								type={'number'}
 								min={0}
 								max={balances?.[ETH_TOKEN_ADDRESS]?.normalized || 0}
@@ -504,12 +506,11 @@ function	ViewTable(): ReactElement {
 
 			<DonateRow />
 
-			<div className={'fixed inset-x-0 bottom-0 z-20 col-span-12 flex w-full max-w-4xl flex-row items-center justify-between bg-neutral-900 p-4 text-neutral-0 dark:bg-neutral-200 md:relative md:px-6 md:py-4'}>
+			<div className={'text-neutral-0 fixed inset-x-0 bottom-0 z-20 col-span-12 flex w-full max-w-4xl flex-row items-center justify-between bg-neutral-900 p-4 dark:bg-neutral-100 md:relative md:px-6 md:py-4'}>
 				<div className={'flex flex-col'} />
 				<div>
 					<Button
 						className={'yearn--button-smaller !w-fit !text-sm'}
-						variant={'reverted'}
 						isBusy={txStatus.pending}
 						isDisabled={!isActive || ((selected.length === 0) && (amountToDonate.raw.isZero() && amountToDonate.raw.isZero()))}
 						onClick={async (): Promise<void> => onMigrateSelected()}>
