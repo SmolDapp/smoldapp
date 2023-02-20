@@ -1,7 +1,7 @@
 import React, {useCallback, useState} from 'react';
 import IconCheck from 'components/icons/IconCheck';
 import IconCircleCross from 'components/icons/IconCircleCross';
-import {Step, useMigratooor} from 'contexts/useMigratooor';
+import {Step, useNFTMigratooor} from 'contexts/useNFTMigratooor';
 import {ethers} from 'ethers';
 import {isAddress} from 'ethers/lib/utils';
 import {useUpdateEffect} from '@react-hookz/web';
@@ -15,7 +15,7 @@ import type {ReactElement} from 'react';
 import type {TAddress} from '@yearn-finance/web-lib/utils/address';
 
 function	ViewDestination(): ReactElement {
-	const	{set_destinationAddress, set_currentStep} = useMigratooor();
+	const	{set_destinationAddress, set_currentStep} = useNFTMigratooor();
 	const	[destination, set_destination] = useState<string>('');
 	const	[validishDestination, set_validishDestination] = useState<string>('');
 	const	[isValidDestination, set_isValidDestination] = useState<boolean | 'undetermined'>('undetermined');
@@ -84,7 +84,7 @@ function	ViewDestination(): ReactElement {
 							<b>{'Destination'}</b>
 						</a>
 						<p className={'text-sm text-neutral-500'}>
-							{'Enter the address where you want to migrate your funds to. Be sure to double check the address before proceeding.'}
+							{'Enter the address where you want to migrate your NFTs to. Be sure to double check the address before proceeding.'}
 						</p>
 					</div>
 					<form

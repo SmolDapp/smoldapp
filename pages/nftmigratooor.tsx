@@ -1,17 +1,17 @@
 import React from 'react';
 import {DefaultSeo} from 'next-seo';
+import ViewApprovalWizard from 'components/views/nftmigratooor/ViewApprovalWizard';
 import ViewDestination from 'components/views/nftmigratooor/ViewDestination';
 import ViewTable from 'components/views/nftmigratooor/ViewTable';
-import ViewTLDR from 'components/views/nftmigratooor/ViewTLDR';
 import ViewWallet from 'components/views/ViewWallet';
-import {MigratooorContextApp, Step, useMigratooor} from 'contexts/useMigratooor';
+import {NFTMigratooorContextApp, Step, useNFTMigratooor} from 'contexts/useNFTMigratooor';
 import thumbnailVariants from 'utils/animations';
 import {motion} from 'framer-motion';
 
 import type {ReactElement} from 'react';
 
 function	Home(): ReactElement {
-	const	{currentStep, set_currentStep} = useMigratooor();
+	const	{currentStep, set_currentStep} = useNFTMigratooor();
 
 	return (
 		<div className={'mx-auto grid w-full max-w-4xl'}>
@@ -31,12 +31,21 @@ function	Home(): ReactElement {
 			<motion.div
 				initial={'initial'}
 				animate={[Step.SELECTOR, Step.CONFIRMATION].includes(currentStep) ? 'enter' : 'initial'}
-				variants={thumbnailVariants}
-				className={[Step.SELECTOR, Step.CONFIRMATION].includes(currentStep) ? '' : 'pointer-events-none'}>
-				<section id={'selector'} className={'mt-10 mb-40'}>
-					<ViewTable />
-					<ViewTLDR />
-				</section>
+				className={[Step.SELECTOR, Step.CONFIRMATION].includes(currentStep) ? '' : 'pointer-events-none'}
+				variants={thumbnailVariants}>
+				<ViewTable
+					onProceed={(): void => {
+						set_currentStep(Step.CONFIRMATION);
+						document?.getElementById('approvals')?.scrollIntoView({behavior: 'smooth', block: 'center'});
+					}} />
+			</motion.div>
+
+			<motion.div
+				initial={'initial'}
+				animate={currentStep === Step.CONFIRMATION ? 'enter' : 'initial'}
+				className={[Step.CONFIRMATION].includes(currentStep) ? '' : 'pointer-events-none'}
+				variants={thumbnailVariants}>
+				<ViewApprovalWizard />
 			</motion.div>
 		</div>
 	);
@@ -44,7 +53,7 @@ function	Home(): ReactElement {
 
 export default function Wrapper(): ReactElement {
 	return (
-		<MigratooorContextApp>
+		<NFTMigratooorContextApp>
 			<>
 				<DefaultSeo
 					title={'Migratooor'}
@@ -73,7 +82,7 @@ export default function Wrapper(): ReactElement {
 					}} />
 				<Home />
 			</>
-		</MigratooorContextApp>
+		</NFTMigratooorContextApp>
 	);
 }
 
