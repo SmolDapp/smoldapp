@@ -13,7 +13,6 @@ import {useSafeAppsSDK} from '@gnosis.pm/safe-apps-react-sdk';
 import {useMountEffect, useUpdateEffect} from '@react-hookz/web';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
-import {hooks} from '@yearn-finance/web-lib/hooks';
 import {useChain} from '@yearn-finance/web-lib/hooks/useChain';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import IconLinkOut from '@yearn-finance/web-lib/icons/IconLinkOut';
@@ -87,7 +86,6 @@ function	TokenRow({address: tokenAddress, balance}: {balance: TMinBalanceData, a
 			...amounts,
 			[toAddress(tokenAddress)]: toNormalizedBN(balance.raw, balance.decimals || 18)
 		}));
-		console.log(amounts[toAddress(tokenAddress)]);
 	}, [tokenAddress, balance]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	useMountEffect((): void => {
@@ -318,7 +316,7 @@ function	ViewTable(): ReactElement {
 	const	[sortDirection, set_sortDirection] = useState<'asc' | 'desc'>('desc');
 	const	[txStatus, set_txStatus] = useState(defaultTxStatus);
 
-	const	balancesToDisplay = hooks.useDeepCompareMemo((): ReactElement[] => {
+	const	balancesToDisplay = useMemo((): ReactElement[] => {
 		return (
 			Object.entries(balances || [])
 				.filter(([, balance]: [string, TMinBalanceData]): boolean => (
