@@ -1,5 +1,6 @@
 import {useCallback, useMemo, useRef, useState} from 'react';
 import {Contract} from 'ethcall';
+import meta from 'public/manifest.json';
 import {useMountEffect, useUpdateEffect} from '@react-hookz/web';
 import {useUI} from '@yearn-finance/web-lib/contexts/useUI';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
@@ -286,9 +287,8 @@ export function	useBalances(props?: TUseBalancesReq): TUseBalancesRes {
 	** onMount, we need to init the worker and set the onmessage handler.
 	**************************************************************************/
 	useMountEffect((): VoidFunction => {
-		// meta.uri;
-		// const scriptURI = process.env.NODE_ENV !== 'production' ? 'http://localhost:3000' : `${meta.uri}useBalances.worker.tsx`;
-		workerRef.current = new Worker(new URL('./useBalances.worker.tsx', import.meta.url));
+		const scriptURI = process.env.NODE_ENV !== 'production' ? new URL('./useBalances.worker.tsx', import.meta.url) : `${meta.uri}/useBalances.worker.tsx`;
+		workerRef.current = new Worker(scriptURI);
 		workerRef.current.onmessage = (event: MessageEvent<[TDict<TMinBalanceData>, Error | undefined]>): void => {
 			updateBalancesFromWorker(event.data[0], event.data[1]);
 		};
