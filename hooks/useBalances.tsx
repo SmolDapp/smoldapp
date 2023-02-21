@@ -1,5 +1,6 @@
 import {useCallback, useMemo, useRef, useState} from 'react';
 import {Contract} from 'ethcall';
+import {BigNumber} from 'ethers';
 import {useMountEffect, useUpdateEffect} from '@react-hookz/web';
 import {useUI} from '@yearn-finance/web-lib/contexts/useUI';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
@@ -13,7 +14,7 @@ import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUp
 import * as providers from '@yearn-finance/web-lib/utils/web3/providers';
 
 import type {Call, Provider} from 'ethcall';
-import type {BigNumber, ethers} from 'ethers';
+import type {ethers} from 'ethers';
 import type {DependencyList} from 'react';
 import type {TDefaultStatus} from '@yearn-finance/web-lib/hooks/types';
 import type {TAddress} from '@yearn-finance/web-lib/utils/address';
@@ -149,7 +150,7 @@ export function	useBalances(props?: TUseBalancesReq): TUseBalancesRes {
 	const	data = useRef<TNDict<TDataRef>>({1: {nonce: 0, address: toAddress(), balances: {}}});
 	const	stringifiedTokens = useMemo((): string => JSON.stringify(props?.tokens || []), [props?.tokens]);
 
-	const	updateBalancesFromWorker = useCallback((newRawData: TDict<TMinBalanceData>, err?: Error): TDict<TMinBalanceData> => {
+	const	updateBalancesFromWorker = useCallback((newRawData: TDict<TMinBalanceData>): TDict<TMinBalanceData> => {
 		if (toAddress(web3Address as string) !== data?.current?.[web3ChainID]?.address) {
 			data.current[web3ChainID] = {
 				address: toAddress(web3Address as string),
@@ -171,7 +172,6 @@ export function	useBalances(props?: TUseBalancesReq): TUseBalancesRes {
 		performBatchedUpdates((): void => {
 			set_nonce((n): number => n + 1);
 			set_balances((b): TNDict<TDict<TMinBalanceData>> => ({...b, [web3ChainID]: data.current[web3ChainID].balances}));
-			set_error(err as Error);
 			set_status({...defaultStatus, isSuccess: true, isFetched: true});
 		});
 		onLoadDone();
@@ -186,7 +186,7 @@ export function	useBalances(props?: TUseBalancesReq): TUseBalancesRes {
 	** send in a worker.
 	**************************************************************************/
 	const	onUpdate = useCallback(async (): Promise<TDict<TMinBalanceData>> => {
-		if (!isActive || !web3Address) {
+		if (!isActive || !web3Address || !provider) {
 			return {};
 		}
 		const	tokens = JSON.parse(stringifiedTokens) || [];
@@ -285,12 +285,25 @@ export function	useBalances(props?: TUseBalancesReq): TUseBalancesRes {
 	** onMount, we need to init the worker and set the onmessage handler.
 	**************************************************************************/
 	useMountEffect((): VoidFunction => {
-		// const scriptURI = process.env.NODE_ENV !== 'production' ? new URL('./useBalances.worker.tsx', import.meta.url) : new URL(`${meta.uri}useBalances.worker.tsx`, import.meta.url);
-		const scriptURI = new URL('./useBalances.worker.tsx', import.meta.url);
-		console.log(scriptURI);
+		const scriptURI = new URL('./useBalances.worker.js', import.meta.url);
 		workerRef.current = new Worker(scriptURI, {type: 'module'});
-		workerRef.current.onmessage = (event: MessageEvent<[TDict<TMinBalanceData>, Error | undefined]>): void => {
-			updateBalancesFromWorker(event.data[0], event.data[1]);
+		workerRef.current.onerror = (err): void => {
+			console.error(err);
+			onUpdate();
+		};
+		workerRef.current.onmessageerror = (err): void => {
+			console.error(err);
+			onUpdate();
+		};
+		workerRef.current.onmessage = (event: MessageEvent<string>): void => {
+			const tokenData = JSON.parse(event.data, (_key: string, value: any): any => {
+				if (value?.type === 'BigNumber') {
+					return BigNumber.from(value);
+				}
+				return value;
+			});
+			console.log(tokenData);
+			updateBalancesFromWorker(tokenData);
 		};
 		return (): void => workerRef?.current?.terminate();
 	});
@@ -317,7 +330,6 @@ export function	useBalances(props?: TUseBalancesReq): TUseBalancesRes {
 				onUpdateSome(tokens);
 			};
 		}
-		console.warn({chainID, address: web3Address, tokens});
 		workerRef?.current?.postMessage({chainID, address: web3Address, tokens});
 	}, [stringifiedTokens, isActive, web3Address]);
 
