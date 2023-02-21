@@ -250,12 +250,13 @@ function	DonateRow(): ReactElement {
 					<input
 						type={'checkbox'}
 						checked={shouldDonateETH}
+						onChange={(): void => undefined} // handled by onClick
 						className={'checkbox cursor-pointer'} />
-					<b>{`Donate ${chain.getCurrent()?.coin || 'ETH'}`}</b>
+					<b suppressHydrationWarning>{`Donate ${chain.getCurrent()?.coin || 'ETH'}`}</b>
 					<div className={'tooltip !ml-2'}>
 						<IconInfo className={'h-[14px] w-[14px] text-neutral-900'} />
 						<span className={'tooltiptext z-[100000] text-xs'}>
-							<p>{`The Migratooor is completely free and doesn't charge any fees. However, if you'd like to support us and help us create new features, you can donate some ${chain.getCurrent()?.coin || 'ETH'}!`}</p>
+							<p suppressHydrationWarning>{`The Migratooor is completely free and doesn't charge any fees. However, if you'd like to support us and help us create new features, you can donate some ${chain.getCurrent()?.coin || 'ETH'}!`}</p>
 						</span>
 					</div>
 				</div>
