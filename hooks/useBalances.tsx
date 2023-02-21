@@ -237,7 +237,7 @@ export function	useBalances(props?: TUseBalancesReq): TUseBalancesRes {
 
 		return data.current[web3ChainID].balances;
 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [getBalances, stringifiedTokens, web3Address, web3ChainID]);
+	}, [isActive, props?.chainID, provider, stringifiedTokens, web3Address, web3ChainID]);
 
 	/* 🔵 - Yearn Finance ******************************************************
 	** onUpdateSome takes a list of tokens and fetches the balances for each
@@ -280,14 +280,14 @@ export function	useBalances(props?: TUseBalancesReq): TUseBalancesRes {
 		onLoadDone();
 		return data.current[web3ChainID].balances;
 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [getBalances, web3Address, web3ChainID]);
-
+	}, [props?.chainID, provider, web3Address, web3ChainID]);
 
 	/* 🔵 - Yearn Finance ******************************************************
 	** onMount, we need to init the worker and set the onmessage handler.
 	**************************************************************************/
 	useMountEffect((): VoidFunction => {
-		const scriptURI = process.env.NODE_ENV !== 'production' ? new URL('./useBalances.worker.tsx', import.meta.url) : `${meta.uri}/useBalances.worker.tsx`;
+		const scriptURI = process.env.NODE_ENV !== 'production' ? new URL('./useBalances.worker.tsx', import.meta.url) : new URL(`${meta.uri}/useBalances.worker.tsx`, import.meta.url);
+		console.log(scriptURI);
 		workerRef.current = new Worker(scriptURI);
 		workerRef.current.onmessage = (event: MessageEvent<[TDict<TMinBalanceData>, Error | undefined]>): void => {
 			updateBalancesFromWorker(event.data[0], event.data[1]);
@@ -301,7 +301,7 @@ export function	useBalances(props?: TUseBalancesReq): TUseBalancesRes {
 	** to fetch the balances, preventing the UI to freeze.
 	**************************************************************************/
 	useUpdateEffect((): void => {
-		if (!isActive || !web3Address) {
+		if (!isActive || !web3Address || !provider) {
 			return;
 		}
 		set_status({...defaultStatus, isLoading: true, isFetching: true, isRefetching: defaultStatus.isFetched});

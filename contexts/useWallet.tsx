@@ -7,7 +7,6 @@ import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {ETH_TOKEN_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
 import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUpdates';
-import {getProvider} from '@yearn-finance/web-lib/utils/web3/providers';
 
 import type {TMinBalanceData, TUseBalancesTokens} from 'hooks/useBalances';
 import type {Dispatch, ReactElement, SetStateAction} from 'react';
@@ -42,7 +41,7 @@ const	defaultProps = {
 const	WalletContext = createContext<TWalletContext>(defaultProps);
 export const WalletContextApp = memo(function WalletContextApp({children}: {children: ReactElement}): ReactElement {
 	const	{tokenList} = useTokenList();
-	const	{provider, chainID, isActive} = useWeb3();
+	const	{chainID, isActive} = useWeb3();
 	const	{safeChainID} = useChainID();
 	const	[walletProvider, set_walletProvider] = useState('NONE');
 
@@ -62,11 +61,7 @@ export const WalletContextApp = memo(function WalletContextApp({children}: {chil
 		return tokens;
 	}, [safeChainID, tokenList]);
 
-	const	{data: balances, update, updateSome, nonce, isLoading} = useBalances({
-		provider: provider || getProvider(1),
-		chainID: safeChainID,
-		tokens: availableTokens
-	});
+	const	{data: balances, update, updateSome, nonce, isLoading} = useBalances({tokens: availableTokens});
 
 	const	onRefresh = useCallback(async (tokenToUpdate?: TUseBalancesTokens[]): Promise<TDict<TMinBalanceData>> => {
 		if (tokenToUpdate) {
