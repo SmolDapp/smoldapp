@@ -66,11 +66,12 @@ async function getBatchBalances({
 	return data;
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse<TDict<TMinBalanceData> | Error>): Promise<void> {
+export type TGetBatchBalancesResp = {balances: TDict<TMinBalanceData>, chainID: number};
+export default async function handler(req: NextApiRequest, res: NextApiResponse<TGetBatchBalancesResp>): Promise<void> {
 	const	balances = await getBatchBalances({
 		chainID: Number(req.body.chainID),
 		address: req.body.address as string,
 		tokens: req.body.tokens as unknown as TUseBalancesTokens[]
 	});
-	return res.status(200).json(balances);
+	return res.status(200).json({balances, chainID: req.body.chainID});
 }
