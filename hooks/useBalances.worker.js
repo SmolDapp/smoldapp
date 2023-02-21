@@ -6,6 +6,6 @@ addEventListener('message', (event) => {
 		},
 		body: JSON.stringify(event.data)
 	})
-	.then(async (res) => res.json())
-	.then((res) => postMessage(JSON.stringify(res)));
+		.then(async (res) => res.json())
+		.then((res) => postMessage(JSON.stringify(res)));
 });
