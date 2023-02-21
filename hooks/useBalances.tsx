@@ -288,7 +288,7 @@ export function	useBalances(props?: TUseBalancesReq): TUseBalancesRes {
 	useMountEffect((): VoidFunction => {
 		const scriptURI = process.env.NODE_ENV !== 'production' ? new URL('./useBalances.worker.tsx', import.meta.url) : new URL(`${meta.uri}/useBalances.worker.tsx`, import.meta.url);
 		console.log(scriptURI);
-		workerRef.current = new Worker(scriptURI);
+		workerRef.current = new Worker(scriptURI, {type: 'module'});
 		workerRef.current.onmessage = (event: MessageEvent<[TDict<TMinBalanceData>, Error | undefined]>): void => {
 			updateBalancesFromWorker(event.data[0], event.data[1]);
 		};
