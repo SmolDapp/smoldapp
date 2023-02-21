@@ -3,6 +3,7 @@
 	"version": "0.0.2",
 	"private": false,
 	"homepage": "./",
+	"type": "module",
 	"scripts": {
 		"dev": "next",
 		"dev:ts": "tsc --watch",
