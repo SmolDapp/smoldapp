@@ -21,53 +21,56 @@ async function getBatchBalances({
 	chainID,
 	address,
 	tokens
-}: TPerformCall): Promise<[TDict<TMinBalanceData>, Error | undefined]> {
+}: TPerformCall): Promise<TDict<TMinBalanceData>> {
 	const	currentProvider = getProvider(chainID);
 	const	ethcallProvider = await newEthCallProvider(currentProvider);
-
-	const	calls = [];
-	for (const element of tokens) {
-		const	{token} = element;
-		const	ownerAddress = address;
-		const	isEth = toAddress(token) === ETH_TOKEN_ADDRESS;
-		if (isEth) {
-			calls.push(ethcallProvider.getEthBalance(ownerAddress));
-		} else {
-			const	tokenContract = new Contract(token, ERC20_ABI);
-			calls.push(tokenContract.balanceOf(ownerAddress));
-		}
+	const	data: TDict<TMinBalanceData> = {};
+	const	chunks = [];
+	for (let i = 0; i < tokens.length; i += 5_000) {
+		chunks.push(tokens.slice(i, i + 5_000));
 	}
 
-	const	_data: TDict<TMinBalanceData> = {};
-	try {
-		const	results = await ethcallProvider.tryAll(calls);
-
-		let		rIndex = 0;
-		for (const element of tokens) {
-			const	{token, symbol, decimals} = element;
-			const	balanceOf = results[rIndex++] as BigNumber;
-			_data[toAddress(token)] = {
-				decimals: Number(decimals || 18),
-				symbol: symbol,
-				raw: balanceOf,
-				normalized: toNormalizedValue(balanceOf, Number(decimals || 18)),
-				force: element.force
-			};
+	for (const chunkTokens of chunks) {
+		const calls = [];
+		for (const element of chunkTokens) {
+			const	{token} = element;
+			const	ownerAddress = address;
+			const	isEth = toAddress(token) === ETH_TOKEN_ADDRESS;
+			if (isEth) {
+				calls.push(ethcallProvider.getEthBalance(ownerAddress));
+			} else {
+				const	tokenContract = new Contract(token, ERC20_ABI);
+				calls.push(tokenContract.balanceOf(ownerAddress));
+			}
 		}
-		return [_data, undefined];
-	} catch (error) {
-		return [_data, error as Error];
+
+		try {
+			const	results = await ethcallProvider.tryAll(calls);
+
+			let		rIndex = 0;
+			for (const element of chunkTokens) {
+				const	{token, symbol, decimals} = element;
+				const	balanceOf = results[rIndex++] as BigNumber;
+				data[toAddress(token)] = {
+					decimals: Number(decimals || 18),
+					symbol: symbol,
+					raw: balanceOf,
+					normalized: toNormalizedValue(balanceOf, Number(decimals || 18)),
+					force: element.force
+				};
+			}
+		} catch (error) {
+			continue;
+		}
 	}
+	return data;
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<TDict<TMinBalanceData> | Error>): Promise<void> {
-	const	[balances, error] = await getBatchBalances({
+	const	balances = await getBatchBalances({
 		chainID: Number(req.body.chainID),
 		address: req.body.address as string,
 		tokens: req.body.tokens as unknown as TUseBalancesTokens[]
 	});
-	if (error) {
-		return res.status(500).json(error);
-	}
 	return res.status(200).json(balances);
 }
