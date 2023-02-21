@@ -9,6 +9,7 @@ import {getProvider, newEthCallProvider} from '@yearn-finance/web-lib/utils/web3
 
 import type {BigNumber} from 'ethers';
 import type {TMinBalanceData, TUseBalancesTokens} from 'hooks/useBalances';
+import type {NextApiRequest, NextApiResponse} from 'next';
 import type {TDict} from '@yearn-finance/web-lib/utils/types';
 
 type TPerformCall = {
@@ -16,7 +17,7 @@ type TPerformCall = {
 	address: string,
 	tokens: TUseBalancesTokens[]
 }
-async function performCall({
+async function getBatchBalances({
 	chainID,
 	address,
 	tokens
@@ -59,6 +60,14 @@ async function performCall({
 	}
 }
 
-addEventListener('message', (event: MessageEvent<TPerformCall>): void => {
-	performCall(event.data).then((res): void => postMessage(res));
-});
+export default async function handler(req: NextApiRequest, res: NextApiResponse<TDict<TMinBalanceData> | Error>): Promise<void> {
+	const	[balances, error] = await getBatchBalances({
+		chainID: Number(req.body.chainID),
+		address: req.body.address as string,
+		tokens: req.body.tokens as unknown as TUseBalancesTokens[]
+	});
+	if (error) {
+		return res.status(500).json(error);
+	}
+	return res.status(200).json(balances);
+}
