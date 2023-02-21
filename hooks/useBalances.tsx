@@ -286,7 +286,9 @@ export function	useBalances(props?: TUseBalancesReq): TUseBalancesRes {
 	** onMount, we need to init the worker and set the onmessage handler.
 	**************************************************************************/
 	useMountEffect((): VoidFunction => {
-		workerRef.current = new Worker(new URL('./useBalances.worker.tsx', import.meta.url));
+		// meta.uri;
+		// const scriptURI = process.env.NODE_ENV !== 'production' ? 'http://localhost:3000' : `${meta.uri}useBalances.worker.tsx`;
+		workerRef.current = new Worker(new URL('../public/useBalances.worker.tsx', import.meta.url));
 		workerRef.current.onmessage = (event: MessageEvent<[TDict<TMinBalanceData>, Error | undefined]>): void => {
 			updateBalancesFromWorker(event.data[0], event.data[1]);
 		};
