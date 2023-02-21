@@ -315,6 +315,7 @@ export function	useBalances(props?: TUseBalancesReq): TUseBalancesRes {
 				onUpdateSome(tokens);
 			};
 		}
+		console.warn({chainID, address: web3Address, tokens});
 		workerRef?.current?.postMessage({chainID, address: web3Address, tokens});
 	}, [stringifiedTokens, isActive, web3Address]);
 
