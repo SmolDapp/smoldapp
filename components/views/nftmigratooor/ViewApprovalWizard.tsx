@@ -22,10 +22,11 @@ import type {TDict} from '@yearn-finance/web-lib/utils/types';
 
 function	ViewApprovalWizard(): ReactElement {
 	const	{address, provider} = useWeb3();
-	const	{selected, set_nfts, destinationAddress} = useNFTMigratooor();
+	const	{selected, set_selected, set_nfts, destinationAddress} = useNFTMigratooor();
 	const	[isApproving, set_isApproving] = useState(false);
 	const	[collectionStatus, set_collectionStatus] = useState<TDict<TWizardStatus>>({});
 	const	[collectionApprovalStatus, set_collectionApprovalStatus] = useState<TDict<TApprovalStatus>>({});
+	const	[migrated, set_migrated] = useState<TDict<TOpenSeaAsset[]>>({});
 	const	[, set_txStatus] = useState(defaultTxStatus);
 
 	/**********************************************************************************************
@@ -106,6 +107,26 @@ function	ViewApprovalWizard(): ReactElement {
 	}, [retrieveApprovals]);
 
 	/**********************************************************************************************
+	** onClearMigration is called when the user click the "Migrate X NFTs" buttons again after a
+	** first transaction has been sent. We need to remove the NFTs that have been migrated from
+	** the list of selected NFTs.
+	**********************************************************************************************/
+	const onClearMigration = useCallback((): void => {
+		performBatchedUpdates((): void => {
+			set_selected((prev): TOpenSeaAsset[] => {
+				const	newSelected: TOpenSeaAsset[] = [];
+				for (const asset of prev) {
+					if (!migrated[toAddress(asset.asset_contract.address)]?.find((nft: TOpenSeaAsset): boolean => nft.token_id === asset.token_id)) {
+						newSelected.push(asset);
+					}
+				}
+				return newSelected;
+			});
+			set_migrated({});
+		});
+	}, [migrated]); // eslint-disable-line react-hooks/exhaustive-deps
+
+	/**********************************************************************************************
 	** onMigrateSuccess is called when the migration is successful. We need to remove the NFT
 	** from the list of available NFTs and update the status of the collection to 'Executed'.
 	**********************************************************************************************/
@@ -118,7 +139,7 @@ function	ViewApprovalWizard(): ReactElement {
 			set_nfts((prev): TOpenSeaAsset[] => {
 				const	newNFTs = [...prev];
 				for (const id of tokenID) {
-					const	index = newNFTs.findIndex((nft: TOpenSeaAsset): boolean => nft.token_id === id);
+					const	index = newNFTs.findIndex((nft: TOpenSeaAsset): boolean => nft.token_id === id && toAddress(nft.asset_contract.address) === toAddress(collectionAddress));
 					newNFTs.splice(index, 1);
 				}
 				return newNFTs;
@@ -291,6 +312,9 @@ function	ViewApprovalWizard(): ReactElement {
 	** depending on the number of NFTs in the collection and the approval status.
 	**********************************************************************************************/
 	const	onHandleMigration = useCallback(async (): Promise<void> => {
+		await onClearMigration();
+
+		const	successfulMigrations: TDict<TOpenSeaAsset[]> = {};
 		for (const collectionAddress in groupedByCollection) {
 			const collection = groupedByCollection[collectionAddress];
 			const status = collectionStatus[toAddress(collectionAddress)];
@@ -299,10 +323,17 @@ function	ViewApprovalWizard(): ReactElement {
 			}
 
 			if (collection[0].asset_contract.schema_name === 'ERC1155') {
-				await onMigrateSomeERC1155Tokens(collectionAddress, collection);
+				const isSuccessful = await onMigrateSomeERC1155Tokens(collectionAddress, collection);
+				if (isSuccessful) {
+					successfulMigrations[collectionAddress] = collection;
+				}
 			} else {
 				if (collection.length === 1) {
-					await onMigrateOneToken(collectionAddress, collection);
+					const isSuccessful = await onMigrateOneToken(collectionAddress, collection);
+					if (isSuccessful) {
+						successfulMigrations[collectionAddress] = collection;
+
+					}
 				} else if (collection.length > 1) {
 					if (collectionApprovalStatus[toAddress(collectionAddress)] !== 'Approved') {
 						const isOK = await onApproveAllCollection(collectionAddress);
@@ -310,11 +341,15 @@ function	ViewApprovalWizard(): ReactElement {
 							continue;
 						}
 					}
-					await onMigrateSomeERC721Tokens(collectionAddress, collection);
+					const isSuccessful = await onMigrateSomeERC721Tokens(collectionAddress, collection);
+					if (isSuccessful) {
+						successfulMigrations[collectionAddress] = collection;
+					}
 				}
 			}
 		}
-	}, [groupedByCollection, collectionStatus, onMigrateOneToken, onMigrateSomeERC1155Tokens, collectionApprovalStatus, onMigrateSomeERC721Tokens, onApproveAllCollection]);
+		set_migrated(successfulMigrations);
+	}, [onClearMigration, groupedByCollection, collectionStatus, onMigrateSomeERC1155Tokens, onMigrateOneToken, collectionApprovalStatus, onMigrateSomeERC721Tokens, onApproveAllCollection]);
 
 	return (
 		<section>

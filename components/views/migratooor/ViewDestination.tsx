@@ -74,10 +74,8 @@ function	ViewDestination(): ReactElement {
 	}, [destination]);
 
 	return (
-		<section className={'pt-10'}>
-			<div
-				id={'destination'}
-				className={'box-0 grid w-full grid-cols-12 overflow-hidden'}>
+		<section>
+			<div className={'box-0 grid w-full grid-cols-12 overflow-hidden'}>
 				<div className={'col-span-12 flex flex-col p-4 text-neutral-900 md:p-6'}>
 					<div className={'w-full md:w-3/4'}>
 						<a href={'#destination'}>
@@ -104,7 +102,7 @@ function	ViewDestination(): ReactElement {
 										set_isValidDestination('undetermined');
 										set_destination(e.target.value);
 									}}
-									className={'scrollbar-none w-full overflow-x-scroll border-none bg-transparent py-4 px-0 font-mono text-sm font-bold outline-none'}
+									className={'w-full overflow-x-scroll border-none bg-transparent py-4 px-0 font-mono text-sm font-bold outline-none scrollbar-none'}
 									type={'text'} />
 							</div>
 							<div className={'pointer-events-none relative h-4 w-4'}>

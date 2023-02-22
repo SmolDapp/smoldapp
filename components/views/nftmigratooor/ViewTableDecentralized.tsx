@@ -257,7 +257,7 @@ function	TokenRow({erc721Token}: {erc721Token: TERC721token}): ReactElement {
 			<div className={'relative flex w-full flex-col items-center justify-center'}>
 				<div
 					suppressHydrationWarning
-					className={`group-hover:bg-neutral-0 mb-4 flex w-full items-center justify-center border border-neutral-200 transition-colors ${isSelected ? 'bg-neutral-0' : ''}`}>
+					className={`mb-4 flex w-full items-center justify-center border border-neutral-200 transition-colors group-hover:bg-neutral-0 ${isSelected ? 'bg-neutral-0' : ''}`}>
 					{/* {cloneElement(icon, {className: 'h-5 md:h-6 w-5 md:w-6 text-neutral-900'})} */}
 					<NFTRenderer
 						contractAddress={toAddress(erc721Token.contract.id)}

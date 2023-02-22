@@ -100,7 +100,7 @@ function	ViewDestination(): ReactElement {
 										set_isValidDestination('undetermined');
 										set_destination(e.target.value);
 									}}
-									className={'scrollbar-none w-full overflow-x-scroll border-none bg-transparent py-4 px-0 font-mono text-sm font-bold outline-none'}
+									className={'w-full overflow-x-scroll border-none bg-transparent py-4 px-0 font-mono text-sm font-bold outline-none scrollbar-none'}
 									type={'text'} />
 							</div>
 							<div className={'pointer-events-none relative h-4 w-4'}>

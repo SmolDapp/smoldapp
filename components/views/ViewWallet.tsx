@@ -1,7 +1,7 @@
 import React, {useCallback, useMemo} from 'react';
 import dynamic from 'next/dynamic';
 import IconWalletLedger from 'components/icons/IconWalletLedger';
-import useWallet from 'contexts/useWallet';
+import {useWallet} from 'contexts/useWallet';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {useInjectedWallet} from '@yearn-finance/web-lib/hooks/useInjectedWallet';
 import IconWalletGnosis from '@yearn-finance/web-lib/icons/IconWalletGnosis';
