@@ -154,9 +154,9 @@ function	TokenRow({address: tokenAddress, balance}: {balance: TMinBalanceData, a
 			<div className={'yearn--table-data-section'}>
 				<div className={'yearn--table-data-section-item md:col-span-10 md:px-6'} datatype={'number'}>
 					<label className={'yearn--table-data-section-item-label'}>{'Amount to migrate'}</label>
-					<div className={'box-0 flex h-10 w-full items-center p-2'}>
+					<div className={'box-0 h- flex w-full items-center p-2'}>
 						<div
-							className={'flex h-10 w-full flex-row items-center justify-between py-4 px-0'}
+							className={'h- flex w-full flex-row items-center justify-between py-4 px-0'}
 							onClick={(e): void => e.stopPropagation()}>
 							<input
 								className={`scrollbar-none w-full overflow-x-scroll border-none bg-transparent py-4 px-0 text-sm font-bold outline-none ${isActive ? '' : 'cursor-not-allowed'}`}
@@ -262,8 +262,8 @@ function	DonateRow(): ReactElement {
 				<div className={'col-span-12 flex flex-row items-center px-1 md:col-span-5 md:px-6'}>
 					<div
 						onClick={(e): void => e.stopPropagation()}
-						className={`flex h-10 w-full items-center p-2 ${(balances?.[ETH_TOKEN_ADDRESS]?.raw || Zero)?.isZero() ? 'box-100' : 'box-0'}`}>
-						<div className={'flex h-10 w-full flex-row items-center justify-between py-4 px-0'}>
+						className={`h- flex w-full items-center p-2 ${(balances?.[ETH_TOKEN_ADDRESS]?.raw || Zero)?.isZero() ? 'box-100' : 'box-0'}`}>
+						<div className={'h- flex w-full flex-row items-center justify-between py-4 px-0'}>
 							<input
 								className={'scrollbar-none w-full overflow-x-scroll border-none bg-transparent py-4 px-0 text-sm font-bold outline-none'}
 								type={'number'}

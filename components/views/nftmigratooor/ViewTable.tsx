@@ -107,9 +107,9 @@ const ViewTableOpenSea = memo(function ViewTableOpenSea({onProceed}: {onProceed:
 	), [selectedPerCollection]);
 
 	return (
-		<section className={'pt-10'}>
-			<div id={'selector'} className={'box-0 relative grid w-full grid-cols-12 overflow-hidden'}>
-				<div className={'col-span-12 flex flex-row items-center justify-between p-4 text-neutral-900 md:p-6 md:pb-4'}>
+		<section>
+			<div className={'box-0 relative w-full'}>
+				<div className={'flex flex-row items-center justify-between p-4 text-neutral-900 md:p-6 md:pb-4'}>
 					<div className={'w-full md:w-3/4'}>
 						<b>{'Select the NFTs to migrate'}</b>
 						<p className={'text-sm text-neutral-500'}>
@@ -130,7 +130,7 @@ const ViewTableOpenSea = memo(function ViewTableOpenSea({onProceed}: {onProceed:
 					</div>
 				</div>
 
-				<div className={'col-span-12 grid gap-0 pt-4'}>
+				<div className={'grid gap-0 pt-4'}>
 					{
 						Object.entries(groupedByCollection).map(([key, value]: [string, TOpenSeaAsset[]]): ReactElement => (
 							<Collection
@@ -144,14 +144,15 @@ const ViewTableOpenSea = memo(function ViewTableOpenSea({onProceed}: {onProceed:
 						))
 					}
 				</div>
-				<div className={'fixed inset-x-0 bottom-0 z-20 col-span-12 flex w-full max-w-4xl flex-row items-center justify-between bg-neutral-900 p-4 text-neutral-0 dark:bg-neutral-100 md:relative md:px-6 md:py-4'}>
-					<div className={'flex flex-col'} />
+
+				<div className={'text-neutral-0 rounded-b-default sticky inset-x-0 bottom-0 z-20 flex w-full max-w-4xl flex-row items-center justify-between border-t border-neutral-200 bg-black p-4 md:px-6 md:py-4'}>
+					<div />
 					<div>
 						<Button
-							className={'yearn--button-smaller !w-fit !text-sm'}
+							variant={'reverted-alt'}
 							isDisabled={selected.length === 0}
 							onClick={onProceed}>
-							{'Migrate selected'}
+							{`Migrate ${selected.length} NFT${selected.length <= 1 ? '' : 's'}`}
 						</Button>
 					</div>
 				</div>

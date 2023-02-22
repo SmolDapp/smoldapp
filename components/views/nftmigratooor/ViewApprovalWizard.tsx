@@ -8,7 +8,6 @@ import {multiTransfer} from 'utils/actions/multiTransferERC721';
 import {transfer} from 'utils/actions/transferERC721';
 import {safeBatchTransferFrom1155} from 'utils/actions/transferERC1155';
 import {useUpdateEffect} from '@react-hookz/web';
-import {Button} from '@yearn-finance/web-lib/components/Button';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUpdates';
@@ -80,7 +79,7 @@ function	ViewApprovalWizard(): ReactElement {
 	** collection to avoid complex logic/data structure.
 	**********************************************************************************************/
 	const	retrieveApprovals = useCallback(async (): Promise<void> => {
-		if (!provider) {
+		if (!provider || !address) {
 			return;
 		}
 		const currentProvider = provider || getProvider(1);
@@ -95,7 +94,7 @@ function	ViewApprovalWizard(): ReactElement {
 				calls.push(erc721Contract.isApprovedForAll(address, toAddress('0x2e3a0E24302A30e237891b91462Ea534552719b1')));
 			}
 		});
-		const result = await ethcallProvider.tryAll(calls) as boolean[];
+		const result = await ethcallProvider?.tryAll(calls) as boolean[];
 		const newStatus: TDict<TApprovalStatus> = {};
 		Object.entries(groupedByCollection).forEach(([collectionAddress], index): void => {
 			newStatus[toAddress(collectionAddress)] = result[index] ? 'Approved' : 'Not Approved';
@@ -220,6 +219,11 @@ function	ViewApprovalWizard(): ReactElement {
 	** or if we catch an error.
 	**********************************************************************************************/
 	const onMigrateSomeERC721Tokens = useCallback(async (collectionAddress: string, collection: TOpenSeaAsset[]): Promise<boolean> => {
+		set_collectionStatus((prev): TDict<TWizardStatus> => ({
+			...prev,
+			[toAddress(collectionAddress)]: {...prev[toAddress(collectionAddress)], execute: 'Executing'}
+		}));
+
 		try {
 			const	tokenIDs: string[] = [];
 			for (const asset of collection) {
@@ -252,6 +256,11 @@ function	ViewApprovalWizard(): ReactElement {
 	** or if we catch an error.
 	**********************************************************************************************/
 	const onMigrateSomeERC1155Tokens = useCallback(async (collectionAddress: string, collection: TOpenSeaAsset[]): Promise<boolean> => {
+		set_collectionStatus((prev): TDict<TWizardStatus> => ({
+			...prev,
+			[toAddress(collectionAddress)]: {...prev[toAddress(collectionAddress)], execute: 'Executing'}
+		}));
+
 		try {
 			const	tokenIDs: string[] = [];
 			for (const asset of collection) {
@@ -308,43 +317,38 @@ function	ViewApprovalWizard(): ReactElement {
 	}, [groupedByCollection, collectionStatus, onMigrateOneToken, onMigrateSomeERC1155Tokens, collectionApprovalStatus, onMigrateSomeERC721Tokens, onApproveAllCollection]);
 
 	return (
-		<section className={'pt-10'}>
-			<div id={'approvals'} className={'box-0 relative flex w-full flex-col items-center justify-center overflow-hidden p-4 md:p-6'}>
-				<div className={'mb-6 w-full'}>
-					<b>{'Approvals'}</b>
-					<p className={'text-sm text-neutral-500'}>
-						{'This is a multiple steps process. If you are sending multiple NFTs from the same collection, you will need to approve the collection to transfer them, otherwise you will just need to transfer each NFT individually.'}
-					</p>
-				</div>
-
-				{Object.values(groupedByCollection).map((collection, index): JSX.Element => {
-					return (
-						<ApprovalWizardItem
-							key={index}
-							collection={collection}
-							collectionStatus={collectionStatus[toAddress(collection[0].asset_contract.address)]}
-							collectionApprovalStatus={collectionApprovalStatus[toAddress(collection[0].asset_contract.address)]}
-							index={index} />
-					);
-				})}
-				<div className={'flex w-full flex-row items-center justify-between pt-4 md:relative'}>
-					<div className={'flex flex-col'} />
-					<div className={'flex flex-row items-center space-x-4'}>
-						<Button
-							className={'yearn--button !w-fit !px-6 !text-sm'}
-							isBusy={isApproving}
-							isDisabled={(selected.length === 0) || !provider || Object.values(collectionStatus).every((status: TWizardStatus): boolean => status.execute === 'Executed')}
-							onClick={(): void => {
-								set_isApproving(true);
-								onHandleMigration().then((): void => {
-									set_isApproving(false);
-								});
-							}}>
-							{'Migrate'}
-						</Button>
+		<section>
+			<div className={'box-0 relative w-full'}>
+				<div className={'approvalWizardDivider flex w-full flex-col items-center justify-center overflow-hidden p-4 last:border-b-0 md:p-6'}>
+					<div className={'mb-6 w-full'}>
+						<b>{'Review and proceed'}</b>
+						<p className={'text-sm text-neutral-500'}>
+							{'This is a multiple steps process. If you are sending multiple NFTs from the same collection, you will need to approve the collection to transfer them, otherwise you will just need to transfer each NFT individually.'}
+						</p>
 					</div>
+
+					{Object.values(groupedByCollection).map((collection, index): JSX.Element => {
+						return (
+							<ApprovalWizardItem
+								key={index}
+								collection={collection}
+								collectionStatus={collectionStatus[toAddress(collection[0].asset_contract.address)]}
+								collectionApprovalStatus={collectionApprovalStatus[toAddress(collection[0].asset_contract.address)]}
+								index={index} />
+						);
+					})}
 				</div>
 			</div>
+			<button
+				id={'TRIGGER_NFT_MIGRATOOOR_HIDDEN'}
+				className={'pointer-events-none invisible block h-0 w-0 opacity-0'}
+				disabled={(selected.length === 0) || !provider || isApproving}
+				onClick={(): void => {
+					set_isApproving(true);
+					onHandleMigration().then((): void => {
+						set_isApproving(false);
+					});
+				}}/>
 		</section>
 	);
 }

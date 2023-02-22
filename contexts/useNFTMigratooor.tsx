@@ -46,6 +46,21 @@ const	defaultProps: TSelected = {
 	set_currentStep: (): void => undefined
 };
 
+function scrollToTargetAdjusted(element: HTMLElement): void {
+	const headerOffset = 81 - 16;
+	if (!element) {
+		return;
+	}
+	const elementPosition = element.getBoundingClientRect().top;
+	console.log(element.getBoundingClientRect(), window.scrollY);
+	const offsetPosition = elementPosition + window.scrollY - headerOffset;
+	console.log(offsetPosition);
+	window.scrollTo({
+		top: Math.round(offsetPosition),
+		behavior: 'smooth'
+	});
+}
+
 const	NFTMigratooorContext = createContext<TSelected>(defaultProps);
 export const NFTMigratooorContextApp = ({children}: {children: React.ReactElement}): React.ReactElement => {
 	const	{address, isActive, walletType} = useWeb3();
@@ -138,10 +153,14 @@ export const NFTMigratooorContextApp = ({children}: {children: React.ReactElemen
 			}
 			const	currentElementHeight = currentStepContainer?.offsetHeight;
 			if (scalooor?.style) {
-				scalooor.style.height = `calc(100vh - ${currentElementHeight}px - ${headerHeight}px + 16px)`;
+				scalooor.style.height = `calc(100vh - ${currentElementHeight}px - ${headerHeight}px + 36px)`;
 			}
-			currentStepContainer?.scrollIntoView({behavior: 'smooth', block: 'start'});
-		}, 100);
+			if (currentStepContainer) {
+				scrollToTargetAdjusted(currentStepContainer);
+			}
+
+			// currentStepContainer?.scrollIntoView({behavior: 'smooth', block: 'start', inline: 'start'});
+		}, 0);
 	}, [currentStep, walletType]);
 
 	/**********************************************************************************************
@@ -160,7 +179,7 @@ export const NFTMigratooorContextApp = ({children}: {children: React.ReactElemen
 
 	return (
 		<NFTMigratooorContext.Provider value={contextValue}>
-			<div id={'NFTMiratooorView'} className={'mx-auto w-full overflow-hidden'}>
+			<div id={'NFTMiratooorView'} className={'mx-auto w-full'}>
 				{children}
 				<div id={'scalooor'} />
 			</div>

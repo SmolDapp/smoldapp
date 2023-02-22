@@ -5,8 +5,6 @@ import ViewDestination from 'components/views/nftmigratooor/ViewDestination';
 import ViewTable from 'components/views/nftmigratooor/ViewTable';
 import ViewWallet from 'components/views/ViewWallet';
 import {NFTMigratooorContextApp, Step, useNFTMigratooor} from 'contexts/useNFTMigratooor';
-import thumbnailVariants from 'utils/animations';
-import {motion} from 'framer-motion';
 
 import type {ReactElement} from 'react';
 
@@ -21,32 +19,28 @@ function	Home(): ReactElement {
 					document?.getElementById('destination')?.scrollIntoView({behavior: 'smooth', block: 'center'});
 				}} />
 
-			<motion.div
-				initial={'initial'}
-				animate={[Step.SELECTOR, Step.CONFIRMATION, Step.DESTINATION].includes(currentStep) ? 'enter' : 'initial'}
-				variants={thumbnailVariants}>
+			<div
+				id={'destination'}
+				className={`pt-10 transition-opacity ${[Step.SELECTOR, Step.CONFIRMATION, Step.DESTINATION].includes(currentStep) ? 'opacity-100' : 'pointer-events-none h-0 overflow-hidden opacity-0'}`}>
 				<ViewDestination />
-			</motion.div>
+			</div>
 
-			<motion.div
-				initial={'initial'}
-				animate={[Step.SELECTOR, Step.CONFIRMATION].includes(currentStep) ? 'enter' : 'initial'}
-				className={[Step.SELECTOR, Step.CONFIRMATION].includes(currentStep) ? '' : 'pointer-events-none'}
-				variants={thumbnailVariants}>
+			<div
+				id={'selector'}
+				className={`pt-10 transition-opacity ${[Step.SELECTOR, Step.CONFIRMATION].includes(currentStep) ? 'opacity-100' : 'pointer-events-none h-0 overflow-hidden opacity-0'}`}>
 				<ViewTable
 					onProceed={(): void => {
 						set_currentStep(Step.CONFIRMATION);
 						document?.getElementById('approvals')?.scrollIntoView({behavior: 'smooth', block: 'center'});
+						document?.getElementById('TRIGGER_NFT_MIGRATOOOR_HIDDEN')?.click();
 					}} />
-			</motion.div>
+			</div>
 
-			<motion.div
-				initial={'initial'}
-				animate={currentStep === Step.CONFIRMATION ? 'enter' : 'initial'}
-				className={[Step.CONFIRMATION].includes(currentStep) ? '' : 'pointer-events-none'}
-				variants={thumbnailVariants}>
+			<div
+				id={'approvals'}
+				className={`pt-10 transition-opacity ${[Step.CONFIRMATION].includes(currentStep) ? 'opacity-100' : 'pointer-events-none h-0 overflow-hidden opacity-0'}`}>
 				<ViewApprovalWizard />
-			</motion.div>
+			</div>
 		</div>
 	);
 }

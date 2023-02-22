@@ -117,7 +117,8 @@ label[aria-invalid="true"] {
 
 /* -- Button.tsx ------------------------------------------------------- */
 .yearn--button {
-	@apply cursor-pointer px-5 flex justify-center items-center h-10 text-base transition-all relative;
+	@apply cursor-pointer px-4 flex justify-center items-center h-10 text-sm transition-all relative;
+
 	border-radius: var(--default-rounded);
 
 	&[data-variant="filled"] {
@@ -253,6 +254,36 @@ label[aria-invalid="true"] {
 	&[data-active='true'] {
 		@apply bg-neutral-0/40;
 	}
+}
+
+.yearn--modal-wrapper {
+	@apply flex justify-center items-end px-4 pt-4 pb-20 min-h-screen text-center sm:block sm:p-0;
+}
+.yearn--modal-overlay {
+	@apply fixed inset-0 z-10 bg-neutral-900/60 transition-opacity;
+}
+:root.dark {
+	& .yearn--modal-overlay {
+		@apply bg-neutral-100/90;
+	}
+}
+.yearn--modal {
+	@apply inline-block overflow-hidden relative z-50 w-full text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:align-middle md:mb-96 bg-neutral-0;
+
+	border-radius: var(--default-rounded);
+}
+.yearn--modalLogin-wrapper {
+}
+.yearn--modalLogin-card {
+	@apply flex flex-col justify-center items-center p-6 text-center transition-colors cursor-pointer bg-neutral-0 hover:bg-neutral-100;
+
+	border-radius: var(--default-rounded);
+	& > div > svg {@apply w-12 h-12;}
+	& > b {@apply mt-2 text-lg text-neutral-700;}
+	& > p {@apply text-neutral-500;}
+}
+.yearn--modalLogin {
+	@apply grid grid-cols-2;
 }
 
 /* 🔵 - Yearn Finance ******************************************************
