@@ -11,6 +11,7 @@ import {useUpdateEffect} from '@react-hookz/web';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
+import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUpdates';
 import {getProvider, newEthCallProvider} from '@yearn-finance/web-lib/utils/web3/providers';
 import {defaultTxStatus, Transaction} from '@yearn-finance/web-lib/utils/web3/transaction';
 
@@ -22,7 +23,7 @@ import type {TDict} from '@yearn-finance/web-lib/utils/types';
 
 function	ViewApprovalWizard(): ReactElement {
 	const	{address, provider} = useWeb3();
-	const	{selected, destinationAddress} = useNFTMigratooor();
+	const	{selected, set_nfts, destinationAddress} = useNFTMigratooor();
 	const	[isApproving, set_isApproving] = useState(false);
 	const	[collectionStatus, set_collectionStatus] = useState<TDict<TWizardStatus>>({});
 	const	[collectionApprovalStatus, set_collectionApprovalStatus] = useState<TDict<TApprovalStatus>>({});
@@ -106,6 +107,38 @@ function	ViewApprovalWizard(): ReactElement {
 	}, [retrieveApprovals]);
 
 	/**********************************************************************************************
+	** onMigrateSuccess is called when the migration is successful. We need to remove the NFT
+	** from the list of available NFTs and update the status of the collection to 'Executed'.
+	**********************************************************************************************/
+	const onMigrateSuccess = useCallback((collectionAddress: string, tokenID: string[]): void => {
+		performBatchedUpdates((): void => {
+			set_collectionStatus((prev): TDict<TWizardStatus> => ({
+				...prev,
+				[toAddress(collectionAddress)]: {...prev[toAddress(collectionAddress)], execute: 'Executed'}
+			}));
+			set_nfts((prev): TOpenSeaAsset[] => {
+				const	newNFTs = [...prev];
+				for (const id of tokenID) {
+					const	index = newNFTs.findIndex((nft: TOpenSeaAsset): boolean => nft.token_id === id);
+					newNFTs.splice(index, 1);
+				}
+				return newNFTs;
+			});
+		});
+	}, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+	/**********************************************************************************************
+	** onMigrateError is called when the migration is not successful. We need to update the
+	** status of the collection to 'Error'.
+	**********************************************************************************************/
+	const onMigrateError = useCallback((collectionAddress: string): void => {
+		set_collectionStatus((prev): TDict<TWizardStatus> => ({
+			...prev,
+			[toAddress(collectionAddress)]: {...prev[toAddress(collectionAddress)], execute: 'Error'}
+		}));
+	}, []);
+
+	/**********************************************************************************************
 	** ApproveAll tokens from a specific collection. This will be called for each collection if
 	** we are sending multiple NFTs from the same collection.
 	** The flow is simple: set the approval status to 'Approving', call the approveForAll and set
@@ -166,27 +199,18 @@ function	ViewApprovalWizard(): ReactElement {
 				toAddress(destinationAddress),
 				asset.token_id
 			).onSuccess(async (): Promise<void> => {
-				set_collectionStatus((prev): TDict<TWizardStatus> => ({
-					...prev,
-					[toAddress(collectionAddress)]: {...prev[toAddress(collectionAddress)], execute: 'Executed'}
-				}));
+				onMigrateSuccess(collectionAddress, [asset.token_id]);
 			}).perform();
 
 			if (!isSuccessful) {
-				set_collectionStatus((prev): TDict<TWizardStatus> => ({
-					...prev,
-					[toAddress(collectionAddress)]: {...prev[toAddress(collectionAddress)], execute: 'Error'}
-				}));
+				onMigrateError(collectionAddress);
 			}
 			return isSuccessful;
 		} catch (error) {
-			set_collectionStatus((prev): TDict<TWizardStatus> => ({
-				...prev,
-				[toAddress(collectionAddress)]: {...prev[toAddress(collectionAddress)], execute: 'Error'}
-			}));
+			onMigrateError(collectionAddress);
 		}
 		return false;
-	}, [destinationAddress, provider]);
+	}, [destinationAddress, onMigrateError, onMigrateSuccess, provider]);
 
 	/**********************************************************************************************
 	** Migrate some tokens from a specific collection to the provided destination address. This will
@@ -197,7 +221,7 @@ function	ViewApprovalWizard(): ReactElement {
 	**********************************************************************************************/
 	const onMigrateSomeERC721Tokens = useCallback(async (collectionAddress: string, collection: TOpenSeaAsset[]): Promise<boolean> => {
 		try {
-			const	tokenIDs = [];
+			const	tokenIDs: string[] = [];
 			for (const asset of collection) {
 				tokenIDs.push(asset.token_id);
 			}
@@ -207,28 +231,18 @@ function	ViewApprovalWizard(): ReactElement {
 				toAddress(destinationAddress),
 				tokenIDs
 			).onSuccess(async (): Promise<void> => {
-				set_collectionStatus((prev): TDict<TWizardStatus> => ({
-					...prev,
-					[toAddress(collectionAddress)]: {...prev[toAddress(collectionAddress)], execute: 'Executed'}
-				}));
+				onMigrateSuccess(collectionAddress, tokenIDs);
 			}).perform();
 
 			if (!isSuccessful) {
-				set_collectionStatus((prev): TDict<TWizardStatus> => ({
-					...prev,
-					[toAddress(collectionAddress)]: {...prev[toAddress(collectionAddress)], execute: 'Error'}
-				}));
+				onMigrateError(collectionAddress);
 			}
 			return isSuccessful;
 		} catch (error) {
-			set_collectionStatus((prev): TDict<TWizardStatus> => ({
-				...prev,
-				[toAddress(collectionAddress)]: {...prev[toAddress(collectionAddress)], execute: 'Error'}
-			}));
+			onMigrateError(collectionAddress);
 		}
 		return false;
-	}, [destinationAddress, provider]);
-
+	}, [destinationAddress, onMigrateError, onMigrateSuccess, provider]);
 
 	/**********************************************************************************************
 	** Migrate some tokens from a specific collection to the provided destination address. This will
@@ -239,7 +253,7 @@ function	ViewApprovalWizard(): ReactElement {
 	**********************************************************************************************/
 	const onMigrateSomeERC1155Tokens = useCallback(async (collectionAddress: string, collection: TOpenSeaAsset[]): Promise<boolean> => {
 		try {
-			const	tokenIDs = [];
+			const	tokenIDs: string[] = [];
 			for (const asset of collection) {
 				tokenIDs.push(asset.token_id);
 			}
@@ -249,28 +263,18 @@ function	ViewApprovalWizard(): ReactElement {
 				toAddress(destinationAddress),
 				tokenIDs
 			).onSuccess(async (): Promise<void> => {
-				set_collectionStatus((prev): TDict<TWizardStatus> => ({
-					...prev,
-					[toAddress(collectionAddress)]: {...prev[toAddress(collectionAddress)], execute: 'Executed'}
-				}));
+				onMigrateSuccess(collectionAddress, tokenIDs);
 			}).perform();
 
 			if (!isSuccessful) {
-				set_collectionStatus((prev): TDict<TWizardStatus> => ({
-					...prev,
-					[toAddress(collectionAddress)]: {...prev[toAddress(collectionAddress)], execute: 'Error'}
-				}));
+				onMigrateError(collectionAddress);
 			}
 			return isSuccessful;
 		} catch (error) {
-			set_collectionStatus((prev): TDict<TWizardStatus> => ({
-				...prev,
-				[toAddress(collectionAddress)]: {...prev[toAddress(collectionAddress)], execute: 'Error'}
-			}));
+			onMigrateError(collectionAddress);
 		}
 		return false;
-	}, [destinationAddress, provider]);
-
+	}, [destinationAddress, onMigrateError, onMigrateSuccess, provider]);
 
 	/**********************************************************************************************
 	** This is the main function that will be called when the user clicks on the 'Migrate' button.
@@ -280,25 +284,28 @@ function	ViewApprovalWizard(): ReactElement {
 	const	onHandleMigration = useCallback(async (): Promise<void> => {
 		for (const collectionAddress in groupedByCollection) {
 			const collection = groupedByCollection[collectionAddress];
+			const status = collectionStatus[toAddress(collectionAddress)];
+			if (status?.execute === 'Executed') {
+				continue;
+			}
 
-			if (collection.length === 1) {
-				onMigrateOneToken(collectionAddress, collection);
-			} else if (collection.length > 1) {
-				if (collection[0].asset_contract.schema_name === 'ERC1155') {
-					onMigrateSomeERC1155Tokens(collectionAddress, collection);
-				} else {
-					console.log(collection);
+			if (collection[0].asset_contract.schema_name === 'ERC1155') {
+				await onMigrateSomeERC1155Tokens(collectionAddress, collection);
+			} else {
+				if (collection.length === 1) {
+					await onMigrateOneToken(collectionAddress, collection);
+				} else if (collection.length > 1) {
 					if (collectionApprovalStatus[toAddress(collectionAddress)] !== 'Approved') {
 						const isOK = await onApproveAllCollection(collectionAddress);
 						if (!isOK) {
 							continue;
 						}
 					}
-					onMigrateSomeERC721Tokens(collectionAddress, collection);
+					await onMigrateSomeERC721Tokens(collectionAddress, collection);
 				}
 			}
 		}
-	}, [groupedByCollection, onMigrateOneToken, onMigrateSomeERC1155Tokens, collectionApprovalStatus, onMigrateSomeERC721Tokens, onApproveAllCollection]);
+	}, [groupedByCollection, collectionStatus, onMigrateOneToken, onMigrateSomeERC1155Tokens, collectionApprovalStatus, onMigrateSomeERC721Tokens, onApproveAllCollection]);
 
 	return (
 		<section className={'pt-10'}>
@@ -326,7 +333,7 @@ function	ViewApprovalWizard(): ReactElement {
 						<Button
 							className={'yearn--button !w-fit !px-6 !text-sm'}
 							isBusy={isApproving}
-							isDisabled={(selected.length === 0) || !provider}
+							isDisabled={(selected.length === 0) || !provider || Object.values(collectionStatus).every((status: TWizardStatus): boolean => status.execute === 'Executed')}
 							onClick={(): void => {
 								set_isApproving(true);
 								onHandleMigration().then((): void => {
