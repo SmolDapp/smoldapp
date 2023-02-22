@@ -1,9 +1,7 @@
-import React, {memo, useCallback, useEffect, useMemo, useState} from 'react';
+import React, {memo, useCallback, useMemo} from 'react';
 import Collection from 'components/app/nftmigratooor/OpenSeaCollection';
 import {useNFTMigratooor} from 'contexts/useNFTMigratooor';
-import axios from 'axios';
 import {Button} from '@yearn-finance/web-lib/components/Button';
-import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUpdates';
 
@@ -11,32 +9,8 @@ import type {ReactElement} from 'react';
 import type {TOpenSeaAsset} from 'utils/types/opensea';
 import type {TDict} from '@yearn-finance/web-lib/utils/types';
 
-async function fetchAllAssetsFromOpenSea(owner: string, next?: string): Promise<TOpenSeaAsset[]> {
-	const	res = await axios.get(`https://api.opensea.io/api/v1/assets?format=json&owner=${owner}&limit=200${next ? `&cursor=${next}` : ''}`);
-	const	{assets} = res.data;
-	if (res.data.next) {
-		return assets.concat(await fetchAllAssetsFromOpenSea(owner, res.data.next));
-	}
-	return assets;
-}
-
 const ViewTableOpenSea = memo(function ViewTableOpenSea({onProceed}: {onProceed: VoidFunction}): ReactElement {
-	const	{address} = useWeb3();
-	const	[nfts, set_nfts] = useState<TOpenSeaAsset[]>([]);
-	const	{selected, set_selected} = useNFTMigratooor();
-
-	/**********************************************************************************************
-	** Fetch all NFTs from OpenSea. The OpenSea API only returns 200 NFTs at a time, so we need to
-	** recursively fetch all NFTs from OpenSea if a cursor for next page is returned.
-	** If no address is available, set NFTs to empty array.
-	**********************************************************************************************/
-	useEffect((): void => {
-		if (address) {
-			fetchAllAssetsFromOpenSea(address).then((res: TOpenSeaAsset[]): void => set_nfts(res));
-		} else if (!address) {
-			set_nfts([]);
-		}
-	}, [address]);
+	const	{nfts, selected, set_selected} = useNFTMigratooor();
 
 	/**********************************************************************************************
 	** Once we have our array of NFT, we need to group them by collection. This is done by
@@ -170,7 +144,7 @@ const ViewTableOpenSea = memo(function ViewTableOpenSea({onProceed}: {onProceed:
 						))
 					}
 				</div>
-				<div className={'text-neutral-0 fixed inset-x-0 bottom-0 z-20 col-span-12 flex w-full max-w-4xl flex-row items-center justify-between bg-neutral-900 p-4 dark:bg-neutral-100 md:relative md:px-6 md:py-4'}>
+				<div className={'fixed inset-x-0 bottom-0 z-20 col-span-12 flex w-full max-w-4xl flex-row items-center justify-between bg-neutral-900 p-4 text-neutral-0 dark:bg-neutral-100 md:relative md:px-6 md:py-4'}>
 					<div className={'flex flex-col'} />
 					<div>
 						<Button
