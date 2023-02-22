@@ -12,7 +12,8 @@ contract NFTMigratooor {
         bool isApprovedForAll = collection.isApprovedForAll(msg.sender, address(this));
 
         require(isApprovedForAll, "missing approval for all");
-        for (uint256 i = 0; i < tokenIDs.length; i++) {
+        uint256 len = tokenIDs.length;
+        for (uint256 i = 0; i < len; i++) {
             require(collection.ownerOf(tokenIDs[i]) == msg.sender, "not owner of token");
             collection.safeTransferFrom(msg.sender, to, tokenIDs[i]);
         }
