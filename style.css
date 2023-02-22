@@ -2,8 +2,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400,700&display=swap');
 
 :root {
-	@apply scroll-pt-24;
-
 }
 
 .font-mono {
@@ -37,6 +35,15 @@
 			@apply text-neutral-900;
 		}
 	}
+	&[data-variant="reverted-alt"] {
+		@apply text-neutral-900 bg-neutral-0 font-normal border border-transparent;
+		&:disabled {@apply bg-neutral-200 opacity-40;}
+		&:not(:disabled):not([aria-busy="true"]):hover {@apply bg-neutral-200;}
+
+		&[aria-busy="true"] svg {
+			@apply text-neutral-900;
+		}
+	}
 }
 .yearn--button-smaller {
 	@apply !rounded-md;
@@ -45,6 +52,13 @@
 	& .yearn--button-smaller {
 		&[data-variant="reverted"] {
 			&:not(:disabled):not([aria-busy="true"]):hover {@apply !bg-neutral-100;}
+		}
+	}
+	& .yearn--button {
+		&[data-variant="reverted-alt"] {
+			@apply text-neutral-0 bg-neutral-900 font-normal border border-transparent;
+			&:disabled {@apply bg-neutral-700 opacity-40;}
+			&:not(:disabled):not([aria-busy="true"]):hover {@apply bg-neutral-800;}
 		}
 	}
 }
@@ -119,17 +133,8 @@ details > summary::-webkit-details-marker {
 	display: none;
 }
 details {
-	@apply border-b border-neutral-300 last-of-type:border-b-0;
-
 	& > summary {
 		@apply px-4 md:px-6 py-6 md:py-8 cursor-pointer flex flex-row items-center justify-between;
-	}
-
-	& > summary .summary-chevron {
-		@apply h-6 w-6 -rotate-90 text-neutral-900 transition-all;
-	}
-	&[open] > summary .summary-chevron {
-		@apply rotate-0;
 	}
 }
 
@@ -417,5 +422,20 @@ details {
 	}
 	&:hover .withHoverContent {
 		@apply opacity-100;
+	}
+}
+
+.approvalWizardDivider {
+	&> *:last-child{
+		@apply border-b-0 !mb-0 !pb-0;
+	}
+}
+
+.bg-black {
+	background: linear-gradient(84.14deg,#1e243e,#1b2037);
+}
+:root.dark {
+	& .bg-black {
+		background: #1b2036
 	}
 }

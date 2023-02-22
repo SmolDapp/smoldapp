@@ -14,7 +14,7 @@ export default function SettingsDrawer({isDrawerOpen, set_isDrawerOpen}: {
 		<Transition.Root show={isDrawerOpen} as={Fragment}>
 			<Dialog
 				as={'div'}
-				className={'relative z-40'}
+				className={'relative z-50'}
 				onClose={set_isDrawerOpen}>
 				<Transition.Child
 					as={Fragment}
@@ -29,7 +29,7 @@ export default function SettingsDrawer({isDrawerOpen, set_isDrawerOpen}: {
 
 				<div className={'fixed inset-0 overflow-hidden'}>
 					<div className={'absolute inset-0 overflow-hidden'}>
-						<div className={'pointer-events-none fixed bottom-0 top-14 right-0 flex max-w-full'}>
+						<div className={'pointer-events-none fixed bottom-0 top-20 right-0 flex max-w-full'}>
 							<Transition.Child
 								as={Fragment}
 								enter={'transform transition ease-in-out duration-500 sm:duration-700'}

@@ -30,13 +30,13 @@ function	ApprovalWizardItem({
 		if (collectionStatus?.approval === 'Approved' || collectionApprovalStatus === 'Approved') {
 			return (<IconCheck className={'h-4 w-4 text-[#16a34a]'} />);
 		}
-		if (!collectionStatus?.approval || collectionStatus?.approval === 'Not Approved' || collectionApprovalStatus === 'Not Approved') {
-			return (<div className={'h-4 w-4 rounded-full bg-neutral-300'} />);
-		}
 		if (collectionStatus?.approval === 'Approving') {
 			return <IconSpinner />;
 		}
-		return (<IconCircleCross className={'h-4 w-4 text-[#e11d48]'} />);
+		if (collectionStatus?.approval === 'Error') {
+			return (<IconCircleCross className={'h-4 w-4 text-[#e11d48]'} />);
+		}
+		return (<div className={'h-4 w-4 rounded-full bg-neutral-300'} />);
 	}
 
 	function	renderExecuteIndication(): ReactElement {
@@ -54,7 +54,9 @@ function	ApprovalWizardItem({
 
 	if (hasMultipleItems && firstItemInCollection.asset_contract.schema_name === 'ERC721') {
 		return (
-			<details key={index} className={'group mb-2 flex w-full flex-col justify-center !border-b border-neutral-200 pb-2 transition-colors'}>
+			<details
+				key={index}
+				className={'group mb-2 flex w-full flex-col justify-center border-b border-neutral-200 pb-2 transition-colors'}>
 				<summary className={'relative flex flex-col items-start p-0 py-1'}>
 					<div className={'flex flex-row items-center space-x-4'}>
 						<div className={'flex flex-row items-center justify-center space-x-2'}>
@@ -92,11 +94,13 @@ function	ApprovalWizardItem({
 	}
 	if (hasMultipleItems && firstItemInCollection.asset_contract.schema_name === 'ERC1155') {
 		return (
-			<details key={index} className={'group mb-2 flex w-full flex-col justify-center !border-b border-neutral-200 pb-2 transition-colors'}>
+			<details
+				key={index}
+				className={'group mb-2 flex w-full flex-col justify-center border-b border-neutral-200 pb-2 transition-colors'}>
 				<summary className={'relative flex flex-col items-start p-0 py-1'}>
 					<div className={'flex flex-row items-center space-x-4'}>
 						<div className={'flex flex-row items-center justify-center space-x-2'}>
-							{renderApprovalIndication()}
+							{renderExecuteIndication()}
 							<small>
 								{'Send '}
 								<b>{`${collection.length} ${firstItemInCollection.collection.name}`}</b>
@@ -124,7 +128,9 @@ function	ApprovalWizardItem({
 	}
 
 	return (
-		<div key={index} className={'group mb-2 flex w-full flex-col justify-center border-b border-neutral-200 pt-1 pb-3 transition-colors'}>
+		<div
+			key={index}
+			className={'group mb-2 flex w-full flex-col justify-center border-b border-neutral-200 pt-1 pb-3 transition-colors'}>
 			<div className={'flex flex-row items-center space-x-4'}>
 				<div className={'flex flex-row items-center space-x-2'}>
 					{renderExecuteIndication()}

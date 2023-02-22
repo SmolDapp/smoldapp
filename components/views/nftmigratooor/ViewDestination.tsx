@@ -74,15 +74,11 @@ function	ViewDestination(): ReactElement {
 	}, [destination]);
 
 	return (
-		<section className={'pt-10'}>
-			<div
-				id={'destination'}
-				className={'box-0 grid w-full grid-cols-12 overflow-hidden'}>
+		<section>
+			<div className={'box-0 grid w-full grid-cols-12 overflow-hidden'}>
 				<div className={'col-span-12 flex flex-col p-4 text-neutral-900 md:p-6'}>
 					<div className={'w-full md:w-3/4'}>
-						<a href={'#destination'}>
-							<b>{'Destination'}</b>
-						</a>
+						<b>{'Destination'}</b>
 						<p className={'text-sm text-neutral-500'}>
 							{'Enter the address where you want to migrate your NFTs to. Be sure to double check the address before proceeding.'}
 						</p>
