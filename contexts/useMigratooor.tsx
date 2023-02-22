@@ -46,6 +46,19 @@ const	defaultProps: TSelected = {
 	set_currentStep: (): void => undefined
 };
 
+function scrollToTargetAdjusted(element: HTMLElement): void {
+	const headerOffset = 81 - 16;
+	if (!element) {
+		return;
+	}
+	const elementPosition = element.getBoundingClientRect().top;
+	const offsetPosition = elementPosition + window.scrollY - headerOffset;
+	window.scrollTo({
+		top: Math.round(offsetPosition),
+		behavior: 'smooth'
+	});
+}
+
 const	MigratooorContext = createContext<TSelected>(defaultProps);
 export const MigratooorContextApp = ({children}: {children: React.ReactElement}): React.ReactElement => {
 	const	{address, isActive, walletType} = useWeb3();
@@ -66,6 +79,11 @@ export const MigratooorContextApp = ({children}: {children: React.ReactElement})
 		}
 	}, [isActive]);
 
+	/**********************************************************************************************
+	** This effect is used to directly jump the UI to the DESTINATION section if the wallet is
+	** already connected or if the wallet is a special wallet type (e.g. EMBED_LEDGER).
+	** If the wallet is not connected, jump to the WALLET section to connect.
+	**********************************************************************************************/
 	useEffect((): void => {
 		const isEmbedWallet = ['EMBED_LEDGER', 'EMBED_GNOSIS_SAFE'].includes(walletType);
 		if ((isActive && address) || isEmbedWallet) {
@@ -75,6 +93,11 @@ export const MigratooorContextApp = ({children}: {children: React.ReactElement})
 		}
 	}, [address, isActive, walletType]);
 
+	/**********************************************************************************************
+	** This effect is used to handle some UI transitions and sections jumps. Once the current step
+	** changes, we need to scroll to the correct section.
+	** This effect is triggered only on mount to set the initial scroll position.
+	**********************************************************************************************/
 	useMountEffect((): void => {
 		setTimeout((): void => {
 			const	isEmbedWallet = ['EMBED_LEDGER', 'EMBED_GNOSIS_SAFE'].includes(walletType);
@@ -84,10 +107,18 @@ export const MigratooorContextApp = ({children}: {children: React.ReactElement})
 				document?.getElementById('destination')?.scrollIntoView({behavior: 'smooth', block: 'start'});
 			} else if (currentStep === Step.SELECTOR) {
 				document?.getElementById('selector')?.scrollIntoView({behavior: 'smooth', block: 'start'});
+			} else if (currentStep === Step.CONFIRMATION) {
+				document?.getElementById('tldr')?.scrollIntoView({behavior: 'smooth', block: 'start'});
 			}
 		}, 0);
 	});
 
+	/**********************************************************************************************
+	** This effect is used to handle some UI transitions and sections jumps. Once the current step
+	** changes, we need to scroll to the correct section.
+	** This effect is ignored on mount but will be triggered on every update to set the correct
+	** scroll position.
+	**********************************************************************************************/
 	useUpdateEffect((): void => {
 		setTimeout((): void => {
 			let currentStepContainer;
@@ -101,13 +132,17 @@ export const MigratooorContextApp = ({children}: {children: React.ReactElement})
 				currentStepContainer = document?.getElementById('destination');
 			} else if (currentStep === Step.SELECTOR) {
 				currentStepContainer = document?.getElementById('selector');
+			} else if (currentStep === Step.CONFIRMATION) {
+				currentStepContainer = document?.getElementById('tldr');
 			}
 			const	currentElementHeight = currentStepContainer?.offsetHeight;
 			if (scalooor?.style) {
-				scalooor.style.height = `calc(100vh - ${currentElementHeight}px - ${headerHeight}px + 16px)`;
+				scalooor.style.height = `calc(100vh - ${currentElementHeight}px - ${headerHeight}px + 36px)`;
 			}
-			currentStepContainer?.scrollIntoView({behavior: 'smooth', block: 'start'});
-		}, 100);
+			if (currentStepContainer) {
+				scrollToTargetAdjusted(currentStepContainer);
+			}
+		}, 0);
 	}, [currentStep, walletType]);
 
 	const	contextValue = useMemo((): TSelected => ({
@@ -127,7 +162,7 @@ export const MigratooorContextApp = ({children}: {children: React.ReactElement})
 
 	return (
 		<MigratooorContext.Provider value={contextValue}>
-			<div id={'MiratooorView'} className={'mx-auto w-full overflow-hidden'}>
+			<div id={'MiratooorView'} className={'mx-auto w-full'}>
 				{children}
 				<div id={'scalooor'} />
 			</div>

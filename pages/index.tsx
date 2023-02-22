@@ -58,7 +58,7 @@ function	AppBox({app}: {app: typeof apps[0]}): ReactElement {
 			prefetch={false}
 			key={app.href}
 			href={app.href}
-			className={'bg-neutral-0 relative z-10'}>
+			className={'relative z-10 bg-neutral-0'}>
 			<div id={app.href} className={'appBox'}>
 				<div className={'box-0 !rounded-full p-2'}>
 					{app.icon}

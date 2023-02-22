@@ -1,12 +1,10 @@
 import React from 'react';
 import {DefaultSeo} from 'next-seo';
+import ViewApprovalWizard from 'components/views/migratooor/ViewApprovalWizard';
 import ViewDestination from 'components/views/migratooor/ViewDestination';
 import ViewTable from 'components/views/migratooor/ViewTable';
-import ViewTLDR from 'components/views/migratooor/ViewTLDR';
 import ViewWallet from 'components/views/ViewWallet';
 import {MigratooorContextApp, Step, useMigratooor} from 'contexts/useMigratooor';
-import thumbnailVariants from 'utils/animations';
-import {motion} from 'framer-motion';
 
 import type {ReactElement} from 'react';
 
@@ -21,23 +19,28 @@ function	Home(): ReactElement {
 					document?.getElementById('destination')?.scrollIntoView({behavior: 'smooth', block: 'center'});
 				}} />
 
-			<motion.div
-				initial={'initial'}
-				animate={[Step.SELECTOR, Step.CONFIRMATION, Step.DESTINATION].includes(currentStep) ? 'enter' : 'initial'}
-				variants={thumbnailVariants}>
+			<div
+				id={'destination'}
+				className={`pt-10 transition-opacity ${[Step.SELECTOR, Step.CONFIRMATION, Step.DESTINATION].includes(currentStep) ? 'opacity-100' : 'pointer-events-none h-0 overflow-hidden opacity-0'}`}>
 				<ViewDestination />
-			</motion.div>
+			</div>
 
-			<motion.div
-				initial={'initial'}
-				animate={[Step.SELECTOR, Step.CONFIRMATION].includes(currentStep) ? 'enter' : 'initial'}
-				variants={thumbnailVariants}
-				className={[Step.SELECTOR, Step.CONFIRMATION].includes(currentStep) ? '' : 'pointer-events-none'}>
-				<section id={'selector'} className={'mt-10'}>
-					<ViewTable />
-					<ViewTLDR />
-				</section>
-			</motion.div>
+			<div
+				id={'selector'}
+				className={`pt-10 transition-opacity ${[Step.SELECTOR, Step.CONFIRMATION].includes(currentStep) ? 'opacity-100' : 'pointer-events-none h-0 overflow-hidden opacity-0'}`}>
+				<ViewTable
+					onProceed={(): void => {
+						set_currentStep(Step.CONFIRMATION);
+						document?.getElementById('tldr')?.scrollIntoView({behavior: 'smooth', block: 'center'});
+						document?.getElementById('TRIGGER_ERC20_MIGRATOOOR_HIDDEN')?.click();
+					}} />
+			</div>
+
+			<div
+				id={'tldr'}
+				className={`pt-10 transition-opacity ${[Step.CONFIRMATION].includes(currentStep) ? 'opacity-100' : 'pointer-events-none h-0 overflow-hidden opacity-0'}`}>
+				<ViewApprovalWizard />
+			</div>
 		</div>
 	);
 }

@@ -52,9 +52,7 @@ function scrollToTargetAdjusted(element: HTMLElement): void {
 		return;
 	}
 	const elementPosition = element.getBoundingClientRect().top;
-	console.log(element.getBoundingClientRect(), window.scrollY);
 	const offsetPosition = elementPosition + window.scrollY - headerOffset;
-	console.log(offsetPosition);
 	window.scrollTo({
 		top: Math.round(offsetPosition),
 		behavior: 'smooth'
@@ -158,8 +156,6 @@ export const NFTMigratooorContextApp = ({children}: {children: React.ReactElemen
 			if (currentStepContainer) {
 				scrollToTargetAdjusted(currentStepContainer);
 			}
-
-			// currentStepContainer?.scrollIntoView({behavior: 'smooth', block: 'start', inline: 'start'});
 		}, 0);
 	}, [currentStep, walletType]);
 

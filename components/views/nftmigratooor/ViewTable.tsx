@@ -145,7 +145,7 @@ const ViewTableOpenSea = memo(function ViewTableOpenSea({onProceed}: {onProceed:
 					}
 				</div>
 
-				<div className={'text-neutral-0 rounded-b-default sticky inset-x-0 bottom-0 z-20 flex w-full max-w-4xl flex-row items-center justify-between border-t border-neutral-200 bg-black p-4 md:px-6 md:py-4'}>
+				<div className={'rounded-b-default sticky inset-x-0 bottom-0 z-20 flex w-full max-w-4xl flex-row items-center justify-between border-t border-neutral-200 bg-black p-4 text-neutral-0 md:px-6 md:py-4'}>
 					<div />
 					<div>
 						<Button
