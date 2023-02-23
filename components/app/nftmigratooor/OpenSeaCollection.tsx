@@ -33,8 +33,8 @@ const OpenSeaCollection = memo(function OpenSeaCollection(props: TOpenSeaCollect
 			open
 			className={'detailsMigrate group'}>
 			<summary className={`flex flex-col items-start border-y border-l-2 border-b-neutral-200 bg-neutral-100 py-4 transition-colors ${isCollectionSelected ? 'border-l-neutral-900 border-t-transparent' : 'border-transparent'}`}>
-				<div className={'flex w-full flex-row items-center justify-between'}>
-					<div className={'flex flex-row items-center space-x-4 md:space-x-6'}>
+				<div className={'flex w-full flex-row items-start justify-between md:items-center'}>
+					<div className={'flex w-3/4 flex-row items-center space-x-0 md:w-autog md:space-x-6'}>
 						<div className={'mr-4 flex items-center'}>
 							<input
 								checked={isCollectionSelected}

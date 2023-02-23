@@ -50,15 +50,15 @@ export default function Wrapper(): ReactElement {
 		<MigratooorContextApp>
 			<>
 				<DefaultSeo
-					title={'Migratooor'}
-					defaultTitle={'Migratooor'}
+					title={'Migratooor - SmolDapp'}
+					defaultTitle={'Migratooor - SmolDapp'}
 					description={'The easiest way to migrate your tokens from one wallet to another.'}
 					openGraph={{
 						type: 'website',
 						locale: 'en-US',
-						url: 'https://migratooor.com',
-						site_name: 'Migratooor',
-						title: 'Migratooor',
+						url: 'https://smold.app/migratooor',
+						site_name: 'Migratooor - SmolDapp',
+						title: 'Migratooor - SmolDapp',
 						description: 'The easiest way to migrate your tokens from one wallet to another.',
 						images: [
 							{

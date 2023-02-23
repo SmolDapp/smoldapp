@@ -33,9 +33,8 @@ const OpenSeaAsset = memo(function OpenSeaAsset(props: TOpenSeaAssetProps): Reac
 						onChange={(): void => undefined} //Nothing, the whole button is taking care of the click
 						type={'checkbox'}
 						value={''}
-						className={'h-4 w-4 rounded-sm border-neutral-400 text-pink-400 indeterminate:ring-2 focus:ring-2 focus:ring-pink-400 focus:ring-offset-neutral-100'}
-					/>
-					<div className={'h-8 min-h-[32px] w-8 min-w-[32px] md:flex md:h-10 md:w-10'}>
+						className={'h-4 w-4 rounded-sm border-neutral-400 text-pink-400 indeterminate:ring-2 focus:ring-2 focus:ring-pink-400 focus:ring-offset-neutral-100'} />
+					<div className={'flex h-8 min-h-[48px] w-8 min-w-[48px] md:h-10 md:w-10'}>
 						{(nft?.image_preview_url || nft?.image_url || nft?.creator?.profile_img_url || '').endsWith('.mov') ? (
 							<video
 								className={'h-full w-full object-cover object-center'}
@@ -73,7 +72,7 @@ const OpenSeaAsset = memo(function OpenSeaAsset(props: TOpenSeaAssetProps): Reac
 			</div>
 
 
-			<div className={'col-span-4 mb-2 flex h-14 flex-row items-center justify-end py-4 md:mb-0'}>
+			<div className={'col-span-4 mb-2 flex h-auto flex-row items-center justify-end py-0 md:mb-0 md:h-14 md:py-4'}>
 				<div className={'sm:text-md hidden w-full min-w-0 flex-col items-start justify-center text-sm'}>
 					<div className={'flex w-full items-center'}>
 						<b className={'text-xs font-bold sm:text-sm'}>
@@ -87,7 +86,7 @@ const OpenSeaAsset = memo(function OpenSeaAsset(props: TOpenSeaAssetProps): Reac
 
 				<div
 					onClick={(e): void => e.stopPropagation()}
-					className={'flex items-center space-x-4'}>
+					className={'hidden items-center space-x-4 md:flex'}>
 					<div>
 						<Link
 							href={`${chain.getCurrent()?.block_explorer}/nft/${nft.asset_contract.address}/${nft.token_id}`}

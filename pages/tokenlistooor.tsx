@@ -121,15 +121,15 @@ export default function Wrapper({summary}: {summary: TTokenListSummary}): ReactE
 		<MigratooorContextApp>
 			<>
 				<DefaultSeo
-					title={'Tokenlistooor'}
-					defaultTitle={'Tokenlistooor'}
+					title={'Tokenlistooor - SmolDapp'}
+					defaultTitle={'Tokenlistooor - SmolDapp'}
 					description={'Up to date token lists that fulfill your needs! Tokenlistooor is a fork of Uniswap Tokenlists, with focus on adding more automation and extra features.'}
 					openGraph={{
 						type: 'website',
 						locale: 'en-US',
-						url: 'https://tokenlistooor.com/',
-						site_name: 'Tokenlistooor',
-						title: 'Tokenlistooor',
+						url: 'https://smold.app/tokenlistooor',
+						site_name: 'Tokenlistooor - SmolDapp',
+						title: 'Tokenlistooor - SmolDapp',
 						description: 'Up to date token lists that fulfill your needs! Tokenlistooor is a fork of Uniswap Tokenlists, with focus on adding more automation and extra features.',
 						images: [
 							{

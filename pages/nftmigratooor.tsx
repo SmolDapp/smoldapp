@@ -50,22 +50,22 @@ export default function Wrapper(): ReactElement {
 		<NFTMigratooorContextApp>
 			<>
 				<DefaultSeo
-					title={'Migratooor'}
-					defaultTitle={'Migratooor'}
-					description={'The easiest way to migrate your tokens from one wallet to another.'}
+					title={'NFTMigratooor - SmolDapp'}
+					defaultTitle={'NFTMigratooor - SmolDapp'}
+					description={'The easiest way to migrate your NFTs from one wallet to another.'}
 					openGraph={{
 						type: 'website',
 						locale: 'en-US',
-						url: 'https://migratooor.com',
-						site_name: 'Migratooor',
-						title: 'Migratooor',
-						description: 'The easiest way to migrate your tokens from one wallet to another.',
+						url: 'https://smold.app/nftmigratooor',
+						site_name: 'NFTMigratooor - SmolDapp',
+						title: 'NFTMigratooor - SmolDapp',
+						description: 'The easiest way to migrate your NFTs from one wallet to another.',
 						images: [
 							{
-								url: 'https://smold.app/og_migratooor.png',
+								url: 'https://smold.app/og.png',
 								width: 800,
 								height: 400,
-								alt: 'migratooor'
+								alt: 'nftmigratooor'
 							}
 						]
 					}}

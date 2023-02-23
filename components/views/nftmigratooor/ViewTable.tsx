@@ -108,7 +108,7 @@ const ViewTableOpenSea = memo(function ViewTableOpenSea({onProceed}: {onProceed:
 
 	return (
 		<section>
-			<div className={'box-0 relative w-full'}>
+			<div className={'box-0 relative mb-10 w-full md:mb-0'}>
 				<div className={'flex flex-row items-center justify-between p-4 text-neutral-900 md:p-6 md:pb-4'}>
 					<div className={'w-full md:w-3/4'}>
 						<b>{'Select the NFTs to migrate'}</b>
@@ -145,7 +145,7 @@ const ViewTableOpenSea = memo(function ViewTableOpenSea({onProceed}: {onProceed:
 					}
 				</div>
 
-				<div className={'rounded-b-default sticky inset-x-0 bottom-0 z-20 flex w-full max-w-4xl flex-row items-center justify-between border-t border-neutral-200 bg-black p-4 text-neutral-0 md:px-6 md:py-4'}>
+				<div className={'rounded-0 md:rounded-b-default text-neutral-0 fixed inset-x-0 bottom-0 z-20 flex w-full max-w-4xl flex-row items-center justify-between border-t border-neutral-200 bg-black p-4 md:sticky md:px-6 md:py-4'}>
 					<div />
 					<div>
 						<Button
