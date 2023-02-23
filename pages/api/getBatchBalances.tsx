@@ -10,7 +10,7 @@ import {getProvider, newEthCallProvider} from '@yearn-finance/web-lib/utils/web3
 import type {BigNumber, ethers} from 'ethers';
 import type {TMinBalanceData, TUseBalancesTokens} from 'hooks/useBalances';
 import type {NextApiRequest, NextApiResponse} from 'next';
-import type {TDict} from '@yearn-finance/web-lib/utils/types';
+import type {TDict} from '@yearn-finance/web-lib/types';
 
 type TPerformCall = {
 	chainID: number,

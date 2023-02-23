@@ -7,7 +7,7 @@ import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUp
 
 import type {ReactElement} from 'react';
 import type {TOpenSeaAsset} from 'utils/types/opensea';
-import type {TDict} from '@yearn-finance/web-lib/utils/types';
+import type {TDict} from '@yearn-finance/web-lib/types';
 
 const ViewTableOpenSea = memo(function ViewTableOpenSea({onProceed}: {onProceed: VoidFunction}): ReactElement {
 	const	{nfts, selected, set_selected} = useNFTMigratooor();

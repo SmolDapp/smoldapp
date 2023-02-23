@@ -17,9 +17,8 @@ import {defaultTxStatus, Transaction} from '@yearn-finance/web-lib/utils/web3/tr
 
 import type {TMinBalanceData} from 'hooks/useBalances';
 import type {ReactElement} from 'react';
-import type {TAddress} from '@yearn-finance/web-lib/utils/address';
+import type {TAddress, TDict} from '@yearn-finance/web-lib/types';
 import type {TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
-import type {TDict} from '@yearn-finance/web-lib/utils/types';
 import type {BaseTransaction} from '@gnosis.pm/safe-apps-sdk';
 
 export type TExecuteStatus = 'Executed' | 'Not Executed' | 'Executing' | 'Error'

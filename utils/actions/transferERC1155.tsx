@@ -1,7 +1,7 @@
 import {ethers} from 'ethers';
 
 import type {BigNumber} from 'ethers';
-import type {TAddress} from '@yearn-finance/web-lib/utils/address';
+import type {TAddress} from '@yearn-finance/web-lib/types';
 
 export async function	safeBatchTransferFrom1155(
 	provider: ethers.providers.Web3Provider,

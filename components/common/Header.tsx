@@ -6,9 +6,9 @@ import {usePathname} from 'next/navigation';
 import Logo from 'components/icons/logo';
 import Drawer from 'components/SettingsDrawer';
 import {useMenu} from 'contexts/useMenu';
+import Header from '@yearn-finance/web-lib/components/Header';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import IconSettings from '@yearn-finance/web-lib/icons/IconSettings';
-import Header from '@yearn-finance/web-lib/layouts/Header.next';
 
 import type {ReactElement} from 'react';
 

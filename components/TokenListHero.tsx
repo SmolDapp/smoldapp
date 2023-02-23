@@ -22,7 +22,7 @@ function TokenListHero({summary}: {summary: TTokenListSummary | undefined}): Rea
 	const time = useTimer({endTime: nextSundayNoon.valueOf() / 1000});
 
 	return (
-		<div className={'relative isolate overflow-hidden bg-neutral-0'}>
+		<div className={'bg-neutral-0 relative isolate overflow-hidden'}>
 			<div className={'mx-auto grid max-w-4xl grid-cols-1 px-6 pt-10 pb-0 md:grid-cols-2 md:pb-10 md:pt-20'}>
 				<div className={'w-full'}>
 					<div>

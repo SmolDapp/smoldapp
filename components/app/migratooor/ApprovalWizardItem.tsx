@@ -6,7 +6,7 @@ import {truncateHex} from '@yearn-finance/web-lib/utils/address';
 
 import type {TExecuteStatus} from 'components/views/migratooor/ViewApprovalWizard';
 import type {ReactElement} from 'react';
-import type {TAddress} from '@yearn-finance/web-lib/utils/address';
+import type {TAddress} from '@yearn-finance/web-lib/types';
 
 type TApprovalWizardItemProps = {
 	token: {

@@ -11,8 +11,7 @@ import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUp
 import type {AxiosResponse} from 'axios';
 import type {Dispatch, SetStateAction} from 'react';
 import type {TAlchemyAssets, TOpenSeaAsset} from 'utils/types/opensea';
-import type {TAddress} from '@yearn-finance/web-lib/utils/address';
-import type {TNDict} from '@yearn-finance/web-lib/utils/types';
+import type {TAddress, TNDict} from '@yearn-finance/web-lib/types';
 
 export enum	Step {
 	WALLET = 'wallet',

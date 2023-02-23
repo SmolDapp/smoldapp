@@ -20,7 +20,7 @@ import type {ethers} from 'ethers';
 import type {ReactElement} from 'react';
 import type {TApprovalStatus, TWizardStatus} from 'utils/types/nftMigratooor';
 import type {TOpenSeaAsset} from 'utils/types/opensea';
-import type {TDict} from '@yearn-finance/web-lib/utils/types';
+import type {TDict} from '@yearn-finance/web-lib/types';
 
 function	ViewApprovalWizard(): ReactElement {
 	const	{address, provider} = useWeb3();

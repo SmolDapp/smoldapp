@@ -1,6 +1,6 @@
 import {ethers} from 'ethers';
 
-import type {TAddress} from '@yearn-finance/web-lib/utils/address';
+import type {TAddress} from '@yearn-finance/web-lib/types';
 
 export async function	transfer(
 	provider: ethers.providers.Web3Provider,

@@ -37,7 +37,7 @@ const SmallButton = forwardRef((props: TButton): ReactElement => {
 			{children}
 			{isBusy ? (
 				<div className={'absolute inset-0 flex items-center justify-center'}>
-					<IconLoader className={'h-4 w-4 animate-spin text-neutral-0'} />
+					<IconLoader className={'text-neutral-0 h-4 w-4 animate-spin'} />
 				</div>
 			) : null}
 		</button>

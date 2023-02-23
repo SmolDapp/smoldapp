@@ -21,9 +21,8 @@ import {defaultTxStatus, Transaction} from '@yearn-finance/web-lib/utils/web3/tr
 
 import type {TMinBalanceData} from 'hooks/useBalances';
 import type {ChangeEvent, ReactElement} from 'react';
-import type {TAddress} from '@yearn-finance/web-lib/utils/address';
+import type {TAddress, TDict} from '@yearn-finance/web-lib/types';
 import type {TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
-import type {TDict} from '@yearn-finance/web-lib/utils/types';
 
 function	TableERC20Row({address: tokenAddress, balance}: {balance: TMinBalanceData, address: TAddress}): ReactElement {
 	const {balances} = useWallet();
@@ -155,7 +154,7 @@ function	TableERC20Row({address: tokenAddress, balance}: {balance: TMinBalanceDa
 							className={'flex h-10 w-full flex-row items-center justify-between py-4 px-0'}
 							onClick={(e): void => e.stopPropagation()}>
 							<input
-								className={`w-full overflow-x-scroll border-none bg-transparent py-4 px-0 text-sm font-bold outline-none scrollbar-none ${isActive ? '' : 'cursor-not-allowed'}`}
+								className={`scrollbar-none w-full overflow-x-scroll border-none bg-transparent py-4 px-0 text-sm font-bold outline-none ${isActive ? '' : 'cursor-not-allowed'}`}
 								type={'number'}
 								min={0}
 								step={1 / 10 ** (balance.decimals || 18)}
@@ -175,7 +174,7 @@ function	TableERC20Row({address: tokenAddress, balance}: {balance: TMinBalanceDa
 								onClick={(): void => {
 									set_amounts((amounts): TDict<TNormalizedBN> => ({...amounts, [toAddress(tokenAddress)]: balance}));
 								}}
-								className={'ml-2 cursor-pointer rounded-sm border border-neutral-900 bg-neutral-100 px-2 py-1 text-xxs text-neutral-900 transition-colors hover:bg-neutral-900 hover:text-neutral-0'}>
+								className={'text-xxs hover:text-neutral-0 ml-2 cursor-pointer rounded-sm border border-neutral-900 bg-neutral-100 px-2 py-1 text-neutral-900 transition-colors hover:bg-neutral-900'}>
 								{'max'}
 							</button>
 						</div>

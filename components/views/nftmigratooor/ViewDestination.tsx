@@ -12,7 +12,7 @@ import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUp
 import {getProvider} from '@yearn-finance/web-lib/utils/web3/providers';
 
 import type {ReactElement} from 'react';
-import type {TAddress} from '@yearn-finance/web-lib/utils/address';
+import type {TAddress} from '@yearn-finance/web-lib/types';
 
 function	ViewDestination(): ReactElement {
 	const	{set_destinationAddress, set_currentStep} = useNFTMigratooor();
@@ -100,7 +100,7 @@ function	ViewDestination(): ReactElement {
 										set_isValidDestination('undetermined');
 										set_destination(e.target.value);
 									}}
-									className={'w-full overflow-x-scroll border-none bg-transparent py-4 px-0 font-mono text-sm font-bold outline-none scrollbar-none'}
+									className={'scrollbar-none w-full overflow-x-scroll border-none bg-transparent py-4 px-0 font-mono text-sm font-bold outline-none'}
 									type={'text'} />
 							</div>
 							<div className={'pointer-events-none relative h-4 w-4'}>

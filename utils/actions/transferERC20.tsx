@@ -2,7 +2,7 @@ import {ethers} from 'ethers';
 import ERC20_ABI from '@yearn-finance/web-lib/utils/abi/erc20.abi';
 
 import type {BigNumber} from 'ethers';
-import type {TAddress} from '@yearn-finance/web-lib/utils/address';
+import type {TAddress} from '@yearn-finance/web-lib/types';
 
 export async function	transfer(
 	provider: ethers.providers.Web3Provider,
