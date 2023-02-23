@@ -1,25 +1,7 @@
-@import '@yearn-finance/web-lib/style.next.css';
+@import './style.base.css';
 @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400,700&display=swap');
 
 :root {
-	--default-rounded: 6px;
-	@apply scroll-pt-20;
-}
-:root.dark {
-	--color-neutral-900: 229 34% 100%;
-	--color-neutral-800: 229 34% 96%;
-	--color-neutral-700: 229 34% 92%;
-	--color-neutral-600: 229 34% 90%;
-	--color-neutral-500: 229 34% 90%;
-	--color-neutral-400: 229 34% 48%;
-	--color-neutral-300: 229 34% 36%;
-	--color-neutral-200: 229 34% 24%;
-	--color-neutral-100: 229 34% 16%;
-	--color-neutral-0: 229 34% 13%;
-}
-
-* {
-	@apply scroll-smooth font-sans;
 }
 
 .font-mono {
@@ -53,6 +35,15 @@
 			@apply text-neutral-900;
 		}
 	}
+	&[data-variant="reverted-alt"] {
+		@apply text-neutral-900 bg-neutral-0 font-normal border border-transparent;
+		&:disabled {@apply bg-neutral-200 opacity-40;}
+		&:not(:disabled):not([aria-busy="true"]):hover {@apply bg-neutral-200;}
+
+		&[aria-busy="true"] svg {
+			@apply text-neutral-900;
+		}
+	}
 }
 .yearn--button-smaller {
 	@apply !rounded-md;
@@ -61,6 +52,13 @@
 	& .yearn--button-smaller {
 		&[data-variant="reverted"] {
 			&:not(:disabled):not([aria-busy="true"]):hover {@apply !bg-neutral-100;}
+		}
+	}
+	& .yearn--button {
+		&[data-variant="reverted-alt"] {
+			@apply text-neutral-0 bg-neutral-900 font-normal border border-transparent;
+			&:disabled {@apply bg-neutral-700 opacity-40;}
+			&:not(:disabled):not([aria-busy="true"]):hover {@apply bg-neutral-800;}
 		}
 	}
 }
@@ -135,17 +133,8 @@ details > summary::-webkit-details-marker {
 	display: none;
 }
 details {
-	@apply border-b border-neutral-300 last-of-type:border-b-0;
-
 	& > summary {
 		@apply px-4 md:px-6 py-6 md:py-8 cursor-pointer flex flex-row items-center justify-between;
-	}
-
-	& > summary .summary-chevron {
-		@apply h-6 w-6 -rotate-90 text-neutral-900 transition-all;
-	}
-	&[open] > summary .summary-chevron {
-		@apply rotate-0;
 	}
 }
 
@@ -205,18 +194,20 @@ details {
 	}
 }
 
-[type='checkbox'],
-[type='checkbox']:focus {
+[type='checkboxx'],
+[type='checkboxx']:focus {
 	@apply outline-none focus:outline-none focus:ring-0 active:ring-0;
 	box-shadow: none !important;
 }
 :root.dark {
-	& [type='checkbox'],
-	& [type='checkbox']:focus {
+	& [type='checkboxx'],
+	& [type='checkboxx']:focus {
 		@apply text-neutral-0 border-neutral-300 focus:border-neutral-300;
 	}
 }
-
+.checkbox {
+	@apply text-neutral-900 accent-neutral-900 rounded-sm;
+}
 
 
 .yearn--tab {
@@ -245,8 +236,11 @@ details {
 		@apply transition-colors hover:bg-neutral-200;
 	}
 }
-.checkbox {
-	@apply text-neutral-900 accent-neutral-900 rounded-sm;
+.box-200 {
+	@apply bg-neutral-200 border border-neutral-200 rounded-md;
+	&.hover {
+		@apply transition-colors hover:bg-neutral-200;
+	}
 }
 
 
@@ -296,16 +290,23 @@ details {
 	}
 }
 
-.detailsSweep:last-of-type {
-	@apply border-b;
-}
-
 .detailsSweep {
 	@apply border-b-0;
+	&:last-of-type {
+		@apply border-b;
+	}
+	&[open] {
+		@apply bg-neutral-100;
+	}
 }
 
-.detailsSweep[open] {
-  @apply bg-neutral-100
+.detailsMigrate {
+	@apply bg-neutral-0 flex w-full flex-col justify-center border-t border-b-0 border-neutral-200 transition-colors;
+}
+:root.dark {
+	& .detailsMigrate {
+		@apply bg-neutral-0;
+	}
 }
 
 .detailsTokenList[open] {
@@ -412,5 +413,29 @@ details {
 	}
 	& .patternSVGSquares {
 		@apply fill-neutral-100/60;
+	}
+}
+
+.groupHoverText {
+	&:hover .noHoverContent {
+		@apply opacity-0;
+	}
+	&:hover .withHoverContent {
+		@apply opacity-100;
+	}
+}
+
+.approvalWizardDivider {
+	&> *:last-child{
+		@apply border-b-0 !mb-0 !pb-0;
+	}
+}
+
+.bg-black {
+	background: linear-gradient(84.14deg,#1e243e,#1b2037);
+}
+:root.dark {
+	& .bg-black {
+		background: #1b2036
 	}
 }

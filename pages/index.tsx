@@ -1,5 +1,6 @@
 import React from 'react';
 import Balancer from 'react-wrap-balancer';
+import Image from 'next/image';
 import Link from 'next/link';
 import LogoMigratooor from 'components/icons/LogoMigratooor';
 import LogoTokenlistooor from 'components/icons/LogoTokenlistooor';
@@ -10,6 +11,16 @@ import type {ReactElement} from 'react';
 
 const	apps = [
 	{
+		href: '/nftmigratooor',
+		title: 'NFTMigratooor',
+		description: 'The easiest way to migrate your NFTs from one wallet to another.',
+		icon: <Image
+			src={'/nftmigratooor.png'}
+			width={512}
+			height={512}
+			alt={''}
+			className={'h-[80px] w-[80px]'} />
+	}, {
 		href: '/migratooor',
 		title: 'Migratooor',
 		description: 'The easiest way to migrate your tokens from one wallet to another.',

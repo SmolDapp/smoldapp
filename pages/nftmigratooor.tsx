@@ -1,15 +1,15 @@
 import React from 'react';
 import {DefaultSeo} from 'next-seo';
-import ViewApprovalWizard from 'components/views/migratooor/ViewApprovalWizard';
-import ViewDestination from 'components/views/migratooor/ViewDestination';
-import ViewTable from 'components/views/migratooor/ViewTable';
+import ViewApprovalWizard from 'components/views/nftmigratooor/ViewApprovalWizard';
+import ViewDestination from 'components/views/nftmigratooor/ViewDestination';
+import ViewTable from 'components/views/nftmigratooor/ViewTable';
 import ViewWallet from 'components/views/ViewWallet';
-import {MigratooorContextApp, Step, useMigratooor} from 'contexts/useMigratooor';
+import {NFTMigratooorContextApp, Step, useNFTMigratooor} from 'contexts/useNFTMigratooor';
 
 import type {ReactElement} from 'react';
 
 function	Home(): ReactElement {
-	const	{currentStep, set_currentStep} = useMigratooor();
+	const	{currentStep, set_currentStep} = useNFTMigratooor();
 
 	return (
 		<div className={'mx-auto grid w-full max-w-4xl'}>
@@ -31,13 +31,13 @@ function	Home(): ReactElement {
 				<ViewTable
 					onProceed={(): void => {
 						set_currentStep(Step.CONFIRMATION);
-						document?.getElementById('tldr')?.scrollIntoView({behavior: 'smooth', block: 'center'});
-						document?.getElementById('TRIGGER_ERC20_MIGRATOOOR_HIDDEN')?.click();
+						document?.getElementById('approvals')?.scrollIntoView({behavior: 'smooth', block: 'center'});
+						document?.getElementById('TRIGGER_NFT_MIGRATOOOR_HIDDEN')?.click();
 					}} />
 			</div>
 
 			<div
-				id={'tldr'}
+				id={'approvals'}
 				className={`pt-10 transition-opacity ${[Step.CONFIRMATION].includes(currentStep) ? 'opacity-100' : 'pointer-events-none h-0 overflow-hidden opacity-0'}`}>
 				<ViewApprovalWizard />
 			</div>
@@ -47,25 +47,25 @@ function	Home(): ReactElement {
 
 export default function Wrapper(): ReactElement {
 	return (
-		<MigratooorContextApp>
+		<NFTMigratooorContextApp>
 			<>
 				<DefaultSeo
-					title={'Migratooor - SmolDapp'}
-					defaultTitle={'Migratooor - SmolDapp'}
-					description={'The easiest way to migrate your tokens from one wallet to another.'}
+					title={'NFTMigratooor - SmolDapp'}
+					defaultTitle={'NFTMigratooor - SmolDapp'}
+					description={'The easiest way to migrate your NFTs from one wallet to another.'}
 					openGraph={{
 						type: 'website',
 						locale: 'en-US',
-						url: 'https://smold.app/migratooor',
-						site_name: 'Migratooor - SmolDapp',
-						title: 'Migratooor - SmolDapp',
-						description: 'The easiest way to migrate your tokens from one wallet to another.',
+						url: 'https://smold.app/nftmigratooor',
+						site_name: 'NFTMigratooor - SmolDapp',
+						title: 'NFTMigratooor - SmolDapp',
+						description: 'The easiest way to migrate your NFTs from one wallet to another.',
 						images: [
 							{
-								url: 'https://smold.app/og_migratooor.png',
+								url: 'https://smold.app/og.png',
 								width: 800,
 								height: 400,
-								alt: 'migratooor'
+								alt: 'nftmigratooor'
 							}
 						]
 					}}
@@ -76,7 +76,7 @@ export default function Wrapper(): ReactElement {
 					}} />
 				<Home />
 			</>
-		</MigratooorContextApp>
+		</NFTMigratooorContextApp>
 	);
 }
 

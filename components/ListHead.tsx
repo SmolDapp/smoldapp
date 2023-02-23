@@ -11,13 +11,15 @@ export type TListHead = {
 		className?: string
 		datatype?: string
 	}[],
+	wrapperClassName?: string,
+	tokenClassName?: string,
 	dataClassName?: string,
 	sortBy: string,
 	sortDirection: string,
 	onSort: (sortBy: string, sortDirection: string) => void
 }
 
-function	ListHead({items, dataClassName, sortBy, sortDirection, onSort}: TListHead): ReactElement {
+function	ListHead({items, dataClassName, tokenClassName, wrapperClassName, sortBy, sortDirection, onSort}: TListHead): ReactElement {
 	const	renderChevron = useCallback((shouldSortBy: boolean): ReactElement => {
 		if (shouldSortBy && sortDirection === 'desc') {
 			return <IconChevronPlain className={'yearn--sort-chevron'} />;
@@ -31,8 +33,8 @@ function	ListHead({items, dataClassName, sortBy, sortDirection, onSort}: TListHe
 	const	[first, ...rest] = items;
 	return (
 		<div className={'grid w-full grid-cols-1 pt-2 md:pt-4'}>
-			<div className={'yearn--table-head-wrapper'}>
-				<div className={'yearn--table-head-token-section'}>
+			<div className={`yearn--table-head-wrapper ${wrapperClassName || ''}`}>
+				<div className={`yearn--table-head-token-section ${tokenClassName || ''}`}>
 					<button
 						onClick={(): void => onSort(first.value, sortBy === first.value ? (
 							sortDirection === '' ? 'desc' : sortDirection === 'desc' ? 'asc' : ''

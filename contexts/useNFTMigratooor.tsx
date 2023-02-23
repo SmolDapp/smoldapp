@@ -1,14 +1,14 @@
 import React, {createContext, useContext, useEffect, useMemo, useState} from 'react';
+import axios from 'axios';
 import {useMountEffect, useUpdateEffect} from '@react-hookz/web';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
-import {toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUpdates';
 
 import type {Dispatch, SetStateAction} from 'react';
+import type {TOpenSeaAsset} from 'utils/types/opensea';
 import type {TAddress} from '@yearn-finance/web-lib/utils/address';
-import type {TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
-import type {TDict} from '@yearn-finance/web-lib/utils/types';
+import type {TNDict} from '@yearn-finance/web-lib/utils/types';
 
 export enum	Step {
 	WALLET = 'wallet',
@@ -17,32 +17,41 @@ export enum	Step {
 	CONFIRMATION = 'confirmation'
 }
 
+export const NFTMIGRATOOOR_CONTRACT_PER_CHAIN: TNDict<TAddress> = {
+	1: toAddress('0x100CCFF9117E168158a6BE35081694fBbe394fBB'),
+	10: toAddress('0x6dfd3a052bb73e609d9c2381dc48de5e2662575e'),
+	137: toAddress('0x0e5b46E4b2a05fd53F5a4cD974eb98a9a613bcb7'),
+	250: toAddress('0x291F9794fFB8Cd1F71CE5478E40b5E29a029dbE9'),
+	42161: toAddress('0x7E08735690028cdF3D81e7165493F1C34065AbA2')
+};
+
+async function fetchAllAssetsFromOpenSea(owner: string, next?: string): Promise<TOpenSeaAsset[]> {
+	const	res = await axios.get(`https://api.opensea.io/api/v1/assets?format=json&owner=${owner}&limit=200${next ? `&cursor=${next}` : ''}`);
+	const	{assets} = res.data;
+	if (res.data.next) {
+		return assets.concat(await fetchAllAssetsFromOpenSea(owner, res.data.next));
+	}
+	return assets;
+}
+
 export type TSelected = {
-	selected: TAddress[],
-	amounts: TDict<TNormalizedBN>,
+	nfts: TOpenSeaAsset[],
+	selected: TOpenSeaAsset[],
 	destinationAddress: TAddress,
-	shouldDonateETH: boolean,
-	amountToDonate: TNormalizedBN,
 	currentStep: Step,
-	set_selected: Dispatch<SetStateAction<TAddress[]>>,
-	set_amounts: Dispatch<SetStateAction<TDict<TNormalizedBN>>>,
+	set_nfts: Dispatch<SetStateAction<TOpenSeaAsset[]>>,
+	set_selected: Dispatch<SetStateAction<TOpenSeaAsset[]>>,
 	set_destinationAddress: Dispatch<SetStateAction<TAddress>>,
-	set_shouldDonateETH: Dispatch<SetStateAction<boolean>>,
-	set_amountToDonate: Dispatch<SetStateAction<TNormalizedBN>>,
 	set_currentStep: Dispatch<SetStateAction<Step>>
 }
 const	defaultProps: TSelected = {
+	nfts: [],
 	selected: [],
-	amounts: {},
 	destinationAddress: toAddress(),
-	shouldDonateETH: false,
-	amountToDonate: toNormalizedBN(0),
 	currentStep: Step.WALLET,
+	set_nfts: (): void => undefined,
 	set_selected: (): void => undefined,
-	set_amounts: (): void => undefined,
 	set_destinationAddress: (): void => undefined,
-	set_shouldDonateETH: (): void => undefined,
-	set_amountToDonate: (): void => undefined,
 	set_currentStep: (): void => undefined
 };
 
@@ -59,21 +68,35 @@ function scrollToTargetAdjusted(element: HTMLElement): void {
 	});
 }
 
-const	MigratooorContext = createContext<TSelected>(defaultProps);
-export const MigratooorContextApp = ({children}: {children: React.ReactElement}): React.ReactElement => {
+const	NFTMigratooorContext = createContext<TSelected>(defaultProps);
+export const NFTMigratooorContextApp = ({children}: {children: React.ReactElement}): React.ReactElement => {
 	const	{address, isActive, walletType} = useWeb3();
 	const	[destinationAddress, set_destinationAddress] = useState<TAddress>(toAddress());
-	const	[selected, set_selected] = useState<TAddress[]>([]);
-	const	[amounts, set_amounts] = useState<TDict<TNormalizedBN>>({});
-	const	[shouldDonateETH, set_shouldDonateETH] = useState(false);
-	const	[amountToDonate, set_amountToDonate] = useState(toNormalizedBN(0));
+	const	[nfts, set_nfts] = useState<TOpenSeaAsset[]>([]);
+	const	[selected, set_selected] = useState<TOpenSeaAsset[]>([]);
 	const	[currentStep, set_currentStep] = useState<Step>(Step.WALLET);
 
+	/**********************************************************************************************
+	** Fetch all NFTs from OpenSea. The OpenSea API only returns 200 NFTs at a time, so we need to
+	** recursively fetch all NFTs from OpenSea if a cursor for next page is returned.
+	** If no address is available, set NFTs to empty array.
+	**********************************************************************************************/
+	useEffect((): void => {
+		if (address) {
+			fetchAllAssetsFromOpenSea(address).then((res: TOpenSeaAsset[]): void => set_nfts(res));
+		} else if (!address) {
+			set_nfts([]);
+		}
+	}, [address]);
+
+	/**********************************************************************************************
+	** On disconnect, reset all state.
+	**********************************************************************************************/
 	useUpdateEffect((): void => {
 		if (!isActive) {
 			performBatchedUpdates((): void => {
 				set_selected([]);
-				set_amounts({});
+				set_nfts([]);
 				set_destinationAddress(toAddress());
 			});
 		}
@@ -108,7 +131,7 @@ export const MigratooorContextApp = ({children}: {children: React.ReactElement})
 			} else if (currentStep === Step.SELECTOR) {
 				document?.getElementById('selector')?.scrollIntoView({behavior: 'smooth', block: 'start'});
 			} else if (currentStep === Step.CONFIRMATION) {
-				document?.getElementById('tldr')?.scrollIntoView({behavior: 'smooth', block: 'start'});
+				document?.getElementById('approvals')?.scrollIntoView({behavior: 'smooth', block: 'start'});
 			}
 		}, 0);
 	});
@@ -133,7 +156,7 @@ export const MigratooorContextApp = ({children}: {children: React.ReactElement})
 			} else if (currentStep === Step.SELECTOR) {
 				currentStepContainer = document?.getElementById('selector');
 			} else if (currentStep === Step.CONFIRMATION) {
-				currentStepContainer = document?.getElementById('tldr');
+				currentStepContainer = document?.getElementById('approvals');
 			}
 			const	currentElementHeight = currentStepContainer?.offsetHeight;
 			if (scalooor?.style) {
@@ -145,30 +168,29 @@ export const MigratooorContextApp = ({children}: {children: React.ReactElement})
 		}, 0);
 	}, [currentStep, walletType]);
 
+	/**********************************************************************************************
+	** For some small performance improvements, we memoize the context value.
+	**********************************************************************************************/
 	const	contextValue = useMemo((): TSelected => ({
 		selected,
 		set_selected,
-		amounts,
-		set_amounts,
+		nfts,
+		set_nfts,
 		destinationAddress,
 		set_destinationAddress,
-		shouldDonateETH,
-		set_shouldDonateETH,
-		amountToDonate,
-		set_amountToDonate,
 		currentStep,
 		set_currentStep
-	}), [selected, amounts, destinationAddress, shouldDonateETH, amountToDonate, currentStep]);
+	}), [selected, destinationAddress, currentStep, nfts]);
 
 	return (
-		<MigratooorContext.Provider value={contextValue}>
-			<div id={'MiratooorView'} className={'mx-auto w-full'}>
+		<NFTMigratooorContext.Provider value={contextValue}>
+			<div id={'NFTMiratooorView'} className={'mx-auto w-full'}>
 				{children}
 				<div id={'scalooor'} />
 			</div>
-		</MigratooorContext.Provider>
+		</NFTMigratooorContext.Provider>
 	);
 };
 
 
-export const useMigratooor = (): TSelected => useContext(MigratooorContext);
+export const useNFTMigratooor = (): TSelected => useContext(NFTMigratooorContext);

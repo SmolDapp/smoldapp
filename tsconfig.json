@@ -58,7 +58,6 @@
     "next.config.js",
     "theme.config.js",
     ".eslintrc.js",
-    ".next/types/**/*.ts",
-	"**/**/*.worker.js"
+    ".next/types/**/*.ts"
 ]
 }

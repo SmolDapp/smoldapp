@@ -74,7 +74,7 @@ function	CustomTokenSelector(): ReactElement {
 							placeholder={'0x...'}
 							value={erc20Address}
 							onChange={(e): void => set_erc20Address(e.target.value)}
-							className={'scrollbar-none w-full overflow-x-scroll border-none bg-transparent py-4 px-0 font-mono text-sm outline-none'}
+							className={'w-full overflow-x-scroll border-none bg-transparent py-4 px-0 font-mono text-sm outline-none scrollbar-none'}
 							type={'text'} />
 					</div>
 					<div className={'pointer-events-none relative h-4 w-4'}>
@@ -97,7 +97,7 @@ function	CustomTokenSelector(): ReactElement {
 							<input
 								placeholder={''}
 								value={validERC20Data?.symbol}
-								className={'scrollbar-none w-full cursor-not-allowed overflow-x-scroll border-none bg-transparent py-4 px-0 font-mono text-sm outline-none'}
+								className={'w-full cursor-not-allowed overflow-x-scroll border-none bg-transparent py-4 px-0 font-mono text-sm outline-none scrollbar-none'}
 								readOnly
 								type={'text'} />
 						</div>
@@ -110,7 +110,7 @@ function	CustomTokenSelector(): ReactElement {
 							<input
 								placeholder={''}
 								value={validERC20Data?.decimals}
-								className={'scrollbar-none w-full cursor-not-allowed overflow-x-scroll border-none bg-transparent py-4 px-0 font-mono text-sm outline-none'}
+								className={'w-full cursor-not-allowed overflow-x-scroll border-none bg-transparent py-4 px-0 font-mono text-sm outline-none scrollbar-none'}
 								readOnly
 								type={'number'} />
 						</div>
