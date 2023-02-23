@@ -97,9 +97,12 @@ export const NFTMigratooorContextApp = ({children}: {children: React.ReactElemen
 				fetchAllAssetsFromOpenSea(address).then((res: TOpenSeaAsset[]): void => set_nfts(res));
 			} else {
 				fetchAllAssetsFromAlchemy(safeChainID, address).then((res: TAlchemyAssets[]): void => {
-					const converted = (res || []).map((asset: TAlchemyAssets): TOpenSeaAsset => {
+					const converted = (res || []).filter((asset: TAlchemyAssets): boolean => {
+						return asset.title !== '' && asset.contractMetadata.name !== '' && asset.media !== null && asset.tokenUri !== null;
+					}).map((asset: TAlchemyAssets): TOpenSeaAsset => {
 						return matchAlchemyToOpenSea(asset);
 					});
+					console.log(res);
 					set_nfts(converted);
 				});
 			}

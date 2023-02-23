@@ -4,6 +4,7 @@ import IconChevronBoth from 'components/icons/IconChevronBoth';
 import IconCircleCross from 'components/icons/IconCircleCross';
 import IconSpinner from 'components/icons/IconSpinner';
 import {useNFTMigratooor} from 'contexts/useNFTMigratooor';
+import {useChain} from '@yearn-finance/web-lib/hooks/useChain';
 import {toAddress, truncateHex} from '@yearn-finance/web-lib/utils/address';
 
 import type {ReactElement} from 'react';
@@ -23,6 +24,7 @@ function	ApprovalWizardItem({
 	index
 }: TApprovalWizardItemProps): ReactElement {
 	const	{destinationAddress} = useNFTMigratooor();
+	const	chain = useChain();
 	const	[firstItemInCollection] = collection;
 	const	hasMultipleItems = collection.length > 1;
 
@@ -56,7 +58,7 @@ function	ApprovalWizardItem({
 		if (collectionStatus?.receipt) {
 			return (
 				<a
-					href={`https://etherscan.io/tx/${collectionStatus.receipt.transactionHash}`}
+					href={`${chain.getCurrent()?.block_explorer}/tx/${collectionStatus.receipt.transactionHash}`}
 					className={'text-xs text-neutral-500 transition-colors hover:text-neutral-900 hover:underline'}
 					target={'_blank'}
 					rel={'noreferrer'}>

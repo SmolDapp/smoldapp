@@ -1,3 +1,5 @@
+import {ethers} from 'ethers';
+
 export type TOpenSeaAsset = {
 	id: string | number;
 	image_url: string,
@@ -38,6 +40,10 @@ export type TAlchemyAssets = {
 		name: string
 		tokenType: string
 	}
+	tokenUri: {
+		gateway: string,
+		raw: string,
+	}
 }
 
 export function matchAlchemyToOpenSea(al: TAlchemyAssets): TOpenSeaAsset {
@@ -48,7 +54,7 @@ export function matchAlchemyToOpenSea(al: TAlchemyAssets): TOpenSeaAsset {
 		image_raw: al.media?.[0]?.raw,
 		image_type: al.media?.[0]?.format,
 		name: al.title,
-		token_id: parseInt(al.id.tokenId, 16).toString(),
+		token_id: ethers.BigNumber.from(al.id.tokenId).toString(),
 		permalink: `https://opensea.io/assets/ethereum/${al.contract.address}/${al.metadata.edition}}`,
 		collection: {
 			name: al.contractMetadata.name
