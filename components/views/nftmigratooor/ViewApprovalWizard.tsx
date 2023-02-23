@@ -1,6 +1,6 @@
 import React, {useCallback, useMemo, useState} from 'react';
 import ApprovalWizardItem from 'components/app/nftmigratooor/ApprovalWizardItem';
-import {useNFTMigratooor} from 'contexts/useNFTMigratooor';
+import {NFTMIGRATOOOR_CONTRACT_PER_CHAIN, useNFTMigratooor} from 'contexts/useNFTMigratooor';
 import {Contract} from 'ethcall';
 import ERC721_ABI from 'utils/abi/ERC721.abi';
 import {setApprovalForAll} from 'utils/actions/approveERC721';
@@ -9,6 +9,7 @@ import {transfer} from 'utils/actions/transferERC721';
 import {safeBatchTransferFrom1155} from 'utils/actions/transferERC1155';
 import {useUpdateEffect} from '@react-hookz/web';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
+import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUpdates';
 import {getProvider, newEthCallProvider} from '@yearn-finance/web-lib/utils/web3/providers';
@@ -22,6 +23,7 @@ import type {TDict} from '@yearn-finance/web-lib/utils/types';
 
 function	ViewApprovalWizard(): ReactElement {
 	const	{address, provider} = useWeb3();
+	const	{safeChainID} = useChainID();
 	const	{selected, set_selected, set_nfts, destinationAddress} = useNFTMigratooor();
 	const	[isApproving, set_isApproving] = useState(false);
 	const	[collectionStatus, set_collectionStatus] = useState<TDict<TWizardStatus>>({});
@@ -87,12 +89,9 @@ function	ViewApprovalWizard(): ReactElement {
 		const ethcallProvider = await newEthCallProvider(currentProvider);
 		const calls: Call[] = [];
 		Object.entries(groupedByCollection).forEach(([collectionAddress, collection]): void => {
-			if (collection?.[0]?.asset_contract?.schema_name === 'ERC1155') {
+			if (collection?.[0]?.asset_contract?.schema_name === 'ERC721' && NFTMIGRATOOOR_CONTRACT_PER_CHAIN[safeChainID]) {
 				const	erc721Contract = new Contract(toAddress(collectionAddress), ERC721_ABI);
-				calls.push(erc721Contract.isApprovedForAll(address, toAddress('0x2e3a0E24302A30e237891b91462Ea534552719b1')));
-			} else if (collection?.[0]?.asset_contract?.schema_name === 'ERC721') {
-				const	erc721Contract = new Contract(toAddress(collectionAddress), ERC721_ABI);
-				calls.push(erc721Contract.isApprovedForAll(address, toAddress('0x2e3a0E24302A30e237891b91462Ea534552719b1')));
+				calls.push(erc721Contract.isApprovedForAll(address, NFTMIGRATOOOR_CONTRACT_PER_CHAIN[safeChainID]));
 			}
 		});
 		const result = await ethcallProvider?.tryAll(calls) as boolean[];
@@ -101,7 +100,7 @@ function	ViewApprovalWizard(): ReactElement {
 			newStatus[toAddress(collectionAddress)] = result[index] ? 'Approved' : 'Not Approved';
 		});
 		set_collectionApprovalStatus(newStatus);
-	}, [groupedByCollection, provider, address]);
+	}, [groupedByCollection, provider, address, safeChainID]);
 	useUpdateEffect((): void => {
 		retrieveApprovals();
 	}, [retrieveApprovals]);
@@ -166,6 +165,10 @@ function	ViewApprovalWizard(): ReactElement {
 	** or if we catch an error.
 	**********************************************************************************************/
 	const onApproveAllCollection = useCallback(async (collectionAddress: string): Promise<boolean> => {
+		if (!NFTMIGRATOOOR_CONTRACT_PER_CHAIN[safeChainID]) {
+			console.warn(`Not supported chain ID: ${safeChainID}`);
+			return false;
+		}
 		try {
 			set_collectionStatus((prev): TDict<TWizardStatus> => ({
 				...prev,
@@ -174,7 +177,7 @@ function	ViewApprovalWizard(): ReactElement {
 
 			const	isSuccessful = await new Transaction(provider, setApprovalForAll, set_txStatus).populate(
 				toAddress(collectionAddress),
-				toAddress('0x2e3a0E24302A30e237891b91462Ea534552719b1'),
+				NFTMIGRATOOOR_CONTRACT_PER_CHAIN[safeChainID],
 				true
 			).onSuccess(async (): Promise<void> => {
 				set_collectionStatus((prev): TDict<TWizardStatus> => ({
@@ -240,6 +243,10 @@ function	ViewApprovalWizard(): ReactElement {
 	** or if we catch an error.
 	**********************************************************************************************/
 	const onMigrateSomeERC721Tokens = useCallback(async (collectionAddress: string, collection: TOpenSeaAsset[]): Promise<boolean> => {
+		if (!NFTMIGRATOOOR_CONTRACT_PER_CHAIN[safeChainID]) {
+			console.warn(`Not supported chain ID: ${safeChainID}`);
+			return false;
+		}
 		set_collectionStatus((prev): TDict<TWizardStatus> => ({
 			...prev,
 			[toAddress(collectionAddress)]: {...prev[toAddress(collectionAddress)], execute: 'Executing'}
@@ -252,6 +259,7 @@ function	ViewApprovalWizard(): ReactElement {
 			}
 
 			const	isSuccessful = await new Transaction(provider, multiTransfer, set_txStatus).populate(
+				NFTMIGRATOOOR_CONTRACT_PER_CHAIN[safeChainID],
 				toAddress(collectionAddress),
 				toAddress(destinationAddress),
 				tokenIDs
@@ -267,7 +275,7 @@ function	ViewApprovalWizard(): ReactElement {
 			onMigrateError(collectionAddress);
 		}
 		return false;
-	}, [destinationAddress, onMigrateError, onMigrateSuccess, provider]);
+	}, [destinationAddress, onMigrateError, onMigrateSuccess, provider, safeChainID]);
 
 	/**********************************************************************************************
 	** Migrate some tokens from a specific collection to the provided destination address. This will

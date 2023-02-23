@@ -10,9 +10,9 @@
 	--color-neutral-400: 0 0% 62%;
 	--color-neutral-500: 0 0% 50%;
 	--color-neutral-600: 0 0% 36%;
-	--color-neutral-700: 0 0% 26%;
-	--color-neutral-800: 0 0% 16%;
-	--color-neutral-900: 0 0% 5%;
+	--color-neutral-700: 229 34% 24%;
+	--color-neutral-800: 229 34% 16%;
+	--color-neutral-900: 229 34% 13%;
 
 	--color-yellow-900: 32 100% 45%;
 	--color-yellow-300: 32 100% 95%;
@@ -30,7 +30,6 @@
 :root.dark {
 	--color-neutral-900: 229 34% 100%;
 	--color-neutral-800: 229 34% 96%;
-	--color-neutral-700: 229 34% 92%;
 	--color-neutral-600: 229 34% 90%;
 	--color-neutral-500: 229 34% 90%;
 	--color-neutral-400: 229 34% 48%;
