@@ -1,10 +1,12 @@
 import React, {createContext, memo, useCallback, useContext, useMemo, useState} from 'react';
 import {useTokenList} from 'contexts/useTokenList';
 import {useBalances} from 'hooks/useBalances';
+import {MATIC_TOKEN_ADDRESS} from 'utils/constants';
 import defaultTokenList from 'utils/tokenLists.debug.json';
 import {useMountEffect} from '@react-hookz/web';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
+import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {ETH_TOKEN_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
 import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUpdates';
 
@@ -51,12 +53,17 @@ export const WalletContextApp = memo(function WalletContextApp({children}: {chil
 		withDefaultTokens
 			.filter((token): boolean => token.chainId === safeChainID)
 			.forEach((token): void => {
+				if (safeChainID === 137 && toAddress(token.address) === MATIC_TOKEN_ADDRESS) {
+					return;
+				}
 				tokens.push({token: token.address, decimals: Number(token.decimals), symbol: token.symbol});
 			});
 		if (safeChainID === 1) {
 			tokens.push({token: ETH_TOKEN_ADDRESS, decimals: 18, symbol: 'ETH'});
 		} else if (safeChainID === 250) {
 			tokens.push({token: ETH_TOKEN_ADDRESS, decimals: 18, symbol: 'FTM'});
+		} else if (safeChainID === 137) {
+			tokens.push({token: ETH_TOKEN_ADDRESS, decimals: 18, symbol: 'MATIC'});
 		}
 		return tokens;
 	}, [safeChainID, tokenList]);
