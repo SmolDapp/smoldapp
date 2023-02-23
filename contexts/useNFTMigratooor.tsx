@@ -8,12 +8,19 @@ import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUp
 import type {Dispatch, SetStateAction} from 'react';
 import type {TOpenSeaAsset} from 'utils/types/opensea';
 import type {TAddress} from '@yearn-finance/web-lib/utils/address';
+import { TNDict } from '@yearn-finance/web-lib/utils/types';
 
 export enum	Step {
 	WALLET = 'wallet',
 	DESTINATION = 'destination',
 	SELECTOR = 'selector',
 	CONFIRMATION = 'confirmation'
+}
+
+export const CONTRACT_PER_CHAIN: TNDict<TAddress> = {
+	10: toAddress('0x6dfd3a052bb73e609d9c2381dc48de5e2662575e'),
+	250: toAddress('0x291F9794fFB8Cd1F71CE5478E40b5E29a029dbE9')
+	42161: toAddress('0x7E08735690028cdF3D81e7165493F1C34065AbA2'),
 }
 
 async function fetchAllAssetsFromOpenSea(owner: string, next?: string): Promise<TOpenSeaAsset[]> {
