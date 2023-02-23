@@ -98,7 +98,7 @@ export const NFTMigratooorContextApp = ({children}: {children: React.ReactElemen
 			} else {
 				fetchAllAssetsFromAlchemy(safeChainID, address).then((res: TAlchemyAssets[]): void => {
 					const converted = (res || []).filter((asset: TAlchemyAssets): boolean => {
-						return asset.title !== '' && asset.contractMetadata.name !== '' && asset.media !== null && asset.tokenUri !== null;
+						return asset?.title !== '' && asset?.contractMetadata?.name !== '' && asset?.media !== null && asset?.tokenUri !== null;
 					}).map((asset: TAlchemyAssets): TOpenSeaAsset => {
 						return matchAlchemyToOpenSea(asset);
 					});

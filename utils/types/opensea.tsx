@@ -57,12 +57,12 @@ export function matchAlchemyToOpenSea(al: TAlchemyAssets): TOpenSeaAsset {
 		token_id: ethers.BigNumber.from(al.id.tokenId).toString(),
 		permalink: `https://opensea.io/assets/ethereum/${al.contract.address}/${al.metadata.edition}}`,
 		collection: {
-			name: al.contractMetadata.name
+			name: al?.contractMetadata?.name
 		},
 		asset_contract: {
-			address: al.contract.address,
-			name: al.contractMetadata.name,
-			schema_name: al.contractMetadata.tokenType
+			address: al?.contract?.address,
+			name: al?.contractMetadata?.name,
+			schema_name: al?.contractMetadata?.tokenType
 		}
 	};
 }
