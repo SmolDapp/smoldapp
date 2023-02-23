@@ -19,14 +19,14 @@ function	AppHeader(): ReactElement {
 	const	[isDrawerOpen, set_isDrawerOpen] = useState(false);
 
 	return (
-		<div id={'head'} className={'fixed inset-x-0 top-0 z-50 w-full border-b border-neutral-100 bg-neutral-0/95'}>
+		<div id={'head'} className={'bg-neutral-0/95 fixed inset-x-0 top-0 z-50 w-full border-b border-neutral-100'}>
 			<div className={'mx-auto max-w-4xl'}>
 				<Header
 					linkComponent={<Link href={''} />}
 					currentPathName={pathname || ''}
 					onOpenMenuMobile={onOpenMenu}
 					nav={[{path: '/', label: <Logo className={'h-8 text-neutral-900'} />}]}
-					supportedNetworks={walletType === 'EMBED_LEDGER' ? [1] : [1, 10, 250, 42161]}
+					supportedNetworks={walletType === 'EMBED_LEDGER' ? [1] : [1, 10, 137, 250, 42161]}
 					logo={(<div />)}
 					extra={(
 						<div className={'ml-4 flex'}>

@@ -134,7 +134,6 @@ function	NFTRenderer({contractAddress, tokenID, uri}: {contractAddress: TAddress
 		} else if (contractAddress === toAddress('0x2A187453064356c898cAe034EAed119E1663ACb8')) {
 			set_isDCL(true);
 		} else if (httpURI?.startsWith('http')) {
-			console.log({httpURI});
 			if (httpURI.endsWith('.svg') || httpURI.endsWith('.png') || httpURI.endsWith('.jpg') || httpURI.endsWith('.jpeg') || httpURI.endsWith('.gif')) {
 				set_isImage(true);
 			} else if (httpURI.endsWith('.mp4')) {
@@ -148,7 +147,6 @@ function	NFTRenderer({contractAddress, tokenID, uri}: {contractAddress: TAddress
 					} else if (response.headers['content-type'].startsWith('video')) {
 						set_isVideo(true);
 					} else {
-						console.log(response);
 						parseImage(response.data?.image || response.data?.image_data || response?.data?.image_url);
 					}
 				} catch (e) {
@@ -257,7 +255,7 @@ function	TokenRow({erc721Token}: {erc721Token: TERC721token}): ReactElement {
 			<div className={'relative flex w-full flex-col items-center justify-center'}>
 				<div
 					suppressHydrationWarning
-					className={`mb-4 flex w-full items-center justify-center border border-neutral-200 transition-colors group-hover:bg-neutral-0 ${isSelected ? 'bg-neutral-0' : ''}`}>
+					className={`group-hover:bg-neutral-0 mb-4 flex w-full items-center justify-center border border-neutral-200 transition-colors ${isSelected ? 'bg-neutral-0' : ''}`}>
 					{/* {cloneElement(icon, {className: 'h-5 md:h-6 w-5 md:w-6 text-neutral-900'})} */}
 					<NFTRenderer
 						contractAddress={toAddress(erc721Token.contract.id)}

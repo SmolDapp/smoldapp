@@ -11,7 +11,7 @@ export async function	multiTransfer(
 	collection: TAddress,
 	to: TAddress,
 	tokenIDs: string[]
-): Promise<boolean> {
+): Promise<{isSuccessful: boolean, receipt?: ethers.providers.TransactionReceipt}> {
 	const	signer = provider.getSigner();
 
 	try {
@@ -20,12 +20,12 @@ export async function	multiTransfer(
 		const	transactionResult = await transaction.wait();
 		if (transactionResult.status === 0) {
 			console.error('Transaction failed');
-			return false;
+			return {isSuccessful: false};
 		}
 
-		return true;
+		return {isSuccessful: true, receipt: transactionResult};
 	} catch(error) {
 		console.error(error);
-		return false;
+		return {isSuccessful: false};
 	}
 }

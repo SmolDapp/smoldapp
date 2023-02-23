@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import IconCheck from 'components/icons/IconCheck';
 import IconChevronBoth from 'components/icons/IconChevronBoth';
 import IconCircleCross from 'components/icons/IconCircleCross';
@@ -50,6 +50,21 @@ function	ApprovalWizardItem({
 			return (<IconCircleCross className={'h-4 w-4 text-[#e11d48]'} />);
 		}
 		return (<div className={'h-4 w-4 rounded-full bg-neutral-300'} />);
+	}
+
+	function	renderReceipt(): ReactElement {
+		if (collectionStatus?.receipt) {
+			return (
+				<a
+					href={`https://etherscan.io/tx/${collectionStatus.receipt.transactionHash}`}
+					className={'text-xs text-neutral-500 transition-colors hover:text-neutral-900 hover:underline'}
+					target={'_blank'}
+					rel={'noreferrer'}>
+					{`See transaction: ${truncateHex(collectionStatus.receipt.transactionHash, 6)}`}
+				</a>
+			);
+		}
+		return <Fragment />;
 	}
 
 	if (hasMultipleItems && firstItemInCollection.asset_contract.schema_name === 'ERC721') {
@@ -131,13 +146,18 @@ function	ApprovalWizardItem({
 		<div
 			key={index}
 			className={'group mb-2 flex w-full flex-col justify-center border-b border-neutral-200 pt-1 pb-3 transition-colors'}>
-			<div className={'flex flex-row items-center space-x-4'}>
+			<div className={'flex w-full flex-row items-center justify-between space-x-4'}>
 				<div className={'flex flex-row items-center space-x-2'}>
 					{renderExecuteIndication()}
 					<small>
 						{'Send '}
 						<b>{firstItemInCollection?.name || firstItemInCollection?.collection?.name || firstItemInCollection?.asset_contract?.name}</b>
 						{` to ${truncateHex(destinationAddress, 6)}`}
+					</small>
+				</div>
+				<div className={'flex justify-end text-right'}>
+					<small>
+						{renderReceipt()}
 					</small>
 				</div>
 			</div>

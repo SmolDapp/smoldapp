@@ -1,12 +1,16 @@
 import React, {createContext, useContext, useEffect, useMemo, useState} from 'react';
+import useOneTimeEffect from 'hooks/useOneTimeEffect';
+import {matchAlchemyToOpenSea} from 'utils/types/opensea';
 import axios from 'axios';
 import {useMountEffect, useUpdateEffect} from '@react-hookz/web';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
+import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUpdates';
 
+import type {AxiosResponse} from 'axios';
 import type {Dispatch, SetStateAction} from 'react';
-import type {TOpenSeaAsset} from 'utils/types/opensea';
+import type {TAlchemyAssets, TOpenSeaAsset} from 'utils/types/opensea';
 import type {TAddress} from '@yearn-finance/web-lib/utils/address';
 import type {TNDict} from '@yearn-finance/web-lib/utils/types';
 
@@ -32,6 +36,11 @@ async function fetchAllAssetsFromOpenSea(owner: string, next?: string): Promise<
 		return assets.concat(await fetchAllAssetsFromOpenSea(owner, res.data.next));
 	}
 	return assets;
+}
+
+async function fetchAllAssetsFromAlchemy(chainID: number, owner: string): Promise<TAlchemyAssets[]> {
+	const	res: AxiosResponse<TAlchemyAssets[]> = await axios.post('/api/proxyFetchNFTFromAlchemy', {chainID, address: owner});
+	return res.data;
 }
 
 export type TSelected = {
@@ -71,6 +80,7 @@ function scrollToTargetAdjusted(element: HTMLElement): void {
 const	NFTMigratooorContext = createContext<TSelected>(defaultProps);
 export const NFTMigratooorContextApp = ({children}: {children: React.ReactElement}): React.ReactElement => {
 	const	{address, isActive, walletType} = useWeb3();
+	const	{safeChainID} = useChainID();
 	const	[destinationAddress, set_destinationAddress] = useState<TAddress>(toAddress());
 	const	[nfts, set_nfts] = useState<TOpenSeaAsset[]>([]);
 	const	[selected, set_selected] = useState<TOpenSeaAsset[]>([]);
@@ -83,11 +93,20 @@ export const NFTMigratooorContextApp = ({children}: {children: React.ReactElemen
 	**********************************************************************************************/
 	useEffect((): void => {
 		if (address) {
-			fetchAllAssetsFromOpenSea(address).then((res: TOpenSeaAsset[]): void => set_nfts(res));
+			if (safeChainID === 1) {
+				fetchAllAssetsFromOpenSea(address).then((res: TOpenSeaAsset[]): void => set_nfts(res));
+			} else {
+				fetchAllAssetsFromAlchemy(safeChainID, address).then((res: TAlchemyAssets[]): void => {
+					const converted = (res || []).map((asset: TAlchemyAssets): TOpenSeaAsset => {
+						return matchAlchemyToOpenSea(asset);
+					});
+					set_nfts(converted);
+				});
+			}
 		} else if (!address) {
 			set_nfts([]);
 		}
-	}, [address]);
+	}, [safeChainID, address]);
 
 	/**********************************************************************************************
 	** On disconnect, reset all state.
@@ -107,14 +126,14 @@ export const NFTMigratooorContextApp = ({children}: {children: React.ReactElemen
 	** already connected or if the wallet is a special wallet type (e.g. EMBED_LEDGER).
 	** If the wallet is not connected, jump to the WALLET section to connect.
 	**********************************************************************************************/
-	useEffect((): void => {
+	useOneTimeEffect((): void => {
 		const isEmbedWallet = ['EMBED_LEDGER', 'EMBED_GNOSIS_SAFE'].includes(walletType);
 		if ((isActive && address) || isEmbedWallet) {
 			set_currentStep(Step.DESTINATION);
 		} else if (!isActive || !address) {
 			set_currentStep(Step.WALLET);
 		}
-	}, [address, isActive, walletType]);
+	}, (): boolean => !!(address && isActive), [address, isActive, walletType]);
 
 	/**********************************************************************************************
 	** This effect is used to handle some UI transitions and sections jumps. Once the current step

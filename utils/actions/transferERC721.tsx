@@ -7,22 +7,22 @@ export async function	transfer(
 	token: TAddress,
 	to: TAddress,
 	tokenID: string
-): Promise<boolean> {
+): Promise<{isSuccessful: boolean, receipt?: ethers.providers.TransactionReceipt}> {
 	const	signer = provider.getSigner();
 
 	try {
 		const	contract = new ethers.Contract(token, ['function safeTransferFrom(address from, address to, uint256 tokenId) external'], signer);
 		const	from = await signer.getAddress();
 		const	transaction = await contract.safeTransferFrom(from, to, tokenID);
-		const	transactionResult = await transaction.wait();
+		const	transactionResult = await transaction.wait() as ethers.providers.TransactionReceipt;
 		if (transactionResult.status === 0) {
 			console.error('Transaction failed');
-			return false;
+			return {isSuccessful: false};
 		}
 
-		return true;
+		return {isSuccessful: true, receipt: transactionResult};
 	} catch(error) {
 		console.error(error);
-		return false;
+		return {isSuccessful: false};
 	}
 }

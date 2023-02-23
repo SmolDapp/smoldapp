@@ -23,7 +23,12 @@ function	MyApp(props: AppProps): ReactElement {
 	return (
 		<>
 			<style jsx global>{`html {font-family: ${inter.style.fontFamily};}`}</style>
-			<WithYearn>
+			<WithYearn
+				options={{
+					web3: {
+						supportedChainID: [1, 10, 137, 250, 42161, 1337]
+					}
+				}}>
 				<TokenListContextApp>
 					<WalletContextApp>
 						<MenuContextApp>

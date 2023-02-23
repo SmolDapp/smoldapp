@@ -8,7 +8,7 @@ export async function	safeBatchTransferFrom1155(
 	token: TAddress,
 	to: TAddress,
 	tokenIDs: string[]
-): Promise<boolean> {
+): Promise<{isSuccessful: boolean, receipt?: ethers.providers.TransactionReceipt}> {
 	const	signer = provider.getSigner();
 
 	try {
@@ -30,19 +30,19 @@ export async function	safeBatchTransferFrom1155(
 		}
 		if (filteredTokenIDs.length === 0) {
 			console.error('No tokens to transfer');
-			return false;
-		}
+			return {isSuccessful: false};
 
+		}
 		const	transaction = await contract.safeBatchTransferFrom(from, to, filteredTokenIDs, filteredAmounts, '0x');
-		const	transactionResult = await transaction.wait();
+		const	transactionResult = await transaction.wait() as ethers.providers.TransactionReceipt;
 		if (transactionResult.status === 0) {
 			console.error('Transaction failed');
-			return false;
-		}
+			return {isSuccessful: false};
 
-		return true;
+		}
+		return {isSuccessful: true, receipt: transactionResult};
 	} catch(error) {
 		console.error(error);
-		return false;
+		return {isSuccessful: false};
 	}
 }

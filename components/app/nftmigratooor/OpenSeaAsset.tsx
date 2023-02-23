@@ -35,22 +35,24 @@ const OpenSeaAsset = memo(function OpenSeaAsset(props: TOpenSeaAssetProps): Reac
 						value={''}
 						className={'h-4 w-4 rounded-sm border-neutral-400 text-pink-400 indeterminate:ring-2 focus:ring-2 focus:ring-pink-400 focus:ring-offset-neutral-100'} />
 					<div className={'flex h-8 min-h-[48px] w-8 min-w-[48px] md:h-10 md:w-10'}>
-						{(nft?.image_preview_url || nft?.image_url || nft?.creator?.profile_img_url || '').endsWith('.mov') ? (
+						{(nft?.image_preview_url || nft?.image_url || '').endsWith('.mov') || ['mov', 'mp4'].includes(nft?.image_type || '') ? (
 							<video
 								className={'h-full w-full object-cover object-center'}
-								src={nft?.image_preview_url || nft?.image_url || nft?.creator?.profile_img_url || ''}
+								src={nft?.image_preview_url || nft?.image_url || ''}
 								width={500}
 								height={500}
 								controls />
-						) : (nft?.image_preview_url || nft?.image_url || nft?.creator?.profile_img_url || '') !== '' ? (
+						) : (nft?.image_preview_url || nft?.image_url || '') !== '' ? (
 							<Image
-								src={nft?.image_preview_url || nft?.image_url || nft?.creator?.profile_img_url || ''}
+								src={nft?.image_preview_url || nft?.image_url || ''}
 								className={'h-full w-full object-cover'}
 								width={500}
 								height={500}
 								unoptimized
 								alt={''} />
-						) : null}
+						) : (nft?.image_raw) ? (
+							<div className={'h-full w-full object-cover'} dangerouslySetInnerHTML={{__html: nft?.image_raw}} />
+						) : <div className={'h-full w-full bg-neutral-300/60 object-cover object-center'} />}
 					</div>
 					<div>
 						<div className={'flex flex-row items-center space-x-2'}>

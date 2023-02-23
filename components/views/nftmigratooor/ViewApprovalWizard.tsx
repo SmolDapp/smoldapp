@@ -5,6 +5,7 @@ import {Contract} from 'ethcall';
 import ERC721_ABI from 'utils/abi/ERC721.abi';
 import {setApprovalForAll} from 'utils/actions/approveERC721';
 import {multiTransfer} from 'utils/actions/multiTransferERC721';
+import {defaultTxStatus, Transaction} from 'utils/actions/transactions.root';
 import {transfer} from 'utils/actions/transferERC721';
 import {safeBatchTransferFrom1155} from 'utils/actions/transferERC1155';
 import {useUpdateEffect} from '@react-hookz/web';
@@ -13,9 +14,9 @@ import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUpdates';
 import {getProvider, newEthCallProvider} from '@yearn-finance/web-lib/utils/web3/providers';
-import {defaultTxStatus, Transaction} from '@yearn-finance/web-lib/utils/web3/transaction';
 
 import type {Call} from 'ethcall';
+import type {ethers} from 'ethers';
 import type {ReactElement} from 'react';
 import type {TApprovalStatus, TWizardStatus} from 'utils/types/nftMigratooor';
 import type {TOpenSeaAsset} from 'utils/types/opensea';
@@ -62,16 +63,20 @@ function	ViewApprovalWizard(): ReactElement {
 	** This will be used to render the OK/KO/Pending state.
 	**********************************************************************************************/
 	useUpdateEffect((): void => {
-		const	initStatus: TDict<TWizardStatus> = {};
-		for (const collection of Object.keys(groupedByCollection)) {
-			if (initStatus[collection] === undefined) {
-				initStatus[collection] = {
-					approval: 'Not Approved',
-					execute: 'Not Executed'
-				};
+		set_collectionStatus((prev): TDict<TWizardStatus> => {
+			for (const collection of Object.keys(groupedByCollection)) {
+				if (prev[collection] === undefined) {
+					console.log(prev[collection], prev);
+					prev[collection] = {
+						approval: 'Not Approved',
+						execute: 'Not Executed',
+						receipt: undefined
+					};
+				}
 			}
-		}
-		set_collectionStatus(initStatus);
+
+			return prev;
+		});
 	}, [groupedByCollection]);
 
 	/**********************************************************************************************
@@ -129,11 +134,11 @@ function	ViewApprovalWizard(): ReactElement {
 	** onMigrateSuccess is called when the migration is successful. We need to remove the NFT
 	** from the list of available NFTs and update the status of the collection to 'Executed'.
 	**********************************************************************************************/
-	const onMigrateSuccess = useCallback((collectionAddress: string, tokenID: string[]): void => {
+	const onMigrateSuccess = useCallback((collectionAddress: string, tokenID: string[], receipt?: ethers.providers.TransactionReceipt): void => {
 		performBatchedUpdates((): void => {
 			set_collectionStatus((prev): TDict<TWizardStatus> => ({
 				...prev,
-				[toAddress(collectionAddress)]: {...prev[toAddress(collectionAddress)], execute: 'Executed'}
+				[toAddress(collectionAddress)]: {...prev[toAddress(collectionAddress)], execute: 'Executed', receipt}
 			}));
 			set_nfts((prev): TOpenSeaAsset[] => {
 				const	newNFTs = [...prev];
@@ -175,7 +180,7 @@ function	ViewApprovalWizard(): ReactElement {
 				[toAddress(collectionAddress)]: {...prev[toAddress(collectionAddress)], approval: 'Approving'}
 			}));
 
-			const	isSuccessful = await new Transaction(provider, setApprovalForAll, set_txStatus).populate(
+			const	{isSuccessful} = await new Transaction(provider, setApprovalForAll, set_txStatus).populate(
 				toAddress(collectionAddress),
 				NFTMIGRATOOOR_CONTRACT_PER_CHAIN[safeChainID],
 				true
@@ -200,7 +205,7 @@ function	ViewApprovalWizard(): ReactElement {
 			}));
 		}
 		return false;
-	}, [provider]);
+	}, [provider, safeChainID]);
 
 	/**********************************************************************************************
 	** Migrate one token from a specific collection to the provided destination address. This will
@@ -217,12 +222,12 @@ function	ViewApprovalWizard(): ReactElement {
 				[toAddress(collectionAddress)]: {...prev[toAddress(collectionAddress)], execute: 'Executing'}
 			}));
 
-			const	isSuccessful = await new Transaction(provider, transfer, set_txStatus).populate(
+			const	{isSuccessful} = await new Transaction(provider, transfer, set_txStatus).populate(
 				toAddress(asset.asset_contract.address),
 				toAddress(destinationAddress),
 				asset.token_id
-			).onSuccess(async (): Promise<void> => {
-				onMigrateSuccess(collectionAddress, [asset.token_id]);
+			).onSuccess(async (receipt): Promise<void> => {
+				onMigrateSuccess(collectionAddress, [asset.token_id], receipt);
 			}).perform();
 
 			if (!isSuccessful) {
@@ -258,13 +263,13 @@ function	ViewApprovalWizard(): ReactElement {
 				tokenIDs.push(asset.token_id);
 			}
 
-			const	isSuccessful = await new Transaction(provider, multiTransfer, set_txStatus).populate(
+			const	{isSuccessful} = await new Transaction(provider, multiTransfer, set_txStatus).populate(
 				NFTMIGRATOOOR_CONTRACT_PER_CHAIN[safeChainID],
 				toAddress(collectionAddress),
 				toAddress(destinationAddress),
 				tokenIDs
-			).onSuccess(async (): Promise<void> => {
-				onMigrateSuccess(collectionAddress, tokenIDs);
+			).onSuccess(async (receipt): Promise<void> => {
+				onMigrateSuccess(collectionAddress, tokenIDs, receipt);
 			}).perform();
 
 			if (!isSuccessful) {
@@ -296,12 +301,12 @@ function	ViewApprovalWizard(): ReactElement {
 				tokenIDs.push(asset.token_id);
 			}
 
-			const	isSuccessful = await new Transaction(provider, safeBatchTransferFrom1155, set_txStatus).populate(
+			const	{isSuccessful} = await new Transaction(provider, safeBatchTransferFrom1155, set_txStatus).populate(
 				toAddress(collectionAddress),
 				toAddress(destinationAddress),
 				tokenIDs
-			).onSuccess(async (): Promise<void> => {
-				onMigrateSuccess(collectionAddress, tokenIDs);
+			).onSuccess(async (receipt): Promise<void> => {
+				onMigrateSuccess(collectionAddress, tokenIDs, receipt);
 			}).perform();
 
 			if (!isSuccessful) {
