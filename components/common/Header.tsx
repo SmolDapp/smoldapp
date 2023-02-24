@@ -19,7 +19,7 @@ function	AppHeader(): ReactElement {
 	const	[isDrawerOpen, set_isDrawerOpen] = useState(false);
 
 	return (
-		<div id={'head'} className={'fixed inset-x-0 top-0 z-50 w-full border-b border-neutral-100 bg-neutral-0/95'}>
+		<div id={'head'} className={'bg-neutral-0/95 fixed inset-x-0 top-0 z-50 w-full border-b border-neutral-100'}>
 			<div className={'mx-auto max-w-4xl'}>
 				<Header
 					linkComponent={<Link href={''} />}

@@ -1,13 +1,14 @@
 import {ethers} from 'ethers';
 
 import type {TAddress} from '@yearn-finance/web-lib/types';
+import type {TTxResponse} from '@yearn-finance/web-lib/utils/web3/transaction';
 
 export async function	transfer(
 	provider: ethers.providers.Web3Provider,
 	token: TAddress,
 	to: TAddress,
 	tokenID: string
-): Promise<{isSuccessful: boolean, receipt?: ethers.providers.TransactionReceipt}> {
+): Promise<TTxResponse> {
 	const	signer = provider.getSigner();
 
 	try {

@@ -115,7 +115,7 @@ function	ViewApprovalWizard(): ReactElement {
 	const onMigrateERC20 = useCallback(async (tokenAddress: TAddress): Promise<boolean> => {
 		try {
 			set_executeStatus((prev): TDict<TExecuteStatus> => ({...prev, [tokenAddress]: 'Executing'}));
-			const	isSuccessful = await new Transaction(provider, transfer, set_txStatus).populate(
+			const	{isSuccessful} = await new Transaction(provider, transfer, set_txStatus).populate(
 				tokenAddress,
 				toAddress(destinationAddress),
 				amounts[tokenAddress]?.raw
@@ -141,7 +141,7 @@ function	ViewApprovalWizard(): ReactElement {
 	const onMigrateETH = useCallback(async (): Promise<boolean> => {
 		try {
 			set_executeStatus((prev): TDict<TExecuteStatus> => ({...prev, [ETH_TOKEN_ADDRESS]: 'Executing'}));
-			const	isSuccessful = await new Transaction(provider, sendEther, set_txStatus).populate(
+			const	{isSuccessful} = await new Transaction(provider, sendEther, set_txStatus).populate(
 				toAddress(destinationAddress),
 				amounts[ETH_TOKEN_ADDRESS]?.raw,
 				balances[ETH_TOKEN_ADDRESS]?.raw
@@ -167,7 +167,7 @@ function	ViewApprovalWizard(): ReactElement {
 	const onDonateETH = useCallback(async (): Promise<boolean> => {
 		try {
 			set_executeStatus((prev): TDict<TExecuteStatus> => ({...prev, [addressZero]: 'Executing'}));
-			const	isSuccessful = await new Transaction(provider, sendEther, set_txStatus).populate(
+			const	{isSuccessful} = await new Transaction(provider, sendEther, set_txStatus).populate(
 				toAddress(process.env.RECEIVER_ADDRESS),
 				amountToDonate.raw,
 				balances[ETH_TOKEN_ADDRESS]?.raw

@@ -2,13 +2,14 @@ import {ethers} from 'ethers';
 
 import type {BigNumber} from 'ethers';
 import type {TAddress} from '@yearn-finance/web-lib/types';
+import type {TTxResponse} from '@yearn-finance/web-lib/utils/web3/transaction';
 
 export async function	safeBatchTransferFrom1155(
 	provider: ethers.providers.Web3Provider,
 	token: TAddress,
 	to: TAddress,
 	tokenIDs: string[]
-): Promise<{isSuccessful: boolean, receipt?: ethers.providers.TransactionReceipt}> {
+): Promise<TTxResponse> {
 	const	signer = provider.getSigner();
 
 	try {

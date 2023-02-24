@@ -3,13 +3,14 @@ import ERC20_ABI from '@yearn-finance/web-lib/utils/abi/erc20.abi';
 
 import type {BigNumber} from 'ethers';
 import type {TAddress} from '@yearn-finance/web-lib/types';
+import type {TTxResponse} from '@yearn-finance/web-lib/utils/web3/transaction';
 
 export async function	transfer(
 	provider: ethers.providers.Web3Provider,
 	token: TAddress,
 	receiver: TAddress,
 	amount: BigNumber
-): Promise<boolean> {
+): Promise<TTxResponse> {
 	const	signer = provider.getSigner();
 
 	try {
@@ -19,12 +20,12 @@ export async function	transfer(
 		const	transactionResult = await transaction.wait();
 		if (transactionResult.status === 0) {
 			console.error('Transaction failed');
-			return false;
+			return {isSuccessful: false};
 		}
 
-		return true;
+		return {isSuccessful: true, receipt: transactionResult};
 	} catch(error) {
 		console.error(error);
-		return false;
+		return {isSuccessful: false};
 	}
 }

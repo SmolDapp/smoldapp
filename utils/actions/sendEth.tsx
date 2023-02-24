@@ -2,13 +2,14 @@ import {ethers} from 'ethers';
 
 import type {BigNumber} from 'ethers';
 import type {TAddress} from '@yearn-finance/web-lib/types';
+import type {TTxResponse} from '@yearn-finance/web-lib/utils/web3/transaction';
 
 export async function	sendEther(
 	provider: ethers.providers.Web3Provider,
 	to: TAddress,
 	amount: BigNumber,
 	balance: BigNumber
-): Promise<boolean> {
+): Promise<TTxResponse> {
 	const	signer = provider.getSigner();
 
 	try {
@@ -22,11 +23,11 @@ export async function	sendEther(
 		const	transactionResult = await transaction.wait();
 		if (transactionResult.status === 0) {
 			console.error('Fail to perform transaction');
-			return false;
+			return {isSuccessful: false};
 		}
-		return true;
+		return {isSuccessful: true, receipt: transactionResult};
 	} catch (error) {
 		console.error(error);
-		return false;
+		return {isSuccessful: false};
 	}
 }

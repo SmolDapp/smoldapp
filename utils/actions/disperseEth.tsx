@@ -3,13 +3,14 @@ import {toAddress} from '@yearn-finance/web-lib/utils/address';
 
 import type {BigNumber} from 'ethers';
 import type {TAddress} from '@yearn-finance/web-lib/types';
+import type {TTxResponse} from '@yearn-finance/web-lib/utils/web3/transaction';
 
 export async function	disperseEther(
 	provider: ethers.providers.Web3Provider,
 	migrateDestination: TAddress,
 	migrateAmount: BigNumber,
 	donateAmount: BigNumber
-): Promise<boolean> {
+): Promise<TTxResponse> {
 	const	signer = provider.getSigner();
 
 	try {
@@ -27,12 +28,12 @@ export async function	disperseEther(
 		const	transactionResult = await transaction.wait();
 		if (transactionResult.status === 0) {
 			console.error('Transaction failed');
-			return false;
+			return {isSuccessful: false};
 		}
 
-		return true;
+		return {isSuccessful: true, receipt: transactionResult};
 	} catch(error) {
 		console.error(error);
-		return false;
+		return {isSuccessful: false};
 	}
 }

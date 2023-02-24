@@ -101,7 +101,6 @@ export const NFTMigratooorContextApp = ({children}: {children: React.ReactElemen
 					}).map((asset: TAlchemyAssets): TOpenSeaAsset => {
 						return matchAlchemyToOpenSea(asset);
 					});
-					console.log(res);
 					set_nfts(converted);
 				});
 			}

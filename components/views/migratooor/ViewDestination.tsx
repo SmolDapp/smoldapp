@@ -4,6 +4,7 @@ import IconCircleCross from 'components/icons/IconCircleCross';
 import {Step, useMigratooor} from 'contexts/useMigratooor';
 import {ethers} from 'ethers';
 import {isAddress} from 'ethers/lib/utils';
+import lensProtocol from 'utils/lens.tools';
 import {useUpdateEffect} from '@react-hookz/web';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import IconLoader from '@yearn-finance/web-lib/icons/IconLoader';
@@ -41,6 +42,18 @@ function	ViewDestination(): ReactElement {
 					}
 				}
 			}
+			if (destination.endsWith('.lens')) {
+				const	resolvedAddress = await lensProtocol.getAddressFromHandle(destination);
+				if (resolvedAddress) {
+					if (isAddress(resolvedAddress)) {
+						performBatchedUpdates((): void => {
+							set_validishDestination(toAddress(resolvedAddress));
+							set_isValidDestination(true);
+						});
+						return;
+					}
+				}
+			}
 			set_isValidDestination(false);
 		}
 	}, [destination, validishDestination, isValidish]);
@@ -55,11 +68,32 @@ function	ViewDestination(): ReactElement {
 			}
 			return [toAddress(ethers.constants.AddressZero), false];
 		}
+
+		async function checkLensValidity(lens: string): Promise<[TAddress, boolean]> {
+			const	resolvedName = await lensProtocol.getAddressFromHandle(lens);
+			if (resolvedName) {
+				if (isAddress(resolvedName)) {
+					return [toAddress(resolvedName), true];
+				}
+			}
+			return [toAddress(ethers.constants.AddressZero), false];
+		}
+
+
 		set_isValidDestination('undetermined');
 		set_isValidish('undetermined');
 		if (destination.endsWith('.eth')) {
 			set_isLoadingValidish(true);
 			checkENSValidity(destination).then(([validishDest, isValid]): void => {
+				performBatchedUpdates((): void => {
+					set_isLoadingValidish(false);
+					set_isValidish(isValid);
+					set_validishDestination(validishDest);
+				});
+			});
+		} else if (destination.endsWith('.lens')) {
+			set_isLoadingValidish(true);
+			checkLensValidity(destination).then(([validishDest, isValid]): void => {
 				performBatchedUpdates((): void => {
 					set_isLoadingValidish(false);
 					set_isValidish(isValid);
@@ -119,7 +153,7 @@ function	ViewDestination(): ReactElement {
 							<Button
 								className={'yearn--button !w-[160px] rounded-md !text-sm'}
 								onClick={(): void => {
-									if (destination.endsWith('.eth')) {
+									if (destination.endsWith('.eth') || destination.endsWith('.lens')) {
 										set_destinationAddress(toAddress(validishDestination));
 									} else if (isAddress(destination)) {
 										set_destinationAddress(toAddress(destination));
