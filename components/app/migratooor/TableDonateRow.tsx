@@ -14,8 +14,8 @@ import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUp
 import {defaultTxStatus, Transaction} from '@yearn-finance/web-lib/utils/web3/transaction';
 
 import type {ChangeEvent, ReactElement} from 'react';
+import type {TDict} from '@yearn-finance/web-lib/types';
 import type {TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
-import type {TDict} from '@yearn-finance/web-lib/utils/types';
 
 function	TableDonateRow(): ReactElement {
 	const {balances, refresh} = useWallet();

@@ -1,6 +1,7 @@
 import {ethers} from 'ethers';
 
-import type {TAddress} from '@yearn-finance/web-lib/utils/address';
+import type {TAddress} from '@yearn-finance/web-lib/types';
+import type {TTxResponse} from '@yearn-finance/web-lib/utils/web3/transaction';
 
 
 const NFT_MIGRATOOOR_ABI = [{'inputs':[{'internalType':'contract IERC721', 'name':'collection', 'type':'address'}, {'internalType':'address', 'name':'to', 'type':'address'}, {'internalType':'uint256[]', 'name':'tokenIDs', 'type':'uint256[]'}], 'name':'migrate', 'outputs':[], 'stateMutability':'nonpayable', 'type':'function'}];
@@ -11,7 +12,7 @@ export async function	multiTransfer(
 	collection: TAddress,
 	to: TAddress,
 	tokenIDs: string[]
-): Promise<{isSuccessful: boolean, receipt?: ethers.providers.TransactionReceipt}> {
+): Promise<TTxResponse> {
 	const	signer = provider.getSigner();
 
 	try {

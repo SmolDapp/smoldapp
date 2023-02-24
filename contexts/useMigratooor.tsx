@@ -6,9 +6,8 @@ import {toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUpdates';
 
 import type {Dispatch, SetStateAction} from 'react';
-import type {TAddress} from '@yearn-finance/web-lib/utils/address';
+import type {TAddress, TDict} from '@yearn-finance/web-lib/types';
 import type {TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
-import type {TDict} from '@yearn-finance/web-lib/utils/types';
 
 export enum	Step {
 	WALLET = 'wallet',

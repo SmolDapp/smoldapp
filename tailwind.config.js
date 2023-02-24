@@ -15,12 +15,10 @@ function withOpacityValue(variable) {
 
 module.exports = {
 	content: [
-		join(__dirname, 'pages', '**', '*.{js,jsx,ts,tsx}'),
-		join(__dirname, 'components', 'icons', '**', '*.{js,jsx,ts,tsx}'),
-		join(__dirname, 'components', '**', '*.{js,jsx,ts,tsx}'),
-		join(__dirname, 'utils', '**', '*.{js,jsx,ts,tsx}'),
-		join(__dirname, 'contexts', '**', '*.{js,jsx,ts,tsx}'),
-		join(__dirname, 'node_modules', '@yearn-finance', 'web-lib', 'layouts', '**', '*.js'),
+		'./components/**/*.{js,ts,jsx,tsx}',
+		'./contexts/**/*.{js,ts,jsx,tsx}',
+		'./hooks/**/*.{js,ts,jsx,tsx}',
+		'./pages/**/*.{js,ts,jsx,tsx}',
 		join(__dirname, 'node_modules', '@yearn-finance', 'web-lib', 'components', '**', '*.js'),
 		join(__dirname, 'node_modules', '@yearn-finance', 'web-lib', 'contexts', '**', '*.js'),
 		join(__dirname, 'node_modules', '@yearn-finance', 'web-lib', 'icons', '**', '*.js'),

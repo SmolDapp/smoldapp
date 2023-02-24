@@ -12,7 +12,7 @@ import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUp
 
 import type {TMinBalanceData, TUseBalancesTokens} from 'hooks/useBalances';
 import type {Dispatch, ReactElement, SetStateAction} from 'react';
-import type {TDict} from '@yearn-finance/web-lib/utils/types';
+import type {TDict} from '@yearn-finance/web-lib/types';
 import type {TTokenInfo} from './useTokenList';
 
 export type	TWalletContext = {
@@ -34,7 +34,6 @@ const	defaultProps = {
 	refreshWithList: async (): Promise<TDict<TMinBalanceData>> => ({}),
 	set_walletProvider: (): void => undefined
 };
-
 
 /* 🔵 - Yearn Finance **********************************************************
 ** This context controls most of the user's wallet data we may need to

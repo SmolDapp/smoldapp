@@ -15,7 +15,7 @@ import {toAddress, truncateHex} from '@yearn-finance/web-lib/utils/address';
 import {getProvider} from '@yearn-finance/web-lib/utils/web3/providers';
 
 import type {ReactElement} from 'react';
-import type {TAddress} from '@yearn-finance/web-lib/utils/address';
+import type {TAddress} from '@yearn-finance/web-lib/types';
 
 const fetcher = async (query: string): Promise<{account: TAccount}> => (
 	request('https://api.thegraph.com/subgraphs/name/ryry79261/mainnet-erc721-erc1155', query)

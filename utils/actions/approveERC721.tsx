@@ -1,6 +1,7 @@
 import {ethers} from 'ethers';
 
-import type {TAddress} from '@yearn-finance/web-lib/utils/address';
+import type {TAddress} from '@yearn-finance/web-lib/types';
+import type {TTxResponse} from '@yearn-finance/web-lib/utils/web3/transaction';
 
 export async function	isApprovedERC721(
 	provider: ethers.providers.JsonRpcProvider,
@@ -27,7 +28,7 @@ export async function	setApprovalForAll(
 	token: TAddress,
 	operator: TAddress,
 	shouldAllow: boolean
-): Promise<{isSuccessful: boolean, receipt?: ethers.providers.TransactionReceipt}> {
+): Promise<TTxResponse> {
 	const	signer = provider.getSigner();
 
 	try {

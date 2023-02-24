@@ -4,8 +4,7 @@ import {useMountEffect} from '@react-hookz/web';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
 
 import type {Dispatch, SetStateAction} from 'react';
-import type {TAddress} from '@yearn-finance/web-lib/utils/address';
-import type {TDict} from '@yearn-finance/web-lib/utils/types';
+import type {TAddress, TDict} from '@yearn-finance/web-lib/types';
 
 export type TTokenInfo = {
 	chainId: number,

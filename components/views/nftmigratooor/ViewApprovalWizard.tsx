@@ -5,7 +5,6 @@ import {Contract} from 'ethcall';
 import ERC721_ABI from 'utils/abi/ERC721.abi';
 import {setApprovalForAll} from 'utils/actions/approveERC721';
 import {multiTransfer} from 'utils/actions/multiTransferERC721';
-import {defaultTxStatus, Transaction} from 'utils/actions/transactions.root';
 import {transfer} from 'utils/actions/transferERC721';
 import {safeBatchTransferFrom1155} from 'utils/actions/transferERC1155';
 import {useUpdateEffect} from '@react-hookz/web';
@@ -14,13 +13,14 @@ import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUpdates';
 import {getProvider, newEthCallProvider} from '@yearn-finance/web-lib/utils/web3/providers';
+import {defaultTxStatus, Transaction} from '@yearn-finance/web-lib/utils/web3/transaction';
 
 import type {Call} from 'ethcall';
 import type {ethers} from 'ethers';
 import type {ReactElement} from 'react';
 import type {TApprovalStatus, TWizardStatus} from 'utils/types/nftMigratooor';
 import type {TOpenSeaAsset} from 'utils/types/opensea';
-import type {TDict} from '@yearn-finance/web-lib/utils/types';
+import type {TDict} from '@yearn-finance/web-lib/types';
 
 function	ViewApprovalWizard(): ReactElement {
 	const	{address, provider} = useWeb3();
