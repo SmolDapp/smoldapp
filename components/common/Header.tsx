@@ -2,7 +2,7 @@
 
 import React, {useState} from 'react';
 import Link from 'next/link';
-import {usePathname} from 'next/navigation';
+import {useRouter} from 'next/router';
 import Logo from 'components/icons/logo';
 import Drawer from 'components/SettingsDrawer';
 import {useMenu} from 'contexts/useMenu';
@@ -14,7 +14,7 @@ import type {ReactElement} from 'react';
 
 function	AppHeader(): ReactElement {
 	const	{walletType} = useWeb3();
-	const	pathname = usePathname();
+	const	{pathname} = useRouter();
 	const	{onOpenMenu} = useMenu();
 	const	[isDrawerOpen, set_isDrawerOpen] = useState(false);
 
