@@ -154,7 +154,7 @@ function	TableERC20Row({address: tokenAddress, balance}: {balance: TMinBalanceDa
 							className={'flex h-10 w-full flex-row items-center justify-between py-4 px-0'}
 							onClick={(e): void => e.stopPropagation()}>
 							<input
-								className={`scrollbar-none w-full overflow-x-scroll border-none bg-transparent py-4 px-0 text-sm font-bold outline-none ${isActive ? '' : 'cursor-not-allowed'}`}
+								className={`w-full overflow-x-scroll border-none bg-transparent py-4 px-0 text-sm font-bold outline-none scrollbar-none ${isActive ? '' : 'cursor-not-allowed'}`}
 								type={'number'}
 								min={0}
 								step={1 / 10 ** (balance.decimals || 18)}
@@ -174,7 +174,7 @@ function	TableERC20Row({address: tokenAddress, balance}: {balance: TMinBalanceDa
 								onClick={(): void => {
 									set_amounts((amounts): TDict<TNormalizedBN> => ({...amounts, [toAddress(tokenAddress)]: balance}));
 								}}
-								className={'text-xxs hover:text-neutral-0 ml-2 cursor-pointer rounded-sm border border-neutral-900 bg-neutral-100 px-2 py-1 text-neutral-900 transition-colors hover:bg-neutral-900'}>
+								className={'ml-2 cursor-pointer rounded-sm border border-neutral-900 bg-neutral-100 px-2 py-1 text-xxs text-neutral-900 transition-colors hover:bg-neutral-900 hover:text-neutral-0'}>
 								{'max'}
 							</button>
 						</div>
