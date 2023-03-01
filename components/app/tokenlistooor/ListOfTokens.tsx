@@ -126,7 +126,7 @@ function	ListOfTokens({isListooor, tokens, listAddress, chainID, onRemoveSuccess
 	const	explorer = useMemo((): string => chain.get(chainID)?.block_explorer || 'https://etherscan.io', [chainID, chain]);
 
 	return (
-		<div className={'mt-6 grid gap-4'}>
+		<div className={'mt-4 grid gap-4'}>
 			{tokens.map((token: TToken): ReactElement => (
 				<TokenItem
 					key={token.address}
