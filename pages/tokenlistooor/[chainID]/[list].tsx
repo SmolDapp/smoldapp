@@ -11,6 +11,7 @@ import TOKENLIST_REGISTRY_ABI from 'utils/abi/TokenListRegistry.abi';
 import {useMountEffect} from '@react-hookz/web';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
+import IconLoader from '@yearn-finance/web-lib/icons/IconLoader';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {getProvider} from '@yearn-finance/web-lib/utils/web3/providers';
 
@@ -41,15 +42,11 @@ type TToken = {
 function	List({list, chainID}: {list: TListDefaultProps, chainID: number}): ReactElement {
 	const	{provider, address} = useWeb3();
 	const	[tokens, set_tokens] = useState<TToken[]>([]);
-	const	[isListooor, set_isListooor] = useState<boolean>(false);
+	const	[isListooor, set_isListooor] = useState<boolean>(true);
 
 	function	loadTokens(): void {
 		const	currentProvider = provider || getProvider(chainID);
-		const	contract = new ethers.Contract(
-			list.listAddress,
-			[{'inputs': [{'internalType': 'uint256', 'name': 'fromIndex', 'type': 'uint256'}, {'internalType': 'uint256', 'name': 'toIndex', 'type': 'uint256'}], 'name': 'listTokens', 'outputs': [{'components': [{'internalType': 'address', 'name': 'tokenAddress', 'type': 'address'}, {'internalType': 'string', 'name': 'symbol', 'type': 'string'}, {'internalType': 'string', 'name': 'name', 'type': 'string'}, {'internalType': 'string', 'name': 'tokenURI', 'type': 'string'}, {'internalType': 'uint8', 'name': 'decimals', 'type': 'uint8'}], 'internalType': 'struct TokenListooor.TokenData[]', 'name': '', 'type': 'tuple[]'}], 'stateMutability': 'view', 'type': 'function'}],
-			currentProvider
-		);
+		const	contract = new ethers.Contract(list.listAddress, TOKENLIST_ABI, currentProvider);
 		contract.listTokens(0, 100)
 			.then((response: any): void => {
 				const	_tokens: TToken[] = [];
@@ -88,12 +85,7 @@ function	List({list, chainID}: {list: TListDefaultProps, chainID: number}): Reac
 	}, [address, list.listAddress, provider]);
 
 	return (
-		<div className={'mx-auto mt-14 grid w-full max-w-4xl pb-40'}>
-			<div className={'pb-4'}>
-				<Link href={'/tokenlistooor'} className={'text-xs text-neutral-400'}>
-					{'< Back to lists'}
-				</Link>
-			</div>
+		<>
 			<ListOverview list={list} />
 			{isListooor ? (
 				<ViewAddTokens
@@ -122,11 +114,40 @@ function	List({list, chainID}: {list: TListDefaultProps, chainID: number}): Reac
 					chainID={chainID}
 					onRemoveSuccess={loadTokens} />
 			</div>
-		</div>
+		</>
 	);
 }
 
-export default function Wrapper({list, chainID}: {list: TListDefaultProps, chainID: number}): ReactElement {
+export default function Wrapper({listAddress, chainID}: {listAddress: TAddress, chainID: number}): ReactElement {
+	const	{provider} = useWeb3();
+	const	[list, set_list] = useState<TListDefaultProps | undefined>(undefined);
+
+	useEffect((): void => {
+		let		currentProvider = provider || getProvider(chainID);
+		if (chainID === 1337) {
+			currentProvider = new ethers.providers.JsonRpcProvider('http://0.0.0.0:8545');
+		}
+		const	registryAddress = toAddress(process.env.TOKENLISTOOOR_REGISTRY_ADDRESS);
+		const	registry = new ethers.Contract(registryAddress, TOKENLIST_REGISTRY_ABI, currentProvider);
+		const	contract = new ethers.Contract(listAddress, TOKENLIST_ABI, currentProvider);
+		Promise.all([
+			registry.getListByAddress(listAddress),
+			contract.countToken(),
+			contract.mainListooor()
+		]).then(([factory, count, mainListooor]): void => {
+			set_list({
+				listAddress: toAddress(factory?.listAddress),
+				mainListooor: toAddress(mainListooor),
+				name: factory?.name,
+				description: factory?.description,
+				logoURI: factory?.logoURI,
+				baseURI: factory?.baseURI,
+				endorsed: factory?.endorsed,
+				count: (count).toNumber()
+			});
+		});
+	}, [listAddress, chainID, provider]);
+
 	return (
 		<MigratooorContextApp>
 			<>
@@ -155,40 +176,64 @@ export default function Wrapper({list, chainID}: {list: TListDefaultProps, chain
 						site: '@smoldapp',
 						cardType: 'summary_large_image'
 					}} />
-				<List list={list} chainID={chainID} />
+				<div className={'mx-auto mt-14 grid w-full max-w-4xl pb-40'}>
+					<div className={'pb-4'}>
+						<Link href={'/tokenlistooor'} className={'text-xs text-neutral-400'}>
+							{'< Back to lists'}
+						</Link>
+					</div>
+					{list ? (
+						<List list={list} chainID={chainID} />
+					) : (
+						<div className={'flex h-40 items-center justify-center'}>
+							<IconLoader className={'h-10 w-10 animate-spin text-neutral-900 transition-opacity'} />
+						</div>
+					)}
+				</div>
 			</>
 		</MigratooorContextApp>
 	);
 }
 
 
-Wrapper.getInitialProps = async ({query}: NextPageContext): Promise<{list: TListDefaultProps, chainID: number}> => {
+Wrapper.getInitialProps = async ({query}: NextPageContext): Promise<{listAddress: TAddress, chainID: number}> => {
 	const	listAddress = toAddress((query?.list as string)?.split('/').pop() || '');
 	const	chainID = Number(query?.chainID);
-	let		currentProvider = getProvider(chainID);
-	if (chainID === 1337) {
-		currentProvider = new ethers.providers.JsonRpcProvider('http://0.0.0.0:8545');
-	}
-	const	registryAddress = toAddress(process.env.TOKENLISTOOOR_REGISTRY_ADDRESS);
-	const	registry = new ethers.Contract(registryAddress, TOKENLIST_REGISTRY_ABI, currentProvider);
-	const	contract = new ethers.Contract(listAddress, TOKENLIST_ABI, currentProvider);
-	const	[factory, count, mainListooor] = await Promise.all([
-		registry.getListByAddress(listAddress),
-		contract.countToken(),
-		contract.mainListooor()
-	]);
 
 	return {
 		chainID,
-		list: {
-			listAddress: toAddress(factory?.listAddress),
-			mainListooor: toAddress(mainListooor),
-			name: factory?.name,
-			description: factory?.description,
-			logoURI: factory?.logoURI,
-			baseURI: factory?.baseURI,
-			endorsed: factory?.endorsed,
-			count: (count).toNumber()
-		}
+		listAddress
 	};
 };
+
+
+// Wrapper.getInitialProps = async ({query}: NextPageContext): Promise<{list: TListDefaultProps, chainID: number}> => {
+// 	const	listAddress = toAddress((query?.list as string)?.split('/').pop() || '');
+// 	const	chainID = Number(query?.chainID);
+// 	let		currentProvider = getProvider(chainID);
+// 	if (chainID === 1337) {
+// 		currentProvider = new ethers.providers.JsonRpcProvider('http://0.0.0.0:8545');
+// 	}
+// 	const	registryAddress = toAddress(process.env.TOKENLISTOOOR_REGISTRY_ADDRESS);
+// 	const	registry = new ethers.Contract(registryAddress, TOKENLIST_REGISTRY_ABI, currentProvider);
+// 	const	contract = new ethers.Contract(listAddress, TOKENLIST_ABI, currentProvider);
+// 	const	[factory, count, mainListooor] = await Promise.all([
+// 		registry.getListByAddress(listAddress),
+// 		contract.countToken(),
+// 		contract.mainListooor()
+// 	]);
+
+// 	return {
+// 		chainID,
+// 		list: {
+// 			listAddress: toAddress(factory?.listAddress),
+// 			mainListooor: toAddress(mainListooor),
+// 			name: factory?.name,
+// 			description: factory?.description,
+// 			logoURI: factory?.logoURI,
+// 			baseURI: factory?.baseURI,
+// 			endorsed: factory?.endorsed,
+// 			count: (count).toNumber()
+// 		}
+// 	};
+// };

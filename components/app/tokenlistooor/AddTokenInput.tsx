@@ -42,12 +42,6 @@ function	AddTokenInput({token, onChange, onRemove, isAlreadyInList}: TAddTokenIn
 				});
 			} else {
 				performBatchedUpdates(async (): Promise<void> => {
-					console.log({
-						token: toAddress(token),
-						symbol: erc20Symbol,
-						decimals: erc20Decimals,
-						force: true
-					});
 					set_isLoading(false);
 					set_isValidERC20(true);
 					set_decimals(erc20Decimals);

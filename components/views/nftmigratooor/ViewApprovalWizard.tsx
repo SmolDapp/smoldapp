@@ -66,7 +66,6 @@ function	ViewApprovalWizard(): ReactElement {
 		set_collectionStatus((prev): TDict<TWizardStatus> => {
 			for (const collection of Object.keys(groupedByCollection)) {
 				if (prev[collection] === undefined) {
-					console.log(prev[collection], prev);
 					prev[collection] = {
 						approval: 'Not Approved',
 						execute: 'Not Executed',

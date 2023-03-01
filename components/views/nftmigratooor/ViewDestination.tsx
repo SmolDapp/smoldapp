@@ -43,9 +43,7 @@ function	ViewDestination(): ReactElement {
 				}
 			}
 			if (destination.endsWith('.lens')) {
-				console.log('HERE');
 				const	resolvedAddress = await lensProtocol.getAddressFromHandle(destination);
-				console.log(resolvedAddress);
 				if (resolvedAddress) {
 					if (isAddress(resolvedAddress)) {
 						performBatchedUpdates((): void => {
