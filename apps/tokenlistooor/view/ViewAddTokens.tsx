@@ -19,7 +19,6 @@ type TToken = {
 	chainID: number;
 	decimals: number;
 }
-
 type TViewAddTokensProps = {
 	listAddress: TAddress,
 	tokensInList: TToken[],
