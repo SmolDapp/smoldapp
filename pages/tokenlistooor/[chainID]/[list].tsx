@@ -168,7 +168,7 @@ Wrapper.getInitialProps = async ({query}: NextPageContext): Promise<{list: TList
 		currentProvider = new ethers.providers.JsonRpcProvider('http://0.0.0.0:8545');
 	}
 	const	registry = new ethers.Contract(
-		'0xC1D840a87fC869f2fD7b7941B4895b7a6fCC6279',
+		toAddress(process.env.TOKENLISTOOOR_REGISTRY_ADDRESS),
 		[{'inputs': [{'internalType': 'address', 'name': 'addr', 'type': 'address'}], 'name': 'getListByAddress', 'outputs': [{'components': [{'internalType': 'address', 'name': 'listAddress', 'type': 'address'}, {'internalType': 'string', 'name': 'name', 'type': 'string'}, {'internalType': 'string', 'name': 'description', 'type': 'string'}, {'internalType': 'string', 'name': 'logoURI', 'type': 'string'}, {'internalType': 'string', 'name': 'baseURI', 'type': 'string'}, {'internalType': 'bool', 'name': 'endorsed', 'type': 'bool'}], 'internalType': 'struct TokenListFactory.tokenlistooorStatus', 'name': '', 'type': 'tuple'}], 'stateMutability': 'view', 'type': 'function'}],
 		currentProvider
 	);

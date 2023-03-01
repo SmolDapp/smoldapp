@@ -3,8 +3,6 @@ import {toAddress} from '@yearn-finance/web-lib/utils/address';
 
 import type {TTxResponse} from '@yearn-finance/web-lib/utils/web3/transaction';
 
-const	tokenListAddress = toAddress('0xC1D840a87fC869f2fD7b7941B4895b7a6fCC6279');
-
 export async function	deployTokenList(
 	provider: ethers.providers.Web3Provider,
 	name: string,
@@ -16,7 +14,7 @@ export async function	deployTokenList(
 
 	try {
 		const	contract = new ethers.Contract(
-			tokenListAddress,
+			toAddress(process.env.TOKENLISTOOOR_REGISTRY_ADDRESS),
 			['function createTokenList(string memory name, string memory description, string memory logoURI, string memory baseURI) public payable'],
 			signer
 		);
