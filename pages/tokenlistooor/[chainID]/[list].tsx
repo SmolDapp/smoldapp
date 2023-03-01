@@ -42,7 +42,7 @@ function	List({list, chainID}: {list: TListDefaultProps, chainID: number}): Reac
 	const	[isListooor, set_isListooor] = useState<boolean>(false);
 
 	function	loadTokens(): void {
-		const	currentProvider = new ethers.providers.JsonRpcProvider('http://0.0.0.0:8545');
+		const	currentProvider = provider || getProvider(chainID);
 		const	contract = new ethers.Contract(
 			list.listAddress,
 			[{'inputs': [{'internalType': 'uint256', 'name': 'fromIndex', 'type': 'uint256'}, {'internalType': 'uint256', 'name': 'toIndex', 'type': 'uint256'}], 'name': 'listTokens', 'outputs': [{'components': [{'internalType': 'address', 'name': 'tokenAddress', 'type': 'address'}, {'internalType': 'string', 'name': 'symbol', 'type': 'string'}, {'internalType': 'string', 'name': 'name', 'type': 'string'}, {'internalType': 'string', 'name': 'tokenURI', 'type': 'string'}, {'internalType': 'uint8', 'name': 'decimals', 'type': 'uint8'}], 'internalType': 'struct TokenListooor.TokenData[]', 'name': '', 'type': 'tuple[]'}], 'stateMutability': 'view', 'type': 'function'}],
