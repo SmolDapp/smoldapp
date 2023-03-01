@@ -4,7 +4,10 @@ import {removeTokenFromList} from 'utils/actions/removeTokenFromList';
 import {Menu, Transition} from '@headlessui/react';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {useChain} from '@yearn-finance/web-lib/hooks/useChain';
+import IconCopy from '@yearn-finance/web-lib/icons/IconCopy';
+import IconLinkOut from '@yearn-finance/web-lib/icons/IconLinkOut';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
+import {copyToClipboard} from '@yearn-finance/web-lib/utils/helpers';
 import {defaultTxStatus, Transaction} from '@yearn-finance/web-lib/utils/web3/transaction';
 
 import type {ReactElement} from 'react';
@@ -61,13 +64,21 @@ function	TokenItem({isListooor, token, listAddress, explorer, onSuccess}: TToken
 						</span>
 						{` - ${token.symbol}`}
 					</p>
-					<a
-						href={`${explorer}/address/${token.address}`}
-						target={'_blank'}
-						rel={'noreferrer'}
-						className={'font-number text-sm text-neutral-500 transition-colors hover:text-neutral-900 hover:underline'}>
-						{token.address}
-					</a>
+					<span className={'flex flex-row items-center space-x-2'}>
+						<p
+							className={'font-number text-sm text-neutral-500 transition-colors hover:text-neutral-900 hover:underline'}>
+							{token.address}
+						</p>
+						<a
+							href={`${explorer}/address/${token.address}`}
+							target={'_blank'}
+							rel={'noreferrer'}>
+							<IconLinkOut className={'h-3 w-3 cursor-pointer text-neutral-500 transition-colors hover:text-neutral-900'} />
+						</a>
+						<button onClick={(): void => copyToClipboard(token.address)}>
+							<IconCopy className={'h-3 w-3 cursor-pointer text-neutral-500 transition-colors hover:text-neutral-900'} />
+						</button>
+					</span>
 				</div>
 				<div className={'col-span-2'}>
 					<p className={'text-sm text-neutral-500'}>

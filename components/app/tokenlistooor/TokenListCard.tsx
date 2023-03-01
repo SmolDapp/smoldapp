@@ -1,17 +1,72 @@
 import React from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import dayjs, {extend} from 'dayjs';
 import dayjsDuration from 'dayjs/plugin/duration.js';
 import relativeTime from 'dayjs/plugin/relativeTime.js';
 import weekday from 'dayjs/plugin/weekday.js';
+import {truncateHex} from '@yearn-finance/web-lib/utils/address';
 import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
 
 import type {TTokenListItem} from 'pages/tokenlistooor';
 import type {ReactElement} from 'react';
+import type {TAddress} from '@yearn-finance/web-lib/types';
 
 extend(relativeTime);
 extend(dayjsDuration);
 extend(weekday);
+
+export type TOnChainList = {
+	listAddress: TAddress
+	name: string
+	description: string
+	baseURI: string
+	logoURI: string
+	endorsed: boolean
+	chainID: number,
+	tokenCount: number
+}
+function OnChainTokenListCard({item}: {item: TOnChainList}): ReactElement {
+	return (
+		<Link
+			href={`/tokenlistooor/${item.chainID}/${item.listAddress}`}
+			className={'group relative flex w-full flex-col'}>
+			<div className={'mb-2 flex w-full items-start justify-between px-4 md:px-6'}>
+				<Image
+					unoptimized
+					src={item.logoURI?.startsWith('ipfs://') ? `https://ipfs.io/ipfs/${item.logoURI.replace('ipfs://', '')}` : item.logoURI}
+					width={36}
+					height={36}
+					alt={''} />
+				<div className={'flex flex-col text-end text-xs text-neutral-500'}>
+					<small>{'onChain'}</small>
+				</div>
+			</div>
+			<div className={'w-full px-4 text-left md:px-6'}>
+				<b>{item.name}</b>
+				<p className={'text-sm text-neutral-500'}>
+					{item.description || `A list of token for ${item.name}`}
+				</p>
+			</div>
+			<div className={'font-number mt-auto grid w-full pt-6 text-left text-sm'}>
+				<div className={'border-y border-dashed border-neutral-200'}>
+					<div className={'flex flex-row items-center justify-between py-2 px-4 transition-colors md:px-6'}>
+						<small className={'text-neutral-500'}>{'Tokens '}</small>
+						<b suppressHydrationWarning>{`${formatAmount(item.tokenCount, 0, 0)}`}</b>
+					</div>
+				</div>
+				<div className={'border-t border-dashed border-neutral-200'}>
+					<span className={'flex cursor-pointer flex-row items-center justify-between py-2 px-4 transition-colors group-hover:bg-neutral-100 md:px-6'}>
+						<small className={'text-neutral-500'}>{'Address '}</small>
+						<b className={'group-hover:underline'}>
+							{`${truncateHex(item.listAddress, 6)}`}
+						</b>
+					</span>
+				</div>
+			</div>
+		</Link>
+	);
+}
 
 function TokenListCard({item}: {item: TTokenListItem}): ReactElement {
 	return (
@@ -101,5 +156,5 @@ function LegacyTokenListCard({item}: {item: Partial<TTokenListItem>}): ReactElem
 	);
 }
 
-export {LegacyTokenListCard};
+export {LegacyTokenListCard, OnChainTokenListCard};
 export default TokenListCard;
