@@ -6,9 +6,11 @@ import ListOverview from 'components/app/tokenlistooor/ListOverview';
 import ViewAddTokens from 'components/views/tokenlistooor/ViewAddTokens';
 import {MigratooorContextApp} from 'contexts/useMigratooor';
 import {ethers} from 'ethers';
+import TOKENLIST_ABI from 'utils/abi/TokenList.abi';
+import TOKENLIST_REGISTRY_ABI from 'utils/abi/TokenListRegistry.abi';
 import {useMountEffect} from '@react-hookz/web';
 import {Button} from '@yearn-finance/web-lib/components/Button';
-import useWeb3 from '@yearn-finance/web-lib/contexts/useWeb3';
+import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {getProvider} from '@yearn-finance/web-lib/utils/web3/providers';
 
@@ -77,7 +79,7 @@ function	List({list, chainID}: {list: TListDefaultProps, chainID: number}): Reac
 		}
 		const	contract = new ethers.Contract(
 			list.listAddress,
-			['function listooors(address) public view returns (bool)'],
+			TOKENLIST_ABI,
 			provider
 		);
 		contract.listooors(address).then((response: any): void => {
@@ -167,25 +169,15 @@ Wrapper.getInitialProps = async ({query}: NextPageContext): Promise<{list: TList
 	if (chainID === 1337) {
 		currentProvider = new ethers.providers.JsonRpcProvider('http://0.0.0.0:8545');
 	}
-	const	registry = new ethers.Contract(
-		toAddress(process.env.TOKENLISTOOOR_REGISTRY_ADDRESS),
-		[{'inputs': [{'internalType': 'address', 'name': 'addr', 'type': 'address'}], 'name': 'getListByAddress', 'outputs': [{'components': [{'internalType': 'address', 'name': 'listAddress', 'type': 'address'}, {'internalType': 'string', 'name': 'name', 'type': 'string'}, {'internalType': 'string', 'name': 'description', 'type': 'string'}, {'internalType': 'string', 'name': 'logoURI', 'type': 'string'}, {'internalType': 'string', 'name': 'baseURI', 'type': 'string'}, {'internalType': 'bool', 'name': 'endorsed', 'type': 'bool'}], 'internalType': 'struct TokenListFactory.tokenlistooorStatus', 'name': '', 'type': 'tuple'}], 'stateMutability': 'view', 'type': 'function'}],
-		currentProvider
-	);
-
-	const	contract = new ethers.Contract(
-		listAddress,
-		[
-			'function countToken() public view returns (uint256)',
-			'function mainListooor() public view public returns (address)'
-		],
-		currentProvider
-	);
+	const	registryAddress = toAddress(process.env.TOKENLISTOOOR_REGISTRY_ADDRESS);
+	const	registry = new ethers.Contract(registryAddress, TOKENLIST_REGISTRY_ABI, currentProvider);
+	const	contract = new ethers.Contract(listAddress, TOKENLIST_ABI, currentProvider);
 	const	[factory, count, mainListooor] = await Promise.all([
 		registry.getListByAddress(listAddress),
 		contract.countToken(),
 		contract.mainListooor()
 	]);
+
 	return {
 		chainID,
 		list: {
