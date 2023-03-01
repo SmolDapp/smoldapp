@@ -6,6 +6,12 @@ import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import type {Dispatch, SetStateAction} from 'react';
 import type {TAddress, TDict} from '@yearn-finance/web-lib/types';
 
+export enum	Step {
+	NONE = 'none',
+	CREATE = 'create',
+	JOIN = 'join'
+}
+
 export type TTokenInfo = {
 	chainId: number,
 	address: TAddress,
@@ -22,14 +28,19 @@ export type TTokenList = {
 export type TTokenListProps = {
 	tokenList: TDict<TTokenInfo>,
 	set_tokenList: Dispatch<SetStateAction<TDict<TTokenInfo>>>,
+	currentStep: Step,
+	set_currentStep: Dispatch<SetStateAction<Step>>
 }
 const	defaultProps: TTokenListProps = {
 	tokenList: {},
-	set_tokenList: (): void => undefined
+	set_tokenList: (): void => undefined,
+	currentStep: Step.NONE,
+	set_currentStep: (): void => undefined
 };
 
 const	TokenList = createContext<TTokenListProps>(defaultProps);
 export const TokenListContextApp = ({children}: {children: React.ReactElement}): React.ReactElement => {
+	const	[currentStep, set_currentStep] = useState<Step>(Step.CREATE);
 	const	[tokenList, set_tokenList] = useState<TDict<TTokenInfo>>({});
 
 	useMountEffect((): void => {
@@ -45,8 +56,10 @@ export const TokenListContextApp = ({children}: {children: React.ReactElement}):
 
 	const	contextValue = useMemo((): TTokenListProps => ({
 		tokenList,
-		set_tokenList
-	}), [tokenList]);
+		set_tokenList,
+		currentStep,
+		set_currentStep
+	}), [currentStep, tokenList]);
 
 	return (
 		<TokenList.Provider value={contextValue}>

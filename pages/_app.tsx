@@ -13,7 +13,7 @@ import type {ReactElement} from 'react';
 import	'../style.css';
 
 const inter = Inter({
-	weight: ['400', '700'],
+	weight: ['400', '500', '700'],
 	subsets: ['latin'],
 	display: 'swap',
 	variable: '--inter-font'
