@@ -1,11 +1,11 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import Link from 'next/link';
 import {DefaultSeo} from 'next-seo';
-import ListOfTokens from 'components/app/tokenlistooor/ListOfTokens';
-import ListOverview from 'components/app/tokenlistooor/ListOverview';
-import IconChevron from 'components/icons/IconChevron';
-import ViewAddTokens from 'components/views/tokenlistooor/ViewAddTokens';
-import {MigratooorContextApp} from 'contexts/useMigratooor';
+import IconChevron from 'apps/common/icons/IconChevron';
+import ListOfTokens from 'apps/tokenlistooor/components/ListOfTokens';
+import ListOverview from 'apps/tokenlistooor/components/ListOverview';
+import {MigratooorContextApp} from 'apps/tokenlistooor/contexts/useMigratooor';
+import ViewAddTokens from 'apps/tokenlistooor/view/ViewAddTokens';
 import {ethers} from 'ethers';
 import TOKENLIST_ABI from 'utils/abi/TokenList.abi';
 import TOKENLIST_REGISTRY_ABI from 'utils/abi/TokenListRegistry.abi';

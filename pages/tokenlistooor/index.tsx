@@ -1,8 +1,8 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {DefaultSeo} from 'next-seo';
-import TokenListCard, {LegacyTokenListCard, OnChainTokenListCard} from 'components/app/tokenlistooor/TokenListCard';
-import TokenListHero from 'components/TokenListHero';
-import {MigratooorContextApp} from 'contexts/useMigratooor';
+import TokenListCard, {LegacyTokenListCard, OnChainTokenListCard} from 'apps/tokenlistooor/components/TokenListCard';
+import TokenListHero from 'apps/tokenlistooor/components/TokenListHero';
+import {MigratooorContextApp} from 'apps/tokenlistooor/contexts/useMigratooor';
 import {Contract} from 'ethcall';
 import {ethers} from 'ethers';
 import TOKENLIST_ABI from 'utils/abi/TokenList.abi';
@@ -13,7 +13,7 @@ import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {getProvider, newEthCallProvider} from '@yearn-finance/web-lib/utils/web3/providers';
 
-import type {TOnChainList} from 'components/app/tokenlistooor/TokenListCard';
+import type {TOnChainList} from 'apps/tokenlistooor/components/TokenListCard';
 import type {BigNumber} from 'ethers';
 import type {ReactElement} from 'react';
 

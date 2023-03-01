@@ -1,8 +1,8 @@
 import React from 'react';
 import Link from 'next/link';
 import {DefaultSeo} from 'next-seo';
-import ViewNewListName from 'components/views/tokenlistooor/ViewNewListName';
-import {MigratooorContextApp} from 'contexts/useMigratooor';
+import {MigratooorContextApp} from 'apps/tokenlistooor/contexts/useMigratooor';
+import ViewNewListName from 'apps/tokenlistooor/view/ViewNewListName';
 
 import type {ReactElement} from 'react';
 

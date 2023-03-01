@@ -1,10 +1,10 @@
 import React from 'react';
 import {DefaultSeo} from 'next-seo';
-import ViewApprovalWizard from 'components/views/nftmigratooor/ViewApprovalWizard';
-import ViewDestination from 'components/views/nftmigratooor/ViewDestination';
-import ViewTable from 'components/views/nftmigratooor/ViewTable';
-import ViewWallet from 'components/views/ViewWallet';
-import {NFTMigratooorContextApp, Step, useNFTMigratooor} from 'contexts/useNFTMigratooor';
+import ViewWallet from 'apps/common/views/ViewWallet';
+import {NFTMigratooorContextApp, Step, useNFTMigratooor} from 'apps/nftMigratooor/contexts/useNFTMigratooor';
+import ViewApprovalWizard from 'apps/nftMigratooor/view/ViewApprovalWizard';
+import ViewDestination from 'apps/nftMigratooor/view/ViewDestination';
+import ViewTable from 'apps/nftMigratooor/view/ViewTable';
 
 import type {ReactElement} from 'react';
 

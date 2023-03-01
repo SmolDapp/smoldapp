@@ -1,6 +1,6 @@
 import React from 'react';
 import Document, {Head, Html, Main, NextScript} from 'next/document';
-import PatternBackground from 'components/icons/PatternBackground';
+import PatternBackground from 'apps/common/icons/PatternBackground';
 
 import type {DocumentContext, DocumentInitialProps} from 'next/document';
 import type {ReactElement} from 'react';

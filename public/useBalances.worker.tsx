@@ -7,8 +7,8 @@ import {ETH_TOKEN_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
 import {toNormalizedValue} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import {getProvider, newEthCallProvider} from '@yearn-finance/web-lib/utils/web3/providers';
 
+import type {TMinBalanceData, TUseBalancesTokens} from 'apps/common/hooks/useBalances';
 import type {BigNumber} from 'ethers';
-import type {TMinBalanceData, TUseBalancesTokens} from 'hooks/useBalances';
 import type {TDict} from '@yearn-finance/web-lib/types';
 
 type TPerformCall = {

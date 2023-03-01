@@ -2,8 +2,8 @@ import React from 'react';
 import Balancer from 'react-wrap-balancer';
 import Image from 'next/image';
 import Link from 'next/link';
-import LogoMigratooor from 'components/icons/LogoMigratooor';
-import LogoTokenlistooor from 'components/icons/LogoTokenlistooor';
+import LogoMigratooor from 'apps/common/icons/LogoMigratooor';
+import LogoTokenlistooor from 'apps/common/icons/LogoTokenlistooor';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import {useClientEffect} from '@yearn-finance/web-lib/hooks/useClientEffect';
 
