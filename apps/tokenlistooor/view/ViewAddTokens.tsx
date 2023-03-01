@@ -105,7 +105,7 @@ function	ViewAddTokens({listAddress, tokensInList, onSuccess}: TViewAddTokensPro
 					<div className={'flex justify-end space-x-4 pt-4'}>
 						<button
 							onClick={(): void => set_tokens([...tokens, ''])}
-							className={'cursor-pointer text-xs text-neutral-400 transition-colors hover:text-neutral-900 hover:underline'}>
+							className={'cursor-pointer text-xs text-neutral-900 transition-colors hover:text-neutral-900 hover:underline'}>
 							{'Add another token'}
 						</button>
 						<Button

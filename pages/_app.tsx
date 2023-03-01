@@ -1,9 +1,9 @@
 import React from 'react';
+import {Inter} from 'next/font/google';
 import AppWrapper from 'apps/common/components/AppWrapper';
 import {MenuContextApp} from 'apps/common/contexts/useMenu';
 import {TokenListContextApp} from 'apps/common/contexts/useTokenList';
 import {SafeProvider} from '@gnosis.pm/safe-apps-react-sdk';
-import {Inter} from '@next/font/google';
 import {WithYearn} from '@yearn-finance/web-lib/contexts/WithYearn';
 
 import type {AppProps} from 'next/app';
