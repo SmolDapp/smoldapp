@@ -32,7 +32,6 @@ export async function	safeBatchTransferFrom1155(
 		if (filteredTokenIDs.length === 0) {
 			console.error('No tokens to transfer');
 			return {isSuccessful: false};
-
 		}
 		const	transaction = await contract.safeBatchTransferFrom(from, to, filteredTokenIDs, filteredAmounts, '0x');
 		const	transactionResult = await transaction.wait() as ethers.providers.TransactionReceipt;
@@ -45,5 +44,35 @@ export async function	safeBatchTransferFrom1155(
 	} catch(error) {
 		console.error(error);
 		return {isSuccessful: false};
+	}
+}
+
+export async function	listPossibleTransferFrom1155(
+	provider: ethers.providers.JsonRpcProvider,
+	token: TAddress,
+	tokenIDs: string[]
+): Promise<[any[], any[]]> {
+	const	signer = provider.getSigner();
+
+	try {
+		const	contract = new ethers.Contract(token, ['function balanceOfBatch(address[] memory accounts, uint256[] memory ids) external view returns (uint256[] memory)'], signer);
+		const	from = await signer.getAddress();
+
+		//account and id arrays must be the same length
+		const	amounts = await contract.balanceOfBatch(tokenIDs.map((): string => from), tokenIDs) as BigNumber[];
+		const	filteredTokenIDs = [];
+		const	filteredAmounts = [];
+		for (let i = 0; i < tokenIDs.length; i++) {
+			if (!amounts[i].isZero()) {
+				filteredTokenIDs.push(tokenIDs[i]);
+				filteredAmounts.push(amounts[i]);
+			}
+		}
+		if (filteredTokenIDs.length === 0) {
+			return [[], []];
+		}
+		return [filteredTokenIDs, filteredAmounts];
+	} catch(error) {
+		return [[], []];
 	}
 }

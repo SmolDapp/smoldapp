@@ -1,7 +1,7 @@
 import React, {useCallback, useState} from 'react';
 import ApprovalWizardItem from 'components/app/migratooor/ApprovalWizardItem';
 import {useMigratooor} from 'contexts/useMigratooor';
-import useWallet from 'contexts/useWallet';
+import {useWallet} from 'contexts/useWallet';
 import {sendEther} from 'utils/actions/sendEth';
 import {transfer} from 'utils/actions/transferERC20';
 import {getTransferTransaction} from 'utils/gnosis.tools';

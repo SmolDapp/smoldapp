@@ -6,7 +6,9 @@ import ERC721_ABI from 'utils/abi/ERC721.abi';
 import {setApprovalForAll} from 'utils/actions/approveERC721';
 import {multiTransfer} from 'utils/actions/multiTransferERC721';
 import {transfer} from 'utils/actions/transferERC721';
-import {safeBatchTransferFrom1155} from 'utils/actions/transferERC1155';
+import {listPossibleTransferFrom1155, safeBatchTransferFrom1155} from 'utils/actions/transferERC1155';
+import {getSafeBatchTransferFrom1155, getSafeTransferFrom721} from 'utils/gnosis.tools';
+import {useSafeAppsSDK} from '@gnosis.pm/safe-apps-react-sdk';
 import {useUpdateEffect} from '@react-hookz/web';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
@@ -21,9 +23,10 @@ import type {ReactElement} from 'react';
 import type {TApprovalStatus, TWizardStatus} from 'utils/types/nftMigratooor';
 import type {TOpenSeaAsset} from 'utils/types/opensea';
 import type {TDict} from '@yearn-finance/web-lib/types';
+import type {BaseTransaction} from '@gnosis.pm/safe-apps-sdk';
 
 function	ViewApprovalWizard(): ReactElement {
-	const	{address, provider} = useWeb3();
+	const	{address, provider, walletType} = useWeb3();
 	const	{safeChainID} = useChainID();
 	const	{selected, set_selected, set_nfts, destinationAddress} = useNFTMigratooor();
 	const	[isApproving, set_isApproving] = useState(false);
@@ -31,6 +34,7 @@ function	ViewApprovalWizard(): ReactElement {
 	const	[collectionApprovalStatus, set_collectionApprovalStatus] = useState<TDict<TApprovalStatus>>({});
 	const	[migrated, set_migrated] = useState<TDict<TOpenSeaAsset[]>>({});
 	const	[, set_txStatus] = useState(defaultTxStatus);
+	const	{sdk} = useSafeAppsSDK();
 
 	/**********************************************************************************************
 	** The migration flow is different if we are sending one NFT from one collection or multiple
@@ -320,12 +324,74 @@ function	ViewApprovalWizard(): ReactElement {
 	}, [destinationAddress, onMigrateError, onMigrateSuccess, provider]);
 
 	/**********************************************************************************************
+	** The onMigrateSelectedForGnosis function is called when the user clicks the 'Migrate' button
+	** in the Gnosis Safe. This will take advantage of the batch transaction feature of the Gnosis
+	** Safe.
+	**********************************************************************************************/
+	const onMigrateSomeERC1155TokensFromGnosis = useCallback(async (collectionAddress: string, collection: TOpenSeaAsset[]): Promise<BaseTransaction> => {
+		const	tokenIDs: string[] = [];
+		for (const asset of collection) {
+			tokenIDs.push(asset.token_id);
+		}
+		const	[filteredTokenIDs, filteredAmounts] = await listPossibleTransferFrom1155(provider, toAddress(collectionAddress), tokenIDs);
+		return getSafeBatchTransferFrom1155(toAddress(collectionAddress), toAddress(address), destinationAddress, filteredTokenIDs, filteredAmounts);
+	}, [address, destinationAddress, provider]);
+
+	const onMigrateSomeERC721TokensFromGnosis = useCallback((collectionAddress: string, collection: TOpenSeaAsset[]): BaseTransaction[] => {
+		const	transactions = [];
+		for (const asset of collection) {
+			transactions.push(getSafeTransferFrom721(toAddress(collectionAddress), toAddress(address), destinationAddress, asset.token_id));
+		}
+		return transactions;
+	}, [address, destinationAddress]);
+
+	const onMigrateSelectedForGnosis = useCallback(async (groupedByCollection: TDict<TOpenSeaAsset[]>): Promise<void> => {
+		const	transactions: BaseTransaction[] = [];
+		for (const collectionAddress in groupedByCollection) {
+			const collection = groupedByCollection[collectionAddress];
+			if (collection[0].asset_contract.schema_name === 'ERC1155') {
+				transactions.push(await onMigrateSomeERC1155TokensFromGnosis(collectionAddress, collection));
+			} else if (collection[0].asset_contract.schema_name === 'ERC721') {
+				transactions.push(...onMigrateSomeERC721TokensFromGnosis(collectionAddress, collection));
+			}
+		}
+
+		try {
+			for (const collectionAddress in groupedByCollection) {
+				set_collectionStatus((prev): TDict<TWizardStatus> => ({
+					...prev,
+					[toAddress(collectionAddress)]: {...prev[toAddress(collectionAddress)], execute: 'Executing'}
+				}));
+			}
+
+			const {safeTxHash} = await sdk.txs.send({txs: transactions});
+			const successfulMigrations: TDict<TOpenSeaAsset[]> = {};
+			for (const collectionAddress in groupedByCollection) {
+				const collection = groupedByCollection[collectionAddress];
+				set_collectionStatus((prev): TDict<TWizardStatus> => ({
+					...prev,
+					[toAddress(collectionAddress)]: {...prev[toAddress(collectionAddress)], execute: 'Executed'}
+				}));
+				successfulMigrations[collectionAddress] = collection;
+			}
+			set_migrated(successfulMigrations);
+			console.log({hash: safeTxHash});
+		} catch (error) {
+			console.log(error);
+		}
+	}, [onMigrateSomeERC1155TokensFromGnosis, onMigrateSomeERC721TokensFromGnosis, sdk.txs]);
+
+
+	/**********************************************************************************************
 	** This is the main function that will be called when the user clicks on the 'Migrate' button.
 	** It will iterate over the groupedByCollection object and call the appropriate function
 	** depending on the number of NFTs in the collection and the approval status.
 	**********************************************************************************************/
 	const	onHandleMigration = useCallback(async (): Promise<void> => {
 		await onClearMigration();
+		if (walletType === 'EMBED_GNOSIS_SAFE') {
+			return onMigrateSelectedForGnosis(groupedByCollection);
+		}
 
 		const	successfulMigrations: TDict<TOpenSeaAsset[]> = {};
 		for (const collectionAddress in groupedByCollection) {
@@ -362,7 +428,7 @@ function	ViewApprovalWizard(): ReactElement {
 			}
 		}
 		set_migrated(successfulMigrations);
-	}, [onClearMigration, groupedByCollection, collectionStatus, onMigrateSomeERC1155Tokens, onMigrateOneToken, collectionApprovalStatus, onMigrateSomeERC721Tokens, onApproveAllCollection]);
+	}, [onClearMigration, walletType, onMigrateSelectedForGnosis, groupedByCollection, collectionStatus, onMigrateSomeERC1155Tokens, onMigrateOneToken, collectionApprovalStatus, onMigrateSomeERC721Tokens, onApproveAllCollection]);
 
 	return (
 		<section>
