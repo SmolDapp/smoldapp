@@ -6,7 +6,7 @@ import {useUI} from '@yearn-finance/web-lib/contexts/useUI';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import ERC20_ABI from '@yearn-finance/web-lib/utils/abi/erc20.abi';
-import {toAddress} from '@yearn-finance/web-lib/utils/address';
+import {isZeroAddress, toAddress} from '@yearn-finance/web-lib/utils/address';
 import {ETH_TOKEN_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
 import * as format from '@yearn-finance/web-lib/utils/format';
 import {formatBN} from '@yearn-finance/web-lib/utils/format';
@@ -150,7 +150,7 @@ export function	useBalances(props?: TUseBalancesReq): TUseBalancesRes {
 	const	data = useRef<TNDict<TDataRef>>({1: {nonce: 0, address: toAddress(), balances: {}}});
 	const	stringifiedTokens = useMemo((): string => JSON.stringify(props?.tokens || []), [props?.tokens]);
 
-	const	updateBalancesFromWorker = useCallback((chainID: number, newRawData: TDict<TMinBalanceData>): TDict<TMinBalanceData> => {
+	const	updateBalancesCall = useCallback((chainID: number, newRawData: TDict<TMinBalanceData>): TDict<TMinBalanceData> => {
 		if (toAddress(web3Address as string) !== data?.current?.[chainID]?.address) {
 			data.current[chainID] = {
 				address: toAddress(web3Address as string),
@@ -170,8 +170,14 @@ export function	useBalances(props?: TUseBalancesReq): TUseBalancesRes {
 		data.current[chainID].nonce += 1;
 
 		performBatchedUpdates((): void => {
+			set_balances((b): TNDict<TDict<TMinBalanceData>> => ({
+				...b,
+				[chainID]: {
+					...(b[chainID] || {}),
+					...data.current[chainID].balances
+				}
+			}));
 			set_nonce((n): number => n + 1);
-			set_balances((b): TNDict<TDict<TMinBalanceData>> => ({...b, [chainID]: data.current[chainID].balances}));
 			set_status({...defaultStatus, isSuccess: true, isFetched: true});
 		});
 		onLoadDone();
@@ -189,7 +195,8 @@ export function	useBalances(props?: TUseBalancesReq): TUseBalancesRes {
 		if (!isActive || !web3Address || !provider) {
 			return {};
 		}
-		const	tokens = JSON.parse(stringifiedTokens) || [];
+		const	tokenList = JSON.parse(stringifiedTokens) || [];
+		const	tokens = tokenList.filter(({token}: TUseBalancesTokens): boolean => !isZeroAddress(token));
 		if (tokens.length === 0) {
 			return {};
 		}
@@ -197,8 +204,8 @@ export function	useBalances(props?: TUseBalancesReq): TUseBalancesRes {
 		onLoadStart();
 
 		const	chunks = [];
-		for (let i = 0; i < tokens.length; i += 10_000) {
-			chunks.push(tokens.slice(i, i + 10_000));
+		for (let i = 0; i < tokens.length; i += 5_000) {
+			chunks.push(tokens.slice(i, i + 5_000));
 		}
 
 		for (const chunkTokens of chunks) {
@@ -226,8 +233,14 @@ export function	useBalances(props?: TUseBalancesReq): TUseBalancesRes {
 			data.current[web3ChainID].nonce += 1;
 
 			performBatchedUpdates((): void => {
+				set_balances((b): TNDict<TDict<TMinBalanceData>> => ({
+					...b,
+					[web3ChainID]: {
+						...(b[web3ChainID] || {}),
+						...data.current[web3ChainID].balances
+					}
+				}));
 				set_nonce((n): number => n + 1);
-				set_balances((b): TNDict<TDict<TMinBalanceData>> => ({...b, [web3ChainID]: data.current[web3ChainID].balances}));
 				set_error(err as Error);
 				set_status({...defaultStatus, isSuccess: true, isFetched: true});
 			});
@@ -246,38 +259,54 @@ export function	useBalances(props?: TUseBalancesReq): TUseBalancesRes {
 	const	onUpdateSome = useCallback(async (tokenList: TUseBalancesTokens[]): Promise<TDict<TMinBalanceData>> => {
 		set_status({...defaultStatus, isLoading: true, isFetching: true, isRefetching: defaultStatus.isFetched});
 		onLoadStart();
+		const	tokens = tokenList.filter(({token}: TUseBalancesTokens): boolean => !isZeroAddress(token));
 
-		const	[newRawData, err] = await getBalances(
-			provider,
-			providers.getProvider(props?.chainID || web3ChainID || 1),
-			toAddress(web3Address as string),
-			tokenList
-		);
-		if (toAddress(web3Address as string) !== data?.current?.[web3ChainID]?.address) {
-			data.current[web3ChainID] = {
-				address: toAddress(web3Address as string),
-				balances: {},
-				nonce: 0
-			};
+		const	chunks = [];
+		for (let i = 0; i < tokens.length; i += 2_000) {
+			chunks.push(tokens.slice(i, i + 2_000));
 		}
-		data.current[web3ChainID].address = toAddress(web3Address as string);
 
-		for (const [address, element] of Object.entries(newRawData)) {
-			data.current[web3ChainID].balances[address] = {
-				...data.current[web3ChainID].balances[address],
-				...element
-			};
+		const tokensAdded: TDict<TMinBalanceData> = {};
+		for (const chunkTokens of chunks) {
+			const	[newRawData, err] = await getBalances(
+				provider,
+				providers.getProvider(props?.chainID || web3ChainID || 1),
+				toAddress(web3Address as string),
+				chunkTokens
+			);
+			if (toAddress(web3Address as string) !== data?.current?.[web3ChainID]?.address) {
+				data.current[web3ChainID] = {
+					address: toAddress(web3Address as string),
+					balances: {},
+					nonce: 0
+				};
+			}
+			data.current[web3ChainID].address = toAddress(web3Address as string);
+
+			for (const [address, element] of Object.entries(newRawData)) {
+				tokensAdded[address] = element;
+				data.current[web3ChainID].balances[address] = {
+					...data.current[web3ChainID].balances[address],
+					...element
+				};
+			}
+			data.current[web3ChainID].nonce += 1;
+
+			performBatchedUpdates((): void => {
+				set_balances((b): TNDict<TDict<TMinBalanceData>> => ({
+					...b,
+					[web3ChainID]: {
+						...(b[web3ChainID] || {}),
+						...data.current[web3ChainID].balances
+					}
+				}));
+				set_nonce((n): number => n + 1);
+				set_error(err as Error);
+				set_status({...defaultStatus, isSuccess: true, isFetched: true});
+			});
 		}
-		data.current[web3ChainID].nonce += 1;
-
-		performBatchedUpdates((): void => {
-			set_nonce((n): number => n + 1);
-			set_balances((b): TNDict<TDict<TMinBalanceData>> => ({...b, [web3ChainID]: data.current[web3ChainID].balances}));
-			set_error(err as Error);
-			set_status({...defaultStatus, isSuccess: true, isFetched: true});
-		});
 		onLoadDone();
-		return data.current[web3ChainID].balances;
+		return tokensAdded;
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [props?.chainID, provider, web3Address, web3ChainID]);
 
@@ -295,9 +324,12 @@ export function	useBalances(props?: TUseBalancesReq): TUseBalancesRes {
 
 		const	tokens = JSON.parse(stringifiedTokens) || [];
 		const	chainID = props?.chainID || web3ChainID || 1;
+		console.log(`Fetching balances for ${tokens.length} tokens`);
+
 		axios.post('/api/getBatchBalances', {chainID, address: web3Address, tokens})
 			.then((res: AxiosResponse<TGetBatchBalancesResp>): void => {
-				updateBalancesFromWorker(res.data.chainID, res.data.balances);
+				console.log(`Fetched balances for ${tokens.length} tokens`);
+				updateBalancesCall(res.data.chainID, res.data.balances);
 			})
 			.catch((err): void => {
 				console.error(err);

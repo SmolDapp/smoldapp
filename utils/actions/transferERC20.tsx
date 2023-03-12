@@ -14,6 +14,11 @@ export async function	transfer(
 	const	signer = provider.getSigner();
 
 	try {
+		console.warn({
+			token,
+			receiver,
+			amount: amount.toString()
+		});
 		const	contract = new ethers.Contract(token, ERC20_ABI, signer);
 
 		const	transaction = await contract.transfer(receiver, amount);
