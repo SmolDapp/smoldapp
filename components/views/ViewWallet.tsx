@@ -26,7 +26,7 @@ function	ViewWallet({onSelect}: TViewWalletProps): ReactElement {
 		try {
 			set_walletProvider(walletType);
 			onSelect();
-			await onConnect(walletType, (e): void => console.error(e), (): void => undefined);
+			await onConnect(walletType, (): void => set_walletProvider('NONE'), (): void => undefined);
 		} catch {
 			//
 		}
