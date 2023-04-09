@@ -376,3 +376,45 @@ select:focus {
 	outline: none;
 	box-shadow: none;
 }
+
+
+/* -- ModalMobileMenu.tsx ---------------------------------------------------- */
+.yearn--modalMobileMenu-content {
+	@apply relative flex w-full flex-col items-center justify-center space-y-1 pt-4;
+}
+.yearn--modalMobileMenu-title {
+	@apply text-center text-xl font-bold text-neutral-700;
+}
+.yearn--modalMobileMenu-networkIndicator {
+	@apply text-sm text-neutral-500;
+	& > span {
+		@apply flex flex-row items-center;
+	}
+}
+.yearn--modalMobileMenu-select {
+	@apply rounded-default relative ml-1 flex flex-row items-center bg-neutral-500/10 py-1 pl-2 text-neutral-500;
+}
+.yearn--modalMobileMenu-walletCard {
+	@apply rounded-default flex cursor-pointer flex-col items-center justify-center bg-neutral-100 py-4 px-2 text-center transition-colors;
+}
+.yearn--modalMobileMenu-childrenWrapper {
+	@apply mb-4 space-y-2 px-2;
+}
+.yearn--modalMobileMenu-separatorWrapper {
+	@apply w-full px-2;
+}
+.yearn--modalMobileMenu-separator {
+	@apply mx-auto mt-2 mb-4 h-[2px] w-full items-center justify-center bg-neutral-500/20;
+}
+.yearn--modalMobileMenu-chevron {
+	@apply absolute right-2;
+	& > svg {
+		@apply ml-1 h-3 w-3;
+	}
+}
+.yearn--modalMobileMenu-logout {
+	@apply absolute top-4 right-4;
+	& > svg {
+		@apply h-6 w-6 rounded-full bg-neutral-200 p-1.5 text-neutral-500;
+	}
+}
