@@ -59,10 +59,10 @@ export const WalletContextApp = memo(function WalletContextApp({children}: {chil
 			});
 		if (safeChainID === 1) {
 			tokens.push({token: ETH_TOKEN_ADDRESS, decimals: 18, symbol: 'ETH'});
-		} else if (safeChainID === 250) {
-			tokens.push({token: ETH_TOKEN_ADDRESS, decimals: 18, symbol: 'FTM'});
 		} else if (safeChainID === 137) {
 			tokens.push({token: ETH_TOKEN_ADDRESS, decimals: 18, symbol: 'MATIC'});
+		} else if (safeChainID === 250) {
+			tokens.push({token: ETH_TOKEN_ADDRESS, decimals: 18, symbol: 'FTM'});
 		}
 		return tokens;
 	}, [safeChainID, tokenList]);

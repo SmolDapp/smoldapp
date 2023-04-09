@@ -33,14 +33,20 @@ export const TokenListContextApp = ({children}: {children: React.ReactElement}):
 	const	[tokenList, set_tokenList] = useState<TDict<TTokenInfo>>({});
 
 	useMountEffect((): void => {
-		axios.get('https://raw.githubusercontent.com/Migratooor/tokenLists/main/lists/tokenlistooor.json').then((response): void => {
-			const	tokenListResponse = response.data as TTokenList;
+		axios.all([
+			axios.get('https://raw.githubusercontent.com/Migratooor/tokenLists/main/lists/tokenlistooor.json'),
+			axios.get('https://raw.githubusercontent.com/Migratooor/tokenLists/main/lists/1/yearn.json'),
+			axios.get('https://raw.githubusercontent.com/Migratooor/tokenLists/main/lists/optimism.json')
+		]).then(axios.spread((...responses): void => {
 			const	tokenListTokens: TDict<TTokenInfo> = {};
-			for (const eachToken of tokenListResponse.tokens) {
-				tokenListTokens[toAddress(eachToken.address)] = eachToken;
+			for (const eachResponse of responses) {
+				const	tokenListResponse: TTokenList = eachResponse.data;
+				for (const eachToken of tokenListResponse.tokens) {
+					tokenListTokens[toAddress(eachToken.address)] = eachToken;
+				}
 			}
 			set_tokenList(tokenListTokens);
-		});
+		}));
 	});
 
 	const	contextValue = useMemo((): TTokenListProps => ({
