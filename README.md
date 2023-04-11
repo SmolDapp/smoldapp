@@ -13,7 +13,6 @@ Migratooor is an easy and secure way to move all your Ethereum and ERC20 tokens 
 
 Migratooor employs the [ethers](https://docs.ethers.org/v5/) library to transfer ERC20 tokens from one wallet to another. This generates all the transactions needed to securely move your tokens to the wallet of your choosing!
 
-
 ## How To Use Migratooor
 
 Using Migratooor is simple. Here's a quick step-by-step guide to transferring tokens with Migratooor:
@@ -25,20 +24,53 @@ Using Migratooor is simple. Here's a quick step-by-step guide to transferring to
 5. **Confirm the transactions** and wait for them to be processed by the Ethereum network
 6. **Transfer complete!** All tokens have been sent to the recipient's wallet
 
-## How to Build This Project
 
-This document provides a step-by-step guide on how to build the project using the provided scripts in the `package.json` file.
+## Configuring
+
+In order to run migratooor, you need to set up the environment variables for the JSON-RPC URLs of the Ethereum networks you want to support. You also need to set up the receiver address and disperse address. These settings can be found in the `next.config.js` file:
+
+```javascript
+env: {
+    JSON_RPC_URL: {
+        1: process.env.RPC_URL_MAINNET,
+        10: process.env.RPC_URL_OPTIMISM,
+        250: process.env.RPC_URL_FANTOM,
+        42161: process.env.RPC_URL_ARBITRUM
+    },
+    RECEIVER_ADDRESS: '0x10001192576E8079f12d6695b0948C2F41320040',
+    DISPERSE_ADDRESS: '0xD152f549545093347A162Dce210e7293f1452150'
+}
+```
+
+You can set these environment variables in a `.env` file in the project root directory. Make sure to replace the values with the appropriate URLs and addresses for your project.
+
+Here's an example of a `.env` file:
+
+```
+RPC_URL_MAINNET=https://mainnet.infura.io/v3/YOUR_API_KEY
+RPC_URL_OPTIMISM=https://optimism.infura.io/v3/YOUR_API_KEY
+RPC_URL_FANTOM=https://fantom.infura.io/v3/YOUR_API_KEY
+RPC_URL_ARBITRUM=https://arbitrum.infura.io/v3/YOUR_API_KEY
+RECEIVER_ADDRESS=0x10001192576E8079f12d6695b0948C2F41320040
+DISPERSE_ADDRESS=0xD152f549545093347A162Dce210e7293f1452150
+```
+
+Replace `YOUR_API_KEY` with your own Infura API key or any other Ethereum JSON-RPC provider. Make sure to use the correct receiver and disperse addresses for your project.
+
+Once you've set up the environment variables, you're ready to run the project using the commands outlined in the previous sections.
+
+## Build and Develop
 
 ### Prerequisites
 
 Before you proceed, make sure you have the following installed on your machine:
 
-- [Node.js](https://nodejs.org/) - v14.x.x or higher
-- [npm](https://www.npmjs.com/) - v6.x.x or higher (comes bundled with Node.js)
+- [Node.js](https://nodejs.org/)
+- [npm](https://www.npmjs.com/) (comes bundled with Node.js)
 
 ### Installing Dependencies
 
-First, navigate to the project's root directory in your terminal and run the following command to install all the required dependencies:
+First, navigate to migratooor root directory in your terminal and run the following command to install all the required dependencies:
 
 ```bash
 npm install
@@ -46,7 +78,7 @@ npm install
 
 ### Development Mode
 
-To run the project in development mode, use the following command:
+To run migratooor in development mode, use the following command:
 
 ```bash
 npm run dev
@@ -60,7 +92,7 @@ npm run dev:ts
 
 ### Building the Project
 
-To build the project, run the following command:
+To build migratooor, run the following command:
 
 ```bash
 npm run build
@@ -70,7 +102,7 @@ This command will first compile the TypeScript files and then build the project 
 
 ## Starting the Production Server
 
-To start the production server, first build the project (if you haven't already), and then run the following command:
+To start the production server, first build migratooor (if you haven't already), and then run the following command:
 
 ```bash
 npm run start
@@ -78,20 +110,21 @@ npm run start
 
 ### Exporting the Project
 
-To export the project for deployment to IPFS, run the following command:
+To export migratooor for deployment to IPFS, run the following command:
 
 ```bash
 npm run export
 ```
 
-This command will first compile the TypeScript files, then build the project using the `next` command, and finally export the build to the `ipfs` folder.
+This command will first compile the TypeScript files, then build migratooor using the `next` command, and finally export the build to the `ipfs` folder.
 
 ### Linting
 
-To run the ESLint linter on the project, use the following command:
+To run the ESLint linter, use the following command:
 
 ```bash
 npm run lint
 ```
 
 This command will check all `.js`, `.jsx`, `.ts`, and `.tsx` files in the project for linting issues.
+
