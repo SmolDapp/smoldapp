@@ -4,7 +4,7 @@
 
 > The safest way to transfer all your ERC20 tokens at once!
 
-Migratooor is an easy and secure way to move all your Ethereum and ERC20 tokens from one wallet to another with a single signature. This process does not involve any smart contracts!
+Migratooor is an easy and secure way to move all your Ethereum and ERC20 tokens from one wallet to another. This process does not involve any smart contracts!
 
 ## Why Use Migratooor?
 
