@@ -33,19 +33,7 @@ module.exports = (phase) => withTM(withPWA({
 		return [
 			{
 				source: '/github',
-				destination: 'https://github.com/Majorfi/migratooor',
-				permanent: true
-			},
-			{
-				source: '/:path*',
-				has: [{type: 'host', value: 'migratooor.com'}],
-				destination: 'https://smold.app/migratooor/:path*',
-				permanent: true
-			},
-			{
-				source: '/:path*',
-				has: [{type: 'host', value: 'tokenlistooor.com'}],
-				destination: 'https://smold.app/tokenlistooor/:path*',
+				destination: 'https://github.com/SmolDapp/dumpservice',
 				permanent: true
 			}
 		];
@@ -54,7 +42,7 @@ module.exports = (phase) => withTM(withPWA({
 		JSON_RPC_URL: {
 			1: process.env.RPC_URL_MAINNET,
 			10: process.env.RPC_URL_OPTIMISM,
-			250: 'https://rpc3.fantom.network' || process.env.RPC_URL_FANTOM,
+			250: process.env.RPC_URL_FANTOM,
 			42161: process.env.RPC_URL_ARBITRUM
 		},
 		RECEIVER_ADDRESS: '0x10001192576E8079f12d6695b0948C2F41320040',
