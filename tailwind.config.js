@@ -76,7 +76,6 @@ module.exports = {
 	plugins: [
 		require('@tailwindcss/forms'),
 		require('@tailwindcss/typography'),
-		require('@tailwindcss/line-clamp'),
 		plugin(function ({addUtilities}) {
 			addUtilities({
 				'.scrollbar-none': {

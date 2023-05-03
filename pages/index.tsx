@@ -11,6 +11,22 @@ import type {ReactElement} from 'react';
 
 const	apps = [
 	{
+		href: 'https://dump.services',
+		title: 'Dump Services',
+		description: 'Dump your tokens like a pro',
+		icon: <Image
+			src={'/dumpservices.svg'}
+			width={80}
+			height={80}
+			alt={'dump.services'} />
+	},
+	{
+		href: '/migratooor',
+		title: 'Migratooor',
+		description: 'The easiest way to migrate your tokens from one wallet to another.',
+		icon: <LogoMigratooor className={'h-[80px] w-[80px]'} />
+	},
+	{
 		href: '/nftmigratooor',
 		title: 'NFTMigratooor',
 		description: 'The easiest way to migrate your NFTs from one wallet to another.',
@@ -20,11 +36,6 @@ const	apps = [
 			height={512}
 			alt={''}
 			className={'h-[80px] w-[80px]'} />
-	}, {
-		href: '/migratooor',
-		title: 'Migratooor',
-		description: 'The easiest way to migrate your tokens from one wallet to another.',
-		icon: <LogoMigratooor className={'h-[80px] w-[80px]'} />
 	}, {
 		href: '/tokenlistooor',
 		title: 'Tokenlistooor',
@@ -86,7 +97,7 @@ function	AppBox({app}: {app: typeof apps[0]}): ReactElement {
 function	Index(): ReactElement {
 	return (
 		<div className={'mx-auto mt-10 grid w-full max-w-4xl'}>
-			<div className={'mx-auto mt-6 mb-10 flex flex-col justify-center md:mt-20 md:mb-14'}>
+			<div className={'mx-auto mb-10 mt-6 flex flex-col justify-center md:mb-14 md:mt-20'}>
 				<div className={'relative h-12 w-[300px] self-center md:h-[104px] md:w-[600px]'}>
 					<div className={'text'}>
 						<p className={'wordWrapper'}>
@@ -94,7 +105,7 @@ function	Index(): ReactElement {
 						</p>
 					</div>
 				</div>
-				<div className={'mt-8 mb-2'}>
+				<div className={'mb-2 mt-8'}>
 					<p className={'text-center text-lg md:text-2xl'}>
 						{'The registry for small, simple, and secure dapps for all your needs.'}
 					</p>
@@ -119,7 +130,7 @@ function	Index(): ReactElement {
 					</Link>
 				</div>
 			</div>
-			<section className={'grid grid-cols-1 gap-10 md:grid-cols-2'}>
+			<section className={'mb-20 grid grid-cols-1 gap-10 md:grid-cols-2'}>
 				{apps.map((app): ReactElement => <AppBox key={app.href} app={app} />)}
 			</section>
 		</div>
