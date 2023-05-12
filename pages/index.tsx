@@ -11,6 +11,16 @@ import type {ReactElement} from 'react';
 
 const	apps = [
 	{
+		href: 'https://gib.to',
+		title: 'Gib',
+		description: 'The easiest way to donate to the crypto projects you love.',
+		icon: <Image
+			src={'https://gib.to/favicons/favicon.svg'}
+			width={80}
+			height={80}
+			alt={'gib'} />
+	},
+	{
 		href: 'https://dump.services',
 		title: 'Dump Services',
 		description: 'Dump your tokens like a pro',

@@ -11,6 +11,7 @@ module.exports = (phase) => withTM(withPWA({
 	images: {
 		unoptimized: process.env.IPFS_BUILD === 'true' || phase === PHASE_EXPORT,
 		domains: [
+			'gib.to',
 			'rawcdn.githack.com',
 			'raw.githubusercontent.com',
 			'ipfs.io',
