@@ -17,18 +17,18 @@ type TApprovalWizardItemProps = {
 	collectionApprovalStatus: TApprovalStatus,
 	index: number
 }
-function	ApprovalWizardItem({
+function ApprovalWizardItem({
 	collection,
 	collectionStatus,
 	collectionApprovalStatus,
 	index
 }: TApprovalWizardItemProps): ReactElement {
-	const	{destinationAddress} = useNFTMigratooor();
-	const	chain = useChain();
-	const	[firstItemInCollection] = collection;
-	const	hasMultipleItems = collection.length > 1;
+	const {destinationAddress} = useNFTMigratooor();
+	const chain = useChain();
+	const [firstItemInCollection] = collection;
+	const hasMultipleItems = collection.length > 1;
 
-	function	renderApprovalIndication(): ReactElement {
+	function renderApprovalIndication(): ReactElement {
 		if (collectionStatus?.approval === 'Approved' || collectionApprovalStatus === 'Approved') {
 			return (<IconCheck className={'h-4 w-4 text-[#16a34a]'} />);
 		}
@@ -41,7 +41,7 @@ function	ApprovalWizardItem({
 		return (<div className={'h-4 w-4 rounded-full bg-neutral-300'} />);
 	}
 
-	function	renderExecuteIndication(): ReactElement {
+	function renderExecuteIndication(): ReactElement {
 		if (collectionStatus?.execute === 'Executed') {
 			return (<IconCheck className={'h-4 w-4 text-[#16a34a]'} />);
 		}
@@ -54,7 +54,7 @@ function	ApprovalWizardItem({
 		return (<div className={'h-4 w-4 rounded-full bg-neutral-300'} />);
 	}
 
-	function	renderReceipt(): ReactElement {
+	function renderReceipt(): ReactElement {
 		if (collectionStatus?.receipt) {
 			return (
 				<a
@@ -69,7 +69,7 @@ function	ApprovalWizardItem({
 		return <Fragment />;
 	}
 
-	if (hasMultipleItems && firstItemInCollection.asset_contract.schema_name === 'ERC721') {
+	if (hasMultipleItems && firstItemInCollection.assetContract.schema_name === 'ERC721') {
 		return (
 			<details
 				key={index}
@@ -98,9 +98,9 @@ function	ApprovalWizardItem({
 				<div className={'font-number rounded-default mt-2 space-y-2 bg-neutral-100 text-sm'}>
 					<ul className={'list-inside list-disc px-4 py-2'}>
 						{collection.map((item): ReactElement => (
-							<li key={item.token_id} className={'text-left text-sm'}>
+							<li key={item.tokenID.toString()} className={'text-left text-sm'}>
 								<span className={'font-number font-bold'}>
-									{`${item.name} ${toAddress(item.asset_contract.address) === toAddress('0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85') ? '' : `(#${item?.token_id})`}`}
+									{`${item.name} ${toAddress(item.assetContract.address) === toAddress('0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85') ? '' : `(#${item?.tokenID})`}`}
 								</span>
 							</li>
 						))}
@@ -109,7 +109,7 @@ function	ApprovalWizardItem({
 			</details>
 		);
 	}
-	if (hasMultipleItems && firstItemInCollection.asset_contract.schema_name === 'ERC1155') {
+	if (hasMultipleItems && firstItemInCollection.assetContract.schema_name === 'ERC1155') {
 		return (
 			<details
 				key={index}
@@ -132,9 +132,9 @@ function	ApprovalWizardItem({
 				<div className={'font-number rounded-default mt-2 space-y-2 bg-neutral-100 text-sm'}>
 					<ul className={'list-inside list-disc px-4 py-2'}>
 						{collection.map((item): ReactElement => (
-							<li key={item.token_id} className={'text-left text-sm'}>
+							<li key={item.tokenID.toString()} className={'text-left text-sm'}>
 								<span className={'font-number font-bold'}>
-									{`${item.name} ${toAddress(item.asset_contract.address) === toAddress('0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85') ? '' : `(#${item?.token_id})`}`}
+									{`${item.name} ${toAddress(item.assetContract.address) === toAddress('0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85') ? '' : `(#${item?.tokenID})`}`}
 								</span>
 							</li>
 						))}
@@ -147,13 +147,13 @@ function	ApprovalWizardItem({
 	return (
 		<div
 			key={index}
-			className={'group mb-2 flex w-full flex-col justify-center border-b border-neutral-200 pt-1 pb-3 transition-colors'}>
+			className={'group mb-2 flex w-full flex-col justify-center border-b border-neutral-200 pb-3 pt-1 transition-colors'}>
 			<div className={'flex w-full flex-row items-center justify-between space-x-4'}>
 				<div className={'flex flex-row items-center space-x-2'}>
 					{renderExecuteIndication()}
 					<small>
 						{'Send '}
-						<b>{firstItemInCollection?.name || firstItemInCollection?.collection?.name || firstItemInCollection?.asset_contract?.name}</b>
+						<b>{firstItemInCollection?.name || firstItemInCollection?.collection?.name || firstItemInCollection?.assetContract?.name}</b>
 						{` to ${truncateHex(destinationAddress, 6)}`}
 					</small>
 				</div>

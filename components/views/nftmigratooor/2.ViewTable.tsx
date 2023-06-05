@@ -19,7 +19,7 @@ const ViewTableOpenSea = memo(function ViewTableOpenSea({onProceed}: {onProceed:
 	**********************************************************************************************/
 	const	groupedByCollection = useMemo((): TDict<TOpenSeaAsset[]> => (
 		(nfts || []).reduce((acc: TDict<TOpenSeaAsset[]>, obj: TOpenSeaAsset): TDict<TOpenSeaAsset[]> => {
-			const key = toAddress(obj.asset_contract.address);
+			const key = toAddress(obj.assetContract.address);
 			if (!acc[key]) {
 				acc[key] = [];
 			}
@@ -35,7 +35,7 @@ const ViewTableOpenSea = memo(function ViewTableOpenSea({onProceed}: {onProceed:
 	**********************************************************************************************/
 	const	selectedPerCollection = useMemo((): TDict<TOpenSeaAsset[]> => (
 		(nfts || []).reduce((acc: TDict<TOpenSeaAsset[]>, obj: TOpenSeaAsset): TDict<TOpenSeaAsset[]> => {
-			const key = toAddress(obj.asset_contract.address);
+			const key = toAddress(obj.assetContract.address);
 			if (!acc[key]) {
 				acc[key] = [];
 			}

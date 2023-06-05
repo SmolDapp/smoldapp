@@ -2,7 +2,6 @@ import React, {createContext, useContext, useEffect, useMemo, useState} from 're
 import {useMountEffect, useUpdateEffect} from '@react-hookz/web';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
-import {toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUpdates';
 
 import type {Dispatch, SetStateAction} from 'react';
@@ -16,32 +15,28 @@ export enum	Step {
 	CONFIRMATION = 'confirmation'
 }
 
+export type TSelectedStatus = 'pending' | 'success' | 'error' | 'none';
+export type TSelectedElement = {
+	address: TAddress,
+	amount: TNormalizedBN,
+	status: TSelectedStatus,
+	isSelected: boolean
+};
+
 export type TSelected = {
-	selected: TAddress[],
-	amounts: TDict<TNormalizedBN>,
+	selected: TDict<TSelectedElement>,
 	destinationAddress: TAddress,
-	shouldDonateETH: boolean,
-	amountToDonate: TNormalizedBN,
 	currentStep: Step,
-	set_selected: Dispatch<SetStateAction<TAddress[]>>,
-	set_amounts: Dispatch<SetStateAction<TDict<TNormalizedBN>>>,
+	set_selected: Dispatch<SetStateAction<TDict<TSelectedElement>>>,
 	set_destinationAddress: Dispatch<SetStateAction<TAddress>>,
-	set_shouldDonateETH: Dispatch<SetStateAction<boolean>>,
-	set_amountToDonate: Dispatch<SetStateAction<TNormalizedBN>>,
 	set_currentStep: Dispatch<SetStateAction<Step>>
 }
-const	defaultProps: TSelected = {
-	selected: [],
-	amounts: {},
+const defaultProps: TSelected = {
+	selected: {},
 	destinationAddress: toAddress(),
-	shouldDonateETH: false,
-	amountToDonate: toNormalizedBN(0),
 	currentStep: Step.WALLET,
 	set_selected: (): void => undefined,
-	set_amounts: (): void => undefined,
 	set_destinationAddress: (): void => undefined,
-	set_shouldDonateETH: (): void => undefined,
-	set_amountToDonate: (): void => undefined,
 	set_currentStep: (): void => undefined
 };
 
@@ -58,21 +53,17 @@ function scrollToTargetAdjusted(element: HTMLElement): void {
 	});
 }
 
-const	MigratooorContext = createContext<TSelected>(defaultProps);
+const MigratooorContext = createContext<TSelected>(defaultProps);
 export const MigratooorContextApp = ({children}: {children: React.ReactElement}): React.ReactElement => {
-	const	{address, isActive, walletType} = useWeb3();
-	const	[destinationAddress, set_destinationAddress] = useState<TAddress>(toAddress());
-	const	[selected, set_selected] = useState<TAddress[]>([]);
-	const	[amounts, set_amounts] = useState<TDict<TNormalizedBN>>({});
-	const	[shouldDonateETH, set_shouldDonateETH] = useState(false);
-	const	[amountToDonate, set_amountToDonate] = useState(toNormalizedBN(0));
-	const	[currentStep, set_currentStep] = useState<Step>(Step.WALLET);
+	const {address, isActive, walletType} = useWeb3();
+	const [destinationAddress, set_destinationAddress] = useState<TAddress>(toAddress());
+	const [selected, set_selected] = useState(defaultProps.selected);
+	const [currentStep, set_currentStep] = useState<Step>(Step.WALLET);
 
 	useUpdateEffect((): void => {
 		if (!isActive) {
 			performBatchedUpdates((): void => {
-				set_selected([]);
-				set_amounts({});
+				set_selected(defaultProps.selected);
 				set_destinationAddress(toAddress());
 			});
 		}
@@ -99,7 +90,7 @@ export const MigratooorContextApp = ({children}: {children: React.ReactElement})
 	**********************************************************************************************/
 	useMountEffect((): void => {
 		setTimeout((): void => {
-			const	isEmbedWallet = ['EMBED_LEDGER', 'EMBED_GNOSIS_SAFE'].includes(walletType);
+			const isEmbedWallet = ['EMBED_LEDGER', 'EMBED_GNOSIS_SAFE'].includes(walletType);
 			if (currentStep === Step.WALLET && !isEmbedWallet) {
 				document?.getElementById('wallet')?.scrollIntoView({behavior: 'smooth', block: 'start'});
 			} else if (currentStep === Step.DESTINATION || isEmbedWallet) {
@@ -134,7 +125,7 @@ export const MigratooorContextApp = ({children}: {children: React.ReactElement})
 			} else if (currentStep === Step.CONFIRMATION) {
 				currentStepContainer = document?.getElementById('tldr');
 			}
-			const	currentElementHeight = currentStepContainer?.offsetHeight;
+			const currentElementHeight = currentStepContainer?.offsetHeight;
 			if (scalooor?.style) {
 				scalooor.style.height = `calc(100vh - ${currentElementHeight}px - ${headerHeight}px + 36px)`;
 			}
@@ -144,20 +135,14 @@ export const MigratooorContextApp = ({children}: {children: React.ReactElement})
 		}, 0);
 	}, [currentStep, walletType]);
 
-	const	contextValue = useMemo((): TSelected => ({
+	const contextValue = useMemo((): TSelected => ({
 		selected,
 		set_selected,
-		amounts,
-		set_amounts,
 		destinationAddress,
 		set_destinationAddress,
-		shouldDonateETH,
-		set_shouldDonateETH,
-		amountToDonate,
-		set_amountToDonate,
 		currentStep,
 		set_currentStep
-	}), [selected, amounts, destinationAddress, shouldDonateETH, amountToDonate, currentStep]);
+	}), [selected, destinationAddress, currentStep]);
 
 	return (
 		<MigratooorContext.Provider value={contextValue}>

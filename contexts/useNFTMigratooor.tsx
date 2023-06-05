@@ -1,14 +1,11 @@
-import React, {createContext, useContext, useEffect, useMemo, useState} from 'react';
-import useOneTimeEffect from 'hooks/useOneTimeEffect';
-import {matchAlchemyToOpenSea} from 'utils/types/opensea';
-import axios from 'axios';
+import React, {createContext, useCallback, useContext, useEffect, useMemo, useState} from 'react';
+import {fetchAllAssetsFromAlchemy, fetchAllAssetsFromOpenSea, matchAlchemyToOpenSea, matchOpensea} from 'utils/types/opensea';
 import {useMountEffect, useUpdateEffect} from '@react-hookz/web';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUpdates';
 
-import type {AxiosResponse} from 'axios';
 import type {Dispatch, SetStateAction} from 'react';
 import type {TAlchemyAssets, TOpenSeaAsset} from 'utils/types/opensea';
 import type {TAddress, TNDict} from '@yearn-finance/web-lib/types';
@@ -28,20 +25,6 @@ export const NFTMIGRATOOOR_CONTRACT_PER_CHAIN: TNDict<TAddress> = {
 	42161: toAddress('0x7E08735690028cdF3D81e7165493F1C34065AbA2')
 };
 
-async function fetchAllAssetsFromOpenSea(owner: string, next?: string): Promise<TOpenSeaAsset[]> {
-	const	res = await axios.get(`https://api.opensea.io/api/v1/assets?format=json&owner=${owner}&limit=200${next ? `&cursor=${next}` : ''}`);
-	const	{assets} = res.data;
-	if (res.data.next) {
-		return assets.concat(await fetchAllAssetsFromOpenSea(owner, res.data.next));
-	}
-	return assets;
-}
-
-async function fetchAllAssetsFromAlchemy(chainID: number, owner: string): Promise<TAlchemyAssets[]> {
-	const	res: AxiosResponse<TAlchemyAssets[]> = await axios.post('/api/proxyFetchNFTFromAlchemy', {chainID, address: owner});
-	return res.data;
-}
-
 export type TSelected = {
 	nfts: TOpenSeaAsset[],
 	selected: TOpenSeaAsset[],
@@ -52,7 +35,7 @@ export type TSelected = {
 	set_destinationAddress: Dispatch<SetStateAction<TAddress>>,
 	set_currentStep: Dispatch<SetStateAction<Step>>
 }
-const	defaultProps: TSelected = {
+const defaultProps: TSelected = {
 	nfts: [],
 	selected: [],
 	destinationAddress: toAddress(),
@@ -76,38 +59,51 @@ function scrollToTargetAdjusted(element: HTMLElement): void {
 	});
 }
 
-const	NFTMigratooorContext = createContext<TSelected>(defaultProps);
+const NFTMigratooorContext = createContext<TSelected>(defaultProps);
 export const NFTMigratooorContextApp = ({children}: {children: React.ReactElement}): React.ReactElement => {
-	const	{address, isActive, walletType} = useWeb3();
-	const	{safeChainID} = useChainID();
-	const	[destinationAddress, set_destinationAddress] = useState<TAddress>(toAddress());
-	const	[nfts, set_nfts] = useState<TOpenSeaAsset[]>([]);
-	const	[selected, set_selected] = useState<TOpenSeaAsset[]>([]);
-	const	[currentStep, set_currentStep] = useState<Step>(Step.WALLET);
+	const {address, isActive, walletType} = useWeb3();
+	const {safeChainID} = useChainID();
+	const [destinationAddress, set_destinationAddress] = useState<TAddress>(toAddress());
+	const [nfts, set_nfts] = useState<TOpenSeaAsset[]>([]);
+	const [selected, set_selected] = useState<TOpenSeaAsset[]>([]);
+	const [currentStep, set_currentStep] = useState<Step>(Step.WALLET);
 
+	const handleOpenSeaAssets = useCallback(async (): Promise<void> => {
+		if (!address) {
+			return set_nfts([]);
+		}
+		const rawAssets = await fetchAllAssetsFromOpenSea(address);
+		const assets = rawAssets.map(matchOpensea);
+		set_nfts(assets);
+	}, [address]);
+
+	const handleAlchemyAssets = useCallback(async (): Promise<void> => {
+		if (!address) {
+			return set_nfts([]);
+		}
+		const rawAssets = await fetchAllAssetsFromAlchemy(safeChainID, address);
+		const assets = (rawAssets || [])
+			.filter((asset: TAlchemyAssets): boolean => (
+				asset?.title !== ''
+				&& asset?.contractMetadata?.name !== ''
+				&& asset?.media !== null
+				&& asset?.tokenUri !== null
+			))
+			.map(matchAlchemyToOpenSea);
+		set_nfts(assets);
+	}, [safeChainID, address]);
 	/**********************************************************************************************
 	** Fetch all NFTs from OpenSea. The OpenSea API only returns 200 NFTs at a time, so we need to
 	** recursively fetch all NFTs from OpenSea if a cursor for next page is returned.
 	** If no address is available, set NFTs to empty array.
 	**********************************************************************************************/
 	useEffect((): void => {
-		if (address) {
-			if (safeChainID === 1) {
-				fetchAllAssetsFromOpenSea(address).then((res: TOpenSeaAsset[]): void => set_nfts(res));
-			} else {
-				fetchAllAssetsFromAlchemy(safeChainID, address).then((res: TAlchemyAssets[]): void => {
-					const converted = (res || []).filter((asset: TAlchemyAssets): boolean => {
-						return asset?.title !== '' && asset?.contractMetadata?.name !== '' && asset?.media !== null && asset?.tokenUri !== null;
-					}).map((asset: TAlchemyAssets): TOpenSeaAsset => {
-						return matchAlchemyToOpenSea(asset);
-					});
-					set_nfts(converted);
-				});
-			}
-		} else if (!address) {
-			set_nfts([]);
+		if (safeChainID === 1) {
+			handleOpenSeaAssets();
+		} else {
+			handleAlchemyAssets();
 		}
-	}, [safeChainID, address]);
+	}, [handleOpenSeaAssets, handleAlchemyAssets, safeChainID]);
 
 	/**********************************************************************************************
 	** On disconnect, reset all state.
@@ -127,14 +123,14 @@ export const NFTMigratooorContextApp = ({children}: {children: React.ReactElemen
 	** already connected or if the wallet is a special wallet type (e.g. EMBED_LEDGER).
 	** If the wallet is not connected, jump to the WALLET section to connect.
 	**********************************************************************************************/
-	useOneTimeEffect((): void => {
+	useEffect((): void => {
 		const isEmbedWallet = ['EMBED_LEDGER', 'EMBED_GNOSIS_SAFE'].includes(walletType);
 		if ((isActive && address) || isEmbedWallet) {
 			set_currentStep(Step.DESTINATION);
 		} else if (!isActive || !address) {
 			set_currentStep(Step.WALLET);
 		}
-	}, (): boolean => !!(address && isActive), [address, isActive, walletType]);
+	}, [address, isActive, walletType]);
 
 	/**********************************************************************************************
 	** This effect is used to handle some UI transitions and sections jumps. Once the current step
@@ -143,7 +139,7 @@ export const NFTMigratooorContextApp = ({children}: {children: React.ReactElemen
 	**********************************************************************************************/
 	useMountEffect((): void => {
 		setTimeout((): void => {
-			const	isEmbedWallet = ['EMBED_LEDGER', 'EMBED_GNOSIS_SAFE'].includes(walletType);
+			const isEmbedWallet = ['EMBED_LEDGER', 'EMBED_GNOSIS_SAFE'].includes(walletType);
 			if (currentStep === Step.WALLET && !isEmbedWallet) {
 				document?.getElementById('wallet')?.scrollIntoView({behavior: 'smooth', block: 'start'});
 			} else if (currentStep === Step.DESTINATION || isEmbedWallet) {
@@ -178,7 +174,7 @@ export const NFTMigratooorContextApp = ({children}: {children: React.ReactElemen
 			} else if (currentStep === Step.CONFIRMATION) {
 				currentStepContainer = document?.getElementById('approvals');
 			}
-			const	currentElementHeight = currentStepContainer?.offsetHeight;
+			const currentElementHeight = currentStepContainer?.offsetHeight;
 			if (scalooor?.style) {
 				scalooor.style.height = `calc(100vh - ${currentElementHeight}px - ${headerHeight}px + 36px)`;
 			}
@@ -191,7 +187,7 @@ export const NFTMigratooorContextApp = ({children}: {children: React.ReactElemen
 	/**********************************************************************************************
 	** For some small performance improvements, we memoize the context value.
 	**********************************************************************************************/
-	const	contextValue = useMemo((): TSelected => ({
+	const contextValue = useMemo((): TSelected => ({
 		selected,
 		set_selected,
 		nfts,

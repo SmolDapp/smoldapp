@@ -1,5 +1,5 @@
 @import './style.base.css';
-@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;700&display=swap');
 
 :root {
 }
@@ -244,20 +244,31 @@ details {
 }
 
 
+
 .tooltip {
 	@apply relative cursor-help;
 }
-.tooltip .tooltiptext {
-	@apply text-xs text-center invisible bg-neutral-0 text-neutral-900 absolute z-50 right-1 opacity-0 transition-opacity p-2;
-	width: 16rem;
-	top: 110%;
-	margin-right: calc(-122px + 50%);
+.tooltip .tooltiptext,
+.tooltip .tooltiptextsmall {
+	@apply text-xs text-center invisible bg-neutral-0 text-neutral-900 absolute z-50 right-1 opacity-0 transition-opacity p-2 rounded;
 	box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.16);
 }
-.tooltip:hover .tooltiptext {
+.tooltiptext {
+	top: 110%;
+	width: 16rem;
+	margin-right: calc(-122px + 50%);
+}
+.tooltiptextsmall {
+	top: 150%;
+	width: 10rem;
+	margin-right: calc(-5rem + 4px);
+}
+.tooltip:hover .tooltiptext,
+.tooltip:hover .tooltiptextsmall {
 	@apply visible opacity-100;
 }
-.tooltip .tooltiptext::after {
+.tooltip .tooltiptext::after,
+.tooltip .tooltiptextsmall::after {
 	content: "";
 	position: absolute;
 	bottom: 98%;
@@ -269,11 +280,13 @@ details {
 	transform: rotate(180deg);
 }
 
-.tooltip.top .tooltiptext {
+.tooltip.top .tooltiptext,
+.tooltip.top .tooltiptextsmall {
 	top: -105%;
 	bottom: unset;
 }
-.tooltip.top .tooltiptext::after {
+.tooltip.top .tooltiptext::after,
+.tooltip.top .tooltiptextsmall::after {
 	top: 98%;
 	transform: rotate(0deg);
 }

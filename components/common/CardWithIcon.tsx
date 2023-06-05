@@ -24,7 +24,7 @@ export default function CardWithIcon({isSelected, onClick, label, icon}: TCardWi
 				<b suppressHydrationWarning className={'text-sm md:text-base'}>{label}</b>
 			</div>
 			<IconCheck
-				className={`absolute top-4 right-4 h-4 w-4 text-[#16a34a] transition-opacity ${isSelected ? 'opacity-100' : 'opacity-0'}`} />
+				className={`absolute right-4 top-4 h-4 w-4 text-[#16a34a] transition-opacity ${isSelected ? 'opacity-100' : 'opacity-0'}`} />
 		</button>
 	);
 }

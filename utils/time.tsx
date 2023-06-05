@@ -1,13 +1,13 @@
 function relativeTimeFormat(value: number): string {
-	let		locale = 'fr-FR';
+	let locale = 'fr-FR';
 	if (typeof(navigator) !== 'undefined') {
 		locale = navigator.language || 'fr-FR';
 	}
 
-	const	now = Date.now().valueOf() / 1000;
-	const	timeDiffWithNow = (value - now);
-	const	hourDiffWithNow = timeDiffWithNow / 3600;
-	const	dayDiffWithNow = hourDiffWithNow / 24;
+	const now = Date.now().valueOf() / 1000;
+	const timeDiffWithNow = (value - now);
+	const hourDiffWithNow = timeDiffWithNow / 3600;
+	const dayDiffWithNow = hourDiffWithNow / 24;
 
 	//use day scale if diff is more than 24 hours
 	if (Math.abs(hourDiffWithNow) >= 24) {

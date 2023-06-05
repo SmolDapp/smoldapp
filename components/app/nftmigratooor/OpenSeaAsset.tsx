@@ -25,7 +25,7 @@ const OpenSeaAsset = memo(function OpenSeaAsset(props: TOpenSeaAssetProps): Reac
 		<div
 			role={'button'}
 			onClick={(): void => onSelect(nft)}
-			className={`group relative grid w-full grid-cols-1 border-y-0 border-l-2 border-r-0 border-solid border-neutral-200 py-2 px-4 text-left transition-colors hover:bg-neutral-50/50 md:grid-cols-9 md:px-6 md:pl-16 ${isSelected ? 'border-neutral-900 bg-neutral-50/50' : 'border-transparent'}`}>
+			className={`group relative grid w-full grid-cols-1 border-y-0 border-l-2 border-r-0 border-solid border-neutral-200 px-4 py-2 text-left transition-colors hover:bg-neutral-50/50 md:grid-cols-9 md:px-6 md:pl-16 ${isSelected ? 'border-neutral-900 bg-neutral-50/50' : 'border-transparent'}`}>
 			<div className={'col-span-5 mb-2 flex h-14 flex-row items-center justify-between py-4 md:mb-0 md:py-0'}>
 				<div className={'flex flex-row items-center space-x-4 md:space-x-6'}>
 					<input
@@ -57,15 +57,15 @@ const OpenSeaAsset = memo(function OpenSeaAsset(props: TOpenSeaAssetProps): Reac
 					<div>
 						<div className={'flex flex-row items-center space-x-2'}>
 							<b className={'capitalize'}>
-								{nft?.name || nft?.collection?.name || nft?.asset_contract?.name}
+								{nft?.name || nft?.collection?.name || nft?.assetContract?.name}
 							</b>
 						</div>
 						<Link
-							href={`${chain.getCurrent()?.block_explorer}/nft/${nft.asset_contract.address}/${nft.token_id}`}
+							href={`${chain.getCurrent()?.block_explorer}/nft/${nft.assetContract.address}/${nft.tokenID}`}
 							onClick={(e): void => e.stopPropagation()}
 							className={'flex cursor-pointer flex-row items-center space-x-2 text-neutral-500 transition-colors hover:text-neutral-900 hover:underline'}>
 							<p className={'font-mono text-xs'}>
-								{truncateHex(nft.asset_contract.address, 6)}
+								{truncateHex(nft.assetContract.address, 6)}
 							</p>
 							<IconLinkOut className={'h-3 w-3'} />
 						</Link>
@@ -82,7 +82,7 @@ const OpenSeaAsset = memo(function OpenSeaAsset(props: TOpenSeaAssetProps): Reac
 						</b>
 					</div>
 					<p className={'font-mono text-xs'}>
-						{toAddress(nft.asset_contract.address) === toAddress('0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85') ? nft?.name : `#${nft?.token_id}`}
+						{toAddress(nft.assetContract.address) === toAddress('0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85') ? nft?.name : `#${nft?.tokenID}`}
 					</p>
 				</div>
 
@@ -91,7 +91,7 @@ const OpenSeaAsset = memo(function OpenSeaAsset(props: TOpenSeaAssetProps): Reac
 					className={'hidden items-center space-x-4 md:flex'}>
 					<div>
 						<Link
-							href={`${chain.getCurrent()?.block_explorer}/nft/${nft.asset_contract.address}/${nft.token_id}`}
+							href={`${chain.getCurrent()?.block_explorer}/nft/${nft.assetContract.address}/${nft.tokenID}`}
 							className={'group flex w-full cursor-alias items-center justify-between text-xs text-neutral-600 hover:text-neutral-900'}>
 							<legend className={'sr-only'}>{'See on Etherscan'}</legend>
 							<LogoEtherscan className={'h-6 w-6 rounded-full border border-neutral-200'} />
@@ -107,7 +107,7 @@ const OpenSeaAsset = memo(function OpenSeaAsset(props: TOpenSeaAssetProps): Reac
 					</div>
 					<div>
 						<Link
-							href={`https://rarible.com/token/${nft.asset_contract.address}:${nft.token_id}?tab=details`}
+							href={`https://rarible.com/token/${nft.assetContract.address}:${nft.tokenID}?tab=details`}
 							className={'group flex w-full cursor-alias items-center justify-between text-xs text-neutral-600 hover:text-neutral-900'}>
 							<legend className={'sr-only'}>{'See on Rarible'}</legend>
 							<LogoRarible className={'h-6 w-6 rounded-full border border-neutral-200'} />
@@ -115,7 +115,7 @@ const OpenSeaAsset = memo(function OpenSeaAsset(props: TOpenSeaAssetProps): Reac
 					</div>
 					<div>
 						<Link
-							href={`https://looksrare.org/collections/${nft.asset_contract.address}/${nft.token_id}`}
+							href={`https://looksrare.org/collections/${nft.assetContract.address}/${nft.tokenID}`}
 							className={'group flex w-full cursor-alias items-center justify-between text-xs text-neutral-600 hover:text-neutral-900'}>
 							<legend className={'sr-only'}>{'See on LooksRare'}</legend>
 							<LogoLooksRare className={'h-6 w-6 rounded-full border border-neutral-200'} />

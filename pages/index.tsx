@@ -1,5 +1,5 @@
 import React from 'react';
-import Balancer from 'react-wrap-balancer';
+import {Balancer} from 'react-wrap-balancer';
 import Image from 'next/image';
 import Link from 'next/link';
 import LogoMigratooor from 'components/icons/LogoMigratooor';

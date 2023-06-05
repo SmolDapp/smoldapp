@@ -46,6 +46,6 @@ const ERC721_ABI = [
 		'stateMutability': 'nonpayable',
 		'type': 'function'
 	}
-];
+] as const;
 
 export default ERC721_ABI;

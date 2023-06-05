@@ -1,7 +1,7 @@
 import React, {useMemo, useState} from 'react';
 import {DefaultSeo} from 'next-seo';
-import TokenListCard, {LegacyTokenListCard} from 'components/TokenListCard';
-import TokenListHero from 'components/TokenListHero';
+import TokenListCard, {LegacyTokenListCard} from 'components/common/TokenListCard';
+import TokenListHero from 'components/common/TokenListHero';
 import {MigratooorContextApp} from 'contexts/useMigratooor';
 import LEGACY_TOKEN_LISTS from 'utils/legacyTokenLists';
 import {motion} from 'framer-motion';

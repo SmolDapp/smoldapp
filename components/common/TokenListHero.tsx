@@ -23,7 +23,7 @@ function TokenListHero({summary}: {summary: TTokenListSummary | undefined}): Rea
 
 	return (
 		<div className={'relative isolate overflow-hidden bg-neutral-0'}>
-			<div className={'mx-auto grid max-w-4xl grid-cols-1 px-6 pt-10 pb-0 md:grid-cols-2 md:pb-10 md:pt-20'}>
+			<div className={'mx-auto grid max-w-4xl grid-cols-1 px-6 pb-0 pt-10 md:grid-cols-2 md:pb-10 md:pt-20'}>
 				<div className={'w-full'}>
 					<div>
 						<span className={'rounded-default border border-neutral-200 bg-neutral-100 px-3 py-1 text-xs leading-6 text-neutral-500 md:text-sm'}>
@@ -49,7 +49,7 @@ function TokenListHero({summary}: {summary: TTokenListSummary | undefined}): Rea
 						<Button
 							onClick={(): void => document.getElementById('tokenlistooor')?.scrollIntoView({behavior: 'smooth', block: 'start'})}>
 							{'Browse lists'}
-							<p className={'pt-1 pl-2'}>&#10549;</p>
+							<p className={'pl-2 pt-1'}>&#10549;</p>
 						</Button>
 					</div>
 				</div>

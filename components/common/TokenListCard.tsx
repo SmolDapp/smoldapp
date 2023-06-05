@@ -39,13 +39,13 @@ function TokenListCard({item}: {item: TTokenListItem}): ReactElement {
 			</div>
 			<div className={'font-number mt-auto grid w-full pt-6 text-left text-sm'}>
 				<div className={'border-y border-dashed border-neutral-200'}>
-					<div className={'flex flex-row items-center justify-between py-2 px-4 transition-colors md:px-6'}>
+					<div className={'flex flex-row items-center justify-between px-4 py-2 transition-colors md:px-6'}>
 						<small className={'text-neutral-500'}>{'Tokens '}</small>
 						<b suppressHydrationWarning>{`${formatAmount(item.tokenCount, 0, 0)}`}</b>
 					</div>
 				</div>
 				<div className={'border-t border-dashed border-neutral-200'}>
-					<span className={'flex cursor-pointer flex-row items-center justify-between py-2 px-4 transition-colors group-hover:bg-neutral-100 md:px-6'}>
+					<span className={'flex cursor-pointer flex-row items-center justify-between px-4 py-2 transition-colors group-hover:bg-neutral-100 md:px-6'}>
 						<small className={'text-neutral-500'}>{'Link '}</small>
 						<b className={'group-hover:underline'}>
 							{`${item.URI.replace('https://raw.githubusercontent.com/Migratooor/tokenLists/main/lists/', '')}`}
@@ -83,13 +83,13 @@ function LegacyTokenListCard({item}: {item: Partial<TTokenListItem>}): ReactElem
 			</div>
 			<div className={'font-number mt-auto grid w-full divide-y divide-dashed divide-neutral-200 pt-6 text-left text-sm'}>
 				<div className={'border-y border-dashed border-neutral-200'}>
-					<div className={'flex flex-row items-center justify-between py-2 px-4 transition-colors md:px-6'}>
+					<div className={'flex flex-row items-center justify-between px-4 py-2 transition-colors md:px-6'}>
 						<small className={'text-neutral-500'}>{'Last Update '}</small>
 						<b>{item?.timestamp ? dayjs().to(new Date(item.timestamp).valueOf()) : '-'}</b>
 					</div>
 				</div>
 				<div className={'border-y border-dashed border-neutral-200'}>
-					<span className={'flex cursor-pointer flex-row items-center justify-between py-2 px-4 transition-colors group-hover:bg-neutral-100 md:px-6'}>
+					<span className={'flex cursor-pointer flex-row items-center justify-between px-4 py-2 transition-colors group-hover:bg-neutral-100 md:px-6'}>
 						<small className={'text-neutral-500'}>{'Link '}</small>
 						<b className={'group-hover:underline'}>
 							{'list.json'}

@@ -3,6 +3,7 @@ import AppWrapper from 'components/common/AppWrapper';
 import {MenuContextApp} from 'contexts/useMenu';
 import {TokenListContextApp} from 'contexts/useTokenList';
 import {WalletContextApp} from 'contexts/useWallet';
+import config from 'utils/wagmiConfig';
 import {SafeProvider} from '@gnosis.pm/safe-apps-react-sdk';
 import {Inter} from '@next/font/google';
 import {WithYearn} from '@yearn-finance/web-lib/contexts/WithYearn';
@@ -24,6 +25,7 @@ function	MyApp(props: AppProps): ReactElement {
 		<>
 			<style jsx global>{`html {font-family: ${inter.style.fontFamily};}`}</style>
 			<WithYearn
+				configOverwrite={config}
 				options={{
 					web3: {
 						supportedChainID: [1, 10, 137, 250, 42161, 1337]

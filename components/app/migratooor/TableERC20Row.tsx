@@ -1,93 +1,94 @@
-import React, {useCallback, useMemo, useState} from 'react';
+import React, {useCallback, useMemo} from 'react';
 import Link from 'next/link';
+import {ImageWithFallback} from 'components/common/ImageWithFallback';
 import IconInfo from 'components/icons/IconInfo';
-import {ImageWithFallback} from 'components/ImageWithFallback';
 import {useMigratooor} from 'contexts/useMigratooor';
-import {useWallet} from 'contexts/useWallet';
-import {sendEther} from 'utils/actions/sendEth';
-import {transfer} from 'utils/actions/transferERC20';
-import handleInputChangeEventValue from 'utils/handleInputChangeEventValue';
+import {handleInputChangeEventValue} from 'utils/handleInputChangeEventValue';
+import {getNativeToken} from 'utils/toWagmiProvider';
 import {useMountEffect, useUpdateEffect} from '@react-hookz/web';
-import {Button} from '@yearn-finance/web-lib/components/Button';
+import {getNetwork} from '@wagmi/core';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
-import {useChain} from '@yearn-finance/web-lib/hooks/useChain';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import IconLinkOut from '@yearn-finance/web-lib/icons/IconLinkOut';
 import {toAddress, truncateHex} from '@yearn-finance/web-lib/utils/address';
+import {cl} from '@yearn-finance/web-lib/utils/cl';
 import {ETH_TOKEN_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
-import {toNormalizedBN, Zero} from '@yearn-finance/web-lib/utils/format.bigNumber';
-import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUpdates';
-import {defaultTxStatus, Transaction} from '@yearn-finance/web-lib/utils/web3/transaction';
+import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
 
-import type {TMinBalanceData} from 'hooks/useBalances';
+import type {TSelectedElement} from 'contexts/useMigratooor';
+import type {TTokenInfo} from 'contexts/useTokenList';
 import type {ChangeEvent, ReactElement} from 'react';
 import type {TAddress, TDict} from '@yearn-finance/web-lib/types';
-import type {TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
+import type {TBalanceData} from '@yearn-finance/web-lib/types/hooks';
 
-function	TableERC20Row({address: tokenAddress, balance}: {balance: TMinBalanceData, address: TAddress}): ReactElement {
-	const {balances} = useWallet();
-	const {selected, set_selected, amounts, set_amounts, destinationAddress} = useMigratooor();
-	const {refresh} = useWallet();
-	const {provider, chainID, isActive} = useWeb3();
+type TERC20RowProps = {balance: TBalanceData, address: TAddress};
+function TableERC20Row({address: tokenAddress, balance}: TERC20RowProps): ReactElement {
+	const {selected, set_selected} = useMigratooor();
+	const {chainID, isActive} = useWeb3();
 	const {safeChainID} = useChainID();
-	const [txStatus, set_txStatus] = useState(defaultTxStatus);
-	const isSelected = useMemo((): boolean => selected.includes(tokenAddress), [selected, tokenAddress]);
-	const chain = useChain();
+	const {chain} = getNetwork();
+	const currentNativeToken = useMemo((): TTokenInfo => getNativeToken(safeChainID), [safeChainID]);
+	const isSelected = useMemo((): boolean => selected[toAddress(tokenAddress)]?.isSelected, [selected, tokenAddress]);
 
-	const	handleSuccessCallback = useCallback(async (onlyETH: boolean): Promise<void> => {
-		const tokensToRefresh = [{token: ETH_TOKEN_ADDRESS, decimals: balances[ETH_TOKEN_ADDRESS].decimals, symbol: balances[ETH_TOKEN_ADDRESS].symbol}];
-		if (!onlyETH) {
-			tokensToRefresh.push({token: toAddress(tokenAddress), decimals: balance.decimals, symbol: balance.symbol});
-		}
-
-		const updatedBalances = await refresh(tokensToRefresh);
-		performBatchedUpdates((): void => {
-			if (onlyETH) {
-				set_amounts((amounts: TDict<TNormalizedBN>): TDict<TNormalizedBN> => ({...amounts, [ETH_TOKEN_ADDRESS]: updatedBalances[ETH_TOKEN_ADDRESS]}));
-			} else {
-				set_amounts((amounts: TDict<TNormalizedBN>): TDict<TNormalizedBN> => ({
-					...amounts,
-					[ETH_TOKEN_ADDRESS]: updatedBalances[ETH_TOKEN_ADDRESS],
-					[toAddress(tokenAddress)]: updatedBalances[toAddress(tokenAddress)]
-				}));
+	const updateAmountOnChangeChain = useCallback((): void => {
+		set_selected((prev): TDict<TSelectedElement> => ({
+			...prev,
+			[toAddress(tokenAddress)]: {
+				address: tokenAddress,
+				amount: {raw: -1n, normalized: 0},
+				status: 'none',
+				isSelected: false
 			}
-			set_selected((s: TAddress[]): TAddress[] => s.filter((item: TAddress): boolean => toAddress(item) !== toAddress(tokenAddress)));
-		});
-	}, [balance.decimals, balance.symbol, balances, tokenAddress]); // eslint-disable-line react-hooks/exhaustive-deps
-
-	async function	onTransfer(): Promise<void> {
-		if (toAddress(tokenAddress) === ETH_TOKEN_ADDRESS) {
-			new Transaction(provider, sendEther, set_txStatus).populate(
-				toAddress(destinationAddress),
-				amounts[ETH_TOKEN_ADDRESS]?.raw,
-				balances[ETH_TOKEN_ADDRESS]?.raw
-			).onSuccess(async (): Promise<void> => handleSuccessCallback(true)).perform();
-		} else {
-			try {
-				new Transaction(provider, transfer, set_txStatus).populate(
-					toAddress(tokenAddress),
-					toAddress(destinationAddress),
-					amounts[toAddress(tokenAddress)]?.raw
-				).onSuccess(async (): Promise<void> => handleSuccessCallback(false)).perform();
-			} catch (error) {
-				console.error(error);
-			}
-		}
-	}
-
-	const	updateAmountOnChangeChain = useCallback((): void => {
-		// balance.normalized
-		set_amounts((amounts: TDict<TNormalizedBN>): TDict<TNormalizedBN> => ({
-			...amounts,
-			[toAddress(tokenAddress)]: toNormalizedBN(balance.raw, balance.decimals || 18)
 		}));
-	}, [tokenAddress, balance]); // eslint-disable-line react-hooks/exhaustive-deps
+	}, [set_selected, tokenAddress]);
+
+	const onChangeAmount = useCallback((event: ChangeEvent<HTMLInputElement>): void => {
+		let	newAmount = handleInputChangeEventValue(event, balance?.decimals || 18);
+		if (toBigInt(newAmount.raw) > toBigInt(balance.raw)) {
+			newAmount = balance;
+		}
+		set_selected((prev): TDict<TSelectedElement> => ({
+			...prev,
+			[toAddress(tokenAddress)]: {
+				...prev[toAddress(tokenAddress)],
+				amount: newAmount
+			}
+		}));
+	}, [balance, set_selected, tokenAddress]);
+
+	const onSelect = useCallback((): void => {
+		if (isSelected) {
+			set_selected((prev): TDict<TSelectedElement> => ({
+				...prev,
+				[toAddress(tokenAddress)]: {
+					...prev[toAddress(tokenAddress)],
+					amount: {raw: -1n, normalized: 0},
+					isSelected: false
+				}
+			}));
+		} else {
+			set_selected((prev): TDict<TSelectedElement> => ({
+				...prev,
+				[toAddress(tokenAddress)]: {
+					...prev[toAddress(tokenAddress)],
+					amount: balance,
+					status: 'none',
+					isSelected: true
+				}
+			}));
+		}
+	}, [isSelected, set_selected, tokenAddress, balance]);
 
 	useMountEffect((): void => {
-		if (amounts[toAddress(tokenAddress)] === undefined) {
-			set_amounts((amounts: TDict<TNormalizedBN>): TDict<TNormalizedBN> => ({
-				...amounts,
-				[toAddress(tokenAddress)]: toNormalizedBN(balance.raw)
+		if (selected[toAddress(tokenAddress)] === undefined) {
+			set_selected((prev): TDict<TSelectedElement> => ({
+				...prev,
+				[toAddress(tokenAddress)]: {
+					address: tokenAddress,
+					amount: {raw: -1n, normalized: 0},
+					status: 'none',
+					isSelected: false
+				}
 			}));
 		}
 	});
@@ -98,13 +99,13 @@ function	TableERC20Row({address: tokenAddress, balance}: {balance: TMinBalanceDa
 
 	return (
 		<div
-			onClick={(): void => set_selected(isSelected ? selected.filter((item: TAddress): boolean => item !== tokenAddress) : [...selected, tokenAddress])}
-			className={`yearn--table-wrapper group relative border-x-2 border-y-0 border-solid pb-2 text-left hover:bg-neutral-100/50 ${isSelected ? 'border-transparent' : 'border-transparent'}`}>
+			onClick={onSelect}
+			className={`yearn--table-wrapper group relative border-x-2 border-y-0 border-solid py-2 text-left hover:bg-neutral-100/50 ${isSelected ? 'border-transparent' : 'border-transparent'}`}>
 			<div className={'absolute left-3 top-7 z-10 flex h-full justify-center md:left-6 md:top-0 md:items-center'}>
 				<input
 					type={'checkbox'}
 					checked={isSelected}
-					onChange={(): void => set_selected(isSelected ? selected.filter((item: TAddress): boolean => item !== tokenAddress) : [...selected, tokenAddress])}
+					onChange={onSelect}
 					className={'checkbox cursor-pointer'} />
 			</div>
 			<div className={'yearn--table-token-section h-14 border-0 border-neutral-200 pl-8 md:border-r'}>
@@ -115,7 +116,8 @@ function	TableERC20Row({address: tokenAddress, balance}: {balance: TMinBalanceDa
 							width={40}
 							height={40}
 							quality={90}
-							src={`https://raw.githubusercontent.com/yearn/yearn-assets/master/icons/multichain-tokens/${safeChainID}/${toAddress(tokenAddress)}/logo-128.png`}
+							unoptimized
+							src={`https://assets.smold.app/api/token/${safeChainID}/${toAddress(tokenAddress)}/logo-128.png`}
 							loading={'eager'} />
 					</div>
 					<div>
@@ -130,11 +132,14 @@ function	TableERC20Row({address: tokenAddress, balance}: {balance: TMinBalanceDa
 								</div>
 							) : null}
 						</div>
+						<p className={'font-mono text-xs text-neutral-500'}>
+							{toAddress(tokenAddress) === ETH_TOKEN_ADDRESS ? currentNativeToken.name || '' : balance.name || ''}&nbsp;
+						</p>
 						{toAddress(tokenAddress) === ETH_TOKEN_ADDRESS ? (
 							<p className={'font-mono text-xs text-neutral-500'}>{truncateHex(tokenAddress, 8)}</p>
 						) : (
 							<Link
-								href={`${chain.getCurrent()?.block_explorer}/address/${tokenAddress}`}
+								href={`${chain?.blockExplorers?.default}/address/${tokenAddress}`}
 								onClick={(e): void => e.stopPropagation()}
 								className={'flex cursor-pointer flex-row items-center space-x-2 text-neutral-500 transition-colors hover:text-neutral-900 hover:underline'}>
 								<p className={'font-mono text-xs'}>{truncateHex(tokenAddress, 8)}</p>
@@ -147,52 +152,35 @@ function	TableERC20Row({address: tokenAddress, balance}: {balance: TMinBalanceDa
 
 
 			<div className={'yearn--table-data-section'}>
-				<div className={'yearn--table-data-section-item md:col-span-10 md:px-6'} datatype={'number'}>
+				<div
+					className={cl(
+						'yearn--table-data-section-item',
+						'md:col-span-12 md:pl-6'
+					)}>
 					<label className={'yearn--table-data-section-item-label'}>{'Amount to migrate'}</label>
-					<div className={'box-0 flex h-10 w-full items-center p-2'}>
+					<div className={'box-0 flex h-12 w-full items-center p-2'}>
 						<div
-							className={'flex h-10 w-full flex-row items-center justify-between py-4 px-0'}
+							className={'flex h-12 w-full flex-row items-center justify-between px-0'}
 							onClick={(e): void => e.stopPropagation()}>
 							<input
-								className={`w-full overflow-x-scroll border-none bg-transparent py-4 px-0 text-sm font-bold outline-none scrollbar-none ${isActive ? '' : 'cursor-not-allowed'}`}
+								className={`w-full overflow-x-scroll border-none bg-transparent px-0 py-4 text-sm font-bold outline-none scrollbar-none ${isActive ? '' : 'cursor-not-allowed'}`}
 								type={'number'}
 								min={0}
 								step={1 / 10 ** (balance.decimals || 18)}
 								max={balance.normalized}
 								inputMode={'numeric'}
+								placeholder={String(balance.normalized)}
 								pattern={'^((?:0|[1-9]+)(?:.(?:d+?[1-9]|[1-9]))?)$'}
 								disabled={!isActive}
-								value={amounts[toAddress(tokenAddress)]?.normalized ?? '0'}
-								onChange={(e: ChangeEvent<HTMLInputElement>): void => {
-									let	newAmount = handleInputChangeEventValue(e, balance?.decimals || 18);
-									if (newAmount.raw.gt(balance.raw)) {
-										newAmount = balance;
-									}
-									set_amounts((amounts): TDict<TNormalizedBN> => ({...amounts, [toAddress(tokenAddress)]: newAmount}));
-								}} />
+								value={toBigInt(selected[toAddress(tokenAddress)]?.amount?.raw) < 0n ? '' : selected[toAddress(tokenAddress)]?.amount?.normalized ?? ''}
+								onChange={onChangeAmount} />
 							<button
-								onClick={(): void => {
-									set_amounts((amounts): TDict<TNormalizedBN> => ({...amounts, [toAddress(tokenAddress)]: balance}));
-								}}
+								onClick={onSelect}
 								className={'ml-2 cursor-pointer rounded-sm border border-neutral-900 bg-neutral-100 px-2 py-1 text-xxs text-neutral-900 transition-colors hover:bg-neutral-900 hover:text-neutral-0'}>
 								{'max'}
 							</button>
 						</div>
 					</div>
-				</div>
-
-				<div
-					className={'col-span-1 hidden h-8 w-full flex-col justify-center md:col-span-2 md:flex md:h-14'}
-					onClick={(e): void => e.stopPropagation()}>
-					<Button
-						className={'yearn--button-smaller !w-full'}
-						isBusy={txStatus.pending}
-						isDisabled={!isActive || ((amounts[toAddress(tokenAddress)]?.raw || Zero).isZero())}
-						onClick={(): void => {
-							onTransfer();
-						}}>
-						{'Migrate'}
-					</Button>
 				</div>
 			</div>
 		</div>

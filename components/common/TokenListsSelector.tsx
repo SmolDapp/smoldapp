@@ -1,7 +1,7 @@
 import {useEffect, useRef, useState} from 'react';
+import {ImageWithFallback} from 'components/common/ImageWithFallback';
 import SmallButton from 'components/common/SmallButton';
 import IconCheck from 'components/icons/IconCheck';
-import {ImageWithFallback} from 'components/ImageWithFallback';
 import {useWallet} from 'contexts/useWallet';
 import axios from 'axios';
 import {useMountEffect, useThrottledCallback} from '@react-hookz/web';
