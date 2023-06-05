@@ -1,4 +1,4 @@
-# Migratooor
+# Smoldapp
 
 ![./public/og.png](./public/og.png)
 
