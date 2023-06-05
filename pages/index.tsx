@@ -2,14 +2,22 @@ import React from 'react';
 import {Balancer} from 'react-wrap-balancer';
 import Image from 'next/image';
 import Link from 'next/link';
-import LogoMigratooor from 'components/icons/LogoMigratooor';
-import LogoTokenlistooor from 'components/icons/LogoTokenlistooor';
+import LogoDisperse from '@disperse/Logo';
+import LogoMigratooor from '@migratooor/Logo';
+import LogoNFTMigratooor from '@nftmigratooor/Logo';
+import LogoTokenlistooor from '@tokenlistooor/Logo';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import {useClientEffect} from '@yearn-finance/web-lib/hooks/useClientEffect';
 
 import type {ReactElement} from 'react';
 
 const	apps = [
+	{
+		href: '/disperse',
+		title: 'Disperse',
+		description: 'verb: distribute ether or tokens to multiple addresses',
+		icon: <LogoDisperse className={'h-[80px] w-[80px]'} />
+	},
 	{
 		href: 'https://gib.to',
 		title: 'Gib',
@@ -40,12 +48,7 @@ const	apps = [
 		href: '/nftmigratooor',
 		title: 'NFTMigratooor',
 		description: 'The easiest way to migrate your NFTs from one wallet to another.',
-		icon: <Image
-			src={'/nftmigratooor.png'}
-			width={512}
-			height={512}
-			alt={''}
-			className={'h-[80px] w-[80px]'} />
+		icon: <LogoNFTMigratooor className={'h-[80px] w-[80px]'} />
 	}, {
 		href: '/tokenlistooor',
 		title: 'Tokenlistooor',
@@ -111,7 +114,7 @@ function	Index(): ReactElement {
 				<div className={'relative h-12 w-[300px] self-center md:h-[104px] md:w-[600px]'}>
 					<div className={'text'}>
 						<p className={'wordWrapper'}>
-							<span className={'word'} style={{'opacity': 1}}>{'Smol Dapp'}</span>
+							<span className={'word'}>{'Smol Dapp'}</span>
 						</p>
 					</div>
 				</div>

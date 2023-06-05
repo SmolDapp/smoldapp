@@ -48,20 +48,6 @@
 .yearn--button-smaller {
 	@apply !rounded-md;
 }
-:root.dark {
-	& .yearn--button-smaller {
-		&[data-variant="reverted"] {
-			&:not(:disabled):not([aria-busy="true"]):hover {@apply !bg-neutral-100;}
-		}
-	}
-	& .yearn--button {
-		&[data-variant="reverted-alt"] {
-			@apply text-neutral-0 bg-neutral-900 font-normal border border-transparent;
-			&:disabled {@apply bg-neutral-700 opacity-40;}
-			&:not(:disabled):not([aria-busy="true"]):hover {@apply bg-neutral-800;}
-		}
-	}
-}
 
 
 /* 🔵 - Yearn Finance ******************************************************************************
@@ -139,9 +125,9 @@ details {
 }
 
 /* 🔵 - Yearn Finance ******************************************************************************
-	** Loader
-	** Custom style for the loader icon
-	***************************************************************************************************/
+** Loader
+** Custom style for the loader icon
+***************************************************************************************************/
 .loader {
 	width: 8px;
 	height: 8px;
@@ -199,25 +185,15 @@ details {
 	@apply outline-none focus:outline-none focus:ring-0 active:ring-0;
 	box-shadow: none !important;
 }
-:root.dark {
-	& [type='checkboxx'],
-	& [type='checkboxx']:focus {
-		@apply text-neutral-0 border-neutral-300 focus:border-neutral-300;
-	}
-}
 .checkbox {
 	@apply text-neutral-900 accent-neutral-900 rounded-sm;
 }
-
-
 .yearn--tab {
 	@apply mx-5 flex h-full flex-col justify-center text-base cursor-pointer font-normal;
 	&.selected {
 		@apply cursor-default font-bold;
 	}
 }
-
-
 .box-0 {
 	@apply bg-neutral-0 border border-neutral-200 rounded-md;
 	&.hover {
@@ -297,45 +273,9 @@ details {
 .modal-overlay {
 	@apply fixed inset-0 z-10 bg-neutral-900/40 transition-opacity backdrop-blur-[1px];
 }
-:root.dark {
-	& .modal-overlay {
-		@apply bg-neutral-100/90;
-	}
-}
-
-.detailsSweep {
-	@apply border-b-0;
-	&:last-of-type {
-		@apply border-b;
-	}
-	&[open] {
-		@apply bg-neutral-100;
-	}
-}
-
 .detailsMigrate {
 	@apply bg-neutral-0 flex w-full flex-col justify-center border-t border-b-0 border-neutral-200 transition-colors;
 }
-:root.dark {
-	& .detailsMigrate {
-		@apply bg-neutral-0;
-	}
-}
-
-.detailsTokenList[open] {
-  @apply bg-neutral-0
-}
-
-
-.featureGrid {
-    width: 100%;
-    grid-auto-columns: 1fr;
-    grid-column-gap: 10px;
-    grid-row-gap: 10px;
-    grid-template-columns: repeat(18, minmax(0, 1fr));
-    grid-template-rows: auto auto;
-}
-
 
 /**************************************************************************************************
 ** AppBox is the style used to make the nices animations on the home page feel nice and smooth
@@ -365,13 +305,6 @@ details {
 		@apply pointer-events-none z-[-1];
 	}
 }
-:root.dark {
-	& .appBox {
-		--color: hsl(var(--color-neutral-100));
-		@apply border-neutral-200/60;
-	}
-}
-
 
 /**************************************************************************************************
 ** The WordWrapper css is used for the animation with the text in the header. This animation require
@@ -384,51 +317,13 @@ details {
 }
 .word {
 	@apply absolute text-neutral-900 font-bold text-5xl md:text-8xl uppercase text-center flex justify-center items-center w-[300px] md:w-[600px];
-	opacity: 0;
 }
-.wordCenter {
-	@apply absolute text-center flex justify-center items-center;
-	opacity: 0;
-}
-.wordLeft {
-	@apply absolute text-left flex justify-start items-center;
-	opacity: 0;
-}
-.letter {
-	display: inline-block;
-	position: relative;
-	float: left;
-	transform: translateZ(25px);
-	transform-origin: 50% 50% 25px;
-}
-.letter.out {
-	transform: rotateX(90deg);
-	transition: transform 0.32s cubic-bezier(0.55, 0.055, 0.675, 0.19);
-}
-.letter.behind {
-	transform: rotateX(-90deg);
-}
-.letter.in {
-	transform: rotateX(0deg);
-	transition: transform 0.38s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
 .patternSVG {
 	@apply absolute inset-0 -z-10 h-full w-full stroke-neutral-500/10 [mask-image:radial-gradient(100%_100%_at_top_right,black,transparent)];
 }
 .patternSVGSquares {
 	@apply overflow-visible fill-neutral-200/20;
 }
-
-:root.dark {
-	& .patternSVG {
-		@apply stroke-neutral-300/20
-	}
-	& .patternSVGSquares {
-		@apply fill-neutral-100/60;
-	}
-}
-
 .groupHoverText {
 	&:hover .noHoverContent {
 		@apply opacity-0;
@@ -437,7 +332,6 @@ details {
 		@apply opacity-100;
 	}
 }
-
 .approvalWizardDivider {
 	&> *:last-child{
 		@apply border-b-0 !mb-0 !pb-0;
@@ -447,8 +341,20 @@ details {
 .bg-black {
 	background: linear-gradient(84.14deg,#1e243e,#1b2037);
 }
-:root.dark {
-	& .bg-black {
-		background: #1b2036
-	}
+
+
+.container {
+  @apply flex flex-row justify-between items-center space-x-10 relative max-w-xs;
+  & > dt {
+    @apply bg-neutral-900 z-10 pr-2;
+  }
+  & > dd {
+    @apply bg-neutral-900 z-10 pl-2 font-number whitespace-nowrap;
+  }
 }
+.filler {
+  @apply w-3/4 border-b-2 border-dashed border-neutral-0 absolute inset-0 h-full;
+  top: calc(-50% + 1px);
+}
+
+

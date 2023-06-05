@@ -1,6 +1,6 @@
 import React, {memo, useMemo} from 'react';
-import OpenSeaAsset from 'components/app/nftmigratooor/OpenSeaAsset';
 import IconChevronBoth from 'components/icons/IconChevronBoth';
+import OpenSeaAsset from '@nftmigratooor/OpenSeaAsset';
 
 import type {ReactElement} from 'react';
 import type {TOpenSeaAsset} from 'utils/types/opensea';

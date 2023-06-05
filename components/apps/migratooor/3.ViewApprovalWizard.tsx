@@ -1,10 +1,10 @@
 import React, {useCallback, useState} from 'react';
-import ApprovalWizardItem from 'components/app/migratooor/ApprovalWizardItem';
-import {useMigratooor} from 'contexts/useMigratooor';
 import {useWallet} from 'contexts/useWallet';
 import {transferERC20, transferEther} from 'utils/actions';
 import {getTransferTransaction} from 'utils/gnosis.tools';
 import {useSafeAppsSDK} from '@gnosis.pm/safe-apps-react-sdk';
+import ApprovalWizardItem from '@migratooor/ApprovalWizardItem';
+import {useMigratooor} from '@migratooor/useMigratooor';
 import {toast} from '@yearn-finance/web-lib/components/yToast';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {useChain} from '@yearn-finance/web-lib/hooks/useChain';
@@ -13,12 +13,12 @@ import {ETH_TOKEN_ADDRESS, ZERO_ADDRESS} from '@yearn-finance/web-lib/utils/cons
 import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUpdates';
 
-import type {TSelectedElement, TSelectedStatus} from 'contexts/useMigratooor';
 import type {ReactElement} from 'react';
 import type {BaseError} from 'viem';
 import type {TAddress, TDict} from '@yearn-finance/web-lib/types';
 import type {TBalanceData} from '@yearn-finance/web-lib/types/hooks';
 import type {BaseTransaction} from '@gnosis.pm/safe-apps-sdk';
+import type {TSelectedElement, TSelectedStatus} from '@migratooor/useMigratooor';
 
 function ViewApprovalWizard(): ReactElement {
 	const {selected, set_selected, destinationAddress} = useMigratooor();

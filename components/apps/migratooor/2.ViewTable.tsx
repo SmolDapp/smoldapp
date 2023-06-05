@@ -1,8 +1,8 @@
 import React, {memo, useMemo, useState} from 'react';
-import TableERC20Row from 'components/app/migratooor/TableERC20Row';
 import ListHead from 'components/common/ListHead';
-import {useMigratooor} from 'contexts/useMigratooor';
 import {useWallet} from 'contexts/useWallet';
+import TableERC20Row from '@migratooor/TableERC20Row';
+import {useMigratooor} from '@migratooor/useMigratooor';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';

@@ -1,10 +1,10 @@
 import React, {useCallback} from 'react';
 import {DefaultSeo} from 'next-seo';
-import ViewWallet from 'components/views/0.ViewWallet';
-import ViewDestination from 'components/views/migratooor/1.ViewDestination';
-import ViewTable from 'components/views/migratooor/2.ViewTable';
-import ViewApprovalWizard from 'components/views/migratooor/3.ViewApprovalWizard';
-import {MigratooorContextApp, Step, useMigratooor} from 'contexts/useMigratooor';
+import ViewWallet from 'components/apps/0.ViewWallet';
+import ViewDestination from '@migratooor/1.ViewDestination';
+import ViewTable from '@migratooor/2.ViewTable';
+import ViewApprovalWizard from '@migratooor/3.ViewApprovalWizard';
+import {MigratooorContextApp, Step, useMigratooor} from '@migratooor/useMigratooor';
 
 import type {ReactElement} from 'react';
 

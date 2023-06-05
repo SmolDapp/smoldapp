@@ -1,9 +1,9 @@
 import React, {useCallback, useMemo, useState} from 'react';
-import ApprovalWizardItem from 'components/app/nftmigratooor/ApprovalWizardItem';
-import {NFTMIGRATOOOR_CONTRACT_PER_CHAIN, useNFTMigratooor} from 'contexts/useNFTMigratooor';
 import {approveAllERC721, batchTransferERC721, listERC1155, transferERC721, transferERC1155} from 'utils/actions';
 import {getSafeBatchTransferFrom1155, getSafeTransferFrom721} from 'utils/gnosis.tools';
 import {useSafeAppsSDK} from '@gnosis.pm/safe-apps-react-sdk';
+import ApprovalWizardItem from '@nftmigratooor/ApprovalWizardItem';
+import {NFTMIGRATOOOR_CONTRACT_PER_CHAIN, useNFTMigratooor} from '@nftmigratooor/useNFTMigratooor';
 import {useUpdateEffect} from '@react-hookz/web';
 import {erc721ABI, multicall} from '@wagmi/core';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';

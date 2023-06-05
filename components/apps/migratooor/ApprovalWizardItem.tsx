@@ -4,9 +4,9 @@ import IconCircleCross from 'components/icons/IconCircleCross';
 import IconSpinner from 'components/icons/IconSpinner';
 import {truncateHex} from '@yearn-finance/web-lib/utils/address';
 
-import type {TSelectedStatus} from 'contexts/useMigratooor';
 import type {ReactElement} from 'react';
 import type {TAddress} from '@yearn-finance/web-lib/types';
+import type {TSelectedStatus} from '@migratooor/useMigratooor';
 
 type TApprovalWizardItemProps = {
 	token: {

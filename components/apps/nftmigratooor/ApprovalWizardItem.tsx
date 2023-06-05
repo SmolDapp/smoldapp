@@ -3,7 +3,7 @@ import IconCheck from 'components/icons/IconCheck';
 import IconChevronBoth from 'components/icons/IconChevronBoth';
 import IconCircleCross from 'components/icons/IconCircleCross';
 import IconSpinner from 'components/icons/IconSpinner';
-import {useNFTMigratooor} from 'contexts/useNFTMigratooor';
+import {useNFTMigratooor} from '@nftmigratooor/useNFTMigratooor';
 import {useChain} from '@yearn-finance/web-lib/hooks/useChain';
 import {toAddress, truncateHex} from '@yearn-finance/web-lib/utils/address';
 
