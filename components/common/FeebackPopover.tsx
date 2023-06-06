@@ -1,7 +1,7 @@
 import {Fragment, useState} from 'react';
 import {usePopper} from 'react-popper';
 import {useRouter} from 'next/router';
-import IconMessage from 'components/icons/IconMessage';
+import IconBug from 'components/icons/IconBug';
 import html2canvas from 'html2canvas';
 import axios from 'axios';
 import {Popover as PopoverHeadlessUI, Portal, Transition} from '@headlessui/react';
@@ -83,7 +83,7 @@ export function FeebackPopover(): ReactElement {
 				<PopoverHeadlessUI.Button
 					className={'fixed bottom-5 right-5 flex h-10 w-10 items-center justify-center rounded-full bg-orange-500'}
 					ref={set_referenceElement}>
-					<IconMessage />
+					<IconBug />
 				</PopoverHeadlessUI.Button>
 				<PopoverHeadlessUI.Overlay className={'fixed inset-0 bg-black opacity-30'} />
 				<Transition
