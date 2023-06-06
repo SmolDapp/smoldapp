@@ -1,5 +1,4 @@
-import React from 'react';
-import {Balancer} from 'react-wrap-balancer';
+import React, {Fragment} from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import LogoDisperse from '@disperse/Logo';
@@ -7,7 +6,6 @@ import LogoMigratooor from '@migratooor/Logo';
 import LogoNFTMigratooor from '@nftmigratooor/Logo';
 import LogoTokenlistooor from '@tokenlistooor/Logo';
 import {Button} from '@yearn-finance/web-lib/components/Button';
-import {useClientEffect} from '@yearn-finance/web-lib/hooks/useClientEffect';
 
 import type {ReactElement} from 'react';
 
@@ -15,13 +13,24 @@ const	apps = [
 	{
 		href: '/disperse',
 		title: 'Disperse',
-		description: 'verb: distribute ether or tokens to multiple addresses',
+		description: (
+			<span>
+				<span className={'font-semibold text-orange-500'}>{'Distribute'}</span>
+				{' ether or tokens to multiple addresses'}
+			</span>
+		),
 		icon: <LogoDisperse className={'h-[80px] w-[80px]'} />
 	},
 	{
 		href: 'https://gib.to',
 		title: 'Gib',
-		description: 'The easiest way to donate to the crypto projects you love.',
+		description: (
+			<span>
+				{'The easiest way to '}
+				<span className={'font-semibold text-orange-500'}>{'donate'}</span>
+				{' to the crypto projects you love.'}
+			</span>
+		),
 		icon: <Image
 			src={'https://gib.to/favicons/favicon.svg'}
 			width={80}
@@ -31,7 +40,12 @@ const	apps = [
 	{
 		href: 'https://dump.services',
 		title: 'Dump Services',
-		description: 'Dump your tokens like a pro',
+		description: (
+			<span>
+				<span className={'font-semibold text-orange-500'}>{'Dump'}</span>
+				{' your tokens like a pro'}
+			</span>
+		),
 		icon: <Image
 			src={'/dumpservices.svg'}
 			width={80}
@@ -41,61 +55,50 @@ const	apps = [
 	{
 		href: '/migratooor',
 		title: 'Migratooor',
-		description: 'The easiest way to migrate your tokens from one wallet to another.',
+		description: (
+			<span>
+				{'The hassle-free solution for your '}
+				<span className={'font-semibold text-orange-500'}>{'wallet-to-wallet migration'}</span>
+			</span>
+		),
 		icon: <LogoMigratooor className={'h-[80px] w-[80px]'} />
 	},
 	{
 		href: '/nftmigratooor',
 		title: 'NFTMigratooor',
-		description: 'The easiest way to migrate your NFTs from one wallet to another.',
+		// description: 'The easiest way to migrate your NFTs from one wallet to another.',
+		description: (
+			<span>
+				{'Easily '}
+				<span className={'font-semibold text-orange-500'}>{'migrate your NFTs'}</span>
+				{' to your new wallet.'}
+			</span>
+		),
 		icon: <LogoNFTMigratooor className={'h-[80px] w-[80px]'} />
 	}, {
 		href: '/tokenlistooor',
 		title: 'Tokenlistooor',
-		description: 'Up to date token lists that fulfill your needs! A fork of Uniswap Tokenlists, with focus on adding automation.',
+		// description: 'Up to date automatic token lists for your dApp.',
+		description: (
+			<span>
+				{'An up to date automatic '}
+				<span className={'font-semibold text-orange-500'}>{'tokenList'}</span>
+				{' for your dApp.'}
+			</span>
+		),
 		icon: <LogoTokenlistooor className={'h-[80px] w-[80px]'} />
 	}
 ];
 
 function	AppBox({app}: {app: typeof apps[0]}): ReactElement {
-	useClientEffect((): VoidFunction => {
-		const featuresEl = document.getElementById(app.href);
-		if (featuresEl) {
-			const	cleanup = (): void => {
-				featuresEl.removeEventListener('pointermove', pointermove);
-				featuresEl.removeEventListener('pointerleave', pointerleave);
-			};
-
-			const	pointermove = (ev: MouseEvent): void => {
-				const rect = featuresEl.getBoundingClientRect();
-				if (featuresEl?.style) {
-					featuresEl.style.setProperty('--opacity', '0.3');
-					featuresEl.style.setProperty('--x', (ev.clientX - rect.left).toString());
-					featuresEl.style.setProperty('--y', (ev.clientY - rect.top).toString());
-				}
-			};
-
-			const	pointerleave = (): void => {
-				if (featuresEl?.style) {
-					featuresEl.style.setProperty('--opacity', '0');
-				}
-			};
-
-			featuresEl.addEventListener('pointermove', pointermove);
-			featuresEl.addEventListener('pointerleave', pointerleave);
-			return cleanup;
-		}
-		return (): void => undefined;
-	}, []);
-
 	return (
 		<Link
 			prefetch={false}
 			key={app.href}
 			href={app.href}
-			className={'relative z-10 bg-neutral-0'}>
+			className={'relative bg-neutral-0'}>
 			<div id={app.href} className={'appBox'}>
-				<div className={'box-0 !rounded-full p-2'}>
+				<div className={'box-0 !rounded-full'}>
 					{app.icon}
 				</div>
 				<div className={'pt-6 text-left'}>
@@ -109,44 +112,41 @@ function	AppBox({app}: {app: typeof apps[0]}): ReactElement {
 
 function	Index(): ReactElement {
 	return (
-		<div className={'mx-auto mt-10 grid w-full max-w-4xl'}>
-			<div className={'mx-auto mb-10 mt-6 flex flex-col justify-center md:mb-14 md:mt-20'}>
-				<div className={'relative h-12 w-[300px] self-center md:h-[104px] md:w-[600px]'}>
-					<div className={'text'}>
-						<p className={'wordWrapper'}>
-							<span className={'word'}>{'Smol Dapp'}</span>
-						</p>
+		<Fragment>
+			<div className={'mx-auto grid w-full max-w-5xl'}>
+				<div className={'mb-10 mt-6 grid grid-cols-12 flex-col md:mb-14 md:mt-20'}>
+					<div className={'col-span-6'}>
+						<h1 className={'flex text-5xl font-bold lowercase text-neutral-900 md:text-8xl'}>{'Smol'}</h1>
+						<div className={'mb-2 mt-4'}>
+							<p className={'w-10/12 text-lg'}>
+								{'The registry for small, simple, and secure dapps for all your needs.'}
+							</p>
+						</div>
+						<div className={'mb-12 mt-8 flex flex-row items-center space-x-6'}>
+							<Link href={'https://twitter.com/smoldapp'}>
+								<Button className={'w-[140px]'}>
+									{'Twitter'}
+								</Button>
+							</Link>
+							<Link href={'https://github.com/smoldapp'}>
+								<Button className={'w-[140px]'}>
+									{'Github'}
+								</Button>
+							</Link>
+						</div>
+					</div>
+					<div id={'container'} className={'col-span-6 flex items-center justify-center'}>
+						<p className={'text-neutral-400'}>{'Oh no so much empty space'}</p>
 					</div>
 				</div>
-				<div className={'mb-2 mt-8'}>
-					<p className={'text-center text-lg md:text-2xl'}>
-						{'The registry for small, simple, and secure dapps for all your needs.'}
-					</p>
-				</div>
-				<div className={'mb-8'}>
-					<p className={'text-center text-sm text-neutral-500 md:text-base'}>
-						<Balancer>
-							{'With an always growing list of dapps, it\'s difficult to find the right one for you. Smol Dapp is a registry of quality dapps build by trusted members of the community.'}
-						</Balancer>
-					</p>
-				</div>
-				<div className={'mb-12 flex flex-row items-center justify-center space-x-6'}>
-					<Link href={'https://twitter.com/smoldapp'}>
-						<Button className={'w-[140px]'}>
-							{'Twitter'}
-						</Button>
-					</Link>
-					<Link href={'https://t.me/smoldapp'}>
-						<Button className={'w-[140px]'}>
-							{'Telegram'}
-						</Button>
-					</Link>
-				</div>
 			</div>
-			<section className={'mb-20 grid grid-cols-1 gap-10 md:grid-cols-2'}>
-				{apps.map((app): ReactElement => <AppBox key={app.href} app={app} />)}
-			</section>
-		</div>
+			<div className={'mx-auto grid w-full max-w-5xl'}>
+
+				<section className={'mb-20 grid grid-cols-1 gap-10 md:grid-cols-3'}>
+					{apps.map((app): ReactElement => <AppBox key={app.href} app={app} />)}
+				</section>
+			</div>
+		</Fragment>
 	);
 }
 

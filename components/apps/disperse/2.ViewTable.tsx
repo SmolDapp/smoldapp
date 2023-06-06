@@ -264,9 +264,9 @@ const ViewTable = memo(function ViewTable({onProceed}: {onProceed: VoidFunction}
 			<div className={'box-0 relative w-full'}>
 				<div className={'flex flex-col p-4 text-neutral-900 md:p-6 md:pb-4'}>
 					<div className={'w-full md:w-3/4'}>
-						<b>{'Indicate the receivers and amounts'}</b>
+						<b>{'Who gets what?'}</b>
 						<p className={'text-sm text-neutral-500'}>
-							{'Indicate the receivers and amounts to disperse. You can add as many receivers as you want, via the address, the ENS or the lens handle. You can add a receiver by clicking on the +.'}
+							{'Drop the wallet, ENS, or Lens handle of who you want to receive the tokens, and enter the amount each address should receive. Add more receivers by clicking the +. Clicking is fun.'}
 						</p>
 					</div>
 				</div>
@@ -301,7 +301,7 @@ const ViewTable = memo(function ViewTable({onProceed}: {onProceed: VoidFunction}
 						))}
 					</div>
 				</div>
-				<div className={'relative col-span-12 flex w-full max-w-4xl flex-row items-center justify-between rounded-b bg-neutral-900 p-4 text-neutral-0 md:px-6 md:py-4'}>
+				<div className={'rounded-b-0 relative col-span-12 flex w-full max-w-4xl flex-row items-center justify-between bg-neutral-900 p-4 text-neutral-0 md:px-6 md:py-4'}>
 					<div className={'flex w-3/4 flex-col'}>
 						<dl className={'container text-xs'}>
 							<dt>{'You have'}</dt>

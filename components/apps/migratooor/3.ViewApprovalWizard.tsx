@@ -2,6 +2,7 @@ import React, {useCallback, useState} from 'react';
 import {useWallet} from 'contexts/useWallet';
 import {transferERC20, transferEther} from 'utils/actions';
 import {getTransferTransaction} from 'utils/gnosis.tools';
+import {notifyMigrate} from 'utils/notifier';
 import {useSafeAppsSDK} from '@gnosis.pm/safe-apps-react-sdk';
 import ApprovalWizardItem from '@migratooor/ApprovalWizardItem';
 import {useMigratooor} from '@migratooor/useMigratooor';
@@ -14,13 +15,15 @@ import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUpdates';
 
 import type {ReactElement} from 'react';
-import type {BaseError} from 'viem';
+import type {BaseError, Hex} from 'viem';
 import type {TAddress, TDict} from '@yearn-finance/web-lib/types';
 import type {TBalanceData} from '@yearn-finance/web-lib/types/hooks';
+import type {TTxResponse} from '@yearn-finance/web-lib/utils/web3/transaction';
 import type {BaseTransaction} from '@gnosis.pm/safe-apps-sdk';
 import type {TSelectedElement, TSelectedStatus} from '@migratooor/useMigratooor';
 
 function ViewApprovalWizard(): ReactElement {
+	const {address, chainID} = useWeb3();
 	const {selected, set_selected, destinationAddress} = useMigratooor();
 	const {balances, refresh, balancesNonce} = useWallet();
 	const chain = useChain();
@@ -94,7 +97,7 @@ function ViewApprovalWizard(): ReactElement {
 	** The onMigrateERC20 function is called when the user clicks the 'Migrate' button. This
 	** function will perform the migration for all the selected tokens, one at a time.
 	**********************************************************************************************/
-	const onMigrateERC20 = useCallback(async (token: TSelectedElement): Promise<boolean> => {
+	const onMigrateERC20 = useCallback(async (token: TSelectedElement): Promise<TTxResponse> => {
 		onUpdateStatus(token.address, 'pending');
 		const result = await transferERC20({
 			connector: provider,
@@ -107,17 +110,16 @@ function ViewApprovalWizard(): ReactElement {
 			await handleSuccessCallback(token.address);
 		}
 		if (result.error) {
-			toast({type: 'error', content: result.error.shortMessage});
 			onUpdateStatus(token.address, 'error');
 		}
-		return result.isSuccessful;
+		return result;
 	}, [destinationAddress, handleSuccessCallback, onUpdateStatus, provider]);
 
 	/**********************************************************************************************
 	** The onMigrateETH function is called when the user clicks the 'Migrate' button. This
 	** function will perform the migration for ETH coin.
 	**********************************************************************************************/
-	const onMigrateETH = useCallback(async (): Promise<boolean> => {
+	const onMigrateETH = useCallback(async (): Promise<TTxResponse> => {
 		onUpdateStatus(ETH_TOKEN_ADDRESS, 'pending');
 
 		const isSendingBalance = toBigInt(selected[ETH_TOKEN_ADDRESS]?.amount?.raw) >= toBigInt(balances[ETH_TOKEN_ADDRESS]?.raw);
@@ -132,10 +134,9 @@ function ViewApprovalWizard(): ReactElement {
 			await handleSuccessCallback(ZERO_ADDRESS);
 		}
 		if (result.error) {
-			toast({type: 'error', content: result.error.shortMessage});
 			onUpdateStatus(ETH_TOKEN_ADDRESS, 'error');
 		}
-		return result.isSuccessful;
+		return result;
 	}, [balances, destinationAddress, handleSuccessCallback, onUpdateStatus, provider, selected]);
 
 	/**********************************************************************************************
@@ -145,6 +146,7 @@ function ViewApprovalWizard(): ReactElement {
 	**********************************************************************************************/
 	const onMigrateSelectedForGnosis = useCallback(async (allSelected: TSelectedElement[]): Promise<void> => {
 		const transactions: BaseTransaction[] = [];
+		const migratedTokens: TSelectedElement[] = [];
 		for (const token of allSelected) {
 			const amount = toBigInt(token?.amount?.raw);
 			if (amount === 0n) {
@@ -156,15 +158,24 @@ function ViewApprovalWizard(): ReactElement {
 				destinationAddress
 			);
 			transactions.push(newTransactionForBatch);
+			migratedTokens.push(token);
 		}
 		try {
 			const {safeTxHash} = await sdk.txs.send({txs: transactions});
 			console.log({hash: safeTxHash});
 			toast({type: 'success', content: 'Your transaction has been created! You can now sign and execute it!'});
+			notifyMigrate({
+				chainID: chainID,
+				to: destinationAddress,
+				tokensMigrated: migratedTokens,
+				hashes: migratedTokens.map((): Hex => safeTxHash as Hex),
+				type: 'SAFE',
+				from: toAddress(address)
+			});
 		} catch (error) {
 			toast({type: 'error', content: (error as BaseError)?.message || 'An error occured while creating your transaction!'});
 		}
-	}, [destinationAddress, sdk.txs]);
+	}, [destinationAddress, sdk.txs, chainID, address]);
 
 	/**********************************************************************************************
 	** This is the main function that will be called when the user clicks on the 'Migrate' button.
@@ -177,20 +188,40 @@ function ViewApprovalWizard(): ReactElement {
 			return onMigrateSelectedForGnosis(allSelected);
 		}
 
+		const migratedTokens: TSelectedElement[] = [];
+		const hashMessage: Hex[] = [];
 		let	shouldMigrateETH = false;
 		for (const token of allSelected) {
 			if (token.address === ETH_TOKEN_ADDRESS) { //Migrate ETH at the end
 				shouldMigrateETH = true;
 				continue;
 			}
-			await onMigrateERC20(token);
+			const result = await onMigrateERC20(token);
+			if (result.isSuccessful && result.receipt) {
+				migratedTokens.push(token);
+				hashMessage.push(result.receipt.transactionHash);
+			}
 		}
 
-		const willMigrateEth = (shouldMigrateETH && toBigInt(selected?.[ETH_TOKEN_ADDRESS]?.amount?.raw) > 0n);
+		const willMigrateEth = (shouldMigrateETH || toBigInt(selected?.[ETH_TOKEN_ADDRESS]?.amount?.raw) > 0n);
 		if (willMigrateEth) {
-			await onMigrateETH();
+			const result = await onMigrateETH();
+			if (result.isSuccessful && result.receipt) {
+				migratedTokens.push(selected?.[ETH_TOKEN_ADDRESS]);
+				hashMessage.push(result.receipt.transactionHash);
+			}
 		}
-	}, [isGnosisSafe, onMigrateERC20, onMigrateETH, onMigrateSelectedForGnosis, selected]);
+
+		notifyMigrate({
+			chainID: chainID,
+			to: destinationAddress,
+			tokensMigrated: migratedTokens,
+			hashes: hashMessage,
+			type: 'EOA',
+			from: toAddress(address)
+		});
+
+	}, [address, chainID, destinationAddress, isGnosisSafe, onMigrateERC20, onMigrateETH, onMigrateSelectedForGnosis, selected]);
 
 	return (
 		<section>

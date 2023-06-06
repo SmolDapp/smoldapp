@@ -20,6 +20,15 @@ const ViewTable = memo(function ViewTable({onProceed}: {onProceed: VoidFunction}
 	const [sortBy, set_sortBy] = useState<string>('apy');
 	const [sortDirection, set_sortDirection] = useState<'asc' | 'desc'>('desc');
 
+	const isValid = useMemo((): boolean => {
+		return Object.values(selected).every((row): boolean => {
+			if (row.isSelected && toBigInt(row.amount?.raw) === 0n) {
+				return false;
+			}
+			return true;
+		}) && Object.values(selected).some((row): boolean => row.isSelected);
+	}, [selected]);
+
 	const balancesToDisplay = useMemo((): ReactElement[] => {
 		balancesNonce;
 		return (
@@ -96,7 +105,7 @@ const ViewTable = memo(function ViewTable({onProceed}: {onProceed: VoidFunction}
 					<div>
 						<Button
 							variant={'reverted-alt'}
-							isDisabled={!isActive || Object.keys(selected).length === 0}
+							isDisabled={!isActive || Object.keys(selected).length === 0 || !isValid}
 							onClick={onProceed}>
 							{'Migrate selected'}
 						</Button>

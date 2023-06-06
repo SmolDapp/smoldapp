@@ -23,7 +23,6 @@
 	@apply hover:!bg-neutral-100/80;
 }
 
-
 .yearn--button {
 	@apply rounded-md;
 	&[data-variant="reverted"] {
@@ -282,42 +281,13 @@ details {
 ** A custom overwrite is required for dark/light mode
 **************************************************************************************************/
 .appBox {
-	--x-px: calc(var(--x) * 1px);
-	--y-px: calc(var(--y) * 1px);
-	--opacity: var(--opacity);
-	--color: hsl(var(--color-neutral-100));
-	@apply relative flex aspect-video h-full w-full cursor-pointer flex-col items-start border border-neutral-300/50 p-6 shadow shadow-transparent transition-all duration-[400ms] rounded-default;
-
-	&:before,
-	&:after {
-		@apply pointer-events-none block absolute inset-[0px] z-[-1];
-		content: "";
-		z-index: -1;
-		opacity: var(--opacity);
-		background: radial-gradient(
-			1200px circle at var(--x-px) var(--y-px),
-			var(--color),
-			transparent 40%
-		);
-		transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-	}
-	&:before {
-		@apply pointer-events-none z-[-1];
-	}
+	@apply relative flex aspect-video h-full w-full cursor-pointer flex-col items-start border border-neutral-300 p-6 transition-colors rounded-default hover:bg-neutral-900 hover:text-neutral-0 duration-[400ms] ;
 }
 
 /**************************************************************************************************
 ** The WordWrapper css is used for the animation with the text in the header. This animation require
 ** letters to be splitted and a custom css is required to make it work.
 ***************************************************************************************************/
-.wordWrapper {
-	display: inline-block;
-	vertical-align: top;
-	margin: 0;
-}
-.word {
-	@apply absolute text-neutral-900 font-bold text-5xl md:text-8xl uppercase text-center flex justify-center items-center w-[300px] md:w-[600px];
-}
 .patternSVG {
 	@apply absolute inset-0 -z-10 h-full w-full stroke-neutral-500/10 [mask-image:radial-gradient(100%_100%_at_top_right,black,transparent)];
 }

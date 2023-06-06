@@ -4,6 +4,7 @@ import IconCircleCross from 'components/icons/IconCircleCross';
 import IconSpinner from 'components/icons/IconSpinner';
 import {approveERC20, disperseERC20, disperseETH, isApprovedERC20} from 'utils/actions';
 import {getTransferTransaction} from 'utils/gnosis.tools';
+import {notifyDisperse} from 'utils/notifier';
 import {erc20ABI, useContractRead} from 'wagmi';
 import {useDisperse} from '@disperse/useDisperse';
 import {useSafeAppsSDK} from '@gnosis.pm/safe-apps-react-sdk';
@@ -16,7 +17,7 @@ import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
 import {defaultTxStatus} from '@yearn-finance/web-lib/utils/web3/transaction';
 
 import type {ReactElement} from 'react';
-import type {BaseError} from 'viem';
+import type {BaseError, Hex} from 'viem';
 import type {TAddress} from '@yearn-finance/web-lib/types';
 import type {TDisperseElement} from '@disperse/useDisperse';
 import type {BaseTransaction} from '@gnosis.pm/safe-apps-sdk';
@@ -53,11 +54,7 @@ function ApprovalWizard({refetch, allowance}: TApprovalWizardProps): ReactElemen
 		});
 		if (result.isSuccessful) {
 			await refetch();
-			toast({type: 'success', content: 'Approval successful!'});
 			return document.getElementById('DISPERSE_TOKENS')?.click();
-		}
-		if (result.error) {
-			toast({type: 'error', content: result.error.shortMessage});
 		}
 	}, [provider, tokenToDisperse.address, totalToDisperse, refetch]);
 
@@ -138,7 +135,7 @@ function DisperseWizardItem({row}: {row: TDisperseElement}): ReactElement {
 }
 
 function ViewApprovalWizard(): ReactElement {
-	const {address, provider, walletType} = useWeb3();
+	const {address, provider, walletType, chainID} = useWeb3();
 	const {onResetDisperse, tokenToDisperse, disperseArray, isDispersed} = useDisperse();
 	const {sdk} = useSafeAppsSDK();
 	const isGnosisSafe = (walletType === 'EMBED_GNOSIS_SAFE');
@@ -161,6 +158,8 @@ function ViewApprovalWizard(): ReactElement {
 	**********************************************************************************************/
 	const onDisperseTokensForGnosis = useCallback(async (): Promise<void> => {
 		const transactions: BaseTransaction[] = [];
+		const disperseAddresses: TAddress[] = [];
+		const disperseAmount: bigint[] = [];
 		for (const row of disperseArray) {
 			if (!row.amount || row.amount?.raw === 0n) {
 				continue;
@@ -168,6 +167,8 @@ function ViewApprovalWizard(): ReactElement {
 			if (!row.address || row.address === ZERO_ADDRESS || row.address === ETH_TOKEN_ADDRESS) {
 				continue;
 			}
+			disperseAddresses.push(row.address);
+			disperseAmount.push(row.amount.raw);
 			const newTransactionForBatch = getTransferTransaction(
 				row.amount.raw.toString(),
 				tokenToDisperse.address,
@@ -179,10 +180,19 @@ function ViewApprovalWizard(): ReactElement {
 			const {safeTxHash} = await sdk.txs.send({txs: transactions});
 			console.log({hash: safeTxHash});
 			toast({type: 'success', content: 'Your transaction has been created! You can now sign and execute it!'});
+			notifyDisperse({
+				chainID: chainID,
+				tokenToDisperse: tokenToDisperse,
+				receivers: disperseAddresses,
+				amounts: disperseAmount,
+				type: 'SAFE',
+				from: toAddress(address),
+				hash: safeTxHash as Hex
+			});
 		} catch (error) {
 			toast({type: 'error', content: (error as BaseError)?.message || 'An error occured while creating your transaction!'});
 		}
-	}, [disperseArray, sdk.txs, tokenToDisperse.address]);
+	}, [address, chainID, disperseArray, sdk.txs, tokenToDisperse]);
 
 	const onDisperseTokens = useCallback(async (): Promise<void> => {
 		if (isGnosisSafe) {
@@ -207,11 +217,18 @@ function ViewApprovalWizard(): ReactElement {
 				statusHandler: set_disperseStatus
 			});
 			if (result.isSuccessful) {
-				toast({type: 'success', content: 'Coin dispersed!'});
 				onResetDisperse();
-			}
-			if (result.error) {
-				toast({type: 'error', content: result.error.shortMessage});
+				if (result.receipt) {
+					notifyDisperse({
+						chainID: chainID,
+						tokenToDisperse: tokenToDisperse,
+						receivers: disperseAddresses,
+						amounts: disperseAmount,
+						type: 'EOA',
+						from: result.receipt.from,
+						hash: result.receipt.transactionHash
+					});
+				}
 			}
 		} else {
 			const result = await disperseERC20({
@@ -223,14 +240,21 @@ function ViewApprovalWizard(): ReactElement {
 				statusHandler: set_disperseStatus
 			});
 			if (result.isSuccessful) {
-				toast({type: 'success', content: 'Tokens dispersed!'});
 				onResetDisperse();
-			}
-			if (result.error) {
-				toast({type: 'error', content: result.error.shortMessage});
+				if (result.receipt) {
+					notifyDisperse({
+						chainID: chainID,
+						tokenToDisperse: tokenToDisperse,
+						receivers: disperseAddresses,
+						amounts: disperseAmount,
+						type: 'EOA',
+						from: result.receipt.from,
+						hash: result.receipt.transactionHash
+					});
+				}
 			}
 		}
-	}, [isGnosisSafe, disperseArray, tokenToDisperse.address, onDisperseTokensForGnosis, provider, onResetDisperse]);
+	}, [isGnosisSafe, disperseArray, tokenToDisperse, onDisperseTokensForGnosis, provider, onResetDisperse, chainID]);
 
 	function renderStatusIndicator(): ReactElement {
 		if (isDispersed) {
@@ -252,9 +276,9 @@ function ViewApprovalWizard(): ReactElement {
 		<section>
 			<div className={'box-0 relative flex w-full flex-col items-center justify-center overflow-hidden p-0 md:p-6'}>
 				<div className={'mb-0 w-full p-4 md:mb-6 md:p-0'}>
-					<b>{'Disperse!'}</b>
+					<b>{'Let’s Disperse!'}</b>
 					<p className={'w-full text-sm text-neutral-500 md:w-3/4'}>
-						{'Here you go! You just have to sign and execute the transaction and the tokens will be dispersed! We hope you will enjoy this feature!'}
+						{'Ready? Just sign and execute the transaction and your tokens will fly through cyberspace to their destination addresses. Thanks for using disperse. See you again soon.'}
 					</p>
 				</div>
 

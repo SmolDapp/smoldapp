@@ -64,9 +64,9 @@ function ViewTokenToSend({onProceed}: {onProceed: VoidFunction}): ReactElement {
 			<div className={'box-0 grid w-full grid-cols-12'}>
 				<div className={'col-span-12 flex flex-col p-4 text-neutral-900 md:p-6'}>
 					<div className={'w-full md:w-3/4'}>
-						<b>{'Select token to disperse'}</b>
+						<b>{'What token do you want to send?'}</b>
 						<p className={'text-sm text-neutral-500'}>
-							{'Choose the token you’d like to send to multiple recipient. If it’s not listed, you can enter the token address manually.'}
+							{'Pick the token you’d like to disperse, (aka send to multiple recipients or wallets). Token not listed? Don’t worry anon, just enter the token address manually. Go you.'}
 						</p>
 					</div>
 					<form
@@ -98,6 +98,7 @@ function ViewTokenToSend({onProceed}: {onProceed: VoidFunction}): ReactElement {
 						</div>
 						<div className={'col-span-12 md:col-span-3'}>
 							<Button
+								variant={'filled'}
 								className={'yearn--button !w-[160px] rounded-md !text-sm'}
 								onClick={(): void => {
 									if (toAddress(tokenToSend) !== ZERO_ADDRESS) {

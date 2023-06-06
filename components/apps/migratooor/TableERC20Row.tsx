@@ -29,18 +29,22 @@ function TableERC20Row({address: tokenAddress, balance}: TERC20RowProps): ReactE
 	const {chain} = getNetwork();
 	const currentNativeToken = useMemo((): TTokenInfo => getNativeToken(safeChainID), [safeChainID]);
 	const isSelected = useMemo((): boolean => selected[toAddress(tokenAddress)]?.isSelected, [selected, tokenAddress]);
+	const tokenSymbol = useMemo((): string => balance.symbol || 'unknown', [balance.symbol]);
+	const tokenDecimals = useMemo((): number => balance.decimals || 18, [balance.decimals]);
 
 	const updateAmountOnChangeChain = useCallback((): void => {
 		set_selected((prev): TDict<TSelectedElement> => ({
 			...prev,
 			[toAddress(tokenAddress)]: {
 				address: tokenAddress,
+				symbol: tokenSymbol,
+				decimals: tokenDecimals,
 				amount: {raw: -1n, normalized: 0},
 				status: 'none',
 				isSelected: false
 			}
 		}));
-	}, [set_selected, tokenAddress]);
+	}, [set_selected, tokenAddress, tokenDecimals, tokenSymbol]);
 
 	const onChangeAmount = useCallback((event: ChangeEvent<HTMLInputElement>): void => {
 		let	newAmount = handleInputChangeEventValue(event, balance?.decimals || 18);
@@ -51,6 +55,7 @@ function TableERC20Row({address: tokenAddress, balance}: TERC20RowProps): ReactE
 			...prev,
 			[toAddress(tokenAddress)]: {
 				...prev[toAddress(tokenAddress)],
+				isSelected: true,
 				amount: newAmount
 			}
 		}));
@@ -85,6 +90,8 @@ function TableERC20Row({address: tokenAddress, balance}: TERC20RowProps): ReactE
 				...prev,
 				[toAddress(tokenAddress)]: {
 					address: tokenAddress,
+					symbol: tokenSymbol,
+					decimals: tokenDecimals,
 					amount: {raw: -1n, normalized: 0},
 					status: 'none',
 					isSelected: false

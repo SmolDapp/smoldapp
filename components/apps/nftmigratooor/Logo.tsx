@@ -9,7 +9,7 @@ function	LogoNFTMigratooor(props: React.SVGProps<SVGSVGElement>): ReactElement {
 			viewBox={'0 0 512 512'}
 			fill={'none'}
 			xmlns={'http://www.w3.org/2000/svg'}>
-			<g clip-path={'url(#clip0_68_29)'}>
+			<g clipPath={'url(#clip0_68_29)'}>
 				<mask
 					id={'mask0_68_29'}
 					maskUnits={'userSpaceOnUse'}
@@ -29,206 +29,206 @@ function	LogoNFTMigratooor(props: React.SVGProps<SVGSVGElement>): ReactElement {
 						height={'512'}
 						fill={'white'}/>
 					<path
-						fill-rule={'evenodd'}
-						clip-rule={'evenodd'}
+						fillRule={'evenodd'}
+						clipRule={'evenodd'}
 						d={'M255.36 128H256V0H255.36V128Z'}
 						fill={'url(#paint0_radial_68_29)'}
 						fill-opacity={'0.03'}/>
 					<path
-						fill-rule={'evenodd'}
-						clip-rule={'evenodd'}
+						fillRule={'evenodd'}
+						clipRule={'evenodd'}
 						d={'M255.36 256H256V128H255.36V256Z'}
 						fill={'url(#paint1_radial_68_29)'}
 						fill-opacity={'0.03'}/>
 					<path
-						fill-rule={'evenodd'}
-						clip-rule={'evenodd'}
+						fillRule={'evenodd'}
+						clipRule={'evenodd'}
 						d={'M255.36 384H256V256H255.36V384Z'}
 						fill={'url(#paint2_radial_68_29)'}
 						fill-opacity={'0.03'}/>
 					<path
-						fill-rule={'evenodd'}
-						clip-rule={'evenodd'}
+						fillRule={'evenodd'}
+						clipRule={'evenodd'}
 						d={'M255.36 512H256V384H255.36V512Z'}
 						fill={'url(#paint3_radial_68_29)'}
 						fill-opacity={'0.03'}/>
 					<path
-						fill-rule={'evenodd'}
-						clip-rule={'evenodd'}
+						fillRule={'evenodd'}
+						clipRule={'evenodd'}
 						d={'M256 128H320V0H319.36V126.72H256V128Z'}
 						fill={'url(#paint4_radial_68_29)'}
 						fill-opacity={'0.03'}/>
 					<path
-						fill-rule={'evenodd'}
-						clip-rule={'evenodd'}
+						fillRule={'evenodd'}
+						clipRule={'evenodd'}
 						d={'M256 256H320V128H319.36V254.72H256V256Z'}
 						fill={'url(#paint5_radial_68_29)'}
 						fill-opacity={'0.03'}/>
 					<path
-						fill-rule={'evenodd'}
-						clip-rule={'evenodd'}
+						fillRule={'evenodd'}
+						clipRule={'evenodd'}
 						d={'M256 384H320V256H319.36V382.72H256V384Z'}
 						fill={'url(#paint6_radial_68_29)'}
 						fill-opacity={'0.03'}/>
 					<path
-						fill-rule={'evenodd'}
-						clip-rule={'evenodd'}
+						fillRule={'evenodd'}
+						clipRule={'evenodd'}
 						d={'M319.36 512H320V384H319.36V512Z'}
 						fill={'url(#paint7_radial_68_29)'}
 						fill-opacity={'0.03'}/>
 					<path
-						fill-rule={'evenodd'}
-						clip-rule={'evenodd'}
+						fillRule={'evenodd'}
+						clipRule={'evenodd'}
 						d={'M320 128H384V0H383.36V126.72H320V128Z'}
 						fill={'url(#paint8_radial_68_29)'}
 						fill-opacity={'0.03'}/>
 					<path
-						fill-rule={'evenodd'}
-						clip-rule={'evenodd'}
+						fillRule={'evenodd'}
+						clipRule={'evenodd'}
 						d={'M384 128H448V0H447.36V126.72H384V128Z'}
 						fill={'url(#paint9_radial_68_29)'}
 						fill-opacity={'0.03'}/>
 					<path
-						fill-rule={'evenodd'}
-						clip-rule={'evenodd'}
+						fillRule={'evenodd'}
+						clipRule={'evenodd'}
 						d={'M320 256H384V128H383.36V254.72H320V256Z'}
 						fill={'url(#paint10_radial_68_29)'}
 						fill-opacity={'0.03'}/>
 					<path
-						fill-rule={'evenodd'}
-						clip-rule={'evenodd'}
+						fillRule={'evenodd'}
+						clipRule={'evenodd'}
 						d={'M384 256H448V128H447.36V254.72H384V256Z'}
 						fill={'url(#paint11_radial_68_29)'}
 						fill-opacity={'0.03'}/>
 					<path
-						fill-rule={'evenodd'}
-						clip-rule={'evenodd'}
+						fillRule={'evenodd'}
+						clipRule={'evenodd'}
 						d={'M320 384H384V256H383.36V382.72H320V384Z'}
 						fill={'url(#paint12_radial_68_29)'}
 						fill-opacity={'0.03'}/>
 					<path
-						fill-rule={'evenodd'}
-						clip-rule={'evenodd'}
+						fillRule={'evenodd'}
+						clipRule={'evenodd'}
 						d={'M384 384H448V256H447.36V382.72H384V384Z'}
 						fill={'url(#paint13_radial_68_29)'}
 						fill-opacity={'0.03'}/>
 					<path
-						fill-rule={'evenodd'}
-						clip-rule={'evenodd'}
+						fillRule={'evenodd'}
+						clipRule={'evenodd'}
 						d={'M383.36 512H384V384H383.36V512Z'}
 						fill={'url(#paint14_radial_68_29)'}
 						fill-opacity={'0.03'}/>
 					<path
-						fill-rule={'evenodd'}
-						clip-rule={'evenodd'}
+						fillRule={'evenodd'}
+						clipRule={'evenodd'}
 						d={'M447.36 512H448V384H447.36V512Z'}
 						fill={'url(#paint15_radial_68_29)'}
 						fill-opacity={'0.03'}/>
 					<path
-						fill-rule={'evenodd'}
-						clip-rule={'evenodd'}
+						fillRule={'evenodd'}
+						clipRule={'evenodd'}
 						d={'M448 126.72V128H512V126.72H448Z'}
 						fill={'url(#paint16_radial_68_29)'}
 						fill-opacity={'0.03'}/>
 					<path
-						fill-rule={'evenodd'}
-						clip-rule={'evenodd'}
+						fillRule={'evenodd'}
+						clipRule={'evenodd'}
 						d={'M448 254.72V256H512V254.72H448Z'}
 						fill={'url(#paint17_radial_68_29)'}
 						fill-opacity={'0.03'}/>
 					<path
-						fill-rule={'evenodd'}
-						clip-rule={'evenodd'}
+						fillRule={'evenodd'}
+						clipRule={'evenodd'}
 						d={'M448 382.72V384H512V382.72H448Z'}
 						fill={'url(#paint18_radial_68_29)'}
 						fill-opacity={'0.03'}/>
 					<path
-						fill-rule={'evenodd'}
-						clip-rule={'evenodd'}
+						fillRule={'evenodd'}
+						clipRule={'evenodd'}
 						d={'M0 128H64V0H63.36V126.72H0V128Z'}
 						fill={'url(#paint19_radial_68_29)'}
 						fill-opacity={'0.03'}/>
 					<path
-						fill-rule={'evenodd'}
-						clip-rule={'evenodd'}
+						fillRule={'evenodd'}
+						clipRule={'evenodd'}
 						d={'M0 256H64V128H63.36V254.72H0V256Z'}
 						fill={'url(#paint20_radial_68_29)'}
 						fill-opacity={'0.03'}/>
 					<path
-						fill-rule={'evenodd'}
-						clip-rule={'evenodd'}
+						fillRule={'evenodd'}
+						clipRule={'evenodd'}
 						d={'M0 384H64V256H63.36V382.72H0V384Z'}
 						fill={'url(#paint21_radial_68_29)'}
 						fill-opacity={'0.03'}/>
 					<path
-						fill-rule={'evenodd'}
-						clip-rule={'evenodd'}
+						fillRule={'evenodd'}
+						clipRule={'evenodd'}
 						d={'M63.36 512H64V384H63.36V512Z'}
 						fill={'url(#paint22_radial_68_29)'}
 						fill-opacity={'0.03'}/>
 					<path
-						fill-rule={'evenodd'}
-						clip-rule={'evenodd'}
+						fillRule={'evenodd'}
+						clipRule={'evenodd'}
 						d={'M64 128H128V0H127.36V126.72H64V128Z'}
 						fill={'url(#paint23_radial_68_29)'}
 						fill-opacity={'0.03'}/>
 					<path
-						fill-rule={'evenodd'}
-						clip-rule={'evenodd'}
+						fillRule={'evenodd'}
+						clipRule={'evenodd'}
 						d={'M64 256H128V128H127.36V254.72H64V256Z'}
 						fill={'url(#paint24_radial_68_29)'}
 						fill-opacity={'0.03'}/>
 					<path
-						fill-rule={'evenodd'}
-						clip-rule={'evenodd'}
+						fillRule={'evenodd'}
+						clipRule={'evenodd'}
 						d={'M64 384H128V256H127.36V382.72H64V384Z'}
 						fill={'url(#paint25_radial_68_29)'}
 						fill-opacity={'0.03'}/>
 					<path
-						fill-rule={'evenodd'}
-						clip-rule={'evenodd'}
+						fillRule={'evenodd'}
+						clipRule={'evenodd'}
 						d={'M127.36 512H128V384H127.36V512Z'}
 						fill={'url(#paint26_radial_68_29)'}
 						fill-opacity={'0.03'}/>
 					<path
-						fill-rule={'evenodd'}
-						clip-rule={'evenodd'}
+						fillRule={'evenodd'}
+						clipRule={'evenodd'}
 						d={'M128 128H192V0H191.36V126.72H128V128Z'}
 						fill={'url(#paint27_radial_68_29)'}
 						fill-opacity={'0.03'}/>
 					<path
-						fill-rule={'evenodd'}
-						clip-rule={'evenodd'}
+						fillRule={'evenodd'}
+						clipRule={'evenodd'}
 						d={'M128 256H192V128H191.36V254.72H128V256Z'}
 						fill={'url(#paint28_radial_68_29)'}
 						fill-opacity={'0.03'}/>
 					<path
-						fill-rule={'evenodd'}
-						clip-rule={'evenodd'}
+						fillRule={'evenodd'}
+						clipRule={'evenodd'}
 						d={'M128 384H192V256H191.36V382.72H128V384Z'}
 						fill={'url(#paint29_radial_68_29)'}
 						fill-opacity={'0.03'}/>
 					<path
-						fill-rule={'evenodd'}
-						clip-rule={'evenodd'}
+						fillRule={'evenodd'}
+						clipRule={'evenodd'}
 						d={'M191.36 512H192V384H191.36V512Z'}
 						fill={'url(#paint30_radial_68_29)'}
 						fill-opacity={'0.03'}/>
 					<path
-						fill-rule={'evenodd'}
-						clip-rule={'evenodd'}
+						fillRule={'evenodd'}
+						clipRule={'evenodd'}
 						d={'M192 126.72V128H256V126.72H192Z'}
 						fill={'url(#paint31_radial_68_29)'}
 						fill-opacity={'0.03'}/>
 					<path
-						fill-rule={'evenodd'}
-						clip-rule={'evenodd'}
+						fillRule={'evenodd'}
+						clipRule={'evenodd'}
 						d={'M192 254.72V256H256V254.72H192Z'}
 						fill={'url(#paint32_radial_68_29)'}
 						fill-opacity={'0.03'}/>
 					<path
-						fill-rule={'evenodd'}
-						clip-rule={'evenodd'}
+						fillRule={'evenodd'}
+						clipRule={'evenodd'}
 						d={'M192 382.72V384H256V382.72H192Z'}
 						fill={'url(#paint33_radial_68_29)'}
 						fill-opacity={'0.03'}/>
@@ -246,12 +246,12 @@ function	LogoNFTMigratooor(props: React.SVGProps<SVGSVGElement>): ReactElement {
 					r={'1'}
 					gradientUnits={'userSpaceOnUse'}
 					gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
 					<stop
 						offset={'0.49975'}
-						stop-color={'#0D0D0D'}
-						stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+						stopColor={'#0D0D0D'}
+						stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient
 					id={'paint1_radial_68_29'}
@@ -260,12 +260,12 @@ function	LogoNFTMigratooor(props: React.SVGProps<SVGSVGElement>): ReactElement {
 					r={'1'}
 					gradientUnits={'userSpaceOnUse'}
 					gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
 					<stop
 						offset={'0.49975'}
-						stop-color={'#0D0D0D'}
-						stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+						stopColor={'#0D0D0D'}
+						stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient
 					id={'paint2_radial_68_29'}
@@ -274,12 +274,12 @@ function	LogoNFTMigratooor(props: React.SVGProps<SVGSVGElement>): ReactElement {
 					r={'1'}
 					gradientUnits={'userSpaceOnUse'}
 					gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
 					<stop
 						offset={'0.49975'}
-						stop-color={'#0D0D0D'}
-						stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+						stopColor={'#0D0D0D'}
+						stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient
 					id={'paint3_radial_68_29'}
@@ -288,12 +288,12 @@ function	LogoNFTMigratooor(props: React.SVGProps<SVGSVGElement>): ReactElement {
 					r={'1'}
 					gradientUnits={'userSpaceOnUse'}
 					gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
 					<stop
 						offset={'0.49975'}
-						stop-color={'#0D0D0D'}
-						stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+						stopColor={'#0D0D0D'}
+						stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient
 					id={'paint4_radial_68_29'}
@@ -302,12 +302,12 @@ function	LogoNFTMigratooor(props: React.SVGProps<SVGSVGElement>): ReactElement {
 					r={'1'}
 					gradientUnits={'userSpaceOnUse'}
 					gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
 					<stop
 						offset={'0.49975'}
-						stop-color={'#0D0D0D'}
-						stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+						stopColor={'#0D0D0D'}
+						stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient
 					id={'paint5_radial_68_29'}
@@ -316,12 +316,12 @@ function	LogoNFTMigratooor(props: React.SVGProps<SVGSVGElement>): ReactElement {
 					r={'1'}
 					gradientUnits={'userSpaceOnUse'}
 					gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
 					<stop
 						offset={'0.49975'}
-						stop-color={'#0D0D0D'}
-						stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+						stopColor={'#0D0D0D'}
+						stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient
 					id={'paint6_radial_68_29'}
@@ -330,12 +330,12 @@ function	LogoNFTMigratooor(props: React.SVGProps<SVGSVGElement>): ReactElement {
 					r={'1'}
 					gradientUnits={'userSpaceOnUse'}
 					gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
 					<stop
 						offset={'0.49975'}
-						stop-color={'#0D0D0D'}
-						stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+						stopColor={'#0D0D0D'}
+						stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient
 					id={'paint7_radial_68_29'}
@@ -344,12 +344,12 @@ function	LogoNFTMigratooor(props: React.SVGProps<SVGSVGElement>): ReactElement {
 					r={'1'}
 					gradientUnits={'userSpaceOnUse'}
 					gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
 					<stop
 						offset={'0.49975'}
-						stop-color={'#0D0D0D'}
-						stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+						stopColor={'#0D0D0D'}
+						stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient
 					id={'paint8_radial_68_29'}
@@ -358,12 +358,12 @@ function	LogoNFTMigratooor(props: React.SVGProps<SVGSVGElement>): ReactElement {
 					r={'1'}
 					gradientUnits={'userSpaceOnUse'}
 					gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
 					<stop
 						offset={'0.49975'}
-						stop-color={'#0D0D0D'}
-						stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+						stopColor={'#0D0D0D'}
+						stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient
 					id={'paint9_radial_68_29'}
@@ -372,12 +372,12 @@ function	LogoNFTMigratooor(props: React.SVGProps<SVGSVGElement>): ReactElement {
 					r={'1'}
 					gradientUnits={'userSpaceOnUse'}
 					gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
 					<stop
 						offset={'0.49975'}
-						stop-color={'#0D0D0D'}
-						stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+						stopColor={'#0D0D0D'}
+						stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient
 					id={'paint10_radial_68_29'}
@@ -386,12 +386,12 @@ function	LogoNFTMigratooor(props: React.SVGProps<SVGSVGElement>): ReactElement {
 					r={'1'}
 					gradientUnits={'userSpaceOnUse'}
 					gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
 					<stop
 						offset={'0.49975'}
-						stop-color={'#0D0D0D'}
-						stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+						stopColor={'#0D0D0D'}
+						stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient
 					id={'paint11_radial_68_29'}
@@ -400,12 +400,12 @@ function	LogoNFTMigratooor(props: React.SVGProps<SVGSVGElement>): ReactElement {
 					r={'1'}
 					gradientUnits={'userSpaceOnUse'}
 					gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
 					<stop
 						offset={'0.49975'}
-						stop-color={'#0D0D0D'}
-						stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+						stopColor={'#0D0D0D'}
+						stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient
 					id={'paint12_radial_68_29'}
@@ -414,12 +414,12 @@ function	LogoNFTMigratooor(props: React.SVGProps<SVGSVGElement>): ReactElement {
 					r={'1'}
 					gradientUnits={'userSpaceOnUse'}
 					gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
 					<stop
 						offset={'0.49975'}
-						stop-color={'#0D0D0D'}
-						stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+						stopColor={'#0D0D0D'}
+						stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient
 					id={'paint13_radial_68_29'}
@@ -428,12 +428,12 @@ function	LogoNFTMigratooor(props: React.SVGProps<SVGSVGElement>): ReactElement {
 					r={'1'}
 					gradientUnits={'userSpaceOnUse'}
 					gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
 					<stop
 						offset={'0.49975'}
-						stop-color={'#0D0D0D'}
-						stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+						stopColor={'#0D0D0D'}
+						stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient
 					id={'paint14_radial_68_29'}
@@ -442,12 +442,12 @@ function	LogoNFTMigratooor(props: React.SVGProps<SVGSVGElement>): ReactElement {
 					r={'1'}
 					gradientUnits={'userSpaceOnUse'}
 					gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
 					<stop
 						offset={'0.49975'}
-						stop-color={'#0D0D0D'}
-						stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+						stopColor={'#0D0D0D'}
+						stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient
 					id={'paint15_radial_68_29'}
@@ -456,12 +456,12 @@ function	LogoNFTMigratooor(props: React.SVGProps<SVGSVGElement>): ReactElement {
 					r={'1'}
 					gradientUnits={'userSpaceOnUse'}
 					gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
 					<stop
 						offset={'0.49975'}
-						stop-color={'#0D0D0D'}
-						stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+						stopColor={'#0D0D0D'}
+						stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient
 					id={'paint16_radial_68_29'}
@@ -470,12 +470,12 @@ function	LogoNFTMigratooor(props: React.SVGProps<SVGSVGElement>): ReactElement {
 					r={'1'}
 					gradientUnits={'userSpaceOnUse'}
 					gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
 					<stop
 						offset={'0.49975'}
-						stop-color={'#0D0D0D'}
-						stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+						stopColor={'#0D0D0D'}
+						stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient
 					id={'paint17_radial_68_29'}
@@ -484,12 +484,12 @@ function	LogoNFTMigratooor(props: React.SVGProps<SVGSVGElement>): ReactElement {
 					r={'1'}
 					gradientUnits={'userSpaceOnUse'}
 					gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
 					<stop
 						offset={'0.49975'}
-						stop-color={'#0D0D0D'}
-						stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+						stopColor={'#0D0D0D'}
+						stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient
 					id={'paint18_radial_68_29'}
@@ -498,12 +498,12 @@ function	LogoNFTMigratooor(props: React.SVGProps<SVGSVGElement>): ReactElement {
 					r={'1'}
 					gradientUnits={'userSpaceOnUse'}
 					gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
 					<stop
 						offset={'0.49975'}
-						stop-color={'#0D0D0D'}
-						stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+						stopColor={'#0D0D0D'}
+						stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient
 					id={'paint19_radial_68_29'}
@@ -512,12 +512,12 @@ function	LogoNFTMigratooor(props: React.SVGProps<SVGSVGElement>): ReactElement {
 					r={'1'}
 					gradientUnits={'userSpaceOnUse'}
 					gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
 					<stop
 						offset={'0.49975'}
-						stop-color={'#0D0D0D'}
-						stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+						stopColor={'#0D0D0D'}
+						stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient
 					id={'paint20_radial_68_29'}
@@ -526,12 +526,12 @@ function	LogoNFTMigratooor(props: React.SVGProps<SVGSVGElement>): ReactElement {
 					r={'1'}
 					gradientUnits={'userSpaceOnUse'}
 					gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
 					<stop
 						offset={'0.49975'}
-						stop-color={'#0D0D0D'}
-						stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+						stopColor={'#0D0D0D'}
+						stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient
 					id={'paint21_radial_68_29'}
@@ -540,12 +540,12 @@ function	LogoNFTMigratooor(props: React.SVGProps<SVGSVGElement>): ReactElement {
 					r={'1'}
 					gradientUnits={'userSpaceOnUse'}
 					gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
 					<stop
 						offset={'0.49975'}
-						stop-color={'#0D0D0D'}
-						stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+						stopColor={'#0D0D0D'}
+						stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient
 					id={'paint22_radial_68_29'}
@@ -554,12 +554,12 @@ function	LogoNFTMigratooor(props: React.SVGProps<SVGSVGElement>): ReactElement {
 					r={'1'}
 					gradientUnits={'userSpaceOnUse'}
 					gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
 					<stop
 						offset={'0.49975'}
-						stop-color={'#0D0D0D'}
-						stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+						stopColor={'#0D0D0D'}
+						stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient
 					id={'paint23_radial_68_29'}
@@ -568,12 +568,12 @@ function	LogoNFTMigratooor(props: React.SVGProps<SVGSVGElement>): ReactElement {
 					r={'1'}
 					gradientUnits={'userSpaceOnUse'}
 					gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
 					<stop
 						offset={'0.49975'}
-						stop-color={'#0D0D0D'}
-						stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+						stopColor={'#0D0D0D'}
+						stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient
 					id={'paint24_radial_68_29'}
@@ -582,12 +582,12 @@ function	LogoNFTMigratooor(props: React.SVGProps<SVGSVGElement>): ReactElement {
 					r={'1'}
 					gradientUnits={'userSpaceOnUse'}
 					gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
 					<stop
 						offset={'0.49975'}
-						stop-color={'#0D0D0D'}
-						stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+						stopColor={'#0D0D0D'}
+						stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient
 					id={'paint25_radial_68_29'}
@@ -596,12 +596,12 @@ function	LogoNFTMigratooor(props: React.SVGProps<SVGSVGElement>): ReactElement {
 					r={'1'}
 					gradientUnits={'userSpaceOnUse'}
 					gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
 					<stop
 						offset={'0.49975'}
-						stop-color={'#0D0D0D'}
-						stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+						stopColor={'#0D0D0D'}
+						stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient
 					id={'paint26_radial_68_29'}
@@ -610,12 +610,12 @@ function	LogoNFTMigratooor(props: React.SVGProps<SVGSVGElement>): ReactElement {
 					r={'1'}
 					gradientUnits={'userSpaceOnUse'}
 					gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
 					<stop
 						offset={'0.49975'}
-						stop-color={'#0D0D0D'}
-						stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+						stopColor={'#0D0D0D'}
+						stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient
 					id={'paint27_radial_68_29'}
@@ -624,12 +624,12 @@ function	LogoNFTMigratooor(props: React.SVGProps<SVGSVGElement>): ReactElement {
 					r={'1'}
 					gradientUnits={'userSpaceOnUse'}
 					gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
 					<stop
 						offset={'0.49975'}
-						stop-color={'#0D0D0D'}
-						stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+						stopColor={'#0D0D0D'}
+						stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient
 					id={'paint28_radial_68_29'}
@@ -638,12 +638,12 @@ function	LogoNFTMigratooor(props: React.SVGProps<SVGSVGElement>): ReactElement {
 					r={'1'}
 					gradientUnits={'userSpaceOnUse'}
 					gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
 					<stop
 						offset={'0.49975'}
-						stop-color={'#0D0D0D'}
-						stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+						stopColor={'#0D0D0D'}
+						stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient
 					id={'paint29_radial_68_29'}
@@ -652,12 +652,12 @@ function	LogoNFTMigratooor(props: React.SVGProps<SVGSVGElement>): ReactElement {
 					r={'1'}
 					gradientUnits={'userSpaceOnUse'}
 					gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
 					<stop
 						offset={'0.49975'}
-						stop-color={'#0D0D0D'}
-						stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+						stopColor={'#0D0D0D'}
+						stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient
 					id={'paint30_radial_68_29'}
@@ -666,12 +666,12 @@ function	LogoNFTMigratooor(props: React.SVGProps<SVGSVGElement>): ReactElement {
 					r={'1'}
 					gradientUnits={'userSpaceOnUse'}
 					gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
 					<stop
 						offset={'0.49975'}
-						stop-color={'#0D0D0D'}
-						stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+						stopColor={'#0D0D0D'}
+						stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient
 					id={'paint31_radial_68_29'}
@@ -680,12 +680,12 @@ function	LogoNFTMigratooor(props: React.SVGProps<SVGSVGElement>): ReactElement {
 					r={'1'}
 					gradientUnits={'userSpaceOnUse'}
 					gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
 					<stop
 						offset={'0.49975'}
-						stop-color={'#0D0D0D'}
-						stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+						stopColor={'#0D0D0D'}
+						stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient
 					id={'paint32_radial_68_29'}
@@ -694,12 +694,12 @@ function	LogoNFTMigratooor(props: React.SVGProps<SVGSVGElement>): ReactElement {
 					r={'1'}
 					gradientUnits={'userSpaceOnUse'}
 					gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
 					<stop
 						offset={'0.49975'}
-						stop-color={'#0D0D0D'}
-						stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+						stopColor={'#0D0D0D'}
+						stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient
 					id={'paint33_radial_68_29'}
@@ -708,12 +708,12 @@ function	LogoNFTMigratooor(props: React.SVGProps<SVGSVGElement>): ReactElement {
 					r={'1'}
 					gradientUnits={'userSpaceOnUse'}
 					gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
 					<stop
 						offset={'0.49975'}
-						stop-color={'#0D0D0D'}
-						stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+						stopColor={'#0D0D0D'}
+						stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<clipPath id={'clip0_68_29'}>
 					<rect
