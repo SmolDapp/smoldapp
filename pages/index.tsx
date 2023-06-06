@@ -113,8 +113,8 @@ function	AppBox({app}: {app: typeof apps[0]}): ReactElement {
 function	Index(): ReactElement {
 	return (
 		<Fragment>
-			<div className={'mx-auto grid w-full max-w-5xl'}>
-				<div className={'mb-10 mt-6 grid grid-cols-12 flex-col md:mb-14 md:mt-20'}>
+			<div className={'mx-auto grid w-full max-w-5xl px-4'}>
+				<div className={'mb-0 mt-10 grid grid-cols-6 flex-col md:mb-14 md:mt-20 md:grid-cols-12'}>
 					<div className={'col-span-6'}>
 						<h1 className={'flex text-5xl font-bold lowercase text-neutral-900 md:text-8xl'}>{'Smol'}</h1>
 						<div className={'mb-2 mt-4'}>
@@ -135,13 +135,12 @@ function	Index(): ReactElement {
 							</Link>
 						</div>
 					</div>
-					<div id={'container'} className={'col-span-6 flex items-center justify-center'}>
+					<div id={'container'} className={'col-span-6 hidden items-center justify-center md:flex'}>
 						<p className={'text-neutral-400'}>{'Oh no so much empty space'}</p>
 					</div>
 				</div>
 			</div>
-			<div className={'mx-auto grid w-full max-w-5xl'}>
-
+			<div className={'mx-auto grid w-full max-w-5xl px-4'}>
 				<section className={'mb-20 grid grid-cols-1 gap-10 md:grid-cols-3'}>
 					{apps.map((app): ReactElement => <AppBox key={app.href} app={app} />)}
 				</section>

@@ -26,7 +26,7 @@ function	Hero(props: React.SVGProps<SVGSVGElement>): ReactElement {
 			<path
 				d={'M50.3996 25.7998H91.8996L112.7 61.6998L91.8996 97.6998H50.3996L29.5996 61.6998L50.3996 25.7998Z'}
 				fill={'currentColor'}
-				fill-opacity={'0.2'}>
+				fillOpacity={'0.2'}>
 			</path>
 			<path
 				d={'M36.1 1H106.3L141.4 61.7L106.3 122.5H36.1L1 61.7L36.1 1Z'}
