@@ -39,10 +39,20 @@ module.exports = (phase) => withTM(withPWA({
 			}
 		];
 	},
-	rewrites: [
-		{source: '/:path*', has: [{type: 'host', value: 'disperse.smold.app'}], destination: '/disperse'},
-		{source: '/:path*', has: [{type: 'host', value: 'migrate.smold.app'}], destination: '/migratooor/:path*'}
-	],
+	async rewrites() {
+		return [
+			{source: '/:path*', has: [{type: 'host', value: 'disperse.smold.app'}], destination: '/disperse'},
+			{source: '/:path*', has: [{type: 'host', value: 'migrate.smold.app'}], destination: '/migratooor/:path*'},
+			{
+				source: '/js/script.js',
+				destination: 'https://plausible.io/js/script.js'
+			},
+			{
+				source: '/api/event',
+				destination: 'https://plausible.io/api/event'
+			}
+		];
+	},
 	env: {
 		JSON_RPC_URL: {
 			1: process.env.RPC_URL_MAINNET,

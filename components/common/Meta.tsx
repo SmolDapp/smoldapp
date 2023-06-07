@@ -73,7 +73,10 @@ function	Meta(): ReactElement {
 					rel={'apple-touch-icon'}
 					sizes={'167x167'}
 					href={'/favicons/apple-icon-167x167.png'} />
-
+				<script
+					defer
+					data-domain={'smold.app'}
+					src={'/js/script.js'} />
 				<meta name={'robots'} content={'index,nofollow'} />
 				<meta name={'googlebot'} content={'index,nofollow'} />
 				<meta charSet={'utf-8'} />
