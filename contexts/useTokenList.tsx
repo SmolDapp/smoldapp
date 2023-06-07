@@ -38,7 +38,8 @@ export const TokenListContextApp = ({children}: {children: React.ReactElement}):
 		axios.all([
 			axios.get('https://raw.githubusercontent.com/Migratooor/tokenLists/main/lists/paraswap.json'),
 			axios.get('https://raw.githubusercontent.com/Migratooor/tokenLists/main/lists/1/yearn.json'),
-			axios.get('https://raw.githubusercontent.com/Migratooor/tokenLists/main/lists/optimism.json')
+			axios.get('https://raw.githubusercontent.com/Migratooor/tokenLists/main/lists/optimism.json'),
+			axios.get('https://raw.githubusercontent.com/Migratooor/tokenLists/main/lists/tokenlistooor.json')
 		]).then(axios.spread((...responses): void => {
 			const tokenListTokens: TDict<TTokenInfo> = {};
 			const defaultList = defaultTokenList as TTokenList;
