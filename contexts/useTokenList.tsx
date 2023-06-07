@@ -1,10 +1,8 @@
 import React, {createContext, useContext, useMemo, useState} from 'react';
 import defaultTokenList from 'utils/tokenLists.json';
-import {getNativeToken} from 'utils/toWagmiProvider';
 import axios from 'axios';
 import {useMountEffect} from '@react-hookz/web';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
-import {ETH_TOKEN_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
 
 import type {Dispatch, SetStateAction} from 'react';
 import type {TAddress, TDict} from '@yearn-finance/web-lib/types';
