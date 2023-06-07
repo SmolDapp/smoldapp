@@ -10,7 +10,7 @@ import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUp
 
 import type {ReactElement} from 'react';
 
-function Home(): ReactElement {
+function Disperse(): ReactElement {
 	const {walletType} = useWeb3();
 	const {tokenToDisperse, currentStep, set_currentStep} = useDisperse();
 	const isGnosisSafe = (walletType === 'EMBED_GNOSIS_SAFE');
@@ -64,10 +64,10 @@ function Home(): ReactElement {
 	);
 }
 
-export default function Wrapper(): ReactElement {
+export default function DisperseWrapper(): ReactElement {
 	return (
 		<DisperseContextApp>
-			<Home />
+			<Disperse />
 		</DisperseContextApp>
 	);
 }

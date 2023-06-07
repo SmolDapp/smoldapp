@@ -7,6 +7,9 @@ import LogoNFTMigratooor from '@nftmigratooor/Logo';
 import LogoTokenlistooor from '@tokenlistooor/Logo';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 
+import DisperseWrapper from './disperse';
+
+import type {GetServerSidePropsContext, GetServerSidePropsResult} from 'next';
 import type {ReactElement} from 'react';
 
 const	apps = [
@@ -110,7 +113,11 @@ function	AppBox({app}: {app: typeof apps[0]}): ReactElement {
 	);
 }
 
-function	Index(): ReactElement {
+function	Index(props: {app: string}): ReactElement {
+	const {app} = props;
+	if (app === 'disperse') {
+		return <DisperseWrapper />;
+	}
 	return (
 		<Fragment>
 			<div className={'mx-auto grid w-full max-w-5xl px-4'}>
@@ -150,3 +157,23 @@ function	Index(): ReactElement {
 }
 
 export default Index;
+
+
+type TResult = {
+	app?: string
+}
+export async function getServerSideProps(context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<TResult>> {
+	const {host} = context.req.headers;
+	const referrer = context.req.headers.referer;
+	if ([referrer, host]?.includes('disperse')) {
+		return {
+			props: {
+				app: 'disperse'
+			}
+		};
+	}
+
+	return {
+		props: {}
+	};
+}
