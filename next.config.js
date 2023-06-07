@@ -40,7 +40,7 @@ module.exports = (phase) => withTM(withPWA({
 		];
 	},
 	rewrites: [
-		{source: '/:path*', has: [{type: 'host', value: 'disperse.smold.app'}], destination: '/disperse/:path*'},
+		{source: '/:path*', has: [{type: 'host', value: 'disperse.smold.app'}], destination: '/disperse'},
 		{source: '/:path*', has: [{type: 'host', value: 'migrate.smold.app'}], destination: '/migratooor/:path*'}
 	],
 	env: {
