@@ -41,7 +41,7 @@ function	MyApp(props: AppProps): ReactElement {
 							<SafeProvider>
 								<main
 									id={'app'}
-									className={`flex h-screen flex-col ${inter.variable}`}>
+									className={`flex flex-col ${inter.variable}`}>
 									<AppWrapper {...props} />
 								</main>
 								{!shouldHidePopover && <FeebackPopover />}

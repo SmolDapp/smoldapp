@@ -13,6 +13,33 @@ import type {ReactElement} from 'react';
 
 type TRequestType = 'bug' | 'feature';
 
+export const getPosition = (element: HTMLElement): {x: number, y: number} => {
+	const currentTop = window.pageXOffset;
+	const currentLeft = window.pageYOffset;
+
+	if (element) {
+		if (element.getBoundingClientRect) {
+			const {top, left} = element.getBoundingClientRect();
+			return {x: left + currentLeft, y: top + currentTop};
+		}
+		// polyfill
+		let xPosition = 0;
+		let yPosition = 0;
+
+		while (element) {
+			xPosition += element.offsetLeft - element.scrollLeft + element.clientLeft;
+			yPosition += element.offsetTop - element.scrollTop + element.clientTop;
+			if (element.offsetParent) {
+				element = element.offsetParent as HTMLElement;
+			}
+		}
+		return {x: xPosition, y: yPosition};
+
+	}
+
+	return {x: 0, y: 0};
+};
+
 export function FeebackPopover(): ReactElement {
 	const [referenceElement, set_referenceElement] = useState<HTMLButtonElement | null>(null);
 	const [popperElement, set_popperElement] = useState<HTMLDivElement | null>(null);
@@ -37,27 +64,14 @@ export function FeebackPopover(): ReactElement {
 			closeCallback();
 			return;
 		}
-		console.dir(body);
-		console.warn({
+		const canvas = await html2canvas(body, {
 			allowTaint: true,
-			foreignObjectRendering: true,
-			backgroundColor: null,
-			windowWidth: body.scrollWidth,
-			scrollX: window.screenX,
-			windowHeight: body.scrollHeight,
-			scrollY: window.screenY,
-			offsetWidth: body.offsetWidth,
-			offsetHeight: body.offsetHeight
-		});
-		const canvas = await html2canvas(document.body, {
-			allowTaint: true,
-			// foreignObjectRendering: true,
 			width: window.innerWidth,
 			height: window.innerHeight,
 			scrollX: window.pageXOffset,
 			scrollY: window.pageYOffset,
 			x: window.pageXOffset,
-			y: window.pageYOffset,
+			y: window.pageYOffset + window.scrollY,
 			ignoreElements: (element): boolean => element.id === 'headlessui-portal-root'
 		});
 		const reporter = ens || lensProtocolHandle || (address ? truncateHex(toAddress(address), 4) : '');

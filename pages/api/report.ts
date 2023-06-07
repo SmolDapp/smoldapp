@@ -33,7 +33,7 @@ export default async function handler(req: TRequest, res: NextApiResponse<{ mess
 			Input.fromLocalFile(screenshot.filepath),
 			{
 				disable_notification: true,
-				message_thread_id: Number(process.env.TELEGRAM_REPORT_CHAT_THREAD),
+				// message_thread_id: Number(process.env.TELEGRAM_REPORT_CHAT_THREAD),
 				caption: fields.messages,
 				parse_mode: 'Markdown'
 			}
