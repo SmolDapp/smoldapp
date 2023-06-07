@@ -7,6 +7,7 @@ import config from 'utils/wagmiConfig';
 import {SafeProvider} from '@gnosis.pm/safe-apps-react-sdk';
 import {Inter} from '@next/font/google';
 import {useLocalStorageValue} from '@react-hookz/web';
+import {Analytics} from '@vercel/analytics/react';
 import {WithYearn} from '@yearn-finance/web-lib/contexts/WithYearn';
 import {FeebackPopover} from '@common/FeebackPopover';
 
@@ -49,6 +50,7 @@ function	MyApp(props: AppProps): ReactElement {
 					</WalletContextApp>
 				</TokenListContextApp>
 			</WithYearn>
+			<Analytics />
 		</>
 	);
 }

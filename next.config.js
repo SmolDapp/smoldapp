@@ -35,13 +35,13 @@ module.exports = (phase) => withTM(withPWA({
 			{
 				source: '/',
 				has: [{type: 'host', value: 'disperse.smold.app'}],
-				destination: '/disperse/',
+				destination: '/disperse',
 				permanent: true
 			},
 			{
 				source: '/',
 				has: [{type: 'host', value: 'migrate.smold.app'}],
-				destination: '/migratooor/',
+				destination: '/migratooor',
 				permanent: true
 			},
 			{

@@ -19,6 +19,7 @@
 		"@popperjs/core": "^2.11.8",
 		"@react-hookz/web": "^23.0.1",
 		"@tailwindcss/forms": "^0.5.3",
+		"@vercel/analytics": "^1.0.1",
 		"@wagmi/core": "^1.1.0",
 		"@yearn-finance/web-lib": "^0.20.58",
 		"axios": "^1.4.0",
