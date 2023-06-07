@@ -42,8 +42,8 @@ module.exports = (phase) => withTM(withPWA({
 	},
 	async rewrites() {
 		return [
-			{source: '/*', has: [{type: 'host', value: 'disperse.smold.app'}], destination: '/disperse/*'},
-			{source: '/*', has: [{type: 'host', value: 'migrate.smold.app'}], destination: '/migratooor/*'},
+			{source: '/', has: [{type: 'host', value: 'disperse.smold.app'}], destination: '/disperse/'},
+			{source: '/', has: [{type: 'host', value: 'migrate.smold.app'}], destination: '/migratooor/'},
 			{
 				source: '/js/script.js',
 				destination: 'https://plausible.io/js/script.js'
