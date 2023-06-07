@@ -73,7 +73,7 @@ const ViewTableOpenSea = memo(function ViewTableOpenSea({onProceed}: {onProceed:
 				return newSelected;
 			});
 		}
-	}, []);
+	}, [set_selected]);
 
 	/**********************************************************************************************
 	** Callback method for selecting one specific NFT. This will select it if it's not selected,
@@ -90,7 +90,7 @@ const ViewTableOpenSea = memo(function ViewTableOpenSea({onProceed}: {onProceed:
 			}
 			return newSelected;
 		});
-	}, []);
+	}, [set_selected]);
 
 	/**********************************************************************************************
 	** Callback method to determine if a specific NFT is selected.
