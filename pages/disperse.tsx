@@ -31,6 +31,18 @@ function Disperse(): ReactElement {
 
 	return (
 		<div className={'mx-auto grid w-full max-w-4xl'}>
+			{/* <div className={'mb-10 mt-6 flex flex-col justify-center md:mt-20'}>
+				<h1 className={'-ml-1 mt-4 text-3xl tracking-tight text-neutral-900 md:mt-6 md:text-5xl'}>
+					{'One click token selling.'}
+				</h1>
+				<b className={'mt-4 w-3/4 text-base leading-normal text-neutral-500 md:text-lg md:leading-8'}>
+					{'Dump multiple tokens in a single transaction.'}
+				</b>
+				<span className={'text-base leading-normal text-neutral-500 md:text-lg md:leading-8'}>
+					{'Quicker, easier, and less gas. Ready to dump anon?'}
+				</span>
+			</div> */}
+
 			<ViewWallet
 				onSelect={(): void => {
 					set_currentStep(Step.TOSEND);

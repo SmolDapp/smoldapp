@@ -130,7 +130,7 @@ function	Index(props: {app: string}): ReactElement {
 
 	return (
 		<Fragment>
-			<div className={'mx-auto grid w-full max-w-5xl px-4'}>
+			<div className={'mx-auto grid w-full max-w-4xl'}>
 				<div className={'mb-0 mt-10 grid grid-cols-6 flex-col md:mb-14 md:mt-20 md:grid-cols-12'}>
 					<div className={'col-span-6'}>
 						<h1 className={'flex text-5xl font-bold lowercase text-neutral-900 md:text-8xl'}>{'Smol'}</h1>
@@ -157,8 +157,8 @@ function	Index(props: {app: string}): ReactElement {
 					</div>
 				</div>
 			</div>
-			<div className={'mx-auto grid w-full max-w-5xl px-4'}>
-				<section className={'mb-20 grid grid-cols-1 gap-10 md:grid-cols-3'}>
+			<div className={'mx-auto grid w-full max-w-4xl'}>
+				<section className={'mb-20 grid grid-cols-1 gap-6 md:grid-cols-3'}>
 					{apps.map((app): ReactElement => <AppBox key={app.href} app={app} />)}
 				</section>
 			</div>

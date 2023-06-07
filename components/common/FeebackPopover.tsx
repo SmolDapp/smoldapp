@@ -31,18 +31,33 @@ export function FeebackPopover(): ReactElement {
 	async function onSubmit(closeCallback: VoidFunction): Promise<void> {
 		set_isSubmitDisabled(true);
 
-		const body = document.getElementById('app');
+		const {body} = document;
 		if (!body) {
 			set_isSubmitDisabled(false);
 			closeCallback();
 			return;
 		}
-		const canvas = await html2canvas(body, {
+		console.dir(body);
+		console.warn({
 			allowTaint: true,
 			foreignObjectRendering: true,
 			backgroundColor: null,
 			windowWidth: body.scrollWidth,
+			scrollX: window.screenX,
 			windowHeight: body.scrollHeight,
+			scrollY: window.screenY,
+			offsetWidth: body.offsetWidth,
+			offsetHeight: body.offsetHeight
+		});
+		const canvas = await html2canvas(document.body, {
+			allowTaint: true,
+			// foreignObjectRendering: true,
+			width: window.innerWidth,
+			height: window.innerHeight,
+			scrollX: window.pageXOffset,
+			scrollY: window.pageYOffset,
+			x: window.pageXOffset,
+			y: window.pageYOffset,
 			ignoreElements: (element): boolean => element.id === 'headlessui-portal-root'
 		});
 		const reporter = ens || lensProtocolHandle || (address ? truncateHex(toAddress(address), 4) : '');
