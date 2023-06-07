@@ -170,7 +170,7 @@ function ComboboxAddressInput({possibleValues, value, onChangeValue, onAddValue}
 		const currentElement = possibleValues?.[toAddress(value)];
 		return (
 			<div className={'relative flex w-full flex-row items-center space-x-4'}>
-				<div key={value} className={'h-6 w-6'}>
+				<div key={`${value}_${currentElement?.chainId || 0}`} className={'h-6 w-6'}>
 					<ImageWithFallback
 						alt={''}
 						unoptimized
@@ -261,7 +261,7 @@ function ComboboxAddressInput({possibleValues, value, onChangeValue, onAddValue}
 									.slice(0, 100)
 									.map((dest): ReactElement => (
 										<ComboboxOption
-											key={`${dest.address}`}
+											key={`${dest.address}_${dest.chainId}`}
 											option={dest} />
 									))
 							)}

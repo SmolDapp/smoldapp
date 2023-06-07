@@ -23,7 +23,7 @@ export function getNativeToken(chainID = 1): TTokenInfo {
 		name: currentChain?.nativeCurrency.name || 'Ether',
 		symbol: currentChain?.nativeCurrency.symbol || 'ETH',
 		decimals: currentChain?.nativeCurrency.decimals || 18,
-		logoURI: `https://assets.smold.app/api/token/1/${ETH_TOKEN_ADDRESS}/logo-128.png`
+		logoURI: `https://assets.smold.app/api/token/${chainID}/${ETH_TOKEN_ADDRESS}/logo-128.png`
 	});
 }
 

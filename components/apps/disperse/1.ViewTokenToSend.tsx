@@ -20,9 +20,7 @@ function ViewTokenToSend({onProceed}: {onProceed: VoidFunction}): ReactElement {
 	const {tokenList} = useTokenList();
 	const [tokenToSend, set_tokenToSend] = useState<string>(ETH_TOKEN_ADDRESS);
 	const [isValidTokenToReceive, set_isValidTokenToReceive] = useState<boolean | 'undetermined'>(true);
-	const [possibleTokenToReceive, set_possibleTokenToReceive] = useState<TDict<TTokenInfo>>({
-		[ETH_TOKEN_ADDRESS]: getNativeToken()
-	});
+	const [possibleTokenToReceive, set_possibleTokenToReceive] = useState<TDict<TTokenInfo>>({});
 
 	/* 🔵 - Yearn Finance **************************************************************************
 	** On mount, fetch the token list from the tokenlistooor repo for the cowswap token list, which
@@ -30,16 +28,15 @@ function ViewTokenToSend({onProceed}: {onProceed: VoidFunction}): ReactElement {
 	** Only the tokens in that list will be displayed as possible destinations.
 	**********************************************************************************************/
 	useDeepCompareEffect((): void => {
-		// set_possibleTokenToReceive(tokenList);
 		const possibleDestinationsTokens: TDict<TTokenInfo> = {};
-		possibleDestinationsTokens[ETH_TOKEN_ADDRESS] = getNativeToken();
+		possibleDestinationsTokens[ETH_TOKEN_ADDRESS] = getNativeToken(safeChainID);
 		for (const eachToken of Object.values(tokenList)) {
 			if (eachToken.chainId === safeChainID) {
 				possibleDestinationsTokens[toAddress(eachToken.address)] = eachToken;
 			}
 		}
 		set_possibleTokenToReceive(possibleDestinationsTokens);
-	}, [tokenList]);
+	}, [tokenList, safeChainID]);
 
 
 	/* 🔵 - Yearn Finance **************************************************************************
