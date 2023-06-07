@@ -1,21 +1,23 @@
 import React, {useState} from 'react';
 import ComboboxAddressInput from 'components/common/ComboboxAddressInput';
-import tokenlist from 'utils/tokenLists.json';
+import {useTokenList} from 'contexts/useTokenList';
 import {getNativeToken} from 'utils/toWagmiProvider';
-import axios from 'axios';
 import {Step, useDisperse} from '@disperse/useDisperse';
-import {useMountEffect, useUpdateEffect} from '@react-hookz/web';
+import {useDeepCompareEffect, useUpdateEffect} from '@react-hookz/web';
 import {Button} from '@yearn-finance/web-lib/components/Button';
+import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {isZeroAddress, toAddress} from '@yearn-finance/web-lib/utils/address';
 import {ETH_TOKEN_ADDRESS, ZERO_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
 import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUpdates';
 
-import type {TTokenInfo, TTokenList} from 'contexts/useTokenList';
+import type {TTokenInfo} from 'contexts/useTokenList';
 import type {ReactElement} from 'react';
 import type {TDict} from '@yearn-finance/web-lib/types';
 
 function ViewTokenToSend({onProceed}: {onProceed: VoidFunction}): ReactElement {
+	const {safeChainID} = useChainID();
 	const {currentStep, tokenToDisperse, set_tokenToDisperse} = useDisperse();
+	const {tokenList} = useTokenList();
 	const [tokenToSend, set_tokenToSend] = useState<string>(ETH_TOKEN_ADDRESS);
 	const [isValidTokenToReceive, set_isValidTokenToReceive] = useState<boolean | 'undetermined'>(true);
 	const [possibleTokenToReceive, set_possibleTokenToReceive] = useState<TDict<TTokenInfo>>({
@@ -27,26 +29,18 @@ function ViewTokenToSend({onProceed}: {onProceed: VoidFunction}): ReactElement {
 	** will be used to populate the tokenToDisperse token combobox.
 	** Only the tokens in that list will be displayed as possible destinations.
 	**********************************************************************************************/
-	useMountEffect((): void => {
-		axios.all([axios.get('https://raw.githubusercontent.com/Migratooor/tokenLists/main/lists/1/yearn.json')]).then(axios.spread((yearnResponse): void => {
-			const cowswapTokenListResponse = tokenlist as TTokenList;
-			const yearnTokenListResponse = yearnResponse.data as TTokenList;
-			const possibleDestinationsTokens: TDict<TTokenInfo> = {};
-			possibleDestinationsTokens[ETH_TOKEN_ADDRESS] = getNativeToken();
-			for (const eachToken of cowswapTokenListResponse.tokens) {
-				if (eachToken.extra) {
-					continue;
-				}
+	useDeepCompareEffect((): void => {
+		// set_possibleTokenToReceive(tokenList);
+		const possibleDestinationsTokens: TDict<TTokenInfo> = {};
+		possibleDestinationsTokens[ETH_TOKEN_ADDRESS] = getNativeToken();
+		for (const eachToken of Object.values(tokenList)) {
+			if (eachToken.chainId === safeChainID) {
 				possibleDestinationsTokens[toAddress(eachToken.address)] = eachToken;
 			}
-			for (const eachToken of yearnTokenListResponse.tokens) {
-				if (eachToken.symbol.startsWith('yv')) {
-					possibleDestinationsTokens[toAddress(eachToken.address)] = eachToken;
-				}
-			}
-			set_possibleTokenToReceive(possibleDestinationsTokens);
-		}));
-	});
+		}
+		set_possibleTokenToReceive(possibleDestinationsTokens);
+	}, [tokenList]);
+
 
 	/* 🔵 - Yearn Finance **************************************************************************
 	** When the tokenToDisperse token changes, check if it is a valid tokenToDisperse token. The check is

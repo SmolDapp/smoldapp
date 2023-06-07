@@ -257,11 +257,13 @@ function ComboboxAddressInput({possibleValues, value, onChangeValue, onAddValue}
 									}} />
 
 							) : (
-								[...filteredBalances[0], ...filteredBalances[1]].map((dest): ReactElement => (
-									<ComboboxOption
-										key={`${dest.address}`}
-										option={dest} />
-								))
+								[...filteredBalances[0], ...filteredBalances[1]]
+									.slice(0, 100)
+									.map((dest): ReactElement => (
+										<ComboboxOption
+											key={`${dest.address}`}
+											option={dest} />
+									))
 							)}
 						</Combobox.Options>
 					</Transition>

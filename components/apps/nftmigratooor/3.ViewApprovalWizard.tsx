@@ -107,7 +107,6 @@ function ViewApprovalWizard(): ReactElement {
 		const newStatus: TDict<TApprovalStatus> = {};
 		Object.entries(groupedByCollection).forEach(([collectionAddress, collection], index): void => {
 			if (collection?.[0]?.assetContract?.schema_name === 'ERC721') {
-				console.warn(result[index]);
 				newStatus[toAddress(collectionAddress)] = decodeAsBoolean(result[index]) ? 'Approved' : 'Not Approved';
 			}
 		});

@@ -1,5 +1,5 @@
 {
-    "name": "CoW Swap",
+    "name": "defaultTokenList",
     "description": "",
     "timestamp": "21/03/2023 17:05:12",
     "version": {
@@ -7,12 +7,8 @@
         "minor": 3,
         "patch": 0
     },
-    "logoURI": "https://gnosis.mypinata.cloud/ipfs/Qme9B6jRpGtZsRFcPjHvA5T4ugFuL4c3SzWfxyMPa59AMo",
-    "keywords": [
-        "default",
-        "list",
-        "cowswap"
-    ],
+    "logoURI": "",
+    "keywords": [],
     "tokens": [
 		{
             "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
