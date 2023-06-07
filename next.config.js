@@ -32,6 +32,7 @@ module.exports = (phase) => withTM(withPWA({
 	},
 	redirects() {
 		return [
+
 			{
 				source: '/github',
 				destination: 'https://github.com/SmolDapp/smoldapp',
@@ -41,8 +42,8 @@ module.exports = (phase) => withTM(withPWA({
 	},
 	async rewrites() {
 		return [
-			{source: '/:path*', has: [{type: 'host', value: 'disperse.smold.app'}], destination: '/disperse'},
-			{source: '/:path*', has: [{type: 'host', value: 'migrate.smold.app'}], destination: '/migratooor/:path*'},
+			{source: '*', has: [{type: 'host', value: 'disperse.smold.app'}], destination: '/disperse*'},
+			{source: '*', has: [{type: 'host', value: 'migrate.smold.app'}], destination: '/migratooor*'},
 			{
 				source: '/js/script.js',
 				destination: 'https://plausible.io/js/script.js'
