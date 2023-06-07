@@ -39,6 +39,10 @@ module.exports = (phase) => withTM(withPWA({
 			}
 		];
 	},
+	rewrites: [
+		{source: '/:path*', has: [{type: 'host', value: 'disperse.smold.app'}], destination: '/disperse/:path*'},
+		{source: '/:path*', has: [{type: 'host', value: 'migrate.smold.app'}], destination: '/migratooor/:path*'}
+	],
 	env: {
 		JSON_RPC_URL: {
 			1: process.env.RPC_URL_MAINNET,
