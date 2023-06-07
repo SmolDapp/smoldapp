@@ -92,6 +92,7 @@ function AddressInput({value, onChangeValue}: {
 					}}
 					onChange={async (e): Promise<void> => onChange(e.target.value)}
 					required
+					autoComplete={'off'}
 					spellCheck={false}
 					placeholder={'0x...'}
 					type={'text'}

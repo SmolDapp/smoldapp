@@ -1,4 +1,4 @@
-import React, {Fragment, memo, useCallback, useMemo, useState} from 'react';
+import React, {Fragment, memo, useCallback, useEffect, useMemo, useState} from 'react';
 import IconCheck from 'components/icons/IconCheck';
 import IconCircleCross from 'components/icons/IconCircleCross';
 import IconSquareMinus from 'components/icons/IconSquareMinus';
@@ -9,12 +9,12 @@ import {handleInputChangeEventValue} from 'utils/handleInputChangeEventValue';
 import lensProtocol from 'utils/lens.tools';
 import {isAddress} from 'viem';
 import {newVoidRow, useDisperse} from '@disperse/useDisperse';
-import {useMountEffect, useUpdateEffect} from '@react-hookz/web';
+import {useMountEffect} from '@react-hookz/web';
 import {fetchEnsAddress} from '@wagmi/core';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import IconLoader from '@yearn-finance/web-lib/icons/IconLoader';
 import {isZeroAddress, toAddress} from '@yearn-finance/web-lib/utils/address';
-import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
+import {parseUnits, toBigInt, toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
 import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUpdates';
 
@@ -49,9 +49,10 @@ type TAddressLikeInput = {
 	label: string;
 	onChangeLabel: (label: string) => void;
 	onChange: (address: string | undefined) => void;
+	onPaste: (UUID: string, pasted: string) => void;
 	isDuplicate?: boolean;
 }
-function AddressLikeInput({uuid, label, onChangeLabel, onChange, isDuplicate}: TAddressLikeInput): ReactElement {
+function AddressLikeInput({uuid, label, onChangeLabel, onChange, onPaste, isDuplicate}: TAddressLikeInput): ReactElement {
 	const [isValidDestination, set_isValidDestination] = useState<boolean | 'undetermined'>('undetermined');
 	const [isValidish, set_isValidish] = useState<boolean | 'undetermined'>('undetermined');
 	const [isLoadingValidish, set_isLoadingValidish] = useState<boolean>(false);
@@ -71,7 +72,18 @@ function AddressLikeInput({uuid, label, onChangeLabel, onChange, isDuplicate}: T
 		return 'none';
 	}, [isValidDestination, isValidish, isDuplicate, label, isLoadingValidish]);
 
-	useUpdateEffect((): void => {
+	const looksValidAddress = useCallback((value: string): boolean => {
+		if (value.endsWith('.eth')) {
+			return true;
+		} if (value.endsWith('.lens')) {
+			return true;
+		} if (!isZeroAddress(toAddress(value))) {
+			return true;
+		}
+		return false;
+	}, []);
+
+	useEffect((): void => {
 		set_isValidDestination('undetermined');
 		set_isValidish('undetermined');
 		if (label.endsWith('.eth')) {
@@ -113,6 +125,15 @@ function AddressLikeInput({uuid, label, onChangeLabel, onChange, isDuplicate}: T
 					spellCheck={false}
 					placeholder={'0x...'}
 					value={label}
+					onPaste={(e): void => {
+						const value = e.clipboardData.getData('text/plain');
+						const isValidValue = looksValidAddress(value);
+						if (isValidValue) {
+							set_isValidDestination('undetermined');
+							return onChangeLabel(value);
+						}
+						onPaste(uuid, value);
+					}}
 					onChange={(e): void => {
 						set_isValidDestination('undetermined');
 						onChangeLabel(e.target.value);
@@ -231,7 +252,42 @@ const ViewTable = memo(function ViewTable({onProceed}: {onProceed: VoidFunction}
 			return {...row, amount};
 		}));
 	}
-
+	function onHandleMultiplePaste(UUID: string, pasted: string): void {
+		const separators = [' ', '-', ';'];
+		const addressAmounts = pasted.split('\n').map((line): [string, string] => {
+			const addressAmount = line.split(separators.find((separator): boolean => line.includes(separator)) ?? ' ');
+			return [addressAmount[0], addressAmount[1]];
+		});
+		const newRows = addressAmounts.map((addressAmount): TDisperseElement => {
+			const row = newVoidRow();
+			row.address = toAddress(addressAmount[0]);
+			row.label = String(addressAmount[0]);
+			try {
+				if (addressAmount[1].includes('.') || addressAmount[1].includes(',')) {
+					const normalizedAmount = Number(addressAmount[1]);
+					const raw = parseUnits(normalizedAmount, tokenToDisperse.decimals || 18);
+					const amount = toNormalizedBN(raw, tokenToDisperse.decimals || 18);
+					row.amount = amount;
+				} else {
+					const amount = toNormalizedBN(addressAmount[1], tokenToDisperse.decimals || 18);
+					row.amount = amount;
+				}
+			} catch (e) {
+				row.amount = toNormalizedBN(0n, tokenToDisperse.decimals || 18);
+			}
+			return row;
+		});
+		set_disperseArray(
+			disperseArray.reduce((acc, row): TDisperseElement[] => {
+				if (row.UUID === UUID) {
+					if (row.address && row.amount && !isZeroAddress(row.address) && row.amount.raw !== 0n) {
+						return [...acc, row, ...newRows];
+					}
+					return [...acc, ...newRows];
+				}
+				return [...acc, row];
+			}, [] as TDisperseElement[]));
+	}
 	const isValid = useMemo((): boolean => {
 		return disperseArray.every((row): boolean => {
 			if (!row.label && !row.address && toBigInt(row.amount?.raw) === 0n) {
@@ -284,7 +340,8 @@ const ViewTable = memo(function ViewTable({onProceed}: {onProceed: VoidFunction}
 									isDuplicate={checkAlreadyExists(UUID, toAddress(disperseArray[i].address))}
 									label={disperseArray[i].label}
 									onChangeLabel={(label): void => onUpdateLabelByUUID(UUID, label)}
-									onChange={(address): void => onUpdateAddressByUUID(UUID, address)} />
+									onChange={(address): void => onUpdateAddressByUUID(UUID, address)}
+									onPaste={onHandleMultiplePaste} />
 								<div className={'flex flex-row items-center justify-center space-x-4'}>
 									<AmountToSendInput
 										token={tokenToDisperse}
