@@ -83,7 +83,7 @@ export function FeebackPopover(): ReactElement {
 				<PopoverHeadlessUI.Button
 					className={'fixed bottom-5 right-5 flex h-10 w-10 items-center justify-center rounded-full bg-orange-500'}
 					ref={set_referenceElement}>
-					<IconBug />
+					<IconBug className='w-6 h-6 text-neutral-0' />
 				</PopoverHeadlessUI.Button>
 				<PopoverHeadlessUI.Overlay className={'fixed inset-0 bg-black opacity-30'} />
 				<Transition
