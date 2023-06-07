@@ -18,6 +18,8 @@ export enum	Step {
 export type TSelectedStatus = 'pending' | 'success' | 'error' | 'none';
 export type TSelectedElement = {
 	address: TAddress,
+	symbol: string,
+	decimals: number,
 	amount: TNormalizedBN,
 	status: TSelectedStatus,
 	isSelected: boolean

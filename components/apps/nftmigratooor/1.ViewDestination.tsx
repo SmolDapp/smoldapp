@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import AddressInput, {defaultInputAddressLike} from 'components/common/AddressInput';
-import {useNFTMigratooor} from 'contexts/useNFTMigratooor';
+import {useNFTMigratooor} from '@nftmigratooor/useNFTMigratooor';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import {isZeroAddress, toAddress} from '@yearn-finance/web-lib/utils/address';
 

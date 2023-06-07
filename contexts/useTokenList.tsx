@@ -7,6 +7,7 @@ import type {Dispatch, SetStateAction} from 'react';
 import type {TAddress, TDict} from '@yearn-finance/web-lib/types';
 
 export type TTokenInfo = {
+	extra?: boolean;
 	chainId: number,
 	address: TAddress,
 	name: string,

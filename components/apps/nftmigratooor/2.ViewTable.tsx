@@ -1,6 +1,6 @@
 import React, {memo, useCallback, useMemo} from 'react';
-import Collection from 'components/app/nftmigratooor/OpenSeaCollection';
-import {useNFTMigratooor} from 'contexts/useNFTMigratooor';
+import Collection from '@nftmigratooor/OpenSeaCollection';
+import {useNFTMigratooor} from '@nftmigratooor/useNFTMigratooor';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUpdates';

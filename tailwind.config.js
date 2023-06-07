@@ -31,6 +31,19 @@ module.exports = {
 			'white': 'rgb(255, 255, 255)',
 			'transparent': 'transparent',
 			'inherit': 'inherit',
+			'orange': {
+				50: '#fff7ed',
+				100: '#ffedd5',
+				200: '#fed7aa',
+				300: '#fdba74',
+				400: '#fb923c',
+				500: '#f97316',
+				600: '#ea580c',
+				700: '#c2410c',
+				800: '#9a3412',
+				900: '#7c2d12',
+				950: '#431407'
+			},
 			neutral: {
 				0: withOpacityValue('--color-neutral-0'),
 				50: withOpacityValue('--color-neutral-50'),

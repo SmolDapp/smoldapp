@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import AddressInput, {defaultInputAddressLike} from 'components/common/AddressInput';
-import {useMigratooor} from 'contexts/useMigratooor';
+import {useMigratooor} from '@migratooor/useMigratooor';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import {isZeroAddress, toAddress} from '@yearn-finance/web-lib/utils/address';
 
