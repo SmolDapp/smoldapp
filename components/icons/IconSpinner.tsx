@@ -1,12 +1,13 @@
 import React from 'react';
+import {cl} from '@yearn-finance/web-lib/utils/cl';
 
 import type {ReactElement} from 'react';
 
-function	IconSpinner(props: React.SVGProps<SVGSVGElement>): ReactElement {
+function IconSpinner(props: React.SVGProps<SVGSVGElement>): ReactElement {
 	return (
 		<svg
 			{...props}
-			className={'h-4 w-4 animate-spin text-neutral-900'}
+			className={cl('animate-spin text-neutral-900', 'h-4 w-4', props.className)}
 			xmlns={'http://www.w3.org/2000/svg'}
 			fill={'none'}
 			viewBox={'0 0 24 24'}>

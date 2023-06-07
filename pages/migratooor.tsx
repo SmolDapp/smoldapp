@@ -1,39 +1,46 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import {DefaultSeo} from 'next-seo';
-import ViewApprovalWizard from 'components/views/migratooor/ViewApprovalWizard';
-import ViewDestination from 'components/views/migratooor/ViewDestination';
-import ViewTable from 'components/views/migratooor/ViewTable';
-import ViewWallet from 'components/views/ViewWallet';
-import {MigratooorContextApp, Step, useMigratooor} from 'contexts/useMigratooor';
+import ViewWallet from 'components/apps/0.ViewWallet';
+import ViewDestination from '@migratooor/1.ViewDestination';
+import ViewTable from '@migratooor/2.ViewTable';
+import ViewApprovalWizard from '@migratooor/3.ViewApprovalWizard';
+import {MigratooorContextApp, Step, useMigratooor} from '@migratooor/useMigratooor';
 
 import type {ReactElement} from 'react';
 
 function	Home(): ReactElement {
-	const	{currentStep, set_currentStep} = useMigratooor();
+	const {currentStep, set_currentStep} = useMigratooor();
+
+	const onProceedWallet = useCallback((): void => {
+		set_currentStep(Step.DESTINATION);
+		document?.getElementById('destination')?.scrollIntoView({behavior: 'smooth', block: 'center'});
+	}, [set_currentStep]);
+
+	const onProceedDestination = useCallback((): void => {
+		set_currentStep(Step.SELECTOR);
+		document?.getElementById('selector')?.scrollIntoView({behavior: 'smooth', block: 'center'});
+	}, [set_currentStep]);
+
+	const onProceedSelector = useCallback((): void => {
+		set_currentStep(Step.CONFIRMATION);
+		document?.getElementById('tldr')?.scrollIntoView({behavior: 'smooth', block: 'center'});
+		document?.getElementById('TRIGGER_ERC20_MIGRATOOOR_HIDDEN')?.click();
+	}, [set_currentStep]);
 
 	return (
 		<div className={'mx-auto grid w-full max-w-4xl'}>
-			<ViewWallet
-				onSelect={(): void => {
-					set_currentStep(Step.DESTINATION);
-					document?.getElementById('destination')?.scrollIntoView({behavior: 'smooth', block: 'center'});
-				}} />
+			<ViewWallet onSelect={onProceedWallet} />
 
 			<div
 				id={'destination'}
 				className={`pt-10 transition-opacity ${[Step.SELECTOR, Step.CONFIRMATION, Step.DESTINATION].includes(currentStep) ? 'opacity-100' : 'pointer-events-none h-0 overflow-hidden opacity-0'}`}>
-				<ViewDestination />
+				<ViewDestination onProceed={onProceedDestination} />
 			</div>
 
 			<div
 				id={'selector'}
 				className={`pt-10 transition-opacity ${[Step.SELECTOR, Step.CONFIRMATION].includes(currentStep) ? 'opacity-100' : 'pointer-events-none h-0 overflow-hidden opacity-0'}`}>
-				<ViewTable
-					onProceed={(): void => {
-						set_currentStep(Step.CONFIRMATION);
-						document?.getElementById('tldr')?.scrollIntoView({behavior: 'smooth', block: 'center'});
-						document?.getElementById('TRIGGER_ERC20_MIGRATOOOR_HIDDEN')?.click();
-					}} />
+				<ViewTable onProceed={onProceedSelector} />
 			</div>
 
 			<div

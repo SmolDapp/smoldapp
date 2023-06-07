@@ -34,7 +34,7 @@ module.exports = (phase) => withTM(withPWA({
 		return [
 			{
 				source: '/github',
-				destination: 'https://github.com/SmolDapp/dumpservice',
+				destination: 'https://github.com/SmolDapp/smoldapp',
 				permanent: true
 			}
 		];
@@ -47,6 +47,8 @@ module.exports = (phase) => withTM(withPWA({
 			42161: process.env.RPC_URL_ARBITRUM
 		},
 		RECEIVER_ADDRESS: '0x10001192576E8079f12d6695b0948C2F41320040',
-		DISPERSE_ADDRESS: '0xD152f549545093347A162Dce210e7293f1452150'
+		DISPERSE_ADDRESS: '0xD152f549545093347A162Dce210e7293f1452150',
+		OPENSEA_API_KEY: process.env.OPENSEA_API_KEY
 	}
 }));
+

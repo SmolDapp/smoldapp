@@ -68,8 +68,8 @@ export function getSafeBatchTransferFrom1155(
 	collection: TAddress,
 	from: TAddress,
 	to: TAddress,
-	tokenIDs: string[],
-	amounts: string[]
+	tokenIDs: bigint[],
+	amounts: bigint[]
 ): BaseTransaction {
 	const coder = abiCoder as unknown as AbiCoder;
 	return {
@@ -91,7 +91,7 @@ export function getSafeTransferFrom721(
 	collection: TAddress,
 	from: TAddress,
 	to: TAddress,
-	tokenID: string
+	tokenID: bigint
 ): BaseTransaction {
 	const coder = abiCoder as unknown as AbiCoder;
 	return {
@@ -101,7 +101,7 @@ export function getSafeTransferFrom721(
 			ERC721_TRANSFER, [
 				from,
 				to,
-				tokenID,
+				tokenID.toString(),
 				'0x'
 			]
 		)

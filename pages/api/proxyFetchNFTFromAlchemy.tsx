@@ -1,6 +1,3 @@
-
-
-
 import axios from 'axios';
 
 import type {NextApiRequest, NextApiResponse} from 'next';
@@ -18,8 +15,8 @@ async function fetchAllAssetsFromAlchemy(chainID: number, owner: string, next?: 
 		return [];
 	}
 
-	const	res = await axios.get(`https://${chainIDToNetwork[chainID]}.g.alchemy.com/nft/v2/${process.env.ALCHEMY_API_KEY}/getNFTs?owner=${owner}&pageSize=200${next ? `&cursor=${next}` : ''}`);
-	const	{ownedNfts} = res.data;
+	const res = await axios.get(`https://${chainIDToNetwork[chainID]}.g.alchemy.com/nft/v2/${process.env.ALCHEMY_API_KEY}/getNFTs?owner=${owner}&pageSize=200${next ? `&cursor=${next}` : ''}`);
+	const {ownedNfts} = res.data;
 	if (res.data.next) {
 		return ownedNfts.concat(await fetchAllAssetsFromAlchemy(chainID, owner, res.data.pageKey));
 	}
@@ -27,7 +24,7 @@ async function fetchAllAssetsFromAlchemy(chainID: number, owner: string, next?: 
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<TAlchemyAssets[]>): Promise<void> {
-	const	tokens = await fetchAllAssetsFromAlchemy(
+	const tokens = await fetchAllAssetsFromAlchemy(
 		Number(req.body.chainID),
 		req.body.address as string,
 		''
