@@ -163,9 +163,9 @@ type TResult = {
 	app?: string
 }
 export async function getServerSideProps(context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<TResult>> {
-	const {host} = context.req.headers;
-	const referrer = context.req.headers.referer;
-	if ([referrer, host]?.includes('disperse')) {
+	const {host, referer} = context.req.headers;
+	console.log({host, referer});
+	if ([referer, host]?.includes('disperse')) {
 		return {
 			props: {
 				app: 'disperse'
