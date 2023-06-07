@@ -8,7 +8,7 @@ import {NFTMigratooorContextApp, Step, useNFTMigratooor} from '@nftmigratooor/us
 
 import type {ReactElement} from 'react';
 
-function	Home(): ReactElement {
+function	NFTMigratooor(): ReactElement {
 	const	{currentStep, set_currentStep} = useNFTMigratooor();
 
 	const onProceedWallet = useCallback((): void => {
@@ -52,7 +52,7 @@ function	Home(): ReactElement {
 	);
 }
 
-export default function Wrapper(): ReactElement {
+export default function WrapperNFTMigratooor(): ReactElement {
 	return (
 		<NFTMigratooorContextApp>
 			<>
@@ -81,7 +81,7 @@ export default function Wrapper(): ReactElement {
 						site: '@smoldapp',
 						cardType: 'summary_large_image'
 					}} />
-				<Home />
+				<NFTMigratooor />
 			</>
 		</NFTMigratooorContextApp>
 	);

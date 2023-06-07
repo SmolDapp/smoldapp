@@ -1,4 +1,5 @@
 import React, {useCallback} from 'react';
+import {DefaultSeo} from 'next-seo';
 import ViewWallet from 'components/apps/0.ViewWallet';
 import ViewTokenToSend from '@disperse/1.ViewTokenToSend';
 import ViewTable from '@disperse/2.ViewTable';
@@ -67,7 +68,34 @@ function Disperse(): ReactElement {
 export default function DisperseWrapper(): ReactElement {
 	return (
 		<DisperseContextApp>
-			<Disperse />
+			<>
+				<DefaultSeo
+					title={'Disperse - SmolDapp'}
+					defaultTitle={'Disperse - SmolDapp'}
+					description={'Distribute ether or tokens to multiple addresses'}
+					openGraph={{
+						type: 'website',
+						locale: 'en-US',
+						url: 'https://disperse.smold.app',
+						site_name: 'Disperse - SmolDapp',
+						title: 'Disperse - SmolDapp',
+						description: 'Distribute ether or tokens to multiple addresses',
+						images: [
+							{
+								url: 'https://smold.app/og_disperse.png',
+								width: 800,
+								height: 400,
+								alt: 'disperse'
+							}
+						]
+					}}
+					twitter={{
+						handle: '@smoldapp',
+						site: '@smoldapp',
+						cardType: 'summary_large_image'
+					}} />
+				<Disperse />
+			</>
 		</DisperseContextApp>
 	);
 }

@@ -8,7 +8,7 @@ import {MigratooorContextApp, Step, useMigratooor} from '@migratooor/useMigratoo
 
 import type {ReactElement} from 'react';
 
-function	Home(): ReactElement {
+function	Migrate(): ReactElement {
 	const {currentStep, set_currentStep} = useMigratooor();
 
 	const onProceedWallet = useCallback((): void => {
@@ -52,7 +52,7 @@ function	Home(): ReactElement {
 	);
 }
 
-export default function Wrapper(): ReactElement {
+export default function WrapperMigrate(): ReactElement {
 	return (
 		<MigratooorContextApp>
 			<>
@@ -81,7 +81,7 @@ export default function Wrapper(): ReactElement {
 						site: '@smoldapp',
 						cardType: 'summary_large_image'
 					}} />
-				<Home />
+				<Migrate />
 			</>
 		</MigratooorContextApp>
 	);
