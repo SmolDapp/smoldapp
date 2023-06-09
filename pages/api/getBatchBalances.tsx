@@ -51,7 +51,7 @@ async function getBatchBalances({
 		const calls = [];
 		for (const element of chunkTokens) {
 			const {token} = element;
-			const ownerAddress = address;
+			const ownerAddress = toAddress(address);
 			const isEth = toAddress(token) === toAddress(ETH_TOKEN_ADDRESS);
 			if (isEth) {
 				const multicall3Contract = {address: MULTICALL3_ADDRESS, abi: AGGREGATE3_ABI};
@@ -76,7 +76,8 @@ async function getBatchBalances({
 			for (const element of tokens) {
 				const {token} = element;
 				const balanceOf = decodeAsBigInt(results[rIndex++]);
-				const decimals = decodeAsNumber(results[rIndex++]);
+				const decimalsIndex = results[rIndex++];
+				const decimals = decodeAsNumber(decimalsIndex) || Number(decodeAsBigInt(decimalsIndex));
 				const symbol = decodeAsString(results[rIndex++]);
 				const name = decodeAsString(results[rIndex++]);
 				data[toAddress(token)] = {
@@ -91,6 +92,7 @@ async function getBatchBalances({
 				};
 			}
 		} catch (error) {
+			console.log(error);
 			continue;
 		}
 	}
