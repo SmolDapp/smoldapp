@@ -67,7 +67,7 @@ function ViewApprovalWizard(): ReactElement {
 
 		const updatedBalances = await refresh(tokensToRefresh);
 		performBatchedUpdates((): void => {
-			if (!isZeroAddress(tokenAddress)) {
+			if (isZeroAddress(tokenAddress)) {
 				set_selected((prev): TDict<TSelectedElement> => ({
 					...prev,
 					[ETH_TOKEN_ADDRESS]: {
@@ -212,14 +212,16 @@ function ViewApprovalWizard(): ReactElement {
 			}
 		}
 
-		notifyMigrate({
-			chainID: chainID,
-			to: destinationAddress,
-			tokensMigrated: migratedTokens,
-			hashes: hashMessage,
-			type: 'EOA',
-			from: toAddress(address)
-		});
+		if (migratedTokens.length > 0) {
+			notifyMigrate({
+				chainID: chainID,
+				to: destinationAddress,
+				tokensMigrated: migratedTokens,
+				hashes: hashMessage,
+				type: 'EOA',
+				from: toAddress(address)
+			});
+		}
 
 	}, [address, chainID, destinationAddress, isGnosisSafe, onMigrateERC20, onMigrateETH, onMigrateSelectedForGnosis, selected]);
 
@@ -251,7 +253,7 @@ function ViewApprovalWizard(): ReactElement {
 								);
 							})
 					}
-					{selected?.[ETH_TOKEN_ADDRESS] && toBigInt(selected?.[ETH_TOKEN_ADDRESS]?.amount?.raw) > 0n ? (
+					{selected?.[ETH_TOKEN_ADDRESS] && toBigInt(selected?.[ETH_TOKEN_ADDRESS]?.amount?.raw) > 0n && selected?.[ETH_TOKEN_ADDRESS].isSelected ? (
 						<ApprovalWizardItem
 							executeStatus={selected[ETH_TOKEN_ADDRESS].status}
 							token={{
