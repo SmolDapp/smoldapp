@@ -2,7 +2,6 @@ import React from 'react';
 import IconCheck from 'components/icons/IconCheck';
 import IconCircleCross from 'components/icons/IconCircleCross';
 import IconSpinner from 'components/icons/IconSpinner';
-import {truncateHex} from '@yearn-finance/web-lib/utils/address';
 
 import type {ReactElement} from 'react';
 import type {TAddress} from '@yearn-finance/web-lib/types';
@@ -45,7 +44,7 @@ function	ApprovalWizardItem({
 					<small>
 						{`${prefix} `}
 						<b>{`${token?.amount} ${token?.symbol}`}</b>
-						{` to ${truncateHex(token?.destination, 6)}`}
+						{` to ${token?.destination}`}
 					</small>
 				</div>
 			</div>
