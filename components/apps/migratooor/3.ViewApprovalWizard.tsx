@@ -12,7 +12,6 @@ import {useChain} from '@yearn-finance/web-lib/hooks/useChain';
 import {isZeroAddress, toAddress} from '@yearn-finance/web-lib/utils/address';
 import {ETH_TOKEN_ADDRESS, ZERO_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
 import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
-import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUpdates';
 
 import type {ReactElement} from 'react';
 import type {BaseError, Hex} from 'viem';
@@ -66,32 +65,9 @@ function ViewApprovalWizard(): ReactElement {
 		}
 
 		const updatedBalances = await refresh(tokensToRefresh);
-		performBatchedUpdates((): void => {
-			if (isZeroAddress(tokenAddress)) {
-				set_selected((prev): TDict<TSelectedElement> => ({
-					...prev,
-					[ETH_TOKEN_ADDRESS]: {
-						...prev[toAddress(ETH_TOKEN_ADDRESS)],
-						amount: updatedBalances[ETH_TOKEN_ADDRESS]
-					}
-				}));
-			} else {
-				set_selected((prev): TDict<TSelectedElement> => ({
-					...prev,
-					[toAddress(tokenAddress)]: {
-						...prev[toAddress(tokenAddress)],
-						amount: updatedBalances[tokenAddress]
-					},
-					[ETH_TOKEN_ADDRESS]: {
-						...prev[ETH_TOKEN_ADDRESS],
-						amount: updatedBalances[ETH_TOKEN_ADDRESS]
-					}
-				}));
-			}
-		});
 		balancesNonce; // Disable eslint warning
 		return updatedBalances;
-	}, [balances, balancesNonce, refresh, set_selected]);
+	}, [balances, balancesNonce, refresh]);
 
 	/**********************************************************************************************
 	** The onMigrateERC20 function is called when the user clicks the 'Migrate' button. This
