@@ -256,9 +256,15 @@ const ViewTable = memo(function ViewTable({onProceed}: {onProceed: VoidFunction}
 		}));
 	}
 	function onHandleMultiplePaste(UUID: string, pasted: string): void {
-		const separators = [' ', '-', ';'];
+		const separators = [' ', '-', ';', ',', '.'];
 		const addressAmounts = pasted.split('\n').map((line): [string, string] => {
-			const addressAmount = line.split(separators.find((separator): boolean => line.includes(separator)) ?? ' ');
+			//remove all separators that are next to each other
+			let cleanedLine = separators.reduce((acc, separator): string => acc.replaceAll(separator + separator, separator), line);
+			for (let i = 0; i < 3; i++) {
+				cleanedLine = separators.reduce((acc, separator): string => acc.replaceAll(separator + separator, separator), cleanedLine);
+			}
+
+			const addressAmount = cleanedLine.split(separators.find((separator): boolean => cleanedLine.includes(separator)) ?? ' ');
 			return [addressAmount[0], addressAmount[1]];
 		});
 		const newRows = addressAmounts.map((addressAmount): TDisperseElement => {
