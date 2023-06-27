@@ -223,6 +223,9 @@ const ViewTable = memo(function ViewTable({onProceed}: {onProceed: VoidFunction}
 			}, [] as TDisperseElement[]));
 	}
 	function onRemoveRowByUUID(UUID: string): void {
+		if (disperseArray.length === 1) {
+			return set_disperseArray([newVoidRow()]);
+		}
 		set_disperseArray(disperseArray.filter((row): boolean => row.UUID !== UUID));
 	}
 	function onUpdateAddressByUUID(UUID: string, address: string | undefined): void {
