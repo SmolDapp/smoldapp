@@ -97,8 +97,35 @@ const optimismOverride = {
 
 };
 
+const polygonZkEvm = {
+	id: 1101,
+	name: 'Polygon zkEVM',
+	network: 'polygon-zkevm',
+	nativeCurrency: {name: 'Ether', symbol: 'ETH', decimals: 18},
+	rpcUrls: {
+		default: {
+			http: ['https://zkevm-rpc.com']
+		},
+		public: {
+			http: ['https://zkevm-rpc.com']
+		}
+	},
+	blockExplorers: {
+		default: {
+			name: 'PolygonScan',
+			url: 'https://zkevm.polygonscan.com'
+		}
+	},
+	contracts: {
+		multicall3: {
+			address: '0xca11bde05977b3631167028862be2a173976ca11',
+			blockCreated: 57746
+		}
+	}
+} as const satisfies Chain;
+
 const {chains, publicClient, webSocketPublicClient} = configureChains(
-	[mainnet, optimismOverride, polygonOverride, gnosis, fantom, arbitrum, localhost],
+	[mainnet, optimismOverride, polygonOverride, polygonZkEvm, gnosis, fantom, arbitrum, localhost],
 	[
 		publicProvider(),
 		alchemyProvider({apiKey: process.env.ALCHEMY_KEY || ''}),

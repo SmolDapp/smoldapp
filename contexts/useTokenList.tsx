@@ -43,7 +43,6 @@ export const TokenListContextApp = ({children}: {children: React.ReactElement}):
 		]).then(axios.spread((...responses): void => {
 			const tokenListTokens: TDict<TTokenInfo> = {};
 			const defaultList = defaultTokenList as TTokenList;
-			// tokenListTokens[ETH_TOKEN_ADDRESS] = getNativeToken();
 			for (const eachToken of defaultList.tokens) {
 				if (!tokenListTokens[toAddress(eachToken.address)]) {
 					tokenListTokens[toAddress(eachToken.address)] = eachToken;

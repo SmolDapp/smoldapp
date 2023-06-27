@@ -1,11 +1,14 @@
-import React, {Fragment, useCallback, useMemo, useState} from 'react';
+import React, {Fragment, useCallback, useEffect, useMemo, useState} from 'react';
 import {ImageWithFallback} from 'components/common/ImageWithFallback';
 import IconCheck from 'components/icons/IconCheck';
 import IconChevronBoth from 'components/icons/IconChevronBoth';
+import IconSpinner from 'components/icons/IconSpinner';
 import {useWallet} from 'contexts/useWallet';
-import {erc20ABI, useContractReads} from 'wagmi';
+import {isAddress} from 'viem';
+import {erc20ABI} from 'wagmi';
 import {Combobox, Transition} from '@headlessui/react';
-import {useThrottledState} from '@react-hookz/web';
+import {useAsync, useThrottledState} from '@react-hookz/web';
+import {multicall} from '@wagmi/core';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {decodeAsNumber, decodeAsString} from '@yearn-finance/web-lib/utils/decoder';
@@ -83,66 +86,75 @@ function ComboboxOption({option}: {option: TTokenInfo}): ReactElement {
 	);
 }
 
-type TTokenReadData = {
-	name: string;
-	symbol: string;
-	decimals: number;
-}
 function ComboboxAddressInput({possibleValues, value, onChangeValue, onAddValue}: TComboboxAddressInput): ReactElement {
 	const {safeChainID} = useChainID();
-	const {balances} = useWallet();
+	const {balances, refresh} = useWallet();
 	const [query, set_query] = useState('');
 	const [isOpen, set_isOpen] = useThrottledState(false, 100);
-	const queryContract = useMemo((): {address: TAddress, abi: typeof erc20ABI} => ({
-		address: toAddress(query),
-		abi: erc20ABI
-	}), [query]);
+	const [isLoadingTokenData, set_isLoadingTokenData] = useState(false);
 
-	const {data} = useContractReads({
-		contracts: [
-			{...queryContract, functionName: 'name'},
-			{...queryContract, functionName: 'symbol'},
-			{...queryContract, functionName: 'decimals'}
-		]
-	});
-	const tokenData = useMemo((): TTokenReadData | undefined => {
-		if (!data) {
-			return undefined;
+	const fetchToken = useCallback(async (
+		_safeChainID: number,
+		_query: TAddress
+	): Promise<{name: string, symbol: string, decimals: number} | undefined> => {
+		if (!isAddress(_query)) {
+			return (undefined);
 		}
-		const name = decodeAsString(data[0]);
-		const symbol = decodeAsString(data[1]);
-		const decimals = decodeAsNumber(data[2]);
-		if (!name || !symbol || !decimals) {
-			return undefined;
-		}
-		return ({name, symbol, decimals});
-	}, [data]);
-
-	const onChange = useCallback((_selected: TAddress): void => {
-		onAddValue((prev: TDict<TTokenInfo>): TDict<TTokenInfo> => {
-			if (prev[_selected]) {
-				return (prev);
-			}
-			if (!tokenData) {
-				return (prev);
-			}
-			return ({
-				...prev,
-				[toAddress(_selected)]: {
-					address: toAddress(_selected),
-					name: tokenData.name,
-					symbol: tokenData.symbol,
-					decimals: tokenData.decimals,
-					chainId: safeChainID,
-					logoURI: ''
-				}
-			});
+		const results = await multicall({
+			contracts: [
+				{address: _query, abi: erc20ABI, functionName: 'name'},
+				{address: _query, abi: erc20ABI, functionName: 'symbol'},
+				{address: _query, abi: erc20ABI, functionName: 'decimals'}
+			],
+			chainId: _safeChainID
 		});
+		const name = decodeAsString(results[0]);
+		const symbol = decodeAsString(results[1]);
+		const decimals = decodeAsNumber(results[2]);
+		await refresh([{decimals, name, symbol, token: _query}]);
+		return ({name, symbol, decimals});
+	}, [refresh]);
+	const [{result: tokenData}, fetchTokenData] = useAsync(fetchToken);
+
+	const onChange = useCallback(async (_selected: TAddress): Promise<void> => {
+		let _tokenData = possibleValues[_selected];
+		if (!_tokenData || (!_tokenData.name && !_tokenData.symbol && !_tokenData.decimals)) {
+			set_isLoadingTokenData(true);
+			const result = await fetchToken(safeChainID, _selected);
+			_tokenData = {
+				..._tokenData,
+				name: result?.name || '',
+				symbol: result?.symbol || '',
+				decimals: result?.decimals || 0
+			};
+			set_isLoadingTokenData(false);
+		}
+
 		performBatchedUpdates((): void => {
+			onAddValue((prev: TDict<TTokenInfo>): TDict<TTokenInfo> => {
+				if (prev[_selected]) {
+					return (prev);
+				}
+				return ({
+					...prev,
+					[toAddress(_selected)]: {
+						address: toAddress(_selected),
+						name: _tokenData?.name || '',
+						symbol: _tokenData?.symbol || '',
+						decimals: _tokenData?.decimals || 18,
+						chainId: safeChainID,
+						logoURI: `https://assets.smold.app/api/token/${safeChainID}/${toAddress(_selected)}/logo-128.png`
+					}
+				});
+			});
 			onChangeValue(_selected);
 			set_isOpen(false);
 		});
-	}, [onChangeValue, onAddValue, safeChainID, set_isOpen, tokenData]);
+	}, [possibleValues, fetchToken, safeChainID, onAddValue, onChangeValue, set_isOpen]);
+
+	useEffect((): void => {
+		fetchTokenData.execute(safeChainID, toAddress(query));
+	}, [fetchTokenData, safeChainID, query]);
 
 	const filteredValues = query === ''
 		? Object.values(possibleValues || [])
@@ -226,6 +238,11 @@ function ComboboxAddressInput({possibleValues, value, onChangeValue, onAddValue}
 						onClick={(): void => set_isOpen((o: boolean): boolean => !o)}
 						className={'box-0 grow-1 col-span-12 flex h-12 w-full items-center p-2 px-4 md:col-span-9'}>
 						{renderElement()}
+						{isLoadingTokenData && (
+							<div className={'absolute right-8'}>
+								<IconSpinner className={'h-4 w-4 text-neutral-500 transition-colors group-hover:text-neutral-900'} />
+							</div>
+						)}
 						<div className={'absolute right-2 md:right-3'}>
 							<IconChevronBoth className={'h-4 w-4 text-neutral-500 transition-colors group-hover:text-neutral-900'} />
 						</div>

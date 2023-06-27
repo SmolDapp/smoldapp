@@ -1,4 +1,4 @@
-import React, {Fragment, memo, useCallback, useEffect, useMemo, useState} from 'react';
+import React, {Fragment, memo, useCallback, useMemo, useState} from 'react';
 import IconCheck from 'components/icons/IconCheck';
 import IconCircleCross from 'components/icons/IconCircleCross';
 import IconSquareMinus from 'components/icons/IconSquareMinus';
@@ -9,7 +9,7 @@ import {handleInputChangeEventValue} from 'utils/handleInputChangeEventValue';
 import lensProtocol from 'utils/lens.tools';
 import {isAddress} from 'viem';
 import {newVoidRow, useDisperse} from '@disperse/useDisperse';
-import {useMountEffect} from '@react-hookz/web';
+import {useMountEffect, useUpdateEffect} from '@react-hookz/web';
 import {fetchEnsAddress} from '@wagmi/core';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import IconLoader from '@yearn-finance/web-lib/icons/IconLoader';
@@ -83,7 +83,7 @@ function AddressLikeInput({uuid, label, onChangeLabel, onChange, onPaste, isDupl
 		return false;
 	}, []);
 
-	useEffect((): void => {
+	useUpdateEffect((): void => {
 		set_isValidDestination('undetermined');
 		set_isValidish('undetermined');
 		if (label.endsWith('.eth')) {
@@ -130,7 +130,7 @@ function AddressLikeInput({uuid, label, onChangeLabel, onChange, onPaste, isDupl
 						const isValidValue = looksValidAddress(value);
 						if (isValidValue) {
 							set_isValidDestination('undetermined');
-							return onChangeLabel(value);
+							return;
 						}
 						onPaste(uuid, value);
 					}}

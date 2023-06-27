@@ -246,7 +246,7 @@ label[aria-invalid="true"] {
 	}
 }
 .yearn--listbox-menu {
-	@apply flex overflow-y-auto absolute left-0 flex-col mt-1 w-full min-w-fit max-h-60 scrollbar-none text-neutral-900 bg-neutral-0;
+	@apply flex overflow-y-auto absolute left-0 flex-col mt-1 w-full min-w-[148px] max-h-52 scrollbar-none text-neutral-900 bg-neutral-0;
 }
 .yearn--listbox-menu-item {
 	@apply w-full flex flex-row items-center cursor-pointer py-2 pr-4 pl-3 transition-colors;
