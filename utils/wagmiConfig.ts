@@ -141,7 +141,7 @@ const config = createConfig({
 		new IFrameEthereumConnector({chains, options: {}}),
 		new InjectedConnector({chains}),
 		new MetaMaskConnector(),
-		new LedgerConnector({chains}),
+		new LedgerConnector({chains, options: {}}),
 		new WalletConnectLegacyConnector({options: {qrcode: true}}),
 		new CoinbaseWalletConnector({
 			options: {
