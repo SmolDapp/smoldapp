@@ -295,15 +295,22 @@ export function useBalances(props?: TUseBalancesReq): TUseBalancesRes {
 
 		const tokens = JSON.parse(stringifiedTokens) || [];
 		const chainID = props?.chainID || web3ChainID || 1;
-		axios.post('/api/getBatchBalances', {chainID, address: web3Address, tokens})
-			.then((res: AxiosResponse<TGetBatchBalancesResp>): void => {
-				updateBalancesCall(res.data.chainID, deserialize(res.data.balances));
-			})
-			.catch((err): void => {
-				console.error(err);
-				onLoadDone();
-				onUpdateSome(tokens);
-			});
+		const chunks = [];
+		for (let i = 0; i < tokens.length; i += 2_000) {
+			chunks.push(tokens.slice(i, i + 2_000));
+		}
+		for (const chunkTokens of chunks) {
+			axios.post('/api/getBatchBalances', {chainID, address: web3Address, tokens: chunkTokens})
+				.then((res: AxiosResponse<TGetBatchBalancesResp>): void => {
+					console.log('HELLO HERE?????');
+					updateBalancesCall(res.data.chainID, deserialize(res.data.balances));
+				})
+				.catch((err): void => {
+					console.error(err);
+					onLoadDone();
+					onUpdateSome(chunkTokens);
+				});
+		}
 
 	}, [stringifiedTokens, isActive, web3Address]);
 
