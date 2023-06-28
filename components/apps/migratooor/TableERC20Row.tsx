@@ -2,6 +2,7 @@ import React, {useCallback, useMemo} from 'react';
 import Link from 'next/link';
 import {ImageWithFallback} from 'components/common/ImageWithFallback';
 import IconInfo from 'components/icons/IconInfo';
+import {type TTokenInfo, useTokenList} from 'contexts/useTokenList';
 import {handleInputChangeEventValue} from 'utils/handleInputChangeEventValue';
 import {getNativeToken} from 'utils/toWagmiProvider';
 import {useMigratooor} from '@migratooor/useMigratooor';
@@ -15,7 +16,6 @@ import {cl} from '@yearn-finance/web-lib/utils/cl';
 import {ETH_TOKEN_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
 import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
 
-import type {TTokenInfo} from 'contexts/useTokenList';
 import type {ChangeEvent, ReactElement} from 'react';
 import type {TAddress, TDict} from '@yearn-finance/web-lib/types';
 import type {TBalanceData} from '@yearn-finance/web-lib/types/hooks';
@@ -27,6 +27,7 @@ function TableERC20Row({address: tokenAddress, balance}: TERC20RowProps): ReactE
 	const {chainID, isActive} = useWeb3();
 	const {safeChainID} = useChainID();
 	const {chain} = getNetwork();
+	const {tokenList} = useTokenList();
 	const currentNativeToken = useMemo((): TTokenInfo => getNativeToken(safeChainID), [safeChainID]);
 	const isSelected = useMemo((): boolean => selected[toAddress(tokenAddress)]?.isSelected, [selected, tokenAddress]);
 	const tokenSymbol = useMemo((): string => balance.symbol || 'unknown', [balance.symbol]);
@@ -124,7 +125,10 @@ function TableERC20Row({address: tokenAddress, balance}: TERC20RowProps): ReactE
 							height={40}
 							quality={90}
 							unoptimized
-							src={`https://assets.smold.app/api/token/${safeChainID}/${toAddress(tokenAddress)}/logo-128.png`}
+							src={
+								tokenList[toAddress(tokenAddress)]?.logoURI ||
+								`https://assets.smold.app/api/token/${safeChainID}/${toAddress(tokenAddress)}/logo-128.png`
+							}
 							loading={'eager'} />
 					</div>
 					<div>

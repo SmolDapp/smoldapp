@@ -1,7 +1,7 @@
-import React, {createContext, useContext, useMemo, useState} from 'react';
+import React, {createContext, useCallback, useContext, useEffect, useMemo, useState} from 'react';
 import defaultTokenList from 'utils/tokenLists.json';
 import axios from 'axios';
-import {useMountEffect} from '@react-hookz/web';
+import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
 
 import type {Dispatch, SetStateAction} from 'react';
@@ -25,46 +25,61 @@ export type TTokenListProps = {
 	tokenList: TDict<TTokenInfo>,
 	set_tokenList: Dispatch<SetStateAction<TDict<TTokenInfo>>>,
 }
-const	defaultProps: TTokenListProps = {
+const defaultProps: TTokenListProps = {
 	tokenList: {},
 	set_tokenList: (): void => undefined
 };
 
-const	TokenList = createContext<TTokenListProps>(defaultProps);
+const TokenList = createContext<TTokenListProps>(defaultProps);
 export const TokenListContextApp = ({children}: {children: React.ReactElement}): React.ReactElement => {
-	const	[tokenList, set_tokenList] = useState<TDict<TTokenInfo>>({});
+	const {safeChainID} = useChainID();
+	const [tokenList, set_tokenList] = useState<TDict<TTokenInfo>>({});
 
-	useMountEffect((): void => {
-		axios.all([
-			axios.get('https://raw.githubusercontent.com/Migratooor/tokenLists/main/lists/paraswap.json'),
-			axios.get('https://raw.githubusercontent.com/Migratooor/tokenLists/main/lists/1/yearn.json'),
-			axios.get('https://raw.githubusercontent.com/Migratooor/tokenLists/main/lists/optimism.json'),
-			axios.get('https://raw.githubusercontent.com/Migratooor/tokenLists/main/lists/tokenlistooor.json')
-		]).then(axios.spread((...responses): void => {
-			const tokenListTokens: TDict<TTokenInfo> = {};
-			const defaultList = defaultTokenList as TTokenList;
-			for (const eachToken of defaultList.tokens) {
-				if (!tokenListTokens[toAddress(eachToken.address)]) {
-					tokenListTokens[toAddress(eachToken.address)] = eachToken;
-				}
+	const fetchTokensFromLists = useCallback(async (): Promise<void> => {
+		const [fromParaswap, fromYearn, fromOptimism, fromSmol] = await Promise.allSettled([
+			axios.get(`https://raw.githubusercontent.com/Migratooor/tokenLists/main/lists/${safeChainID}/paraswap.json`),
+			axios.get(`https://raw.githubusercontent.com/Migratooor/tokenLists/main/lists/${safeChainID}/yearn.json`),
+			axios.get(`https://raw.githubusercontent.com/Migratooor/tokenLists/main/lists/${safeChainID}/optimism.json`),
+			axios.get(`https://raw.githubusercontent.com/Migratooor/tokenLists/main/lists/${safeChainID}/tokenlistooor.json`)
+		]);
+		const lists: TTokenInfo[] = [];
+		if (fromOptimism.status === 'fulfilled') {
+			lists.push(...(fromOptimism.value.data as TTokenList).tokens);
+		}
+		if (fromParaswap.status === 'fulfilled') {
+			lists.push(...(fromParaswap.value.data as TTokenList).tokens);
+		}
+		if (fromYearn.status === 'fulfilled') {
+			lists.push(...(fromYearn.value.data as TTokenList).tokens);
+		}
+		if (fromSmol.status === 'fulfilled') {
+			lists.push(...(fromSmol.value.data as TTokenList).tokens);
+		}
+
+		const tokenListTokens: TDict<TTokenInfo> = {};
+		const defaultList = defaultTokenList as TTokenList;
+		for (const eachToken of defaultList.tokens) {
+			if (!tokenListTokens[toAddress(eachToken.address)]) {
+				tokenListTokens[toAddress(eachToken.address)] = eachToken;
 			}
+		}
 
-			for (const eachResponse of responses) {
-				const tokenListResponse: TTokenList = eachResponse.data;
-				for (const eachToken of tokenListResponse.tokens) {
-					if (eachToken.logoURI === 'https://cdn.paraswap.io/token/token.png') {
-						continue;
-					}
-					if (!tokenListTokens[toAddress(eachToken.address)]) {
-						tokenListTokens[toAddress(eachToken.address)] = eachToken;
-					}
-				}
+		for (const eachToken of lists) {
+			if (eachToken.logoURI === 'https://cdn.paraswap.io/token/token.png') {
+				continue;
 			}
-			set_tokenList(tokenListTokens);
-		}));
-	});
+			if (!tokenListTokens[toAddress(eachToken.address)]) {
+				tokenListTokens[toAddress(eachToken.address)] = eachToken;
+			}
+		}
+		set_tokenList(tokenListTokens);
+	}, [safeChainID]);
 
-	const	contextValue = useMemo((): TTokenListProps => ({
+	useEffect((): void => {
+		fetchTokensFromLists();
+	}, [fetchTokensFromLists]);
+
+	const contextValue = useMemo((): TTokenListProps => ({
 		tokenList,
 		set_tokenList
 	}), [tokenList]);

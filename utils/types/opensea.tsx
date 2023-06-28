@@ -54,7 +54,7 @@ export type TOpenSeaAsset = {
 	tokenID: bigint,
 	type: 'ERC721' | 'ERC1155',
 	image_url: string,
-	image_preview_url: string,
+	image_preview_url?: string,
 	image_type?: string
 	name: string,
 	permalink: string,

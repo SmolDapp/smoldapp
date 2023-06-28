@@ -310,7 +310,6 @@ export function useBalances(props?: TUseBalancesReq): TUseBalancesRes {
 					onUpdateSome(chunkTokens);
 				});
 		}
-
 	}, [stringifiedTokens, isActive, web3Address]);
 
 	const contextValue = useMemo((): TUseBalancesRes => ({
