@@ -1,14 +1,14 @@
 import {useCallback, useEffect} from 'react';
 import assert from 'assert';
 import {getClient} from 'utils/wagmiUtils';
-import {getAbiItem, type Hex} from 'viem';
+import {getAbiItem} from 'viem';
 import {erc721ABI, readContracts} from 'wagmi';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {isZeroAddress, toAddress} from '@yearn-finance/web-lib/utils/address';
 import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
 
 import type {TTokenInfo} from 'contexts/useTokenList';
-import type {Log} from 'viem';
+import type {Hex, Log} from 'viem';
 import type {TAddress, TDict} from '@yearn-finance/web-lib/types';
 
 export type TIncentives = {
@@ -69,7 +69,7 @@ function useNFTs(): any {
 		const currentBlockNumber = await publicClient.getBlockNumber();
 
 		type TLog = Log & {id: string}
-		const tokenList: TNFT[] = [];
+		const tokenList: TLog[] = [];
 		for (let i = initialBlockNumber; i < currentBlockNumber; i += rangeLimit) {
 			const abiItem = getAbiItem({abi: erc721ABI, name: 'Transfer'});
 			const [erc721Sent, erc721Received] = await Promise.all([
@@ -93,24 +93,24 @@ function useNFTs(): any {
 					console.log(log);
 				}
 				const tLog = {...log, id: `${log.address}_${toBigInt(log.topics[3])}`};
-				const nft = {
-					id: tLog.id,
-					tokenID: toBigInt(tLog.topics[3]),
-					type: 'ERC721',
-					image_url: '',
-					name: '',
-					permalink: '',
-					collection: {
-						name: ''
-					},
-					assetContract: {
-						address: ''',
-						name: '',
-						schema_name: '',
-					}
-					image_raw: ''
-				}
-				tokenList.push(nft);
+				// const nft = {
+				// 	id: tLog.id,
+				// 	tokenID: toBigInt(tLog.topics[3]),
+				// 	type: 'ERC721',
+				// 	image_url: '',
+				// 	name: '',
+				// 	permalink: '',
+				// 	collection: {
+				// 		name: ''
+				// 	},
+				// 	assetContract: {
+				// 		address: ''',
+				// 		name: '',
+				// 		schema_name: '',
+				// 	}
+				// 	image_raw: ''
+				// }
+				tokenList.push(tLog);
 			}
 
 			for (const log of erc721Sent) {
