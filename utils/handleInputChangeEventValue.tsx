@@ -9,7 +9,7 @@ export function handleInputChangeEventValue(e: React.ChangeEvent<HTMLInputElemen
 		return ({raw: 0n, normalized: ''});
 	}
 	if (amount === 0) {
-		let		amountStr = value.replace(/,/g, '.').replace(/[^0-9.]/g, '');
+		let	amountStr = value.replace(/,/g, '.').replace(/[^0-9.]/g, '');
 		const amountParts = amountStr.split('.');
 		if ((amountParts[0])?.length > 1 && Number(amountParts[0]) === 0) {
 			//

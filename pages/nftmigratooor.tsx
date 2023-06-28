@@ -8,8 +8,9 @@ import {NFTMigratooorContextApp, Step, useNFTMigratooor} from '@nftmigratooor/us
 
 import type {ReactElement} from 'react';
 
-function	NFTMigratooor(): ReactElement {
-	const	{currentStep, set_currentStep} = useNFTMigratooor();
+function NFTMigratooor(): ReactElement {
+	// useNFTs();
+	const {currentStep, set_currentStep} = useNFTMigratooor();
 
 	const onProceedWallet = useCallback((): void => {
 		set_currentStep(Step.DESTINATION);

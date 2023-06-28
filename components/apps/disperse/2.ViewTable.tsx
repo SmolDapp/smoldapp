@@ -166,7 +166,7 @@ function AddressLikeInput({uuid, label, onChangeLabel, onChange, onPaste, isDupl
 	);
 }
 
-function AmountToSendInput({token, amountToSend, onChange}: {
+function AmountToSendInput({token, onChange}: {
 	token: TTokenInfo,
 	amountToSend: TNormalizedBN | undefined,
 	onChange: (amount: TNormalizedBN) => void
@@ -186,12 +186,12 @@ function AmountToSendInput({token, amountToSend, onChange}: {
 				<input
 					className={'w-full overflow-x-scroll border-none bg-transparent px-0 py-4 font-mono text-sm font-bold outline-none scrollbar-none'}
 					type={'number'}
+					onWheel={(e): void => e.preventDefault()}
 					min={0}
 					step={1 / 10 ** (token.decimals || 18)}
 					inputMode={'numeric'}
 					placeholder={'0'}
 					pattern={'^((?:0|[1-9]+)(?:.(?:d+?[1-9]|[1-9]))?)$'}
-					value={amountToSend?.normalized ?? ''}
 					onChange={onInputChange} />
 			</div>
 		</div>
