@@ -1,11 +1,11 @@
 import React from 'react';
+import {Inter} from 'next/font/google';
 import AppWrapper from 'components/common/AppWrapper';
 import {MenuContextApp} from 'contexts/useMenu';
 import {TokenListContextApp} from 'contexts/useTokenList';
 import {WalletContextApp} from 'contexts/useWallet';
 import config from 'utils/wagmiConfig';
 import {SafeProvider} from '@gnosis.pm/safe-apps-react-sdk';
-import {Inter} from '@next/font/google';
 import {useLocalStorageValue} from '@react-hookz/web';
 import {Analytics} from '@vercel/analytics/react';
 import {WithYearn} from '@yearn-finance/web-lib/contexts/WithYearn';
@@ -28,7 +28,7 @@ function	MyApp(props: AppProps): ReactElement {
 	return (
 		<>
 			<style jsx global>{`html {font-family: ${inter.style.fontFamily};}`}</style>
-			<WithYearn configOverwrite={config}>
+			<WithYearn config={config}>
 				<TokenListContextApp>
 					<WalletContextApp>
 						<MenuContextApp>
