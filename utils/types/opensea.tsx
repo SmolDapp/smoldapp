@@ -1,7 +1,9 @@
 import axios from 'axios';
+import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
 
 import type {AxiosResponse} from 'axios';
+import type {TNFT} from './nftMigratooor';
 
 export type TRawOpenSeaAsset = {
 	id: string | number;
@@ -49,26 +51,6 @@ export type TAlchemyAssets = {
 	}
 }
 
-export type TOpenSeaAsset = {
-	id: string;
-	tokenID: bigint,
-	type: 'ERC721' | 'ERC1155',
-	image_url: string,
-	image_preview_url?: string,
-	image_type?: string
-	name: string,
-	permalink: string,
-	collection: {
-		name: string,
-	},
-	assetContract: {
-		address: string,
-		name: string,
-		schema_name: string,
-	};
-	image_raw?: string,
-}
-
 export async function fetchAllAssetsFromOpenSea(owner: string, next?: string): Promise<TRawOpenSeaAsset[]> {
 	const requestURL = `https://api.opensea.io/api/v1/assets?format=json&owner=${owner}&limit=200${next ? `&cursor=${next}` : ''}`;
 	const requestHeaders = {
@@ -88,46 +70,36 @@ export async function fetchAllAssetsFromAlchemy(chainID: number, owner: string):
 	return res.data;
 }
 
-export function matchAlchemyToOpenSea(al: TAlchemyAssets): TOpenSeaAsset {
+export function alchemyToNFT(al: TAlchemyAssets): TNFT {
 	return {
 		id: `${al.contract.address}_${al.id.tokenId}`,
-		type: al.contractMetadata.tokenType as 'ERC721' | 'ERC1155',
-		image_url: al.media?.[0]?.gateway,
-		image_preview_url: al.media?.[0]?.gateway,
-		image_raw: al.media?.[0]?.raw,
-		image_type: al.media?.[0]?.format,
-		name: al.title,
+		imageURL: al.media?.[0]?.gateway,
+		imageRaw: al.media?.[0]?.raw,
+		imageType: al.media?.[0]?.format,
 		tokenID: toBigInt(al.id.tokenId),
+		name: al.title,
 		permalink: `https://opensea.io/assets/ethereum/${al.contract.address}/${al.metadata.edition}}`,
 		collection: {
-			name: al?.contractMetadata?.name
-		},
-		assetContract: {
-			address: al?.contract?.address,
-			name: al?.contractMetadata?.name,
-			schema_name: al?.contractMetadata?.tokenType
+			address: toAddress(al?.contract?.address),
+			name: al.title || al?.contractMetadata?.name,
+			type: al.contractMetadata.tokenType as 'ERC721' | 'ERC1155'
 		}
 	};
 }
 
-export function matchOpensea(os: TRawOpenSeaAsset): TOpenSeaAsset {
+export function openseaToNFT(os: TRawOpenSeaAsset): TNFT {
 	return {
 		id: os.id.toString(),
-		type: os.asset_contract.schema_name as 'ERC721' | 'ERC1155',
-		image_url: os.image_url,
-		image_preview_url: os.image_preview_url,
-		image_raw: os.image_raw,
-		image_type: os.image_type,
-		name: os.name,
+		imageURL: os.image_url || os.image_preview_url,
+		imageRaw: os.image_raw,
+		imageType: os.image_type || 'image/png',
 		tokenID: os.token_id,
 		permalink: os.permalink,
+		name: os.name,
 		collection: {
-			name: os.collection.name
-		},
-		assetContract: {
-			address: os.asset_contract.address,
-			name: os.asset_contract.name,
-			schema_name: os.asset_contract.schema_name
+			address: toAddress(os.asset_contract.address),
+			name: os.collection.name || os.asset_contract.name,
+			type: os.asset_contract.schema_name as 'ERC721' | 'ERC1155'
 		}
 	};
 }

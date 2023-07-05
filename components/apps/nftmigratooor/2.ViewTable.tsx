@@ -1,12 +1,12 @@
 import React, {memo, useCallback, useMemo} from 'react';
-import Collection from '@nftmigratooor/OpenSeaCollection';
+import lensProtocol from 'utils/lens.tools';
+import NFTCollection from '@nftmigratooor/NFTCollection';
 import {useNFTMigratooor} from '@nftmigratooor/useNFTMigratooor';
 import {Button} from '@yearn-finance/web-lib/components/Button';
-import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUpdates';
 
 import type {ReactElement} from 'react';
-import type {TOpenSeaAsset} from 'utils/types/opensea';
+import type {TNFT} from 'utils/types/nftMigratooor';
 import type {TDict} from '@yearn-finance/web-lib/types';
 
 const ViewTableOpenSea = memo(function ViewTableOpenSea({onProceed}: {onProceed: VoidFunction}): ReactElement {
@@ -17,9 +17,12 @@ const ViewTableOpenSea = memo(function ViewTableOpenSea({onProceed}: {onProceed:
 	** creating a dictionary with the collection address as the key and an array of NFTs as the
 	** value.
 	**********************************************************************************************/
-	const	groupedByCollection = useMemo((): TDict<TOpenSeaAsset[]> => (
-		(nfts || []).reduce((acc: TDict<TOpenSeaAsset[]>, obj: TOpenSeaAsset): TDict<TOpenSeaAsset[]> => {
-			const key = toAddress(obj.assetContract.address);
+	const	groupedByCollection = useMemo((): TDict<TNFT[]> => (
+		(nfts || []).reduce((acc: TDict<TNFT[]>, obj: TNFT): TDict<TNFT[]> => {
+			let key = obj.collection.address as string;
+			if (lensProtocol.isLensNFT(obj.collection.name)) {
+				key = 'lens-follower';
+			}
 			if (!acc[key]) {
 				acc[key] = [];
 			}
@@ -33,13 +36,16 @@ const ViewTableOpenSea = memo(function ViewTableOpenSea({onProceed}: {onProceed:
 	** with the collection address as the key and an array of NFTs that are selected as the value.
 	** This is used to determine which NFTs in a collection are selected.
 	**********************************************************************************************/
-	const	selectedPerCollection = useMemo((): TDict<TOpenSeaAsset[]> => (
-		(nfts || []).reduce((acc: TDict<TOpenSeaAsset[]>, obj: TOpenSeaAsset): TDict<TOpenSeaAsset[]> => {
-			const key = toAddress(obj.assetContract.address);
+	const	selectedPerCollection = useMemo((): TDict<TNFT[]> => (
+		(nfts || []).reduce((acc: TDict<TNFT[]>, obj: TNFT): TDict<TNFT[]> => {
+			let key = obj.collection.address as string;
+			if (lensProtocol.isLensNFT(obj.collection.name)) {
+				key = 'lens-follower';
+			}
 			if (!acc[key]) {
 				acc[key] = [];
 			}
-			if (selected.find((asset: TOpenSeaAsset): boolean => asset.id === obj.id)) {
+			if (selected.find((asset: TNFT): boolean => asset.id === obj.id)) {
 				acc[key].push(obj);
 			}
 			return acc;
@@ -50,22 +56,22 @@ const ViewTableOpenSea = memo(function ViewTableOpenSea({onProceed}: {onProceed:
 	** Callback method for selecting all NFTs in a collection. This will select all if none or
 	** some are selected, and deselect all if all are selected.
 	**********************************************************************************************/
-	const	onSelectAll = useCallback((areAllChecked: boolean, value: TOpenSeaAsset[]): void => {
+	const	onSelectAll = useCallback((areAllChecked: boolean, value: TNFT[]): void => {
 		if (areAllChecked) {
-			set_selected((prev): TOpenSeaAsset[] => {
+			set_selected((prev): TNFT[] => {
 				const newSelected = [...prev];
-				value.forEach((nft: TOpenSeaAsset): void => {
-					if (!newSelected.find((asset: TOpenSeaAsset): boolean => asset.id === nft.id)) {
+				value.forEach((nft: TNFT): void => {
+					if (!newSelected.find((asset: TNFT): boolean => asset.id === nft.id)) {
 						newSelected.push(nft);
 					}
 				});
 				return newSelected;
 			});
 		} else {
-			set_selected((prev): TOpenSeaAsset[] => {
+			set_selected((prev): TNFT[] => {
 				const newSelected = [...prev];
-				value.forEach((nft: TOpenSeaAsset): void => {
-					const index = newSelected.findIndex((asset: TOpenSeaAsset): boolean => asset.id === nft.id);
+				value.forEach((nft: TNFT): void => {
+					const index = newSelected.findIndex((asset: TNFT): boolean => asset.id === nft.id);
 					if (index !== -1) {
 						newSelected.splice(index, 1);
 					}
@@ -79,10 +85,10 @@ const ViewTableOpenSea = memo(function ViewTableOpenSea({onProceed}: {onProceed:
 	** Callback method for selecting one specific NFT. This will select it if it's not selected,
 	** and deselect it if it's selected.
 	**********************************************************************************************/
-	const	onSelectOne = useCallback((nft: TOpenSeaAsset): void => {
-		set_selected((prev): TOpenSeaAsset[] => {
+	const	onSelectOne = useCallback((nft: TNFT): void => {
+		set_selected((prev): TNFT[] => {
 			const newSelected = [...prev];
-			const index = newSelected.findIndex((asset: TOpenSeaAsset): boolean => asset.id === nft.id);
+			const index = newSelected.findIndex((asset: TNFT): boolean => asset.id === nft.id);
 			if (index !== -1) {
 				newSelected.splice(index, 1);
 			} else {
@@ -95,14 +101,14 @@ const ViewTableOpenSea = memo(function ViewTableOpenSea({onProceed}: {onProceed:
 	/**********************************************************************************************
 	** Callback method to determine if a specific NFT is selected.
 	**********************************************************************************************/
-	const isItemSelected = useCallback((nft: TOpenSeaAsset): boolean => (
-		selected.find((asset: TOpenSeaAsset): boolean => asset.id === nft.id) !== undefined
+	const isItemSelected = useCallback((nft: TNFT): boolean => (
+		selected.find((asset: TNFT): boolean => asset.id === nft.id) !== undefined
 	), [selected]);
 
 	/**********************************************************************************************
 	** Callback method to determine all the NFTs in a collection are selected.
 	**********************************************************************************************/
-	const isCollectionSelected = useCallback((key: string, value: TOpenSeaAsset[]): boolean => (
+	const isCollectionSelected = useCallback((key: string, value: TNFT[]): boolean => (
 		selectedPerCollection?.[key]?.length === value?.length
 	), [selectedPerCollection]);
 
@@ -132,8 +138,8 @@ const ViewTableOpenSea = memo(function ViewTableOpenSea({onProceed}: {onProceed:
 
 				<div className={'grid gap-0 pt-4'}>
 					{
-						Object.entries(groupedByCollection).map(([key, value]: [string, TOpenSeaAsset[]]): ReactElement => (
-							<Collection
+						Object.entries(groupedByCollection).map(([key, value]: [string, TNFT[]]): ReactElement => (
+							<NFTCollection
 								key={key}
 								isCollectionSelected={isCollectionSelected(key, value)}
 								isItemSelected={isItemSelected}

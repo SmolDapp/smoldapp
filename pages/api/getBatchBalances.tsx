@@ -1,4 +1,4 @@
-import {getNativeToken} from 'utils/toWagmiProvider';
+import {getNativeToken} from 'utils/wagmiProvider';
 import config from 'utils/wagmiConfig';
 import {serialize} from 'wagmi';
 import {erc20ABI} from '@wagmi/core';

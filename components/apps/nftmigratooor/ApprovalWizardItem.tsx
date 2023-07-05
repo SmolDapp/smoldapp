@@ -3,16 +3,16 @@ import IconCheck from 'components/icons/IconCheck';
 import IconChevronBoth from 'components/icons/IconChevronBoth';
 import IconCircleCross from 'components/icons/IconCircleCross';
 import IconSpinner from 'components/icons/IconSpinner';
+import {ETHEREUM_ENS_ADDRESS} from 'utils/constants';
 import {useNFTMigratooor} from '@nftmigratooor/useNFTMigratooor';
 import {useChain} from '@yearn-finance/web-lib/hooks/useChain';
 import {toAddress, truncateHex} from '@yearn-finance/web-lib/utils/address';
 
 import type {ReactElement} from 'react';
-import type {TApprovalStatus, TWizardStatus} from 'utils/types/nftMigratooor';
-import type {TOpenSeaAsset} from 'utils/types/opensea';
+import type {TApprovalStatus, TNFT, TWizardStatus} from 'utils/types/nftMigratooor';
 
 type TApprovalWizardItemProps = {
-	collection: TOpenSeaAsset[],
+	collection: TNFT[],
 	collectionStatus: TWizardStatus,
 	collectionApprovalStatus: TApprovalStatus,
 	index: number
@@ -69,7 +69,7 @@ function ApprovalWizardItem({
 		return <Fragment />;
 	}
 
-	if (hasMultipleItems && firstItemInCollection.assetContract.schema_name === 'ERC721') {
+	if (hasMultipleItems && firstItemInCollection.collection.type === 'ERC721') {
 		return (
 			<details
 				key={index}
@@ -100,7 +100,7 @@ function ApprovalWizardItem({
 						{collection.map((item): ReactElement => (
 							<li key={item.tokenID.toString()} className={'text-left text-sm'}>
 								<span className={'font-number font-bold'}>
-									{`${item.name} ${toAddress(item.assetContract.address) === toAddress('0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85') ? '' : `(#${item?.tokenID})`}`}
+									{`${item.name} ${toAddress(item.collection.address) === ETHEREUM_ENS_ADDRESS ? '' : `(#${item?.tokenID})`}`}
 								</span>
 							</li>
 						))}
@@ -109,7 +109,7 @@ function ApprovalWizardItem({
 			</details>
 		);
 	}
-	if (hasMultipleItems && firstItemInCollection.assetContract.schema_name === 'ERC1155') {
+	if (hasMultipleItems && firstItemInCollection.collection.type === 'ERC1155') {
 		return (
 			<details
 				key={index}
@@ -134,7 +134,7 @@ function ApprovalWizardItem({
 						{collection.map((item): ReactElement => (
 							<li key={item.tokenID.toString()} className={'text-left text-sm'}>
 								<span className={'font-number font-bold'}>
-									{`${item.name} ${toAddress(item.assetContract.address) === toAddress('0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85') ? '' : `(#${item?.tokenID})`}`}
+									{`${item.name} ${toAddress(item.collection.address) === ETHEREUM_ENS_ADDRESS ? '' : `(#${item?.tokenID})`}`}
 								</span>
 							</li>
 						))}
@@ -153,7 +153,7 @@ function ApprovalWizardItem({
 					{renderExecuteIndication()}
 					<small>
 						{'Send '}
-						<b>{firstItemInCollection?.name || firstItemInCollection?.collection?.name || firstItemInCollection?.assetContract?.name}</b>
+						<b>{firstItemInCollection?.name || firstItemInCollection?.collection?.name || firstItemInCollection?.collection?.name}</b>
 						{` to ${truncateHex(destinationAddress, 6)}`}
 					</small>
 				</div>

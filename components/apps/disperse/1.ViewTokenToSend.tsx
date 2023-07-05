@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import ComboboxAddressInput from 'components/common/ComboboxAddressInput';
 import {useTokenList} from 'contexts/useTokenList';
-import {getNativeToken} from 'utils/toWagmiProvider';
+import {getNativeToken} from 'utils/wagmiProvider';
 import {Step, useDisperse} from '@disperse/useDisperse';
 import {useDeepCompareEffect, useUpdateEffect} from '@react-hookz/web';
 import {Button} from '@yearn-finance/web-lib/components/Button';

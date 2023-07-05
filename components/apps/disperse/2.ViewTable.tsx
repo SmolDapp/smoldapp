@@ -5,12 +5,10 @@ import IconSquareMinus from 'components/icons/IconSquareMinus';
 import IconSquarePlus from 'components/icons/IconSquarePlus';
 import IconWarning from 'components/icons/IconWarning';
 import {useWallet} from 'contexts/useWallet';
+import {checkENSValidity, checkLensValidity} from 'utils';
 import {handleInputChangeEventValue} from 'utils/handleInputChangeEventValue';
-import lensProtocol from 'utils/lens.tools';
-import {isAddress} from 'viem';
 import {newVoidRow, useDisperse} from '@disperse/useDisperse';
 import {useMountEffect, useUpdateEffect} from '@react-hookz/web';
-import {fetchEnsAddress} from '@wagmi/core';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import IconLoader from '@yearn-finance/web-lib/icons/IconLoader';
 import {isZeroAddress, toAddress} from '@yearn-finance/web-lib/utils/address';
@@ -23,26 +21,6 @@ import type {ChangeEvent, ReactElement} from 'react';
 import type {TAddress} from '@yearn-finance/web-lib/types';
 import type {TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import type {TDisperseElement} from '@disperse/useDisperse';
-
-async function checkENSValidity(ens: string): Promise<[TAddress, boolean]> {
-	const resolvedAddress = await fetchEnsAddress({name: ens, chainId: 1});
-	if (resolvedAddress) {
-		if (isAddress(resolvedAddress)) {
-			return [toAddress(resolvedAddress), true];
-		}
-	}
-	return [toAddress(), false];
-}
-
-async function checkLensValidity(lens: string): Promise<[TAddress, boolean]> {
-	const resolvedName = await lensProtocol.getAddressFromHandle(lens);
-	if (resolvedName) {
-		if (isAddress(resolvedName)) {
-			return [toAddress(resolvedName), true];
-		}
-	}
-	return [toAddress(), false];
-}
 
 type TAddressLikeInput = {
 	uuid: string;

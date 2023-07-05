@@ -4,7 +4,7 @@ import {ImageWithFallback} from 'components/common/ImageWithFallback';
 import IconInfo from 'components/icons/IconInfo';
 import {type TTokenInfo, useTokenList} from 'contexts/useTokenList';
 import {handleInputChangeEventValue} from 'utils/handleInputChangeEventValue';
-import {getNativeToken} from 'utils/toWagmiProvider';
+import {getNativeToken} from 'utils/wagmiProvider';
 import {useMigratooor} from '@migratooor/useMigratooor';
 import {useMountEffect, useUpdateEffect} from '@react-hookz/web';
 import {getNetwork} from '@wagmi/core';

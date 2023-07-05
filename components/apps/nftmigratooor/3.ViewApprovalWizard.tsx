@@ -15,8 +15,7 @@ import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUp
 import {defaultTxStatus} from '@yearn-finance/web-lib/utils/web3/transaction';
 
 import type {ReactElement} from 'react';
-import type {TApprovalStatus, TWizardStatus} from 'utils/types/nftMigratooor';
-import type {TOpenSeaAsset} from 'utils/types/opensea';
+import type {TApprovalStatus, TNFT, TWizardStatus} from 'utils/types/nftMigratooor';
 import type {ContractFunctionConfig, TransactionReceipt} from 'viem';
 import type {TDict} from '@yearn-finance/web-lib/types';
 import type {BaseTransaction} from '@gnosis.pm/safe-apps-sdk';
@@ -28,7 +27,7 @@ function ViewApprovalWizard(): ReactElement {
 	const [isApproving, set_isApproving] = useState(false);
 	const [collectionStatus, set_collectionStatus] = useState<TDict<TWizardStatus>>({});
 	const [collectionApprovalStatus, set_collectionApprovalStatus] = useState<TDict<TApprovalStatus>>({});
-	const [migrated, set_migrated] = useState<TDict<TOpenSeaAsset[]>>({});
+	const [migrated, set_migrated] = useState<TDict<TNFT[]>>({});
 	const [, set_txStatus] = useState(defaultTxStatus);
 	const {sdk} = useSafeAppsSDK();
 
@@ -38,9 +37,9 @@ function ViewApprovalWizard(): ReactElement {
 	** destination, without approval. In the second case we will need to approveForAll the
 	** collection and then send the NFTs to the destination.
 	**********************************************************************************************/
-	const groupedByCollection = useMemo((): TDict<TOpenSeaAsset[]> => {
-		const grouped = (selected || []).reduce((acc: TDict<TOpenSeaAsset[]>, obj: TOpenSeaAsset): TDict<TOpenSeaAsset[]> => {
-			const key = toAddress(obj.assetContract.address);
+	const groupedByCollection = useMemo((): TDict<TNFT[]> => {
+		const grouped = (selected || []).reduce((acc: TDict<TNFT[]>, obj: TNFT): TDict<TNFT[]> => {
+			const key = toAddress(obj.collection.address);
 			if (!acc[key]) {
 				acc[key] = [];
 			}
@@ -49,7 +48,7 @@ function ViewApprovalWizard(): ReactElement {
 			return acc;
 		}, {});
 
-		return Object.keys(grouped).sort((a, b): number => grouped[a].length - grouped[b].length).reduce((acc: TDict<TOpenSeaAsset[]>, key: string): TDict<TOpenSeaAsset[]> => {
+		return Object.keys(grouped).sort((a, b): number => grouped[a].length - grouped[b].length).reduce((acc: TDict<TNFT[]>, key: string): TDict<TNFT[]> => {
 			acc[key] = grouped[key];
 			return acc;
 		}, {});
@@ -91,7 +90,7 @@ function ViewApprovalWizard(): ReactElement {
 		}
 		const calls: ContractFunctionConfig[] = [];
 		Object.entries(groupedByCollection).forEach(([collectionAddress, collection]): void => {
-			if (collection?.[0]?.assetContract?.schema_name === 'ERC721') {
+			if (collection?.[0]?.collection?.type === 'ERC721') {
 				calls.push({
 					address: toAddress(collectionAddress),
 					abi: erc721ABI,
@@ -106,7 +105,7 @@ function ViewApprovalWizard(): ReactElement {
 		});
 		const newStatus: TDict<TApprovalStatus> = {};
 		Object.entries(groupedByCollection).forEach(([collectionAddress, collection], index): void => {
-			if (collection?.[0]?.assetContract?.schema_name === 'ERC721') {
+			if (collection?.[0]?.collection?.type === 'ERC721') {
 				newStatus[toAddress(collectionAddress)] = decodeAsBoolean(result[index]) ? 'Approved' : 'Not Approved';
 			}
 		});
@@ -123,10 +122,10 @@ function ViewApprovalWizard(): ReactElement {
 	**********************************************************************************************/
 	const onClearMigration = useCallback((): void => {
 		performBatchedUpdates((): void => {
-			set_selected((prev): TOpenSeaAsset[] => {
-				const newSelected: TOpenSeaAsset[] = [];
+			set_selected((prev): TNFT[] => {
+				const newSelected: TNFT[] = [];
 				for (const asset of prev) {
-					if (!migrated[toAddress(asset.assetContract.address)]?.find((nft: TOpenSeaAsset): boolean => nft.tokenID === asset.tokenID)) {
+					if (!migrated[toAddress(asset.collection.address)]?.find((nft: TNFT): boolean => nft.tokenID === asset.tokenID)) {
 						newSelected.push(asset);
 					}
 				}
@@ -150,12 +149,12 @@ function ViewApprovalWizard(): ReactElement {
 				...prev,
 				[toAddress(collectionAddress)]: {...prev[toAddress(collectionAddress)], execute: 'Executed', receipt}
 			}));
-			set_nfts((prev): TOpenSeaAsset[] => {
+			set_nfts((prev): TNFT[] => {
 				const newNFTs = [...prev];
 				for (const id of tokenID) {
-					const index = newNFTs.findIndex((nft: TOpenSeaAsset): boolean => (
+					const index = newNFTs.findIndex((nft: TNFT): boolean => (
 						toBigInt(nft.tokenID) === toBigInt(id)
-						&& toAddress(nft.assetContract.address) === toAddress(collectionAddress)
+						&& toAddress(nft.collection.address) === toAddress(collectionAddress)
 					));
 					newNFTs.splice(index, 1);
 				}
@@ -221,7 +220,7 @@ function ViewApprovalWizard(): ReactElement {
 	** the execute status to 'Executed' if the transaction is successful, or 'Error' if it fails
 	** or if we catch an error.
 	**********************************************************************************************/
-	const onMigrateOneToken = useCallback(async (collectionAddress: string, collection: TOpenSeaAsset[]): Promise<boolean> => {
+	const onMigrateOneToken = useCallback(async (collectionAddress: string, collection: TNFT[]): Promise<boolean> => {
 		const [asset] = collection;
 		set_collectionStatus((prev): TDict<TWizardStatus> => ({
 			...prev,
@@ -230,7 +229,7 @@ function ViewApprovalWizard(): ReactElement {
 
 		const result = await transferERC721({
 			connector: provider,
-			contractAddress: toAddress(asset.assetContract.address),
+			contractAddress: toAddress(asset.collection.address),
 			receiverAddress: toAddress(destinationAddress),
 			tokenID: toBigInt(asset.tokenID),
 			statusHandler: set_txStatus
@@ -251,7 +250,7 @@ function ViewApprovalWizard(): ReactElement {
 	** the execute status to 'Executed' if the transaction is successful, or 'Error' if it fails
 	** or if we catch an error.
 	**********************************************************************************************/
-	const onMigrateSomeERC721Tokens = useCallback(async (collectionAddress: string, collection: TOpenSeaAsset[]): Promise<boolean> => {
+	const onMigrateSomeERC721Tokens = useCallback(async (collectionAddress: string, collection: TNFT[]): Promise<boolean> => {
 		if (!NFTMIGRATOOOR_CONTRACT_PER_CHAIN[safeChainID]) {
 			console.warn(`Not supported chain ID: ${safeChainID}`);
 			return false;
@@ -292,7 +291,7 @@ function ViewApprovalWizard(): ReactElement {
 	**********************************************************************************************/
 	const onMigrateSomeERC1155Tokens = useCallback(async (
 		collectionAddress: string,
-		collection: TOpenSeaAsset[]
+		collection: TNFT[]
 	): Promise<boolean> => {
 		set_collectionStatus((prev): TDict<TWizardStatus> => ({
 			...prev,
@@ -330,7 +329,7 @@ function ViewApprovalWizard(): ReactElement {
 	** in the Gnosis Safe. This will take advantage of the batch transaction feature of the Gnosis
 	** Safe.
 	**********************************************************************************************/
-	const onMigrateSomeERC1155TokensFromGnosis = useCallback(async (collectionAddress: string, collection: TOpenSeaAsset[]): Promise<BaseTransaction> => {
+	const onMigrateSomeERC1155TokensFromGnosis = useCallback(async (collectionAddress: string, collection: TNFT[]): Promise<BaseTransaction> => {
 		const tokenIDs: bigint[] = [];
 		for (const asset of collection) {
 			tokenIDs.push(toBigInt(asset.tokenID));
@@ -351,7 +350,7 @@ function ViewApprovalWizard(): ReactElement {
 		);
 	}, [address, destinationAddress, provider]);
 
-	const onMigrateSomeERC721TokensFromGnosis = useCallback((collectionAddress: string, collection: TOpenSeaAsset[]): BaseTransaction[] => {
+	const onMigrateSomeERC721TokensFromGnosis = useCallback((collectionAddress: string, collection: TNFT[]): BaseTransaction[] => {
 		const transactions = [];
 		for (const asset of collection) {
 			transactions.push(getSafeTransferFrom721(
@@ -364,13 +363,13 @@ function ViewApprovalWizard(): ReactElement {
 		return transactions;
 	}, [address, destinationAddress]);
 
-	const onMigrateSelectedForGnosis = useCallback(async (groupedByCollection: TDict<TOpenSeaAsset[]>): Promise<void> => {
+	const onMigrateSelectedForGnosis = useCallback(async (groupedByCollection: TDict<TNFT[]>): Promise<void> => {
 		const transactions: BaseTransaction[] = [];
 		for (const collectionAddress in groupedByCollection) {
 			const collection = groupedByCollection[collectionAddress];
-			if (collection[0].assetContract.schema_name === 'ERC1155') {
+			if (collection[0].collection.type === 'ERC1155') {
 				transactions.push(await onMigrateSomeERC1155TokensFromGnosis(collectionAddress, collection));
-			} else if (collection[0].assetContract.schema_name === 'ERC721') {
+			} else if (collection[0].collection.type === 'ERC721') {
 				transactions.push(...onMigrateSomeERC721TokensFromGnosis(collectionAddress, collection));
 			}
 		}
@@ -384,7 +383,7 @@ function ViewApprovalWizard(): ReactElement {
 			}
 
 			const {safeTxHash} = await sdk.txs.send({txs: transactions});
-			const successfulMigrations: TDict<TOpenSeaAsset[]> = {};
+			const successfulMigrations: TDict<TNFT[]> = {};
 			for (const collectionAddress in groupedByCollection) {
 				const collection = groupedByCollection[collectionAddress];
 				set_collectionStatus((prev): TDict<TWizardStatus> => ({
@@ -412,7 +411,7 @@ function ViewApprovalWizard(): ReactElement {
 			return onMigrateSelectedForGnosis(groupedByCollection);
 		}
 
-		const successfulMigrations: TDict<TOpenSeaAsset[]> = {};
+		const successfulMigrations: TDict<TNFT[]> = {};
 		for (const collectionAddress in groupedByCollection) {
 			const collection = groupedByCollection[collectionAddress];
 			const status = collectionStatus[toAddress(collectionAddress)];
@@ -420,7 +419,7 @@ function ViewApprovalWizard(): ReactElement {
 				continue;
 			}
 
-			if (collection[0].assetContract.schema_name === 'ERC1155') {
+			if (collection[0].collection.type === 'ERC1155') {
 				const isSuccessful = await onMigrateSomeERC1155Tokens(collectionAddress, collection);
 				if (isSuccessful) {
 					successfulMigrations[collectionAddress] = collection;
@@ -465,8 +464,8 @@ function ViewApprovalWizard(): ReactElement {
 							<ApprovalWizardItem
 								key={index}
 								collection={collection}
-								collectionStatus={collectionStatus[toAddress(collection[0].assetContract.address)]}
-								collectionApprovalStatus={collectionApprovalStatus[toAddress(collection[0].assetContract.address)]}
+								collectionStatus={collectionStatus[toAddress(collection[0].collection.address)]}
+								collectionApprovalStatus={collectionApprovalStatus[toAddress(collection[0].collection.address)]}
 								index={index} />
 						);
 					})}

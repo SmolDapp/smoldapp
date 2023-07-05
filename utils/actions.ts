@@ -1,6 +1,6 @@
 import assert from 'assert';
 import DISPERSE_ABI from 'utils/abi/disperse.abi';
-import {assertAddress, handleTx, toWagmiProvider} from 'utils/toWagmiProvider';
+import {assertAddress, handleTx, toWagmiProvider} from 'utils/wagmiProvider';
 import {erc20ABI, erc721ABI, getPublicClient, prepareSendTransaction, readContract, sendTransaction, waitForTransaction} from '@wagmi/core';
 import {MAX_UINT_256} from '@yearn-finance/web-lib/utils/constants';
 import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
@@ -13,7 +13,7 @@ import type {BaseError} from 'viem';
 import type {Connector} from 'wagmi';
 import type {TAddress} from '@yearn-finance/web-lib/types';
 import type {TTxResponse} from '@yearn-finance/web-lib/utils/web3/transaction';
-import type {TWriteTransaction} from './toWagmiProvider';
+import type {TWriteTransaction} from './wagmiProvider';
 
 //Because USDT do not return a boolean on approve, we need to use this ABI
 const ALTERNATE_ERC20_APPROVE_ABI = [{'constant': false, 'inputs': [{'name': '_spender', 'type': 'address'}, {'name': '_value', 'type': 'uint256'}], 'name': 'approve', 'outputs': [], 'payable': false, 'stateMutability': 'nonpayable', 'type': 'function'}] as const;

@@ -15,8 +15,16 @@ async function getAddressFromHandle(handle: string): Promise<TAddress | ''> {
 	return profile?.ownedBy ? toAddress(profile?.ownedBy) : '';
 }
 
+function isLensNFT(nftName: string): boolean {
+	if (nftName.includes('lens-Follower') || nftName.includes('lensprotocol') || nftName.includes('Lens Protocol') || nftName.includes('lens-Collect')) {
+		return true;
+	}
+	return false;
+}
+
 const	lensProtocol = {
 	getHandleFromAddress,
-	getAddressFromHandle
+	getAddressFromHandle,
+	isLensNFT
 };
 export default lensProtocol;

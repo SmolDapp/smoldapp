@@ -1,23 +1,55 @@
 import React, {memo} from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import LogoEtherscan from 'components/icons/LogoEtherscan';
 import LogoLooksRare from 'components/icons/LogoLooksRare';
 import LogoOpensea from 'components/icons/LogoOpensea';
 import LogoRarible from 'components/icons/LogoRarible';
+import {ETHEREUM_ENS_ADDRESS} from 'utils/constants';
 import {useChain} from '@yearn-finance/web-lib/hooks/useChain';
 import IconLinkOut from '@yearn-finance/web-lib/icons/IconLinkOut';
 import {toAddress, truncateHex} from '@yearn-finance/web-lib/utils/address';
+import {NFTWithFallback} from '@common/NFTWithFallback';
 
 import type {ReactElement} from 'react';
-import type {TOpenSeaAsset} from 'utils/types/opensea';
+import type {TNFT} from 'utils/types/nftMigratooor';
 
-type TOpenSeaAssetProps = {
-	nft: TOpenSeaAsset;
-	onSelect: (nft: TOpenSeaAsset) => void;
+type TNFTAssetProps = {
+	nft: TNFT;
+	onSelect: (nft: TNFT) => void;
 	isSelected: boolean;
 }
-const OpenSeaAsset = memo(function OpenSeaAsset(props: TOpenSeaAssetProps): ReactElement {
+function AssetImage(props: {nft: TNFT}): ReactElement {
+	const {nft} = props;
+
+	if ((nft.imageURL || '').endsWith('.mov') || ['mov', 'mp4'].includes(nft?.imageType || '')) {
+		return (
+			<video
+				className={'h-full w-full object-cover object-center'}
+				src={nft.imageURL || ''}
+				width={500}
+				height={500}
+				controls />
+		);
+	}
+	if (['svg'].includes(nft?.imageType || '') && nft.imageRaw) {
+		return (
+			<div
+				className={'svg-fit flex aspect-square h-full w-full object-cover object-center'}
+				dangerouslySetInnerHTML={{__html: nft.imageURL as string}} />
+		);
+	}
+
+	return (
+		<NFTWithFallback
+			src={nft.imageURL || ''}
+			className={'h-full w-full object-cover'}
+			width={500}
+			height={500}
+			unoptimized
+			alt={''} />
+	);
+}
+const NFTAsset = memo(function NFTAsset(props: TNFTAssetProps): ReactElement {
 	const chain = useChain();
 	const {nft, onSelect, isSelected} = props;
 
@@ -35,37 +67,38 @@ const OpenSeaAsset = memo(function OpenSeaAsset(props: TOpenSeaAssetProps): Reac
 						value={''}
 						className={'h-4 w-4 rounded-sm border-neutral-400 text-pink-400 indeterminate:ring-2 focus:ring-2 focus:ring-pink-400 focus:ring-offset-neutral-100'} />
 					<div className={'flex h-8 min-h-[48px] w-8 min-w-[48px] md:h-10 md:w-10'}>
-						{(nft?.image_preview_url || nft?.image_url || '').endsWith('.mov') || ['mov', 'mp4'].includes(nft?.image_type || '') ? (
+						<AssetImage {...props} />
+						{/* {(nft.imageURL || '').endsWith('.mov') || ['mov', 'mp4'].includes(nft?.imageType || '') ? (
 							<video
 								className={'h-full w-full object-cover object-center'}
-								src={nft?.image_preview_url || nft?.image_url || ''}
+								src={nft.imageURL || ''}
 								width={500}
 								height={500}
 								controls />
-						) : (nft?.image_preview_url || nft?.image_url || '') !== '' ? (
+						) : (nft.imageURL || '') !== '' ? (
 							<Image
-								src={nft?.image_preview_url || nft?.image_url || ''}
+								src={nft.imageURL || ''}
 								className={'h-full w-full object-cover'}
 								width={500}
 								height={500}
 								unoptimized
 								alt={''} />
-						) : (nft?.image_raw) ? (
-							<div className={'h-full w-full object-cover'} dangerouslySetInnerHTML={{__html: nft?.image_raw}} />
-						) : <div className={'h-full w-full bg-neutral-300/60 object-cover object-center'} />}
+						) : (nft?.imageRaw) ? (
+							<div className={'h-full w-full object-cover'} dangerouslySetInnerHTML={{__html: nft?.imageRaw}} />
+						) : <div className={'h-full w-full bg-neutral-300/60 object-cover object-center'} />} */}
 					</div>
 					<div>
 						<div className={'flex flex-row items-center space-x-2'}>
 							<b className={'capitalize'}>
-								{nft?.name || nft?.collection?.name || nft?.assetContract?.name}
+								{nft?.name || nft?.collection?.name}
 							</b>
 						</div>
 						<Link
-							href={`${chain.getCurrent()?.block_explorer}/nft/${nft.assetContract.address}/${nft.tokenID}`}
+							href={`${chain.getCurrent()?.block_explorer}/nft/${nft.collection.address}/${nft.tokenID}`}
 							onClick={(e): void => e.stopPropagation()}
 							className={'flex cursor-pointer flex-row items-center space-x-2 text-neutral-500 transition-colors hover:text-neutral-900 hover:underline'}>
 							<p className={'font-mono text-xs'}>
-								{truncateHex(nft.assetContract.address, 6)}
+								{truncateHex(nft.collection.address, 6)}
 							</p>
 							<IconLinkOut className={'h-3 w-3'} />
 						</Link>
@@ -82,7 +115,7 @@ const OpenSeaAsset = memo(function OpenSeaAsset(props: TOpenSeaAssetProps): Reac
 						</b>
 					</div>
 					<p className={'font-mono text-xs'}>
-						{toAddress(nft.assetContract.address) === toAddress('0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85') ? nft?.name : `#${nft?.tokenID}`}
+						{toAddress(nft.collection.address) === ETHEREUM_ENS_ADDRESS ? nft?.name : `#${nft?.tokenID}`}
 					</p>
 				</div>
 
@@ -91,23 +124,25 @@ const OpenSeaAsset = memo(function OpenSeaAsset(props: TOpenSeaAssetProps): Reac
 					className={'hidden items-center space-x-4 md:flex'}>
 					<div>
 						<Link
-							href={`${chain.getCurrent()?.block_explorer}/nft/${nft.assetContract.address}/${nft.tokenID}`}
+							href={`${chain.getCurrent()?.block_explorer}/nft/${nft.collection.address}/${nft.tokenID}`}
 							className={'group flex w-full cursor-alias items-center justify-between text-xs text-neutral-600 hover:text-neutral-900'}>
 							<legend className={'sr-only'}>{'See on Etherscan'}</legend>
 							<LogoEtherscan className={'h-6 w-6 rounded-full border border-neutral-200'} />
 						</Link>
 					</div>
+					{nft.permalink ? (
+						<div>
+							<Link
+								href={nft.permalink || ''}
+								className={'group flex w-full cursor-alias items-center justify-between text-xs text-neutral-600 hover:text-neutral-900'}>
+								<legend className={'sr-only'}>{'See on Opensea'}</legend>
+								<LogoOpensea className={'h-6 w-6 rounded-full border border-neutral-200'} />
+							</Link>
+						</div>
+					) : null}
 					<div>
 						<Link
-							href={nft.permalink}
-							className={'group flex w-full cursor-alias items-center justify-between text-xs text-neutral-600 hover:text-neutral-900'}>
-							<legend className={'sr-only'}>{'See on Opensea'}</legend>
-							<LogoOpensea className={'h-6 w-6 rounded-full border border-neutral-200'} />
-						</Link>
-					</div>
-					<div>
-						<Link
-							href={`https://rarible.com/token/${nft.assetContract.address}:${nft.tokenID}?tab=details`}
+							href={`https://rarible.com/token/${nft.collection.address}:${nft.tokenID}?tab=details`}
 							className={'group flex w-full cursor-alias items-center justify-between text-xs text-neutral-600 hover:text-neutral-900'}>
 							<legend className={'sr-only'}>{'See on Rarible'}</legend>
 							<LogoRarible className={'h-6 w-6 rounded-full border border-neutral-200'} />
@@ -115,7 +150,7 @@ const OpenSeaAsset = memo(function OpenSeaAsset(props: TOpenSeaAssetProps): Reac
 					</div>
 					<div>
 						<Link
-							href={`https://looksrare.org/collections/${nft.assetContract.address}/${nft.tokenID}`}
+							href={`https://looksrare.org/collections/${nft.collection.address}/${nft.tokenID}`}
 							className={'group flex w-full cursor-alias items-center justify-between text-xs text-neutral-600 hover:text-neutral-900'}>
 							<legend className={'sr-only'}>{'See on LooksRare'}</legend>
 							<LogoLooksRare className={'h-6 w-6 rounded-full border border-neutral-200'} />
@@ -127,4 +162,4 @@ const OpenSeaAsset = memo(function OpenSeaAsset(props: TOpenSeaAssetProps): Reac
 	);
 });
 
-export default OpenSeaAsset;
+export default NFTAsset;

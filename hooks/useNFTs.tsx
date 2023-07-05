@@ -1,14 +1,18 @@
-import {useCallback, useEffect} from 'react';
-import assert from 'assert';
+import {useCallback, useEffect, useState} from 'react';
+import {retrieveENSNameFromNode} from 'utils';
+import {ETHEREUM_ENS_ADDRESS, POLYGON_LENS_ADDRESS} from 'utils/constants';
+import {decodeAsset} from 'utils/decodeAsset';
 import {getClient} from 'utils/wagmiUtils';
-import {getAbiItem} from 'viem';
-import {erc721ABI, readContracts} from 'wagmi';
+import {getAbiItem, parseAbi} from 'viem';
+import {erc721ABI} from 'wagmi';
+import {multicall} from '@wagmi/core';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {isZeroAddress, toAddress} from '@yearn-finance/web-lib/utils/address';
 import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
 
 import type {TTokenInfo} from 'contexts/useTokenList';
-import type {Hex, Log} from 'viem';
+import type {TNFT} from 'utils/types/nftMigratooor';
+import type {ContractFunctionConfig, Hex} from 'viem';
 import type {TAddress, TDict} from '@yearn-finance/web-lib/types';
 
 export type TIncentives = {
@@ -37,40 +41,32 @@ export type TIncentivesFor = {
 	user: TDict<TGroupedIncentives>
 }
 
-export type TNFT = {
+type TNFTLogged = {
 	id: string;
 	tokenID: bigint,
+	address: TAddress,
 	type: 'ERC721' | 'ERC1155',
-	image_url: string,
-	image_preview_url: string,
-	image_type?: string
-	name: string,
-	permalink: string,
-	collection: {
-		name: string,
-	},
-	assetContract: {
-		address: string,
-		name: string,
-		schema_name: string,
-	};
-	image_raw?: string,
 }
 
-function useNFTs(): any {
-	const {address} = useWeb3();
+type TMulticallContract = Parameters<typeof multicall>[0]['contracts'][0];
+
+function useNFTs(): TNFT[] {
+	const {address, chainID} = useWeb3();
+	const [tokens, set_tokens] = useState<TNFT[]>([]);
 
 	const filterEvents = useCallback(async (): Promise<void> => {
-		assert(!isZeroAddress(toAddress(address)), 'No address');
+		if (isZeroAddress(toAddress(address))) {
+			return;
+		}
 
-		const publicClient = getClient(1101);
-		const rangeLimit = 1_000_000n;
+		const publicClient = getClient(chainID);
+		const rangeLimit = 10_000_000n;
 		const initialBlockNumber = toBigInt(0);
 		const currentBlockNumber = await publicClient.getBlockNumber();
 
-		type TLog = Log & {id: string}
-		const tokenList: TLog[] = [];
+		const detectedNFTs: TNFTLogged[] = [];
 		for (let i = initialBlockNumber; i < currentBlockNumber; i += rangeLimit) {
+			console.log(`Scanning block ${i} to ${i + rangeLimit}`);
 			const abiItem = getAbiItem({abi: erc721ABI, name: 'Transfer'});
 			const [erc721Sent, erc721Received] = await Promise.all([
 				publicClient.getLogs({
@@ -88,56 +84,101 @@ function useNFTs(): any {
 					strict: true
 				})
 			]);
+			console.log(`Found ${erc721Sent.length} ERC721 sent and ${erc721Received.length} ERC721 received`);
 			for (const log of erc721Received) {
 				if (log.topics.length === 4) {
 					console.log(log);
 				}
-				const tLog = {...log, id: `${log.address}_${toBigInt(log.topics[3])}`};
-				// const nft = {
-				// 	id: tLog.id,
-				// 	tokenID: toBigInt(tLog.topics[3]),
-				// 	type: 'ERC721',
-				// 	image_url: '',
-				// 	name: '',
-				// 	permalink: '',
-				// 	collection: {
-				// 		name: ''
-				// 	},
-				// 	assetContract: {
-				// 		address: ''',
-				// 		name: '',
-				// 		schema_name: '',
-				// 	}
-				// 	image_raw: ''
-				// }
-				tokenList.push(tLog);
+				const nft: TNFTLogged = {
+					id: `${log.address}_${toBigInt(log.topics[3])}`,
+					tokenID: toBigInt(log.topics[3]),
+					type: 'ERC721',
+					address: log.address
+				};
+				detectedNFTs.push(nft);
 			}
 
 			for (const log of erc721Sent) {
-				const tLog = {...log, id: `${log.address}_${toBigInt(log.topics[3])}`};
-				const existingLog = tokenList.find((l): boolean => l.id === tLog.id);
+				const id = `${log.address}_${toBigInt(log.topics[3])}`;
+				const existingLog = detectedNFTs.find((l): boolean => l.id === id);
 				if (existingLog) {
-					tokenList.splice(tokenList.indexOf(existingLog), 1);
+					detectedNFTs.splice(detectedNFTs.indexOf(existingLog), 1);
 				}
 			}
 		}
 
-		const result = await readContracts({
-			contracts: tokenList.map((log): any => ({
-				abi: erc721ABI,
-				functionName: 'tokenURI',
-				args: [log.topics[3]],
-				address: log.address
-			}))
-		});
+		const calls = detectedNFTs.map((detected): TMulticallContract[] => {
+			const basicCalls: TMulticallContract[] = ([
+				{
+					abi: erc721ABI,
+					functionName: 'tokenURI',
+					args: [detected.tokenID],
+					address: detected.address
+				} satisfies ContractFunctionConfig<typeof erc721ABI>,
+				{
+					abi: erc721ABI,
+					functionName: 'name',
+					address: detected.address
+				} satisfies ContractFunctionConfig<typeof erc721ABI>,
+				{
+					abi: erc721ABI,
+					functionName: 'symbol',
+					address: detected.address
+				} satisfies ContractFunctionConfig<typeof erc721ABI>
+			]);
 
-		console.log(result);
-	}, [address]);
+			if (toAddress(detected.address) === POLYGON_LENS_ADDRESS) {
+				const lensABI = parseAbi(['function getHandle(uint256 profileId) external view returns (string memory)']);
+				basicCalls.push({
+					abi: lensABI,
+					functionName: 'getHandle',
+					args: [detected.tokenID],
+					address: detected.address
+				} satisfies ContractFunctionConfig<typeof lensABI>);
+			}
+			return basicCalls;
+		});
+		const result = await multicall({contracts: calls.flat(), chainId: chainID});
+
+		let resultIndex = 0;
+		const allDetectedNFTs: TNFT[] = [];
+		for (const nft of detectedNFTs) {
+			let handle = '';
+			let uri = (result[resultIndex++] as {result: string}).result;
+			const name = result[resultIndex++] as {result: string};
+			const symbol = result[resultIndex++] as {result: string};
+			if (toAddress(nft.address) === POLYGON_LENS_ADDRESS) {
+				handle = (result[resultIndex++] as {result: string}).result;
+			}
+			if (!uri && toAddress(nft.address) === ETHEREUM_ENS_ADDRESS) {
+				const ensName = await retrieveENSNameFromNode(nft.tokenID);
+				uri = `${ensName}.eth`;
+			}
+			const asset = await decodeAsset(uri);
+			allDetectedNFTs.push({
+				id: nft.id,
+				tokenID: nft.tokenID,
+				imageURL: asset.src,
+				imageRaw: uri,
+				imageType: asset.type,
+				name: asset.name || handle,
+				collection: {
+					address: nft.address,
+					name: name.result || '',
+					symbol: symbol.result || '',
+					type: nft.type
+				}
+			});
+		}
+
+		set_tokens(allDetectedNFTs);
+	}, [address, chainID]);
+
 	useEffect((): void => {
 		filterEvents();
 	}, [filterEvents]);
 
-	return null;
+	return tokens;
 }
 
 export default useNFTs;

@@ -328,3 +328,8 @@ details {
 }
 
 
+.svg-fit {
+	& > svg {
+		@apply w-full h-full;
+	}
+}

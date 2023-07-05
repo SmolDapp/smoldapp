@@ -1,5 +1,5 @@
 import React, {createContext, useCallback, useContext, useEffect, useMemo, useState} from 'react';
-import {fetchAllAssetsFromAlchemy, fetchAllAssetsFromOpenSea, matchAlchemyToOpenSea, matchOpensea} from 'utils/types/opensea';
+import {alchemyToNFT, fetchAllAssetsFromAlchemy, fetchAllAssetsFromOpenSea, openseaToNFT} from 'utils/types/opensea';
 import {useMountEffect, useUpdateEffect} from '@react-hookz/web';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
@@ -7,7 +7,8 @@ import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUpdates';
 
 import type {Dispatch, SetStateAction} from 'react';
-import type {TAlchemyAssets, TOpenSeaAsset} from 'utils/types/opensea';
+import type {TNFT} from 'utils/types/nftMigratooor';
+import type {TAlchemyAssets} from 'utils/types/opensea';
 import type {TAddress, TNDict} from '@yearn-finance/web-lib/types';
 
 export enum	Step {
@@ -28,12 +29,12 @@ export const NFTMIGRATOOOR_CONTRACT_PER_CHAIN: TNDict<TAddress> = {
 };
 
 export type TSelected = {
-	nfts: TOpenSeaAsset[],
-	selected: TOpenSeaAsset[],
+	nfts: TNFT[],
+	selected: TNFT[],
 	destinationAddress: TAddress,
 	currentStep: Step,
-	set_nfts: Dispatch<SetStateAction<TOpenSeaAsset[]>>,
-	set_selected: Dispatch<SetStateAction<TOpenSeaAsset[]>>,
+	set_nfts: Dispatch<SetStateAction<TNFT[]>>,
+	set_selected: Dispatch<SetStateAction<TNFT[]>>,
 	set_destinationAddress: Dispatch<SetStateAction<TAddress>>,
 	set_currentStep: Dispatch<SetStateAction<Step>>
 }
@@ -63,11 +64,12 @@ function scrollToTargetAdjusted(element: HTMLElement): void {
 
 const NFTMigratooorContext = createContext<TSelected>(defaultProps);
 export const NFTMigratooorContextApp = ({children}: {children: React.ReactElement}): React.ReactElement => {
+	// const detectedNFTs = useNFTs();
 	const {address, isActive, walletType} = useWeb3();
 	const {safeChainID} = useChainID();
 	const [destinationAddress, set_destinationAddress] = useState<TAddress>(toAddress());
-	const [nfts, set_nfts] = useState<TOpenSeaAsset[]>([]);
-	const [selected, set_selected] = useState<TOpenSeaAsset[]>([]);
+	const [nfts, set_nfts] = useState<TNFT[]>([]);
+	const [selected, set_selected] = useState<TNFT[]>([]);
 	const [currentStep, set_currentStep] = useState<Step>(Step.WALLET);
 
 	const handleOpenSeaAssets = useCallback(async (): Promise<void> => {
@@ -75,7 +77,7 @@ export const NFTMigratooorContextApp = ({children}: {children: React.ReactElemen
 			return set_nfts([]);
 		}
 		const rawAssets = await fetchAllAssetsFromOpenSea(address);
-		const assets = rawAssets.map(matchOpensea);
+		const assets = rawAssets.map(openseaToNFT);
 		set_nfts(assets);
 	}, [address]);
 
@@ -91,7 +93,7 @@ export const NFTMigratooorContextApp = ({children}: {children: React.ReactElemen
 				&& asset?.media !== null
 				&& asset?.tokenUri !== null
 			))
-			.map(matchAlchemyToOpenSea);
+			.map(alchemyToNFT);
 		set_nfts(assets);
 	}, [safeChainID, address]);
 	/**********************************************************************************************
@@ -198,7 +200,7 @@ export const NFTMigratooorContextApp = ({children}: {children: React.ReactElemen
 		set_destinationAddress,
 		currentStep,
 		set_currentStep
-	}), [selected, destinationAddress, currentStep, nfts]);
+	}), [selected, nfts, destinationAddress, currentStep]);
 
 	return (
 		<NFTMigratooorContext.Provider value={contextValue}>

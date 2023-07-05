@@ -1,23 +1,24 @@
 import React, {memo, useMemo} from 'react';
 import IconChevronBoth from 'components/icons/IconChevronBoth';
-import OpenSeaAsset from '@nftmigratooor/OpenSeaAsset';
+import lensProtocol from 'utils/lens.tools';
+import OpenSeaAsset from '@nftmigratooor/NFTAssetRow';
 
 import type {ReactElement} from 'react';
-import type {TOpenSeaAsset} from 'utils/types/opensea';
+import type {TNFT} from 'utils/types/nftMigratooor';
 
-type TOpenSeaCollectionProps = {
-	onSelectAll: (areAllChecked: boolean, value: TOpenSeaAsset[]) => void;
-	onSelectOne: (item: TOpenSeaAsset) => void;
+type TNFTCollectionProps = {
+	onSelectAll: (areAllChecked: boolean, value: TNFT[]) => void;
+	onSelectOne: (item: TNFT) => void;
 	collectionName: string;
-	collectionItems: TOpenSeaAsset[];
+	collectionItems: TNFT[];
 	isCollectionSelected: boolean;
-	isItemSelected: (item: TOpenSeaAsset) => boolean;
+	isItemSelected: (item: TNFT) => boolean;
 }
-const OpenSeaCollection = memo(function OpenSeaCollection(props: TOpenSeaCollectionProps): ReactElement {
-	const	{onSelectAll, collectionName, collectionItems, isCollectionSelected, isItemSelected, onSelectOne} = props;
-	const	items = useMemo((): ReactElement[] => (
-		collectionItems.map((item: TOpenSeaAsset): ReactElement => {
-			const	isTokenSelected = isItemSelected(item);
+const NFTCollection = memo(function NFTCollection(props: TNFTCollectionProps): ReactElement {
+	const {onSelectAll, collectionName, collectionItems, isCollectionSelected, isItemSelected, onSelectOne} = props;
+	const items = useMemo((): ReactElement[] => (
+		collectionItems.map((item: TNFT): ReactElement => {
+			const isTokenSelected = isItemSelected(item);
 			return (
 				<OpenSeaAsset
 					key={item.id}
@@ -46,7 +47,7 @@ const OpenSeaCollection = memo(function OpenSeaCollection(props: TOpenSeaCollect
 						</div>
 						<div className={'text-left text-sm'}>
 							<b className={'capitalize'}>
-								{collectionName}
+								{lensProtocol.isLensNFT(collectionName) ? 'Lens' : collectionName}
 							</b>
 						</div>
 					</div>
@@ -64,4 +65,4 @@ const OpenSeaCollection = memo(function OpenSeaCollection(props: TOpenSeaCollect
 	);
 });
 
-export default OpenSeaCollection;
+export default NFTCollection;
