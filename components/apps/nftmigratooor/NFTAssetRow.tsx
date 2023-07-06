@@ -5,7 +5,7 @@ import LogoLooksRare from 'components/icons/LogoLooksRare';
 import LogoOpensea from 'components/icons/LogoOpensea';
 import LogoRarible from 'components/icons/LogoRarible';
 import {ETHEREUM_ENS_ADDRESS} from 'utils/constants';
-import {useChain} from '@yearn-finance/web-lib/hooks/useChain';
+import {useNetwork} from 'wagmi';
 import IconLinkOut from '@yearn-finance/web-lib/icons/IconLinkOut';
 import {toAddress, truncateHex} from '@yearn-finance/web-lib/utils/address';
 import {NFTWithFallback} from '@common/NFTWithFallback';
@@ -50,7 +50,7 @@ function AssetImage(props: {nft: TNFT}): ReactElement {
 	);
 }
 const NFTAsset = memo(function NFTAsset(props: TNFTAssetProps): ReactElement {
-	const chain = useChain();
+	const {chain} = useNetwork();
 	const {nft, onSelect, isSelected} = props;
 
 	return (
@@ -94,7 +94,7 @@ const NFTAsset = memo(function NFTAsset(props: TNFTAssetProps): ReactElement {
 							</b>
 						</div>
 						<Link
-							href={`${chain.getCurrent()?.block_explorer}/nft/${nft.collection.address}/${nft.tokenID}`}
+							href={`${chain?.blockExplorers?.default?.url || 'https://etherscan.io'}/nft/${nft.collection.address}/${nft.tokenID}`}
 							onClick={(e): void => e.stopPropagation()}
 							className={'flex cursor-pointer flex-row items-center space-x-2 text-neutral-500 transition-colors hover:text-neutral-900 hover:underline'}>
 							<p className={'font-mono text-xs'}>
@@ -124,7 +124,7 @@ const NFTAsset = memo(function NFTAsset(props: TNFTAssetProps): ReactElement {
 					className={'hidden items-center space-x-4 md:flex'}>
 					<div>
 						<Link
-							href={`${chain.getCurrent()?.block_explorer}/nft/${nft.collection.address}/${nft.tokenID}`}
+							href={`${chain?.blockExplorers?.default?.url || 'https://etherscan.io'}/nft/${nft.collection.address}/${nft.tokenID}`}
 							className={'group flex w-full cursor-alias items-center justify-between text-xs text-neutral-600 hover:text-neutral-900'}>
 							<legend className={'sr-only'}>{'See on Etherscan'}</legend>
 							<LogoEtherscan className={'h-6 w-6 rounded-full border border-neutral-200'} />

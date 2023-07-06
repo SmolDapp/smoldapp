@@ -4,8 +4,8 @@ import IconChevronBoth from 'components/icons/IconChevronBoth';
 import IconCircleCross from 'components/icons/IconCircleCross';
 import IconSpinner from 'components/icons/IconSpinner';
 import {ETHEREUM_ENS_ADDRESS} from 'utils/constants';
+import {useNetwork} from 'wagmi';
 import {useNFTMigratooor} from '@nftmigratooor/useNFTMigratooor';
-import {useChain} from '@yearn-finance/web-lib/hooks/useChain';
 import {toAddress, truncateHex} from '@yearn-finance/web-lib/utils/address';
 
 import type {ReactElement} from 'react';
@@ -24,7 +24,7 @@ function ApprovalWizardItem({
 	index
 }: TApprovalWizardItemProps): ReactElement {
 	const {destinationAddress} = useNFTMigratooor();
-	const chain = useChain();
+	const {chain} = useNetwork();
 	const [firstItemInCollection] = collection;
 	const hasMultipleItems = collection.length > 1;
 
@@ -58,7 +58,7 @@ function ApprovalWizardItem({
 		if (collectionStatus?.receipt) {
 			return (
 				<a
-					href={`${chain.getCurrent()?.block_explorer}/tx/${collectionStatus.receipt.transactionHash}`}
+					href={`${chain?.blockExplorers?.default?.url || 'https://etherscan.io'}/tx/${collectionStatus.receipt.transactionHash}`}
 					className={'text-xs text-neutral-500 transition-colors hover:text-neutral-900 hover:underline'}
 					target={'_blank'}
 					rel={'noreferrer'}>
