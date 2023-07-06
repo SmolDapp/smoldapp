@@ -1,5 +1,5 @@
-import {getNativeToken} from 'utils/wagmiProvider';
 import config from 'utils/wagmiConfig';
+import {getNativeToken} from 'utils/wagmiProvider';
 import {serialize} from 'wagmi';
 import {erc20ABI} from '@wagmi/core';
 import AGGREGATE3_ABI from '@yearn-finance/web-lib/utils/abi/aggregate.abi';
