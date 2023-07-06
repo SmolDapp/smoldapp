@@ -6,4 +6,17 @@ const thumbnailVariants = {
 	exit: {y: -20, opacity: 1, transition, height: 'auto'}
 };
 
+export function scrollToTargetAdjusted(element: HTMLElement): void {
+	const headerOffset = 81 - 16;
+	if (!element) {
+		return;
+	}
+	const elementPosition = element.getBoundingClientRect().top;
+	const offsetPosition = elementPosition + window.scrollY - headerOffset;
+	window.scrollTo({
+		top: Math.round(offsetPosition),
+		behavior: 'smooth'
+	});
+}
+
 export default thumbnailVariants;

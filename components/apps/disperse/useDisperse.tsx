@@ -1,4 +1,5 @@
 import React, {createContext, useContext, useEffect, useMemo, useState} from 'react';
+import {scrollToTargetAdjusted} from 'utils/animations';
 import {getNativeToken} from 'utils/wagmiProvider';
 import {useMountEffect, useUpdateEffect} from '@react-hookz/web';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
@@ -37,19 +38,6 @@ const defaultProps: TSelected = {
 	set_disperseArray: (): void => undefined,
 	onResetDisperse: (): void => undefined
 };
-
-function scrollToTargetAdjusted(element: HTMLElement): void {
-	const headerOffset = 81 - 16;
-	if (!element) {
-		return;
-	}
-	const elementPosition = element.getBoundingClientRect().top;
-	const offsetPosition = elementPosition + window.scrollY - headerOffset;
-	window.scrollTo({
-		top: Math.round(offsetPosition),
-		behavior: 'smooth'
-	});
-}
 
 export function newVoidRow(): TDisperseElement {
 	return ({

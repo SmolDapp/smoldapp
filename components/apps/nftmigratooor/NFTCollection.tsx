@@ -1,6 +1,6 @@
 import React, {memo, useMemo} from 'react';
 import IconChevronBoth from 'components/icons/IconChevronBoth';
-import lensProtocol from 'utils/tools.lens';
+import {isLensNFT} from 'utils/tools.lens';
 import OpenSeaAsset from '@nftmigratooor/NFTAssetRow';
 
 import type {ReactElement} from 'react';
@@ -47,7 +47,7 @@ const NFTCollection = memo(function NFTCollection(props: TNFTCollectionProps): R
 						</div>
 						<div className={'text-left text-sm'}>
 							<b className={'capitalize'}>
-								{lensProtocol.isLensNFT(collectionName) ? 'Lens' : collectionName}
+								{isLensNFT(collectionName) ? 'Lens' : collectionName}
 							</b>
 						</div>
 					</div>

@@ -1,4 +1,5 @@
 import React, {createContext, useContext, useEffect, useMemo, useState} from 'react';
+import {scrollToTargetAdjusted} from 'utils/animations';
 import {useMountEffect, useUpdateEffect} from '@react-hookz/web';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
@@ -41,19 +42,6 @@ const defaultProps: TSelected = {
 	set_destinationAddress: (): void => undefined,
 	set_currentStep: (): void => undefined
 };
-
-function scrollToTargetAdjusted(element: HTMLElement): void {
-	const headerOffset = 81 - 16;
-	if (!element) {
-		return;
-	}
-	const elementPosition = element.getBoundingClientRect().top;
-	const offsetPosition = elementPosition + window.scrollY - headerOffset;
-	window.scrollTo({
-		top: Math.round(offsetPosition),
-		behavior: 'smooth'
-	});
-}
 
 const MigratooorContext = createContext<TSelected>(defaultProps);
 export const MigratooorContextApp = ({children}: {children: React.ReactElement}): React.ReactElement => {

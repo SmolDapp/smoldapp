@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useState} from 'react';
+import {useCallback} from 'react';
 import {ETHEREUM_ENS_ADDRESS, POLYGON_LENS_ADDRESS} from 'utils/constants';
 import {decodeAsset} from 'utils/decodeAsset';
 import {retrieveENSNameFromNode} from 'utils/tools.ens';
@@ -6,8 +6,7 @@ import {getClient} from 'utils/wagmiUtils';
 import {getAbiItem, parseAbi} from 'viem';
 import {erc721ABI} from 'wagmi';
 import {multicall} from '@wagmi/core';
-import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
-import {isZeroAddress, toAddress} from '@yearn-finance/web-lib/utils/address';
+import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
 
 import type {TTokenInfo} from 'contexts/useTokenList';
@@ -50,15 +49,11 @@ type TNFTLogged = {
 
 type TMulticallContract = Parameters<typeof multicall>[0]['contracts'][0];
 
-function useNFTs(): TNFT[] {
-	const {address, chainID} = useWeb3();
-	const [tokens, set_tokens] = useState<TNFT[]>([]);
-
-	const filterEvents = useCallback(async (): Promise<void> => {
-		if (isZeroAddress(toAddress(address))) {
-			return;
-		}
-
+function useNFTs(): (userAddress: TAddress, chainID: number) => Promise<TNFT[]> {
+	const filterEvents = useCallback(async (
+		userAddress: TAddress,
+		chainID: number
+	): Promise<TNFT[]> => {
 		const publicClient = getClient(chainID);
 		const rangeLimit = 10_000_000n;
 		const initialBlockNumber = toBigInt(0);
@@ -71,20 +66,19 @@ function useNFTs(): TNFT[] {
 			const [erc721Sent, erc721Received] = await Promise.all([
 				publicClient.getLogs({
 					event: abiItem,
-					args: {from: toAddress(address)},
+					args: {from: userAddress},
 					fromBlock: i,
 					toBlock: i + rangeLimit,
 					strict: true
 				}),
 				publicClient.getLogs({
 					event: abiItem,
-					args: {to: toAddress(address)},
+					args: {to: userAddress},
 					fromBlock: i,
 					toBlock: i + rangeLimit,
 					strict: true
 				})
 			]);
-			console.log(`Found ${erc721Sent.length} ERC721 sent and ${erc721Received.length} ERC721 received`);
 			for (const log of erc721Received) {
 				if (log.topics.length === 4) {
 					console.log(log);
@@ -171,14 +165,10 @@ function useNFTs(): TNFT[] {
 			});
 		}
 
-		set_tokens(allDetectedNFTs);
-	}, [address, chainID]);
+		return (allDetectedNFTs);
+	}, []);
 
-	useEffect((): void => {
-		filterEvents();
-	}, [filterEvents]);
-
-	return tokens;
+	return filterEvents;
 }
 
 export default useNFTs;

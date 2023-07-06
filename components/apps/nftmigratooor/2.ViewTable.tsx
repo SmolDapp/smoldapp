@@ -1,4 +1,6 @@
 import React, {memo, useCallback, useMemo} from 'react';
+import IconHeartBroken from 'components/icons/IconHeartBroken';
+import IconSpinner from 'components/icons/IconSpinner';
 import {isLensNFT} from 'utils/tools.lens';
 import NFTCollection from '@nftmigratooor/NFTCollection';
 import {useNFTMigratooor} from '@nftmigratooor/useNFTMigratooor';
@@ -10,14 +12,14 @@ import type {TNFT} from 'utils/types/nftMigratooor';
 import type {TDict} from '@yearn-finance/web-lib/types';
 
 const ViewTableOpenSea = memo(function ViewTableOpenSea({onProceed}: {onProceed: VoidFunction}): ReactElement {
-	const	{nfts, selected, set_selected} = useNFTMigratooor();
+	const {nfts, isFetchingNFTs, selected, set_selected} = useNFTMigratooor();
 
 	/**********************************************************************************************
 	** Once we have our array of NFT, we need to group them by collection. This is done by
 	** creating a dictionary with the collection address as the key and an array of NFTs as the
 	** value.
 	**********************************************************************************************/
-	const	groupedByCollection = useMemo((): TDict<TNFT[]> => (
+	const groupedByCollection = useMemo((): TDict<TNFT[]> => (
 		(nfts || []).reduce((acc: TDict<TNFT[]>, obj: TNFT): TDict<TNFT[]> => {
 			let key = obj.collection.address as string;
 			if (isLensNFT(obj.collection.name)) {
@@ -36,7 +38,7 @@ const ViewTableOpenSea = memo(function ViewTableOpenSea({onProceed}: {onProceed:
 	** with the collection address as the key and an array of NFTs that are selected as the value.
 	** This is used to determine which NFTs in a collection are selected.
 	**********************************************************************************************/
-	const	selectedPerCollection = useMemo((): TDict<TNFT[]> => (
+	const selectedPerCollection = useMemo((): TDict<TNFT[]> => (
 		(nfts || []).reduce((acc: TDict<TNFT[]>, obj: TNFT): TDict<TNFT[]> => {
 			let key = obj.collection.address as string;
 			if (isLensNFT(obj.collection.name)) {
@@ -56,7 +58,7 @@ const ViewTableOpenSea = memo(function ViewTableOpenSea({onProceed}: {onProceed:
 	** Callback method for selecting all NFTs in a collection. This will select all if none or
 	** some are selected, and deselect all if all are selected.
 	**********************************************************************************************/
-	const	onSelectAll = useCallback((areAllChecked: boolean, value: TNFT[]): void => {
+	const onSelectAll = useCallback((areAllChecked: boolean, value: TNFT[]): void => {
 		if (areAllChecked) {
 			set_selected((prev): TNFT[] => {
 				const newSelected = [...prev];
@@ -85,7 +87,7 @@ const ViewTableOpenSea = memo(function ViewTableOpenSea({onProceed}: {onProceed:
 	** Callback method for selecting one specific NFT. This will select it if it's not selected,
 	** and deselect it if it's selected.
 	**********************************************************************************************/
-	const	onSelectOne = useCallback((nft: TNFT): void => {
+	const onSelectOne = useCallback((nft: TNFT): void => {
 		set_selected((prev): TNFT[] => {
 			const newSelected = [...prev];
 			const index = newSelected.findIndex((asset: TNFT): boolean => asset.id === nft.id);
@@ -138,16 +140,31 @@ const ViewTableOpenSea = memo(function ViewTableOpenSea({onProceed}: {onProceed:
 
 				<div className={'grid gap-0 pt-4'}>
 					{
-						Object.entries(groupedByCollection).map(([key, value]: [string, TNFT[]]): ReactElement => (
-							<NFTCollection
-								key={key}
-								isCollectionSelected={isCollectionSelected(key, value)}
-								isItemSelected={isItemSelected}
-								collectionName={value[0].collection.name}
-								collectionItems={value}
-								onSelectAll={onSelectAll}
-								onSelectOne={onSelectOne} />
-						))
+						isFetchingNFTs ? (
+							<div className={'flex h-48 flex-col items-center justify-center space-y-2'}>
+								<IconSpinner className={'h-4 w-4 text-neutral-500'} />
+								<small className={'text-neutral-500'}>{'Retrieving your NFTs...'}</small>
+							</div>
+						) : (
+							Object.entries(groupedByCollection).length === 0 ? (
+								<div className={'flex h-48 flex-col items-center justify-center space-y-2'}>
+									<IconHeartBroken className={'h-4 w-4 text-neutral-500'} />
+									<small className={'text-neutral-500'}>{'No NFTs found.'}</small>
+								</div>
+							) : (
+								Object.entries(groupedByCollection)
+									.map(([key, value]: [string, TNFT[]]): ReactElement => (
+										<NFTCollection
+											key={key}
+											isCollectionSelected={isCollectionSelected(key, value)}
+											isItemSelected={isItemSelected}
+											collectionName={value[0].collection.name}
+											collectionItems={value}
+											onSelectAll={onSelectAll}
+											onSelectOne={onSelectOne} />
+									))
+							)
+						)
 					}
 				</div>
 
