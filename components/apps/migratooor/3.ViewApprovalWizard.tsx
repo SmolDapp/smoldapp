@@ -1,8 +1,8 @@
 import React, {useCallback, useState} from 'react';
 import {useWallet} from 'contexts/useWallet';
 import {transferERC20, transferEther} from 'utils/actions';
-import {getTransferTransaction} from 'utils/gnosis.tools';
 import {notifyMigrate} from 'utils/notifier';
+import {getTransferTransaction} from 'utils/tools.gnosis';
 import {useSafeAppsSDK} from '@gnosis.pm/safe-apps-react-sdk';
 import ApprovalWizardItem from '@migratooor/ApprovalWizardItem';
 import {useMigratooor} from '@migratooor/useMigratooor';

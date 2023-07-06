@@ -1,3 +1,4 @@
+import {isAddress} from 'viem';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {lensProtocolFetcher} from '@yearn-finance/web-lib/utils/fetchers';
 
@@ -15,16 +16,23 @@ async function getAddressFromHandle(handle: string): Promise<TAddress | ''> {
 	return profile?.ownedBy ? toAddress(profile?.ownedBy) : '';
 }
 
-function isLensNFT(nftName: string): boolean {
+export function isLensNFT(nftName: string): boolean {
 	if (nftName.includes('lens-Follower') || nftName.includes('lensprotocol') || nftName.includes('Lens Protocol') || nftName.includes('lens-Collect')) {
 		return true;
 	}
 	return false;
 }
 
-const	lensProtocol = {
-	getHandleFromAddress,
-	getAddressFromHandle,
-	isLensNFT
-};
+export async function checkLensValidity(lens: string): Promise<[TAddress, boolean]> {
+	const resolvedName = await lensProtocol.getAddressFromHandle(lens);
+	if (resolvedName) {
+		if (isAddress(resolvedName)) {
+			return [toAddress(resolvedName), true];
+		}
+	}
+	return [toAddress(), false];
+}
+
+
+const	lensProtocol = {getHandleFromAddress, getAddressFromHandle};
 export default lensProtocol;

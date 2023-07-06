@@ -1,7 +1,7 @@
 import {useCallback, useEffect, useState} from 'react';
-import {retrieveENSNameFromNode} from 'utils';
 import {ETHEREUM_ENS_ADDRESS, POLYGON_LENS_ADDRESS} from 'utils/constants';
 import {decodeAsset} from 'utils/decodeAsset';
+import {retrieveENSNameFromNode} from 'utils/tools.ens';
 import {getClient} from 'utils/wagmiUtils';
 import {getAbiItem, parseAbi} from 'viem';
 import {erc721ABI} from 'wagmi';

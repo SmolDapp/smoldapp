@@ -5,7 +5,6 @@ import dayjsDuration from 'dayjs/plugin/duration.js';
 import relativeTime from 'dayjs/plugin/relativeTime.js';
 import weekday from 'dayjs/plugin/weekday.js';
 import {useTimer} from 'hooks/useTimer';
-import relativeTimeFormat from 'utils/time';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import IconGithub from '@yearn-finance/web-lib/icons/IconSocialGithub';
 import {copyToClipboard} from '@yearn-finance/web-lib/utils/helpers';
@@ -16,6 +15,24 @@ import type {ReactElement} from 'react';
 extend(relativeTime);
 extend(dayjsDuration);
 extend(weekday);
+
+function relativeTimeFormat(value: number): string {
+	let locale = 'fr-FR';
+	if (typeof(navigator) !== 'undefined') {
+		locale = navigator.language || 'fr-FR';
+	}
+
+	const now = Date.now().valueOf() / 1000;
+	const timeDiffWithNow = (value - now);
+	const hourDiffWithNow = timeDiffWithNow / 3600;
+	const dayDiffWithNow = hourDiffWithNow / 24;
+
+	//use day scale if diff is more than 24 hours
+	if (Math.abs(hourDiffWithNow) >= 24) {
+		return new Intl.RelativeTimeFormat([locale, 'en-US']).format(Math.floor(dayDiffWithNow), 'days');
+	}
+	return new Intl.RelativeTimeFormat([locale, 'en-US']).format(Math.floor(hourDiffWithNow), 'hours');
+}
 
 function TokenListHero({summary}: {summary: TTokenListSummary | undefined}): ReactElement {
 	const nextSundayNoon = dayjs().weekday(7).hour(12).minute(0).second(0).millisecond(0);

@@ -1,6 +1,6 @@
 import React, {memo, useMemo} from 'react';
 import IconChevronBoth from 'components/icons/IconChevronBoth';
-import lensProtocol from 'utils/lens.tools';
+import lensProtocol from 'utils/tools.lens';
 import OpenSeaAsset from '@nftmigratooor/NFTAssetRow';
 
 import type {ReactElement} from 'react';

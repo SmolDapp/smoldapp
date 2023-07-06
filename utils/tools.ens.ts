@@ -1,5 +1,4 @@
 import {gql, request} from 'graphql-request';
-import lensProtocol from 'utils/lens.tools';
 import {isAddress, toHex} from 'viem';
 import {fetchEnsAddress} from '@wagmi/core';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
@@ -25,16 +24,6 @@ export async function checkENSValidity(ens: string): Promise<[TAddress, boolean]
 	if (resolvedAddress) {
 		if (isAddress(resolvedAddress)) {
 			return [toAddress(resolvedAddress), true];
-		}
-	}
-	return [toAddress(), false];
-}
-
-export async function checkLensValidity(lens: string): Promise<[TAddress, boolean]> {
-	const resolvedName = await lensProtocol.getAddressFromHandle(lens);
-	if (resolvedName) {
-		if (isAddress(resolvedName)) {
-			return [toAddress(resolvedName), true];
 		}
 	}
 	return [toAddress(), false];

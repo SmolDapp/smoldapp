@@ -1,5 +1,5 @@
 import React, {memo, useCallback, useMemo} from 'react';
-import lensProtocol from 'utils/lens.tools';
+import {isLensNFT} from 'utils/tools.lens';
 import NFTCollection from '@nftmigratooor/NFTCollection';
 import {useNFTMigratooor} from '@nftmigratooor/useNFTMigratooor';
 import {Button} from '@yearn-finance/web-lib/components/Button';
@@ -20,7 +20,7 @@ const ViewTableOpenSea = memo(function ViewTableOpenSea({onProceed}: {onProceed:
 	const	groupedByCollection = useMemo((): TDict<TNFT[]> => (
 		(nfts || []).reduce((acc: TDict<TNFT[]>, obj: TNFT): TDict<TNFT[]> => {
 			let key = obj.collection.address as string;
-			if (lensProtocol.isLensNFT(obj.collection.name)) {
+			if (isLensNFT(obj.collection.name)) {
 				key = 'lens-follower';
 			}
 			if (!acc[key]) {
@@ -39,7 +39,7 @@ const ViewTableOpenSea = memo(function ViewTableOpenSea({onProceed}: {onProceed:
 	const	selectedPerCollection = useMemo((): TDict<TNFT[]> => (
 		(nfts || []).reduce((acc: TDict<TNFT[]>, obj: TNFT): TDict<TNFT[]> => {
 			let key = obj.collection.address as string;
-			if (lensProtocol.isLensNFT(obj.collection.name)) {
+			if (isLensNFT(obj.collection.name)) {
 				key = 'lens-follower';
 			}
 			if (!acc[key]) {
