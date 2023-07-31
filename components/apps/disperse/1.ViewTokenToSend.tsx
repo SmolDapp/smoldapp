@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import ComboboxAddressInput from 'components/common/ComboboxAddressInput';
 import {useTokenList} from 'contexts/useTokenList';
-import {getNativeToken} from 'utils/wagmiProvider';
 import {Step, useDisperse} from '@disperse/useDisperse';
 import {useDeepCompareEffect, useUpdateEffect} from '@react-hookz/web';
 import {Button} from '@yearn-finance/web-lib/components/Button';
@@ -9,6 +8,7 @@ import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {isZeroAddress, toAddress} from '@yearn-finance/web-lib/utils/address';
 import {ETH_TOKEN_ADDRESS, ZERO_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
 import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUpdates';
+import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 
 import type {TTokenInfo} from 'contexts/useTokenList';
 import type {ReactElement} from 'react';
@@ -29,7 +29,17 @@ function ViewTokenToSend({onProceed}: {onProceed: VoidFunction}): ReactElement {
 	**********************************************************************************************/
 	useDeepCompareEffect((): void => {
 		const possibleDestinationsTokens: TDict<TTokenInfo> = {};
-		possibleDestinationsTokens[ETH_TOKEN_ADDRESS] = getNativeToken(safeChainID);
+		const {wrappedToken} = getNetwork(safeChainID).contracts;
+		if (wrappedToken) {
+			possibleDestinationsTokens[ETH_TOKEN_ADDRESS] = {
+				address: ETH_TOKEN_ADDRESS,
+				chainId: safeChainID,
+				name: wrappedToken.coinName,
+				symbol: wrappedToken.coinSymbol,
+				decimals: wrappedToken.decimals,
+				logoURI: `https://assets.smold.app/api/token/${safeChainID}/${ETH_TOKEN_ADDRESS}/logo-128.png`
+			};
+		}
 		for (const eachToken of Object.values(tokenList)) {
 			if (eachToken.chainId === safeChainID) {
 				possibleDestinationsTokens[toAddress(eachToken.address)] = eachToken;
@@ -83,7 +93,17 @@ function ViewTokenToSend({onProceed}: {onProceed: VoidFunction}): ReactElement {
 											});
 										});
 									} else {
-										set_tokenToSend(newToken);
+										performBatchedUpdates((): void => {
+											set_tokenToSend(newToken);
+											set_tokenToDisperse({
+												address: toAddress(newToken as string),
+												chainId: 1,
+												name: possibleTokenToReceive[toAddress(newToken as string)]?.name || '',
+												symbol: possibleTokenToReceive[toAddress(newToken as string)]?.symbol || '',
+												decimals: possibleTokenToReceive[toAddress(newToken as string)]?.decimals || 0,
+												logoURI: possibleTokenToReceive[toAddress(newToken as string)]?.logoURI || ''
+											});
+										});
 									}
 								}} />
 						</div>
@@ -104,7 +124,7 @@ function ViewTokenToSend({onProceed}: {onProceed: VoidFunction}): ReactElement {
 									}
 									onProceed();
 								}}
-								isDisabled={!isValidTokenToReceive || tokenToDisperse.chainId === 0}>
+								isDisabled={!isValidTokenToReceive || (tokenToDisperse?.chainId || 0) === 0}>
 								{'Next'}
 							</Button>
 						</div>

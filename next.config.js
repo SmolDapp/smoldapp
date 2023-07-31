@@ -59,10 +59,12 @@ module.exports = (phase) => withTM(withPWA({
 		JSON_RPC_URL: {
 			1: process.env.RPC_URL_MAINNET,
 			10: process.env.RPC_URL_OPTIMISM,
+			137: process.env.RPC_URL_POLYGON,
 			250: process.env.RPC_URL_FANTOM,
 			42161: process.env.RPC_URL_ARBITRUM
 		},
 		ALCHEMY_KEY: process.env.ALCHEMY_KEY,
+		ALCHEMY_API_KEY: process.env.ALCHEMY_API_KEY,
 		INFURA_PROJECT_ID: process.env.INFURA_PROJECT_ID,
 		OPENSEA_API_KEY: process.env.OPENSEA_API_KEY,
 		WALLETCONNECT_PROJECT_ID: process.env.WALLETCONNECT_PROJECT_ID,

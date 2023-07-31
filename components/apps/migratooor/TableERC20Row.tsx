@@ -4,10 +4,8 @@ import {ImageWithFallback} from 'components/common/ImageWithFallback';
 import IconInfo from 'components/icons/IconInfo';
 import {type TTokenInfo, useTokenList} from 'contexts/useTokenList';
 import {handleInputChangeEventValue} from 'utils/handleInputChangeEventValue';
-import {getNativeToken} from 'utils/wagmiProvider';
 import {useMigratooor} from '@migratooor/useMigratooor';
 import {useMountEffect, useUpdateEffect} from '@react-hookz/web';
-import {getNetwork} from '@wagmi/core';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import IconLinkOut from '@yearn-finance/web-lib/icons/IconLinkOut';
@@ -15,6 +13,7 @@ import {toAddress, truncateHex} from '@yearn-finance/web-lib/utils/address';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
 import {ETH_TOKEN_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
 import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
+import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 
 import type {ChangeEvent, ReactElement} from 'react';
 import type {TAddress, TDict} from '@yearn-finance/web-lib/types';
@@ -26,9 +25,21 @@ function TableERC20Row({address: tokenAddress, balance}: TERC20RowProps): ReactE
 	const {selected, set_selected} = useMigratooor();
 	const {chainID, isActive} = useWeb3();
 	const {safeChainID} = useChainID();
-	const {chain} = getNetwork();
 	const {tokenList} = useTokenList();
-	const currentNativeToken = useMemo((): TTokenInfo => getNativeToken(safeChainID), [safeChainID]);
+	const currentNativeToken = useMemo((): TTokenInfo | undefined => {
+		const {wrappedToken} = getNetwork(safeChainID).contracts;
+		if (wrappedToken) {
+			return ({
+				address: ETH_TOKEN_ADDRESS,
+				chainId: safeChainID,
+				name: wrappedToken.coinName,
+				symbol: wrappedToken.coinSymbol,
+				decimals: wrappedToken.decimals,
+				logoURI: `https://assets.smold.app/api/token/${safeChainID}/${ETH_TOKEN_ADDRESS}/logo-128.png`
+			});
+		}
+		return undefined;
+	}, [safeChainID]);
 	const isSelected = useMemo((): boolean => selected[toAddress(tokenAddress)]?.isSelected, [selected, tokenAddress]);
 	const tokenSymbol = useMemo((): string => balance.symbol || 'unknown', [balance.symbol]);
 	const tokenDecimals = useMemo((): number => balance.decimals || 18, [balance.decimals]);
@@ -144,13 +155,13 @@ function TableERC20Row({address: tokenAddress, balance}: TERC20RowProps): ReactE
 							) : null}
 						</div>
 						<p className={'font-mono text-xs text-neutral-500'}>
-							{toAddress(tokenAddress) === ETH_TOKEN_ADDRESS ? currentNativeToken.name || '' : balance.name || ''}&nbsp;
+							{toAddress(tokenAddress) === ETH_TOKEN_ADDRESS ? currentNativeToken?.name || '' : balance.name || ''}&nbsp;
 						</p>
 						{toAddress(tokenAddress) === ETH_TOKEN_ADDRESS ? (
 							<p className={'font-mono text-xs text-neutral-500'}>{truncateHex(tokenAddress, 8)}</p>
 						) : (
 							<Link
-								href={`${chain?.blockExplorers?.default}/address/${tokenAddress}`}
+								href={`${getNetwork(safeChainID)?.defaultBlockExplorer}/address/${tokenAddress}`}
 								onClick={(e): void => e.stopPropagation()}
 								className={'flex cursor-pointer flex-row items-center space-x-2 text-neutral-500 transition-colors hover:text-neutral-900 hover:underline'}>
 								<p className={'font-mono text-xs'}>{truncateHex(tokenAddress, 8)}</p>

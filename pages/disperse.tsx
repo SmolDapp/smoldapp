@@ -6,6 +6,7 @@ import ViewTable from '@disperse/2.ViewTable';
 import ViewApprovalWizard from '@disperse/3.ViewApprovalWizard';
 import {DisperseContextApp, Step, useDisperse} from '@disperse/useDisperse';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
+import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {ETH_TOKEN_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
 import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUpdates';
 
@@ -22,12 +23,12 @@ function Disperse(): ReactElement {
 		if (isGnosisSafe) {
 			return document.getElementById('DISPERSE_TOKENS')?.click();
 		}
-		if (tokenToDisperse.address === ETH_TOKEN_ADDRESS) {
+		if (toAddress(tokenToDisperse?.address) === ETH_TOKEN_ADDRESS) {
 			return document.getElementById('DISPERSE_TOKENS')?.click();
 		}
 		return document.getElementById('APPROVE_TOKEN_TO_DISPERSE')?.click();
 
-	}, [isGnosisSafe, set_currentStep, tokenToDisperse.address]);
+	}, [isGnosisSafe, set_currentStep, tokenToDisperse]);
 
 	return (
 		<div className={'mx-auto grid w-full max-w-4xl'}>

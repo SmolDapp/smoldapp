@@ -8,10 +8,10 @@ import ApprovalWizardItem from '@migratooor/ApprovalWizardItem';
 import {useMigratooor} from '@migratooor/useMigratooor';
 import {toast} from '@yearn-finance/web-lib/components/yToast';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
-import {useChain} from '@yearn-finance/web-lib/hooks/useChain';
 import {isZeroAddress, toAddress} from '@yearn-finance/web-lib/utils/address';
 import {ETH_TOKEN_ADDRESS, ZERO_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
 import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
+import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 
 import type {ReactElement} from 'react';
 import type {BaseError, Hex} from 'viem';
@@ -25,7 +25,6 @@ function ViewApprovalWizard(): ReactElement {
 	const {address, chainID} = useWeb3();
 	const {selected, set_selected, destinationAddress} = useMigratooor();
 	const {balances, refresh, balancesNonce} = useWallet();
-	const chain = useChain();
 	const {walletType, provider} = useWeb3();
 	const [isApproving, set_isApproving] = useState(false);
 	const {sdk} = useSafeAppsSDK();
@@ -47,12 +46,13 @@ function ViewApprovalWizard(): ReactElement {
 	** from the selected state.
 	**********************************************************************************************/
 	const handleSuccessCallback = useCallback(async (tokenAddress: TAddress): Promise<TDict<TBalanceData>> => {
+		const chainCoin = getNetwork(chainID).nativeCurrency;
 		const tokensToRefresh = [
 			{
 				token: ETH_TOKEN_ADDRESS,
-				decimals: balances[ETH_TOKEN_ADDRESS].decimals,
-				symbol: balances[ETH_TOKEN_ADDRESS].symbol,
-				name: balances[ETH_TOKEN_ADDRESS].name
+				decimals: chainCoin?.decimals || 18,
+				symbol: chainCoin?.symbol || 'ETH',
+				name: chainCoin?.name || 'Ether'
 			}
 		];
 		if (!isZeroAddress(tokenAddress)) {
@@ -67,7 +67,7 @@ function ViewApprovalWizard(): ReactElement {
 		const updatedBalances = await refresh(tokensToRefresh);
 		balancesNonce; // Disable eslint warning
 		return updatedBalances;
-	}, [balances, balancesNonce, refresh]);
+	}, [balances, balancesNonce, chainID, refresh]);
 
 	/**********************************************************************************************
 	** The onMigrateERC20 function is called when the user clicks the 'Migrate' button. This
@@ -235,7 +235,7 @@ function ViewApprovalWizard(): ReactElement {
 							token={{
 								address: ETH_TOKEN_ADDRESS,
 								destination: toAddress(destinationAddress),
-								symbol: chain.getCurrent()?.coin || 'ETH',
+								symbol: getNetwork(chainID).nativeCurrency.symbol,
 								amount: `~ ${Number(selected?.[ETH_TOKEN_ADDRESS]?.amount?.normalized || 0)}`
 							}} />
 					) : null}

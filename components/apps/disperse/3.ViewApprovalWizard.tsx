@@ -2,6 +2,7 @@ import React, {useCallback, useMemo, useState} from 'react';
 import IconCheck from 'components/icons/IconCheck';
 import IconCircleCross from 'components/icons/IconCircleCross';
 import IconSpinner from 'components/icons/IconSpinner';
+import useWallet from 'contexts/useWallet';
 import {approveERC20, disperseERC20, disperseETH, isApprovedERC20} from 'utils/actions';
 import {notifyDisperse} from 'utils/notifier';
 import {getTransferTransaction} from 'utils/tools.gnosis';
@@ -38,7 +39,7 @@ function ApprovalWizard({refetch, allowance}: TApprovalWizardProps): ReactElemen
 	const onApproveToken = useCallback(async (): Promise<void> => {
 		const isApproved = await isApprovedERC20({
 			connector: provider,
-			contractAddress: toAddress(tokenToDisperse.address),
+			contractAddress: toAddress(tokenToDisperse?.address),
 			spenderAddress: toAddress(process.env.DISPERSE_ADDRESS),
 			amount: totalToDisperse
 		});
@@ -47,7 +48,7 @@ function ApprovalWizard({refetch, allowance}: TApprovalWizardProps): ReactElemen
 		}
 		const result = await approveERC20({
 			connector: provider,
-			contractAddress: tokenToDisperse.address,
+			contractAddress: toAddress(tokenToDisperse?.address),
 			spenderAddress: toAddress(process.env.DISPERSE_ADDRESS),
 			amount: totalToDisperse,
 			statusHandler: set_approvalStatus
@@ -56,7 +57,7 @@ function ApprovalWizard({refetch, allowance}: TApprovalWizardProps): ReactElemen
 			await refetch();
 			return document.getElementById('DISPERSE_TOKENS')?.click();
 		}
-	}, [provider, tokenToDisperse.address, totalToDisperse, refetch]);
+	}, [provider, tokenToDisperse, totalToDisperse, refetch]);
 
 	function renderStatusIndicator(): ReactElement {
 		if (allowance >= totalToDisperse) {
@@ -77,7 +78,7 @@ function ApprovalWizard({refetch, allowance}: TApprovalWizardProps): ReactElemen
 	return (
 		<button
 			id={'APPROVE_TOKEN_TO_DISPERSE'}
-			disabled={!approvalStatus.none}
+			disabled={!approvalStatus.none || !tokenToDisperse}
 			onClick={onApproveToken}
 			className={'group mb-0 flex w-full flex-col justify-center space-y-1 rounded-none border border-x-0 border-neutral-200 bg-neutral-0 p-4 transition-colors hover:bg-neutral-100 disabled:cursor-default disabled:hover:bg-neutral-0 md:mb-2 md:rounded-md md:border-x'}>
 			<div className={'flex w-full flex-row items-center space-x-3 md:flex-row md:items-center'}>
@@ -88,12 +89,12 @@ function ApprovalWizard({refetch, allowance}: TApprovalWizardProps): ReactElemen
 						suppressHydrationWarning
 						className={'font-number font-bold'}>
 						{formatAmount(
-							formatBigNumberAsAmount(totalToDisperse, tokenToDisperse.decimals || 18),
+							formatBigNumberAsAmount(totalToDisperse, tokenToDisperse?.decimals || 18),
 							6,
-							tokenToDisperse.decimals || 18
+							tokenToDisperse?.decimals || 18
 						)}
 					</span>
-					{` ${tokenToDisperse.symbol || 'Tokens'}`}
+					{` ${tokenToDisperse?.symbol || 'Tokens'}`}
 				</div>
 			</div>
 		</button>
@@ -113,10 +114,10 @@ function DisperseWizardItem({row}: {row: TDisperseElement}): ReactElement {
 					{formatAmount(
 						row.amount?.normalized || 0,
 						6,
-						tokenToDisperse.decimals || 18
+						tokenToDisperse?.decimals || 18
 					)}
 				</span>
-				{` ${tokenToDisperse.symbol || 'Tokens'} to `}
+				{` ${tokenToDisperse?.symbol || 'Tokens'} to `}
 				<span className={'font-number inline-flex'}>
 					{toAddress(row.label) === ZERO_ADDRESS ? (
 						<div className={'font-number'}>
@@ -137,6 +138,7 @@ function DisperseWizardItem({row}: {row: TDisperseElement}): ReactElement {
 function ViewApprovalWizard(): ReactElement {
 	const {address, provider, walletType, chainID} = useWeb3();
 	const {onResetDisperse, tokenToDisperse, disperseArray, isDispersed} = useDisperse();
+	const {refresh} = useWallet();
 	const {sdk} = useSafeAppsSDK();
 	const isGnosisSafe = (walletType === 'EMBED_GNOSIS_SAFE');
 	const [disperseStatus, set_disperseStatus] = useState(defaultTxStatus);
@@ -144,13 +146,13 @@ function ViewApprovalWizard(): ReactElement {
 		abi: erc20ABI,
 		functionName: 'allowance',
 		args: [toAddress(address), toAddress(process.env.DISPERSE_ADDRESS)],
-		address: tokenToDisperse.address,
-		enabled: tokenToDisperse.address !== ETH_TOKEN_ADDRESS
+		address: toAddress(tokenToDisperse?.address),
+		enabled: tokenToDisperse !== undefined && toAddress(tokenToDisperse?.address) !== ETH_TOKEN_ADDRESS
 	});
 
 	const shouldApprove = useMemo((): boolean => {
-		return tokenToDisperse.address !== ETH_TOKEN_ADDRESS;
-	}, [tokenToDisperse.address]);
+		return toAddress(tokenToDisperse?.address) !== ETH_TOKEN_ADDRESS;
+	}, [tokenToDisperse]);
 
 	/**********************************************************************************************
 	** onDisperseTokensForGnosis will do just like disperseTokens but for Gnosis Safe and without
@@ -171,7 +173,7 @@ function ViewApprovalWizard(): ReactElement {
 			disperseAmount.push(row.amount.raw);
 			const newTransactionForBatch = getTransferTransaction(
 				row.amount.raw.toString(),
-				tokenToDisperse.address,
+				toAddress(tokenToDisperse?.address),
 				row.address
 			);
 			transactions.push(newTransactionForBatch);
@@ -218,6 +220,14 @@ function ViewApprovalWizard(): ReactElement {
 			});
 			if (result.isSuccessful) {
 				onResetDisperse();
+				refresh([
+					{
+						decimals: tokenToDisperse.decimals,
+						name: tokenToDisperse.name,
+						symbol: tokenToDisperse.symbol,
+						token: tokenToDisperse.address
+					}
+				]);
 				if (result.receipt) {
 					notifyDisperse({
 						chainID: chainID,
@@ -234,17 +244,25 @@ function ViewApprovalWizard(): ReactElement {
 			const result = await disperseERC20({
 				connector: provider,
 				contractAddress: toAddress(process.env.DISPERSE_ADDRESS),
-				tokenToDisperse: tokenToDisperse.address,
+				tokenToDisperse: toAddress(tokenToDisperse.address),
 				receivers: disperseAddresses,
 				amounts: disperseAmount,
 				statusHandler: set_disperseStatus
 			});
 			if (result.isSuccessful) {
 				onResetDisperse();
+				refresh([
+					{
+						decimals: tokenToDisperse.decimals,
+						name: tokenToDisperse.name,
+						symbol: tokenToDisperse.symbol,
+						token: tokenToDisperse.address
+					}
+				]);
 				if (result.receipt) {
 					notifyDisperse({
 						chainID: chainID,
-						tokenToDisperse: tokenToDisperse,
+						tokenToDisperse,
 						receivers: disperseAddresses,
 						amounts: disperseAmount,
 						type: 'EOA',
@@ -254,7 +272,7 @@ function ViewApprovalWizard(): ReactElement {
 				}
 			}
 		}
-	}, [isGnosisSafe, disperseArray, tokenToDisperse, onDisperseTokensForGnosis, provider, onResetDisperse, chainID]);
+	}, [isGnosisSafe, disperseArray, tokenToDisperse, onDisperseTokensForGnosis, provider, onResetDisperse, refresh, chainID]);
 
 	function renderStatusIndicator(): ReactElement {
 		if (isDispersed) {
@@ -296,7 +314,7 @@ function ViewApprovalWizard(): ReactElement {
 					</div>
 					<button
 						id={'DISPERSE_TOKENS'}
-						disabled={!disperseStatus.none}
+						disabled={!disperseStatus.none || !tokenToDisperse}
 						onClick={onDisperseTokens}
 						className={'group mb-0 flex w-full flex-col justify-center space-y-1 rounded-none border border-x-0 border-neutral-200 bg-neutral-0 p-4 transition-colors hover:bg-neutral-100 disabled:cursor-default disabled:hover:bg-neutral-0 md:mb-2 md:rounded-md md:border-x'}>
 						{disperseArray
