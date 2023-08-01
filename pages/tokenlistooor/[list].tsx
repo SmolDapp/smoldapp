@@ -114,7 +114,7 @@ function	List({list}: {list: TTokenListItem}): ReactElement {
 		<>
 			<TokenListHero list={list} />
 			<div className={'mx-auto grid w-full max-w-4xl pb-32'}>
-				<div className={'flex items-center justify-between pb-4'}>
+				<div className={'flex items-center justify-between py-4 md:pt-0'}>
 					<div>
 						<input
 							className={'rounded-default border border-neutral-200 bg-neutral-100 px-3 py-1 text-xs leading-6 text-neutral-500 md:text-sm'}
@@ -134,8 +134,8 @@ function	List({list}: {list: TTokenListItem}): ReactElement {
 								whileInView={'enter'}
 								variants={variants as Variants}
 								className={'box-0 relative flex w-full p-4 md:p-6'}>
-								<div className={'grid w-full grid-cols-12 items-center'}>
-									<div className={'col-span-7 flex flex-row items-center space-x-4'}>
+								<div className={'grid w-full grid-cols-12 items-center gap-4'}>
+									<div className={'col-span-12 flex flex-row items-center space-x-4 md:col-span-7'}>
 										<ImageWithFallback
 											alt={`${item.address}_${item.name}_${item.symbol}`}
 											width={40}
@@ -148,32 +148,32 @@ function	List({list}: {list: TTokenListItem}): ReactElement {
 												href={`${getNetwork(item.chainId).blockExplorers}/token/${item.address}`}
 												target={'_blank'}
 												rel={'noreferrer'}>
-												<small className={'font-number block text-neutral-700 transition-colors hover:text-neutral-900 hover:underline'}>
+												<small className={'font-number block text-xxs text-neutral-700 transition-colors hover:text-neutral-900 hover:underline md:text-xs'}>
 													{item.address}
 												</small>
 											</a>
 											<b>{item.name}</b>
 										</div>
 									</div>
-									<div className={'col-span-2 mr-4'}>
+									<div className={'col-span-5 mr-4 md:col-span-2'}>
 										<div className={'text-ellipsis'}>
-											<small className={'block text-neutral-700'}>
+											<small className={'block text-xxs text-neutral-700 md:text-xs'}>
 												{'Symbol'}
 											</small>
 											<b title={item.symbol} className={'block truncate'}>{item.symbol}</b>
 										</div>
 									</div>
-									<div className={'col-span-2'}>
+									<div className={'col-span-5 md:col-span-2'}>
 										<div>
-											<small className={'block text-neutral-700'}>
+											<small className={'block text-xxs text-neutral-700 md:text-xs'}>
 												{'Chain'}
 											</small>
 											<b>{getNetwork(item.chainId).name}</b>
 										</div>
 									</div>
-									<div className={'col-span-1'}>
+									<div className={'col-span-2 md:col-span-1'}>
 										<div>
-											<small className={'block text-neutral-700'}>
+											<small className={'block text-xxs text-neutral-700 md:text-xs'}>
 												{'Decimals'}
 											</small>
 											<b>{item.decimals}</b>
