@@ -7,12 +7,12 @@ import {erc721ABI} from 'wagmi';
 import {multicall} from '@wagmi/core';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
+import {getClient} from '@yearn-finance/web-lib/utils/wagmi/utils';
 
 import type {TTokenInfo} from 'contexts/useTokenList';
 import type {TNFT} from 'utils/types/nftMigratooor';
 import type {ContractFunctionConfig, Hex} from 'viem';
 import type {TAddress, TDict} from '@yearn-finance/web-lib/types';
-import { getClient } from '@yearn-finance/web-lib/utils/wagmi/utils';
 
 export type TIncentives = {
 	protocol: TAddress,

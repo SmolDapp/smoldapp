@@ -117,7 +117,7 @@ function TokenListsSelector(): ReactElement {
 											set_isRefreshing((s): TDict<boolean> => ({...s, [list.name]: true}));
 											await refreshWithList(tokenListTokensRef.current);
 											performBatchedUpdates((): void => {
-												set_selected((s): any => [...s, list]);
+												set_selected((s): TTokenListItem[] => [...s, list]);
 												set_isRefreshing((s): TDict<boolean> => ({...s, [list.name]: false}));
 											});
 										}}

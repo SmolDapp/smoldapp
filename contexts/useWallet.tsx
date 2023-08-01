@@ -44,7 +44,7 @@ const defaultProps = {
 const WalletContext = createContext<TWalletContext>(defaultProps);
 export const WalletContextApp = memo(function WalletContextApp({children}: {children: ReactElement}): ReactElement {
 	const {tokenList} = useTokenList();
-	const {chainID, isActive} = useWeb3();
+	const {isActive} = useWeb3();
 	const {safeChainID} = useChainID();
 	const [walletProvider, set_walletProvider] = useState('NONE');
 	const {value: extraTokens, set: saveExtraTokens} = useLocalStorageValue<TUseBalancesTokens[]>('smoldapp/tokens', {defaultValue: []});
@@ -101,7 +101,7 @@ export const WalletContextApp = memo(function WalletContextApp({children}: {chil
 			return await onRefresh(tokensToFetch);
 		}
 		return balances;
-	}, [balances, chainID, onRefresh, safeChainID, availableTokens]);
+	}, [balances, onRefresh, safeChainID, availableTokens]);
 
 	const onLoadExtraTokens = useCallback(async (): Promise<void> => {
 		if (extraTokens) {
