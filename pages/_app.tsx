@@ -4,7 +4,7 @@ import AppWrapper from 'components/common/AppWrapper';
 import {MenuContextApp} from 'contexts/useMenu';
 import {TokenListContextApp} from 'contexts/useTokenList';
 import {WalletContextApp} from 'contexts/useWallet';
-import {arbitrum, fantom, gnosis, mainnet,optimism, polygon, polygonZkEvm} from 'viem/chains';
+import {arbitrum, fantom, gnosis, mainnet, optimism, polygon, polygonZkEvm} from 'viem/chains';
 import {SafeProvider} from '@gnosis.pm/safe-apps-react-sdk';
 import {useLocalStorageValue} from '@react-hookz/web';
 import {Analytics} from '@vercel/analytics/react';
