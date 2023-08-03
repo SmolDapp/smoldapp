@@ -9,6 +9,7 @@ import {isZeroAddress, toAddress} from '@yearn-finance/web-lib/utils/address';
 import {ETH_TOKEN_ADDRESS, ZERO_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
 import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUpdates';
 import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
+import ViewSectionHeading from '@common/ViewSectionHeading';
 
 import type {TTokenInfo} from 'contexts/useTokenList';
 import type {ReactElement} from 'react';
@@ -63,17 +64,14 @@ function ViewTokenToSend({onProceed}: {onProceed: VoidFunction}): ReactElement {
 	return (
 		<section>
 			<div className={'box-0 grid w-full grid-cols-12'}>
-				<div className={'col-span-12 flex flex-col p-4 text-neutral-900 md:p-6'}>
-					<div className={'w-full md:w-3/4'}>
-						<b>{'What token do you want to send?'}</b>
-						<p className={'text-sm text-neutral-500'}>
-							{'Pick the token you’d like to disperse, (aka send to multiple recipients or wallets). Token not listed? Don’t worry anon, just enter the token address manually. Go you.'}
-						</p>
-					</div>
+				<ViewSectionHeading
+					title={'What token do you want to send?'}
+					content={'Pick the token you’d like to disperse, (aka send to multiple recipients or wallets). Token not listed? Don’t worry anon, just enter the token address manually. Go you.'} />
+				<div className={'col-span-12 p-4 pt-0 md:p-6 md:pt-0'}>
 					<form
 						suppressHydrationWarning
 						onSubmit={async (e): Promise<void> => e.preventDefault()}
-						className={'mt-6 grid w-full grid-cols-12 flex-row items-center justify-between gap-4 md:w-3/4 md:gap-6'}>
+						className={'grid w-full grid-cols-12 flex-row items-center justify-between gap-4 md:w-3/4 md:gap-6'}>
 						<div className={'grow-1 col-span-12 flex h-10 w-full items-center md:col-span-9'}>
 							<ComboboxAddressInput
 								value={tokenToSend}

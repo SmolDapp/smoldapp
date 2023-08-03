@@ -3077,6 +3077,7 @@
     lodash "^4"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 "@yearn-finance/web-lib@^0.20.118":
   version "0.20.118"
   resolved "https://registry.yarnpkg.com/@yearn-finance/web-lib/-/web-lib-0.20.118.tgz#e4ee6d5896bac71fadb0c3b5da60cbccea6e0d8c"
@@ -3087,6 +3088,12 @@
   resolved "https://registry.yarnpkg.com/@yearn-finance/web-lib/-/web-lib-0.20.116.tgz#460b0135cf579ab1ba4cf2ea4637e9328bf4dc2d"
   integrity sha512-zO33EyP8oYnZsDjDUO0PLKpvnd8ySefn2PVa8x/c7byoltKQQ0IfkeFF6r5MWnrAbSZGnP7UOv1YvDI19uwKsQ==
 >>>>>>> 91c664d (feat: upgrade weblib)
+=======
+"@yearn-finance/web-lib@^0.20.125":
+  version "0.20.125"
+  resolved "https://registry.yarnpkg.com/@yearn-finance/web-lib/-/web-lib-0.20.125.tgz#5fb399605615cd53a90fb3be047e794486886d30"
+  integrity sha512-IJ6bjmOPtnluNx4n6vb1CFHkmEMNkJVmU/8iPFPKPVI1N0X+2d3SceAd10GbDPflnCA6uLZkYdT6GNQrQi36Sw==
+>>>>>>> fdd8ed8 (feat: wip)
   dependencies:
     "@babel/preset-typescript" "^7.22.5"
     "@headlessui/react" "^1.7.16"
@@ -8277,6 +8284,21 @@ viem@^1.0.0, viem@^1.4.2:
   version "1.4.2"
   resolved "https://registry.yarnpkg.com/viem/-/viem-1.4.2.tgz#81aaff0d8ee0d39bb2994ffa6c89bf7ee4fbcde6"
   integrity sha512-125E7HoOr5PrL+Iwt8853dQexwRoiPpLwPsrRvlDX94su2xoe7AYqrdfR6N9nmy6vd6mt8eQy8+LWiP3A+1dqw==
+  dependencies:
+    "@adraffy/ens-normalize" "1.9.0"
+    "@noble/curves" "1.0.0"
+    "@noble/hashes" "1.3.0"
+    "@scure/bip32" "1.3.0"
+    "@scure/bip39" "1.2.0"
+    "@wagmi/chains" "1.6.0"
+    abitype "0.9.3"
+    isomorphic-ws "5.0.0"
+    ws "8.12.0"
+
+viem@^1.5.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/viem/-/viem-1.5.0.tgz#65ae00f27a693e2573ac62fb2aa2c40f3f3fb4d0"
+  integrity sha512-+SVCVaXJRR+fE9q6Sf6q9droB6TunPGY1JfwB3uTdxwWrkgr3qq/NbXaRdtEk+TyaOEjzZQr7t6vUzjOL0zL0Q==
   dependencies:
     "@adraffy/ens-normalize" "1.9.0"
     "@noble/curves" "1.0.0"

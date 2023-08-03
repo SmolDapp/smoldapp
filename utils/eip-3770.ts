@@ -1,6 +1,6 @@
 // https://github.com/safe-global/safe-core-sdk/blob/main/packages/protocol-kit/src/utils/eip-3770/config.ts
 
-type TNetworkShortName = {
+export type TNetworkShortName = {
 	shortName: string
 	chainId: number
 }

@@ -4,7 +4,7 @@ import AppWrapper from 'components/common/AppWrapper';
 import {MenuContextApp} from 'contexts/useMenu';
 import {TokenListContextApp} from 'contexts/useTokenList';
 import {WalletContextApp} from 'contexts/useWallet';
-import {arbitrum, fantom, gnosis, mainnet, optimism, polygon, polygonZkEvm} from 'viem/chains';
+import {SUPPORTED_CHAINS} from 'utils/constants';
 import {SafeProvider} from '@gnosis.pm/safe-apps-react-sdk';
 import {useLocalStorageValue} from '@react-hookz/web';
 import {Analytics} from '@vercel/analytics/react';
@@ -26,20 +26,11 @@ const inter = Inter({
 
 function	MyApp(props: AppProps): ReactElement {
 	const {value: shouldHidePopover} = useLocalStorageValue<boolean>('smoldapp/feedback-popover');
+
 	return (
 		<>
 			<style jsx global>{`html {font-family: ${inter.style.fontFamily};}`}</style>
-			<WithYearn
-				supportedChains={[
-					mainnet,
-					optimism,
-					polygon,
-					polygonZkEvm,
-					gnosis,
-					fantom,
-					arbitrum,
-					localhost
-				]}>
+			<WithYearn supportedChains={[...SUPPORTED_CHAINS, localhost]}>
 				<TokenListContextApp>
 					<WalletContextApp>
 						<MenuContextApp>

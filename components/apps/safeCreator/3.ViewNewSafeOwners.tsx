@@ -1,0 +1,207 @@
+import React, {useCallback, useState} from 'react';
+import IconInfo from 'components/icons/IconInfo';
+import {useMountEffect} from '@react-hookz/web';
+import AddressLikeInput from '@safeCreatooor/AddressLikeInput';
+import {Button} from '@yearn-finance/web-lib/components/Button';
+import {isZeroAddress, toAddress} from '@yearn-finance/web-lib/utils/address';
+import ViewSectionHeading from '@common/ViewSectionHeading';
+
+import type {ReactElement} from 'react';
+import type {TAddress} from '@yearn-finance/web-lib/types';
+
+type TOwners = {
+	address: TAddress | undefined,
+	label: string,
+	UUID: string
+};
+
+export function newVoidOwner(): TOwners {
+	return ({
+		address: undefined,
+		label: '',
+		UUID: crypto.randomUUID()
+	});
+}
+
+type TViewNewSafeOwnersProps = {
+	onUpdateSafeSettings: (owners: TAddress[], threshold: number) => void
+}
+function ViewNewSafeOwners(props: TViewNewSafeOwnersProps): ReactElement {
+	const [owners, set_owners] = useState<TOwners[]>([newVoidOwner(), newVoidOwner()]);
+	const [threshold, set_threshold] = useState(1);
+
+	useMountEffect((): void => {
+		set_owners([newVoidOwner(), newVoidOwner()]);
+	});
+
+	const checkOwnerAlreadyExists = useCallback((UUID: string, address: TAddress): boolean => {
+		if (isZeroAddress(address)) {
+			return false;
+		}
+		return owners.some((owner): boolean => owner.UUID !== UUID && owner.address === address);
+	}, [owners]);
+
+	function onUpdateOwnerAddressByUUID(UUID: string, address: string | undefined): void {
+		set_owners(owners.map((row): TOwners => {
+			if (row.UUID !== UUID) {
+				return row;
+			}
+			if (!address || isZeroAddress(address)) {
+				return {...row, address: undefined};
+			}
+			return {...row, address: toAddress(address)};
+		}));
+	}
+	function onUpdateOwnerLabelByUUID(UUID: string, label: string): void {
+		set_owners(owners.map((row): TOwners => {
+			if (row.UUID !== UUID) {
+				return row;
+			}
+			return {...row, label};
+		}));
+	}
+	function onAddNewOwnerAsSibling(UUID: string): void {
+		set_owners(
+			owners.reduce((acc, row): TOwners[] => {
+				if (row.UUID === UUID) {
+					return [...acc, row, newVoidOwner()];
+				}
+				return [...acc, row];
+			}, [] as TOwners[]));
+	}
+	function onRemoveOwnerByUUID(UUID: string): void {
+		if (owners.length === 1) {
+			return set_owners([newVoidOwner()]);
+		}
+		set_owners(owners.filter((row): boolean => row.UUID !== UUID));
+	}
+
+	function onHandleMultiplePaste(UUID: string, pasted: string): void {
+		const separators = [' ', '-', ';', ',', '.'];
+		const addressAmounts = pasted.split('\n').map((line): [string, string] => {
+			let cleanedLine = separators.reduce((acc, separator): string => acc.replaceAll(separator + separator, separator), line);
+			for (let i = 0; i < 3; i++) {
+				cleanedLine = separators.reduce((acc, separator): string => acc.replaceAll(separator + separator, separator), cleanedLine);
+			}
+
+			const addressAmount = cleanedLine.split(separators.find((separator): boolean => cleanedLine.includes(separator)) ?? ' ');
+			return [addressAmount[0], addressAmount[1]];
+		});
+		const newRows = addressAmounts.map((addressAmount): TOwners => {
+			const row = newVoidOwner();
+			row.address = toAddress(addressAmount[0]);
+			row.label = String(addressAmount[0]);
+			return row;
+		});
+		set_owners(
+			owners.reduce((acc, row): TOwners[] => {
+				if (row.UUID === UUID) {
+					if (row.address && !isZeroAddress(row.address)) {
+						return [...acc, row, ...newRows];
+					}
+					return [...acc, ...newRows];
+				}
+				return [...acc, row];
+			}, [] as TOwners[]));
+	}
+
+	return (
+		<section>
+			<div className={'box-0 grid w-full grid-cols-12'}>
+				<ViewSectionHeading
+					title={'One new safe, coming right up.'}
+					content={'You need owners. They will be in charge of your Safe Account. Please, tell me more about them!'} />
+				<div className={'col-span-12 p-4 pt-0 md:p-6 md:pt-0'}>
+					<form
+						onSubmit={async (e): Promise<void> => e.preventDefault()}
+						className={'items-center justify-between gap-4 md:gap-6'}>
+
+						<div className={'w-full'}>
+							{owners.map(({UUID}, i): ReactElement => (
+								<div className={'mb-2 flex flex-row space-x-4'} key={UUID}>
+									<AddressLikeInput
+										shouldAutoFocus={i === 0}
+										uuid={UUID}
+										isDuplicate={checkOwnerAlreadyExists(UUID, toAddress(owners[i].address))}
+										label={owners[i].label}
+										onChangeLabel={(label): void => onUpdateOwnerLabelByUUID(UUID, label)}
+										onChange={(address): void => onUpdateOwnerAddressByUUID(UUID, address)}
+										onPaste={onHandleMultiplePaste} />
+									<div
+										tabIndex={-1}
+										style={i !== 0 ? {visibility: 'visible'} : {visibility: 'hidden', pointerEvents: 'none'}}
+										className={'flex flex-row items-center justify-center space-x-4'}>
+										<button
+											tabIndex={-1}
+											className={'flex h-10 w-10 items-center justify-center rounded-md border border-neutral-200 bg-neutral-0 text-center text-xl text-neutral-400 transition-colors hover:bg-neutral-900 hover:text-neutral-0'}
+											onClick={(): void => onRemoveOwnerByUUID(UUID)}>
+											<p className={'font-number pr-[1px]'}>{'-'}</p>
+										</button>
+									</div>
+								</div>
+							))}
+						</div>
+
+
+						<div className={'mt-4 flex flex-row items-start justify-between space-x-4'}>
+							<button
+								type={'button'}
+								onClick={(): void => onAddNewOwnerAsSibling(owners[owners.length - 1].UUID)}
+								className={'group -mt-4 rounded-md border border-transparent py-2 pl-1 pr-20 focus:underline'}>
+								<b className={'text-xs text-neutral-900 group-hover:underline'}>
+									{'+ Add a new owner'}
+								</b>
+							</button>
+							<div>
+								<div className={'mb-2 flex flex-row items-center space-x-2'}>
+									<div className={'box-0 relative flex h-10 w-full items-center'}>
+										<p className={'absolute right-[110%] text-xs text-neutral-600'}>
+											<div className={'flex w-fit flex-row items-center space-x-1'}>
+												<p className={'font-inter font-semibold opacity-50'}>{'Threshold'}</p>
+												<span className={'tooltip'}>
+													<IconInfo className={'h-3 w-3 text-neutral-500 opacity-50'} />
+													<span className={'tooltipLight top-full mt-1'}>
+														<div className={'font-number w-40 border border-neutral-300 bg-neutral-100 p-1 px-2 text-center text-xs text-neutral-900'}>
+															<p>{'Any transaction requires the confirmation of at least this number of owners. You can change this later.'}</p>
+														</div>
+													</span>
+												</span>
+											</div>
+										</p>
+										<div className={'flex h-10 w-full flex-row items-center justify-between space-x-2 px-2 py-4'}>
+											<button
+												type={'button'}
+												className={'flex h-6 w-6 items-center justify-center rounded-md bg-neutral-900 text-center text-neutral-0 outline outline-offset-2 transition-colors focus-within:outline-neutral-900 hover:bg-neutral-800 disabled:bg-neutral-300'}
+												disabled={threshold <= 1}
+												onClick={(): void => set_threshold(threshold - 1)}>
+												<p className={'font-number pr-[1px]'}>{'-'}</p>
+											</button>
+											<p>{threshold}</p>
+											<button
+												type={'button'}
+												className={'flex h-6 w-6 items-center justify-center rounded-md bg-neutral-900 text-center text-neutral-0 outline outline-offset-2 transition-colors focus-within:outline-neutral-900 hover:bg-neutral-800 disabled:bg-neutral-300'}
+												disabled={threshold >= owners.length}
+												onClick={(): void => set_threshold(threshold + 1)}>
+												<p className={'font-number pl-[1px]'}>{'+'}</p>
+											</button>
+										</div>
+									</div>
+								</div>
+								<Button
+									isDisabled={owners.some((owner): boolean => !owner.address || isZeroAddress(owner.address))}
+									onClick={(): void => props.onUpdateSafeSettings(
+										owners.map((o): TAddress => toAddress(o.address)),
+										threshold
+									)}>
+									{'Customize my Safe'}
+								</Button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</section>
+	);
+}
+
+export default ViewNewSafeOwners;

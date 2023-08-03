@@ -3,6 +3,7 @@ import AddressInput, {defaultInputAddressLike} from 'components/common/AddressIn
 import {useMigratooor} from '@migratooor/useMigratooor';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import {isZeroAddress, toAddress} from '@yearn-finance/web-lib/utils/address';
+import ViewSectionHeading from '@common/ViewSectionHeading';
 
 import type {TInputAddressLike} from 'components/common/AddressInput';
 import type {ReactElement} from 'react';
@@ -18,18 +19,13 @@ function ViewDestination(props: TViewDestinationProps): ReactElement {
 	return (
 		<section>
 			<div className={'box-0 grid w-full grid-cols-12 overflow-hidden'}>
-				<div className={'col-span-12 flex flex-col p-4 text-neutral-900 md:p-6'}>
-					<div className={'w-full md:w-3/4'}>
-						<a href={'#destination'}>
-							<b>{'Destination'}</b>
-						</a>
-						<p className={'text-sm text-neutral-500'}>
-							{'Enter the address where you want to migrate your funds to. Be sure to double check the address before proceeding.'}
-						</p>
-					</div>
+				<ViewSectionHeading
+					title={'Destination'}
+					content={'Enter the address where you want to migrate your funds to. Be sure to double check the address before proceeding.'} />
+				<div className={'col-span-12 p-4 pt-0 md:p-6 md:pt-0'}>
 					<form
 						onSubmit={async (e): Promise<void> => e.preventDefault()}
-						className={'mt-6 grid w-full grid-cols-12 flex-row items-center justify-between gap-4 md:w-3/4 md:gap-6'}>
+						className={'grid w-full grid-cols-12 flex-row items-center justify-between gap-4 md:w-3/4 md:gap-6'}>
 						<div className={'col-span-12 md:col-span-9'}>
 							<AddressInput
 								value={receiver}

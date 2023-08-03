@@ -8,6 +8,7 @@
 			"@migratooor/*": ["components/apps/migratooor/*"],
 			"@nftmigratooor/*": ["components/apps/nftmigratooor/*"],
 			"@tokenlistooor/*": ["components/apps/tokenlistooor/*"],
+			"@safeCreatooor/*": ["components/apps/safeCreator/*"],
 		},
 		/* Basic Options */
 		"target": "esnext",
