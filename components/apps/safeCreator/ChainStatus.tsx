@@ -1,14 +1,21 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import DISPERSE_ABI from 'utils/abi/disperse.abi';
 import GNOSIS_SAFE_PROXY_FACTORY from 'utils/abi/gnosisSafeProxyFactory.abi';
-import {cloneSafe} from 'utils/actions';
+import {MULTICALL_ABI} from 'utils/abi/multicall3.abi';
+import {multicall} from 'utils/actions';
+import {encodeFunctionData, formatEther} from 'viem';
+import {useContractRead} from 'wagmi';
 import {getNetwork as getWagmiNetwork, prepareSendTransaction, sendTransaction, switchNetwork, waitForTransaction} from '@wagmi/core';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import {toast} from '@yearn-finance/web-lib/components/yToast';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import IconLinkOut from '@yearn-finance/web-lib/icons/IconLinkOut';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
+import {ZERO_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
+import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
+import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
 import {getClient, getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 import {defaultTxStatus} from '@yearn-finance/web-lib/utils/web3/transaction';
 
@@ -16,7 +23,7 @@ import {PROXY_FACTORY, SINGLETON} from './constants';
 import {generateArgInitializers} from './utils';
 
 import type {ReactElement} from 'react';
-import type {TAddress} from '@yearn-finance/web-lib/types';
+import type {TAddress, TNDict} from '@yearn-finance/web-lib/types';
 import type {Chain, FetchTransactionResult} from '@wagmi/core';
 
 type TChainStatusArgs = {
@@ -35,9 +42,25 @@ function ChainStatus({
 	threshold,
 	salt
 }: TChainStatusArgs): ReactElement {
+	// const chainCoinOracle: TNDict<TAddress> = {
+	// 	1: toAddress('0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419'),
+	// 	10: toAddress('0x13e3ee699d1909e989722e753853ae30b17e08c5'),
+	// 	100: ZERO_ADDRESS,
+	// 	137: toAddress('0xab594600376ec9fd91f8e885dadf0ce036862de0'),
+	// 	250: toAddress('0xf4766552d15ae4d256ad41b6cf2933482b0680dc'),
+	// 	1101: ZERO_ADDRESS,
+	// 	42161: toAddress('0x639fe6ab55c921f74e7fac1ee960c0b6293ba612')
+	// };
+	// const {data: ethUSDPrice} = useContractRead({
+	// 	address: chainCoinOracle[chain.id],
+	// 	chainId: chain.id,
+	// 	abi: [{'inputs':[],'name':'latestAnswer','outputs':[{'internalType':'int256','name':'','type':'int256'}],'stateMutability':'view','type':'function'} as const],
+	// 	functionName: 'latestAnswer'
+	// });
 	const {provider, address} = useWeb3();
 	const [isDeployedOnThatChain, set_isDeployedOnThatChain] = useState(false);
 	const [cloneStatus, set_cloneStatus] = useState(defaultTxStatus);
+	const [estimatedGasCost, set_estimatedGasCost] = useState(0n);
 	const [canDeployOnThatChain, set_canDeployOnThatChain] = useState({
 		canDeploy: true,
 		isLoading: true,
@@ -106,10 +129,62 @@ function ChainStatus({
 		return set_canDeployOnThatChain({canDeploy: false, isLoading: false, method: 'none'});
 	}, [address, chain.id, originalTx?.input, originalTx?.to, owners, safeAddress, salt, threshold]);
 
+	const checkDeploymentGasCost = useCallback(async (): Promise<void> => {
+		const publicClient = getClient(chain.id);
+
+		if (canDeployOnThatChain.method === 'contract') {
+			const ethPriceAsUSDC = Number(toBigInt(ethUSDPrice) / toBigInt(1e8));
+			const tenUSDCToEthPrice = 10 / ethPriceAsUSDC;
+			const fee = toBigInt(tenUSDCToEthPrice * 1e18);
+			const argInitializers = generateArgInitializers(owners, threshold);
+			const callDataDisperseEth = {
+				target: toAddress(process.env.DISPERSE_ADDRESS),
+				value: 10n,
+				allowFailure: false,
+				callData: encodeFunctionData({
+					abi: DISPERSE_ABI,
+					functionName: 'disperseEther',
+					args: [
+						[toAddress('0xEe4bb9534f5987174629e4dC286BD46892c89290')],
+						[10n]
+					]
+				})
+			};
+			const callDataCreateSafe = {
+				target: PROXY_FACTORY,
+				value: 0n,
+				allowFailure: false,
+				callData: encodeFunctionData({
+					abi: GNOSIS_SAFE_PROXY_FACTORY,
+					functionName: 'createProxyWithNonce',
+					args: [SINGLETON, `0x${argInitializers}`, salt]
+				})
+			};
+
+			try {
+				const result = await publicClient.estimateContractGas({
+					account: toAddress(address),
+					address: toAddress(getNetwork(chain.id).contracts.multicall3?.address),
+					abi: MULTICALL_ABI,
+					functionName: 'aggregate3Value',
+					type: 'eip1559',
+					args: [[callDataDisperseEth, callDataCreateSafe]],
+					value: 10n
+				});
+				const gasPrice = await publicClient.getGasPrice();
+				set_estimatedGasCost(result * gasPrice);
+			} catch (err) {
+				set_estimatedGasCost(0n);
+				console.dir(err);
+			}
+		}
+	}, [address, canDeployOnThatChain.method, chain.id, ethUSDPrice, owners, salt, threshold]);
+
 	useEffect((): void => {
 		checkIfDeployedOnThatChain();
 		checkDeploymentExpectedAddress();
-	}, [checkDeploymentExpectedAddress, checkIfDeployedOnThatChain]);
+		checkDeploymentGasCost();
+	}, [checkDeploymentExpectedAddress, checkIfDeployedOnThatChain, checkDeploymentGasCost]);
 
 	/* 🔵 - Smold App **************************************************************************
 	** When the user clicks on the deploy button, we will try to deploy the safe on the chain
@@ -173,21 +248,54 @@ function ChainStatus({
 		** arguments as the original transaction.
 		******************************************************************************************/
 		if (canDeployOnThatChain.method === 'contract') {
+			const ethPriceAsUSDC = Number(toBigInt(ethUSDPrice) / toBigInt(1e8));
+			const tenUSDCToEthPrice = 10 / ethPriceAsUSDC;
+			const fee = toBigInt(tenUSDCToEthPrice * 1e18);
+			console.log(fee);
+			console.warn(toBigInt(ethUSDPrice) / toBigInt(1e8));
+			console.warn(tenUSDCToEthPrice);
 			const argInitializers = generateArgInitializers(owners, threshold);
-			const result = await cloneSafe({
+			const callDataDisperseEth = {
+				target: toAddress(process.env.DISPERSE_ADDRESS),
+				value: 10n,
+				allowFailure: false,
+				callData: encodeFunctionData({
+					abi: DISPERSE_ABI,
+					functionName: 'disperseEther',
+					args: [
+						[toAddress('0xEe4bb9534f5987174629e4dC286BD46892c89290')],
+						[10n]
+					]
+				})
+			};
+			const callDataCreateSafe = {
+				target: PROXY_FACTORY,
+				value: 0n,
+				allowFailure: false,
+				callData: encodeFunctionData({
+					abi: GNOSIS_SAFE_PROXY_FACTORY,
+					functionName: 'createProxyWithNonce',
+					args: [SINGLETON, `0x${argInitializers}`, salt]
+				})
+			};
+
+			const result = await multicall({
 				connector: provider,
-				contractAddress: PROXY_FACTORY,
-				initializers: `0x${argInitializers}`,
-				salt: salt,
+				contractAddress: getNetwork(chain.id).contracts.multicall3?.address,
+				multicallData: [
+					callDataDisperseEth,
+					callDataCreateSafe
+				],
 				statusHandler: set_cloneStatus
 			});
+			console.warn(result);
 			if (result.isSuccessful) {
 				checkIfDeployedOnThatChain();
 				checkDeploymentExpectedAddress();
 			}
 		}
 
-	}, [address, canDeployOnThatChain.canDeploy, canDeployOnThatChain.method, chain.id, checkDeploymentExpectedAddress, checkIfDeployedOnThatChain, originalTx?.input, originalTx?.to, owners, provider, salt, threshold]);
+	}, [address, canDeployOnThatChain.canDeploy, canDeployOnThatChain.method, chain.id, checkDeploymentExpectedAddress, checkIfDeployedOnThatChain, ethUSDPrice, originalTx?.input, originalTx?.to, owners, provider, salt, threshold]);
 
 	const currentView = {
 		Deployed: (
@@ -203,13 +311,27 @@ function ChainStatus({
 			</div>
 		),
 		CanDeploy: (
-			<div>
+			<div className={'flex flex-col items-center justify-center'}>
 				<Button
 					className={'!h-8'}
 					isBusy={cloneStatus.pending}
 					onClick={onDeploySafe}>
 					{'Deploy'}
 				</Button>
+				<div className={'flex flex-col'}>
+					<span className={'tooltip'}>
+						<small className={'mt-1 text-center text-xxs text-neutral-500'}>
+							{`$${formatAmount(Number(formatEther(estimatedGasCost)) * Number(toBigInt(ethUSDPrice) / toBigInt(1e8)) + 10, 2, 2)} - $${formatAmount(Number(formatEther(estimatedGasCost * 2n)) * Number(toBigInt(ethUSDPrice) / toBigInt(1e8)) + 10, 2, 2)}`}
+						</small>
+						<span className={'tooltipLight -inset-x-1/2 top-full mt-1'}>
+							<div className={'font-number w-40 border border-neutral-300 bg-neutral-100 p-1 px-2 text-left text-xxs text-neutral-900'}>
+								<p className={'font-number'}>{`Gas: ${`$${formatAmount(Number(formatEther(estimatedGasCost)) * Number(toBigInt(ethUSDPrice) / toBigInt(1e8)), 2, 2)} - $${formatAmount(Number(formatEther(estimatedGasCost * 2n)) * Number(toBigInt(ethUSDPrice) / toBigInt(1e8)), 2, 2)}`}`}</p>
+								<p className={'font-number'}>{`Fee: $${formatAmount(10, 2, 2)}`}</p>
+							</div>
+						</span>
+					</span>
+					{/* {Number(toBigInt(ethUSDPrice) / toBigInt(1e8)).toString()} */}
+				</div>
 			</div>
 		),
 		CannotDeploy: (

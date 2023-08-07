@@ -16,16 +16,7 @@ import {generateArgInitializers} from './utils';
 import type {ReactElement} from 'react';
 import type {Hex} from 'viem';
 import type {TAddress} from '@yearn-finance/web-lib/types';
-import type {FetchTransactionResult} from '@wagmi/core';
 
-type TExistingSafeArgs = {
-	address: TAddress,
-	owners: TAddress[],
-	salt: bigint,
-	threshold: number,
-	tx?: FetchTransactionResult,
-	isLoading: boolean,
-}
 type TNewSafe = {
 	address: TAddress,
 	owners: TAddress[],
@@ -222,12 +213,12 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 											</button>
 										) : null}
 									</Button>
-									<div className={'mt-1'}>
-										<p className={'font-number max-w-[100%] whitespace-pre text-xxs text-neutral-400'}>
-											{`ID: ${currentSeed.toString().match(/.{1,39}/g)?.join('\n')}`}
-										</p>
-									</div>
 								</div>
+							</div>
+							<div className={'mt-1'}>
+								<p className={'font-number max-w-[100%] whitespace-pre text-xxs text-neutral-400'}>
+									{`Seed: ${currentSeed.toString()}`}
+								</p>
 							</div>
 						</div>
 

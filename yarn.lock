@@ -3078,6 +3078,7 @@
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 "@yearn-finance/web-lib@^0.20.118":
   version "0.20.118"
   resolved "https://registry.yarnpkg.com/@yearn-finance/web-lib/-/web-lib-0.20.118.tgz#e4ee6d5896bac71fadb0c3b5da60cbccea6e0d8c"
@@ -3094,6 +3095,12 @@
   resolved "https://registry.yarnpkg.com/@yearn-finance/web-lib/-/web-lib-0.20.125.tgz#5fb399605615cd53a90fb3be047e794486886d30"
   integrity sha512-IJ6bjmOPtnluNx4n6vb1CFHkmEMNkJVmU/8iPFPKPVI1N0X+2d3SceAd10GbDPflnCA6uLZkYdT6GNQrQi36Sw==
 >>>>>>> fdd8ed8 (feat: wip)
+=======
+"@yearn-finance/web-lib@^0.20.133":
+  version "0.20.133"
+  resolved "https://registry.yarnpkg.com/@yearn-finance/web-lib/-/web-lib-0.20.133.tgz#f94cef6984b381867389e95ea85654538084481a"
+  integrity sha512-aLTIEEa/N+9fQ9+bMdQbxAYxEWbvlajZL7dqHauvx1RpiurIacCHmjrcwv8gsfIUzl4Iv2jv0TtdPIbbmJRFAA==
+>>>>>>> 19b17c9 (feat: wip)
   dependencies:
     "@babel/preset-typescript" "^7.22.5"
     "@headlessui/react" "^1.7.16"

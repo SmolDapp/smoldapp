@@ -1,5 +1,6 @@
 import {arbitrum, fantom, gnosis, mainnet, optimism, polygon, polygonZkEvm} from 'viem/chains';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
+import {localhost} from '@yearn-finance/web-lib/utils/wagmi/networks';
 import {indexedWagmiChains} from '@yearn-finance/web-lib/utils/wagmi/utils';
 
 import type {TAddress, TNDict} from '@yearn-finance/web-lib/types';
@@ -12,11 +13,12 @@ export const ETHEREUM_ENS_ADDRESS = toAddress('0x57f1887a8BF19b14fC0dF6Fd9B2acc9
 export const SUPPORTED_CHAINS = [
 	mainnet,
 	optimism,
-	polygon,
-	polygonZkEvm,
 	gnosis,
+	polygon,
 	fantom,
-	arbitrum
+	polygonZkEvm,
+	arbitrum,
+	localhost
 ];
 
 export const NFTMIGRATOOOR_CONTRACT_PER_CHAIN: TNDict<TAddress> = {

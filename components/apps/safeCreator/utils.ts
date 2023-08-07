@@ -1,4 +1,6 @@
-import {pad, toHex} from 'viem';
+import DISPERSE_ABI from 'utils/abi/disperse.abi';
+import {encodeFunctionData, pad, toHex} from 'viem';
+import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {ZERO_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
 
 import {FALLBACK_HANDLER, ZERO} from './constants';

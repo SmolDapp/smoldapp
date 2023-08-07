@@ -84,7 +84,6 @@ function ViewClonableSafe(): ReactElement {
 		return ({owners, threshold, salt: fromHex(salt, 'bigint')});
 	}, []);
 
-
 	const retrieveSafe = useCallback(async (address: TAddress): Promise<void> => {
 		set_existingSafeArgs({isLoading: true, owners: [], threshold: 0, address, salt: 0n});
 		const result = await retrieveSafeTxHash(address);

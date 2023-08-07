@@ -10,6 +10,7 @@ import {defaultTxStatus} from '@yearn-finance/web-lib/utils/web3/transaction';
 
 import ERC1155_ABI from './abi/ERC1155.abi';
 import GNOSIS_SAFE_PROXY_FACTORY from './abi/gnosisSafeProxyFactory.abi';
+import {MULTICALL_ABI} from './abi/multicall3.abi';
 import NFT_MIGRATOOOR_ABI from './abi/NFTMigratooor.abi';
 
 import type {BaseError, Hex} from 'viem';
@@ -371,7 +372,7 @@ export async function disperseERC20(props: TDisperseERC20): Promise<TTxResponse>
 ******************************************************************************/
 type TCloneSafe = TWriteTransaction & {
 	initializers: Hex,
-	salt: bigint
+	salt: bigint,
 };
 export async function cloneSafe(props: TCloneSafe): Promise<TTxResponse> {
 	assertAddress(props.contractAddress);
@@ -381,5 +382,36 @@ export async function cloneSafe(props: TCloneSafe): Promise<TTxResponse> {
 		abi: GNOSIS_SAFE_PROXY_FACTORY,
 		functionName: 'createProxyWithNonce',
 		args: [SINGLETON, props.initializers, props.salt]
+	});
+}
+
+
+
+/* 🔵 - Yearn Finance **********************************************************
+** multicall is a _WRITE_ function that can be used to cast a multicall
+**
+** @app - common
+** @param protocols - an array of protocols to vote for.
+** @param amounts - an array of amounts to vote for each protocol.
+******************************************************************************/
+type TMulticall = TWriteTransaction & {
+	multicallData: {
+		target: TAddress,
+		callData: Hex,
+		value: bigint,
+		allowFailure: boolean
+	}[];
+};
+export async function multicall(props: TMulticall): Promise<TTxResponse> {
+	assert(props.connector, 'No connector');
+	assert(props.multicallData.length > 0, 'Nothing to do');
+	assertAddress(props.contractAddress, 'Invalid contractAddress');
+
+	return await handleTx(props, {
+		address: props.contractAddress,
+		abi: MULTICALL_ABI,
+		functionName: 'aggregate3Value',
+		args: [props.multicallData],
+		value: 10n
 	});
 }
