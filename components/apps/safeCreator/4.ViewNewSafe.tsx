@@ -7,6 +7,7 @@ import {Button} from '@yearn-finance/web-lib/components/Button';
 import Renderable from '@yearn-finance/web-lib/components/Renderable';
 import {isZeroAddress, toAddress} from '@yearn-finance/web-lib/utils/address';
 import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUpdates';
+import {AddressLike} from '@common/AddressLike';
 import ViewSectionHeading from '@common/ViewSectionHeading';
 
 import ChainStatus from './ChainStatus';
@@ -42,10 +43,10 @@ type TViewNewSafe = {
 	threshold: number,
 }
 function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
+	const shouldCancel = useRef(false);
 	const [isLoadingSafes, set_isLoadingSafes] = useState(false);
 	const [possibleSafe, set_possibleSafe] = useState<TNewSafe>({address: '' as TAddress, owners: [], salt: 0n, threshold: 0});
 	const [currentSeed, set_currentSeed] = useState(0n);
-	const shouldCancel = useRef(false);
 	const [prefix, set_prefix] = useState('0x');
 	const [suffix, set_suffix] = useState('');
 
@@ -122,7 +123,7 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 						<div>
 							<div className={'grid grid-cols-3 gap-6'}>
 								<div>
-									<p className={'pb-2 text-xs text-neutral-600'}>
+									<div className={'pb-2 text-xs text-neutral-600'}>
 										<div className={'flex w-fit flex-row items-center space-x-1'}>
 											<p className={'font-inter font-semibold'}>{'Prefix'}</p>
 											<span className={'tooltip'}>
@@ -134,7 +135,7 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 												</span>
 											</span>
 										</div>
-									</p>
+									</div>
 									<div className={'box-0 flex h-10 w-full items-center p-2'}>
 										<div className={'flex h-10 w-full flex-row items-center justify-between px-0 py-4'}>
 											<input
@@ -157,7 +158,7 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 									</div>
 								</div>
 								<div>
-									<p className={'pb-2 text-xs text-neutral-600'}>
+									<div className={'pb-2 text-xs text-neutral-600'}>
 										<div className={'flex w-fit flex-row items-center space-x-1'}>
 											<p className={'font-inter font-semibold'}>{'Suffix'}</p>
 											<span className={'tooltip'}>
@@ -169,7 +170,7 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 												</span>
 											</span>
 										</div>
-									</p>
+									</div>
 									<div className={'box-0 flex h-10 w-full items-center p-2'}>
 										<div className={'flex h-10 w-full flex-row items-center justify-between px-0 py-4'}>
 											<input
@@ -189,8 +190,8 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 									</div>
 								</div>
 								<div>
-									<p className={'pb-2 text-xs text-neutral-600'}>
-										<p className={'font-inter font-semibold'}>&nbsp;</p>
+									<p className={'font-inter pb-2 text-xs font-semibold text-neutral-600'}>
+										&nbsp;
 									</p>
 									<Button
 										className={'group w-full'}
@@ -202,15 +203,14 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 										}}>
 										<p>{'Generate'}</p>
 										{isLoadingSafes ? (
-											<button
-												type={'button'}
+											<span
 												onClick={(e: React.MouseEvent<HTMLButtonElement>): void => {
 													e.currentTarget.blur();
 													shouldCancel.current = true;
 												}}
 												className={'absolute inset-0 z-50 flex items-center justify-center transition-colors hover:cursor-pointer hover:bg-neutral-900 hover:!text-neutral-0'}>
 												<p>{'Cancel'}</p>
-											</button>
+											</span>
 										) : null}
 									</Button>
 								</div>
@@ -243,7 +243,7 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 												<Renderable
 													shouldRender={!!address}
 													fallback={<span className={'text-neutral-400'}>{'-'}</span>}>
-													{address}
+													<AddressLike address={address} />
 												</Renderable>
 											</b>
 										</div>
@@ -259,7 +259,9 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 												)}>
 												<div>
 													{(owners || []).map((owner): ReactElement => (
-														<b key={owner} className={'font-number block'}>{owner}</b>
+														<b key={owner} className={'font-number block'}>
+															<AddressLike address={owner} />
+														</b>
 													))}
 												</div>
 											</Renderable>
@@ -287,7 +289,6 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 																key={chain.id}
 																chain={chain}
 																safeAddress={toAddress(address)}
-																originalTx={{} as any}
 																owners={owners || []}
 																threshold={threshold || 0}
 																salt={salt || 0n} />

@@ -3,7 +3,7 @@ import AddressInput, {defaultInputAddressLike} from 'components/common/AddressIn
 import {SUPPORTED_CHAINS} from 'utils/constants';
 import {fromHex,type Hex} from 'viem';
 import axios from 'axios';
-import {SAFE_CREATION_SIGNATURE, SAFE_CREATION_TOPIC} from '@safeCreatooor/constants';
+import {CALL_INIT_SIGNATURE, SAFE_CREATION_SIGNATURE, SAFE_CREATION_TOPIC} from '@safeCreatooor/constants';
 import {fetchTransaction} from '@wagmi/core';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import Renderable from '@yearn-finance/web-lib/components/Renderable';
@@ -90,7 +90,8 @@ function ViewClonableSafe(): ReactElement {
 		if (result) {
 			const {hash, chainID} = result;
 			const tx = await fetchTransaction({hash, chainId: chainID});
-			const {owners, threshold, salt} = decodeArgInitializers(tx.input);
+			const input = `0x${tx.input.substring(tx.input.indexOf(CALL_INIT_SIGNATURE))}`;
+			const {owners, threshold, salt} = decodeArgInitializers(input as Hex);
 
 			set_existingSafeArgs({owners, threshold, isLoading: false, address, salt, tx: tx});
 		}

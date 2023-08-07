@@ -1,6 +1,7 @@
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
 
 export const ZERO = '0';
+export const CALL_INIT_SIGNATURE = '1688f0b9'; // 1.3.0
 export const SAFE_CREATION_SIGNATURE = 'b63e800d'; // 1.3.0
 export const SAFE_CREATION_TOPIC = '0x141df868a6331af528e38c83b7aa03edc19be66e37ae67f9285bf4f8e3c6a1a8'; // 1.3.0
 export const PROXY_FACTORY = toAddress('0xC22834581EbC8527d974F8a1c97E1bEA4EF910BC'); // 1.3.0

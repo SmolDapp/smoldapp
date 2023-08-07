@@ -1,10 +1,13 @@
 import React, {createContext, useContext, useEffect, useMemo, useState} from 'react';
 import {scrollToTargetAdjusted} from 'utils/animations';
+import {coingeckoGasCoinIDs} from 'utils/constants';
+import useSWR from 'swr';
 import {useMountEffect, useUpdateEffect} from '@react-hookz/web';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
+import {baseFetcher} from '@yearn-finance/web-lib/utils/fetchers';
 
 import type {Dispatch, SetStateAction} from 'react';
-import type {TAddress} from '@yearn-finance/web-lib/types';
+import type {TAddress, TDict} from '@yearn-finance/web-lib/types';
 import type {TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 
 export enum	Step {
@@ -15,18 +18,21 @@ export enum	Step {
 }
 
 export type TDisperseElement = {address: TAddress | undefined, label: string, amount: TNormalizedBN | undefined, UUID: string};
+export type TPriceFromGecko = TDict<{usd: number}>;
 
 export type TSelected = {
 	currentStep: Step,
 	selectedFlow: 'NONE' | 'EXISTING' | 'NEW',
 	set_currentStep: Dispatch<SetStateAction<Step>>
 	set_selectedFlow: Dispatch<SetStateAction<'NONE' | 'EXISTING' | 'NEW'>>
+	chainCoinPrices: TPriceFromGecko
 }
 const defaultProps: TSelected = {
 	currentStep: Step.WALLET,
 	selectedFlow: 'NONE',
 	set_currentStep: (): void => undefined,
-	set_selectedFlow: (): void => undefined
+	set_selectedFlow: (): void => undefined,
+	chainCoinPrices: {}
 };
 
 const SafeCreatorContext = createContext<TSelected>(defaultProps);
@@ -34,6 +40,11 @@ export const SafeCreatorContextApp = ({children}: {children: React.ReactElement}
 	const {address, isActive, walletType} = useWeb3();
 	const [currentStep, set_currentStep] = useState<Step>(Step.WALLET);
 	const [selectedFlow, set_selectedFlow] = useState<'NONE' | 'EXISTING' | 'NEW'>('NONE');
+	const {data: chainCoinPrices} = useSWR<TPriceFromGecko>(
+		`https://api.coingecko.com/api/v3/simple/price?ids=${Object.values(coingeckoGasCoinIDs)}&vs_currencies=usd`,
+		baseFetcher,
+		{refreshInterval: 10_000}
+	);
 
 	/**********************************************************************************************
 	** This effect is used to directly jump the UI to the FLOW section if the wallet is
@@ -105,8 +116,9 @@ export const SafeCreatorContextApp = ({children}: {children: React.ReactElement}
 		currentStep,
 		selectedFlow,
 		set_selectedFlow,
-		set_currentStep
-	}), [currentStep, selectedFlow]);
+		set_currentStep,
+		chainCoinPrices: chainCoinPrices || {}
+	}), [currentStep, selectedFlow, chainCoinPrices]);
 
 	return (
 		<SafeCreatorContext.Provider value={contextValue}>

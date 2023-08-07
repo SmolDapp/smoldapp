@@ -27,11 +27,11 @@ type TViewNewSafeOwnersProps = {
 	onUpdateSafeSettings: (owners: TAddress[], threshold: number) => void
 }
 function ViewNewSafeOwners(props: TViewNewSafeOwnersProps): ReactElement {
-	const [owners, set_owners] = useState<TOwners[]>([newVoidOwner(), newVoidOwner()]);
+	const [owners, set_owners] = useState<TOwners[]>([newVoidOwner()]);
 	const [threshold, set_threshold] = useState(1);
 
 	useMountEffect((): void => {
-		set_owners([newVoidOwner(), newVoidOwner()]);
+		set_owners([newVoidOwner()]);
 	});
 
 	const checkOwnerAlreadyExists = useCallback((UUID: string, address: TAddress): boolean => {
@@ -132,6 +132,7 @@ function ViewNewSafeOwners(props: TViewNewSafeOwnersProps): ReactElement {
 										style={i !== 0 ? {visibility: 'visible'} : {visibility: 'hidden', pointerEvents: 'none'}}
 										className={'flex flex-row items-center justify-center space-x-4'}>
 										<button
+											type={'button'}
 											tabIndex={-1}
 											className={'flex h-10 w-10 items-center justify-center rounded-md border border-neutral-200 bg-neutral-0 text-center text-xl text-neutral-400 transition-colors hover:bg-neutral-900 hover:text-neutral-0'}
 											onClick={(): void => onRemoveOwnerByUUID(UUID)}>
@@ -155,9 +156,11 @@ function ViewNewSafeOwners(props: TViewNewSafeOwnersProps): ReactElement {
 							<div>
 								<div className={'mb-2 flex flex-row items-center space-x-2'}>
 									<div className={'box-0 relative flex h-10 w-full items-center'}>
-										<p className={'absolute right-[110%] text-xs text-neutral-600'}>
+										<div className={'absolute right-[110%] text-xs text-neutral-600'}>
 											<div className={'flex w-fit flex-row items-center space-x-1'}>
-												<p className={'font-inter font-semibold opacity-50'}>{'Threshold'}</p>
+												<p className={'font-inter font-semibold opacity-50'}>
+													{'Threshold'}
+												</p>
 												<span className={'tooltip'}>
 													<IconInfo className={'h-3 w-3 text-neutral-500 opacity-50'} />
 													<span className={'tooltipLight top-full mt-1'}>
@@ -167,7 +170,7 @@ function ViewNewSafeOwners(props: TViewNewSafeOwnersProps): ReactElement {
 													</span>
 												</span>
 											</div>
-										</p>
+										</div>
 										<div className={'flex h-10 w-full flex-row items-center justify-between space-x-2 px-2 py-4'}>
 											<button
 												type={'button'}

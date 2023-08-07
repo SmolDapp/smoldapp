@@ -405,13 +405,14 @@ type TMulticall = TWriteTransaction & {
 export async function multicall(props: TMulticall): Promise<TTxResponse> {
 	assert(props.connector, 'No connector');
 	assert(props.multicallData.length > 0, 'Nothing to do');
-	assertAddress(props.contractAddress, 'Invalid contractAddress');
+	assertAddress(props.contractAddress, 'ContractAddress');
 
+	const value = props.multicallData.reduce((a, b): bigint => a + b.value, 0n);
 	return await handleTx(props, {
 		address: props.contractAddress,
 		abi: MULTICALL_ABI,
 		functionName: 'aggregate3Value',
 		args: [props.multicallData],
-		value: 10n
+		value: value
 	});
 }

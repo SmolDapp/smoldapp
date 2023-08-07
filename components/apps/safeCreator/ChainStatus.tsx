@@ -6,7 +6,6 @@ import GNOSIS_SAFE_PROXY_FACTORY from 'utils/abi/gnosisSafeProxyFactory.abi';
 import {MULTICALL_ABI} from 'utils/abi/multicall3.abi';
 import {multicall} from 'utils/actions';
 import {encodeFunctionData, formatEther} from 'viem';
-import {useContractRead} from 'wagmi';
 import {getNetwork as getWagmiNetwork, prepareSendTransaction, sendTransaction, switchNetwork, waitForTransaction} from '@wagmi/core';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import {toast} from '@yearn-finance/web-lib/components/yToast';
@@ -14,26 +13,28 @@ import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import IconLinkOut from '@yearn-finance/web-lib/icons/IconLinkOut';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {ZERO_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
-import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
 import {getClient, getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 import {defaultTxStatus} from '@yearn-finance/web-lib/utils/web3/transaction';
 
 import {PROXY_FACTORY, SINGLETON} from './constants';
+import {useSafeCreator} from './useSafeCreator';
 import {generateArgInitializers} from './utils';
 
 import type {ReactElement} from 'react';
-import type {TAddress, TNDict} from '@yearn-finance/web-lib/types';
+import type {TAppExtendedChain} from 'utils/constants';
+import type {TAddress} from '@yearn-finance/web-lib/types';
 import type {Chain, FetchTransactionResult} from '@wagmi/core';
 
 type TChainStatusArgs = {
 	chain: Chain,
 	safeAddress: TAddress,
-	originalTx: FetchTransactionResult | undefined,
+	originalTx?: FetchTransactionResult,
 	owners: TAddress[],
 	threshold: number,
 	salt: bigint,
 }
+
 function ChainStatus({
 	chain,
 	safeAddress,
@@ -42,21 +43,9 @@ function ChainStatus({
 	threshold,
 	salt
 }: TChainStatusArgs): ReactElement {
-	// const chainCoinOracle: TNDict<TAddress> = {
-	// 	1: toAddress('0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419'),
-	// 	10: toAddress('0x13e3ee699d1909e989722e753853ae30b17e08c5'),
-	// 	100: ZERO_ADDRESS,
-	// 	137: toAddress('0xab594600376ec9fd91f8e885dadf0ce036862de0'),
-	// 	250: toAddress('0xf4766552d15ae4d256ad41b6cf2933482b0680dc'),
-	// 	1101: ZERO_ADDRESS,
-	// 	42161: toAddress('0x639fe6ab55c921f74e7fac1ee960c0b6293ba612')
-	// };
-	// const {data: ethUSDPrice} = useContractRead({
-	// 	address: chainCoinOracle[chain.id],
-	// 	chainId: chain.id,
-	// 	abi: [{'inputs':[],'name':'latestAnswer','outputs':[{'internalType':'int256','name':'','type':'int256'}],'stateMutability':'view','type':'function'} as const],
-	// 	functionName: 'latestAnswer'
-	// });
+	const {chainCoinPrices} = useSafeCreator();
+	const gasCoinID = (getNetwork(chain.id) as TAppExtendedChain).coingeckoGasCoinID;
+	const coinPrice = chainCoinPrices?.[gasCoinID].usd;
 	const {provider, address} = useWeb3();
 	const [isDeployedOnThatChain, set_isDeployedOnThatChain] = useState(false);
 	const [cloneStatus, set_cloneStatus] = useState(defaultTxStatus);
@@ -133,20 +122,21 @@ function ChainStatus({
 		const publicClient = getClient(chain.id);
 
 		if (canDeployOnThatChain.method === 'contract') {
-			const ethPriceAsUSDC = Number(toBigInt(ethUSDPrice) / toBigInt(1e8));
-			const tenUSDCToEthPrice = 10 / ethPriceAsUSDC;
-			const fee = toBigInt(tenUSDCToEthPrice * 1e18);
+			// const ethPriceAsUSDC = Number(toBigInt(coinPrice) / toBigInt(1e8));
+			const tenUSDCToEthPrice = 10 / (coinPrice || 1);
+			const fee = tenUSDCToEthPrice;
+			console.warn(fee);
 			const argInitializers = generateArgInitializers(owners, threshold);
 			const callDataDisperseEth = {
 				target: toAddress(process.env.DISPERSE_ADDRESS),
-				value: 10n,
+				value: 1n,
 				allowFailure: false,
 				callData: encodeFunctionData({
 					abi: DISPERSE_ABI,
 					functionName: 'disperseEther',
 					args: [
-						[toAddress('0xEe4bb9534f5987174629e4dC286BD46892c89290')],
-						[10n]
+						[toAddress(process.env.RECEIVER_ADDRESS)],
+						[1n]
 					]
 				})
 			};
@@ -163,13 +153,13 @@ function ChainStatus({
 
 			try {
 				const result = await publicClient.estimateContractGas({
-					account: toAddress(address),
+					account: ZERO_ADDRESS, //Estimating with address 0 so it doesn't fail if the user doesn't have enough balance
 					address: toAddress(getNetwork(chain.id).contracts.multicall3?.address),
 					abi: MULTICALL_ABI,
 					functionName: 'aggregate3Value',
 					type: 'eip1559',
 					args: [[callDataDisperseEth, callDataCreateSafe]],
-					value: 10n
+					value: 1n
 				});
 				const gasPrice = await publicClient.getGasPrice();
 				set_estimatedGasCost(result * gasPrice);
@@ -178,7 +168,7 @@ function ChainStatus({
 				console.dir(err);
 			}
 		}
-	}, [address, canDeployOnThatChain.method, chain.id, ethUSDPrice, owners, salt, threshold]);
+	}, [canDeployOnThatChain.method, chain.id, coinPrice, owners, salt, threshold]);
 
 	useEffect((): void => {
 		checkIfDeployedOnThatChain();
@@ -248,23 +238,23 @@ function ChainStatus({
 		** arguments as the original transaction.
 		******************************************************************************************/
 		if (canDeployOnThatChain.method === 'contract') {
-			const ethPriceAsUSDC = Number(toBigInt(ethUSDPrice) / toBigInt(1e8));
-			const tenUSDCToEthPrice = 10 / ethPriceAsUSDC;
-			const fee = toBigInt(tenUSDCToEthPrice * 1e18);
-			console.log(fee);
-			console.warn(toBigInt(ethUSDPrice) / toBigInt(1e8));
-			console.warn(tenUSDCToEthPrice);
+			// const ethPriceAsUSDC = Number(toBigInt(coinPrice) / toBigInt(1e8));
+			// const tenUSDCToEthPrice = 10 / ethPriceAsUSDC;
+			// const fee = toBigInt(tenUSDCToEthPrice * 1e18);
+			// console.log(fee);
+			// console.warn(toBigInt(coinPrice) / toBigInt(1e8));
+			// console.warn(tenUSDCToEthPrice);
 			const argInitializers = generateArgInitializers(owners, threshold);
 			const callDataDisperseEth = {
 				target: toAddress(process.env.DISPERSE_ADDRESS),
-				value: 10n,
+				value: 1n,
 				allowFailure: false,
 				callData: encodeFunctionData({
 					abi: DISPERSE_ABI,
 					functionName: 'disperseEther',
 					args: [
-						[toAddress('0xEe4bb9534f5987174629e4dC286BD46892c89290')],
-						[10n]
+						[toAddress(process.env.RECEIVER_ADDRESS)],
+						[1n]
 					]
 				})
 			};
@@ -295,7 +285,7 @@ function ChainStatus({
 			}
 		}
 
-	}, [address, canDeployOnThatChain.canDeploy, canDeployOnThatChain.method, chain.id, checkDeploymentExpectedAddress, checkIfDeployedOnThatChain, ethUSDPrice, originalTx?.input, originalTx?.to, owners, provider, salt, threshold]);
+	}, [address, canDeployOnThatChain.canDeploy, canDeployOnThatChain.method, chain.id, checkDeploymentExpectedAddress, checkIfDeployedOnThatChain, originalTx?.input, originalTx?.to, owners, provider, salt, threshold]);
 
 	const currentView = {
 		Deployed: (
@@ -321,16 +311,15 @@ function ChainStatus({
 				<div className={'flex flex-col'}>
 					<span className={'tooltip'}>
 						<small className={'mt-1 text-center text-xxs text-neutral-500'}>
-							{`$${formatAmount(Number(formatEther(estimatedGasCost)) * Number(toBigInt(ethUSDPrice) / toBigInt(1e8)) + 10, 2, 2)} - $${formatAmount(Number(formatEther(estimatedGasCost * 2n)) * Number(toBigInt(ethUSDPrice) / toBigInt(1e8)) + 10, 2, 2)}`}
+							{`$${formatAmount(Number(formatEther(estimatedGasCost)) * Number(coinPrice) + 10, 4, 4)} - $${formatAmount(Number(formatEther(estimatedGasCost * 2n)) * Number(coinPrice) + 10, 4, 4)}`}
 						</small>
 						<span className={'tooltipLight -inset-x-1/2 top-full mt-1'}>
 							<div className={'font-number w-40 border border-neutral-300 bg-neutral-100 p-1 px-2 text-left text-xxs text-neutral-900'}>
-								<p className={'font-number'}>{`Gas: ${`$${formatAmount(Number(formatEther(estimatedGasCost)) * Number(toBigInt(ethUSDPrice) / toBigInt(1e8)), 2, 2)} - $${formatAmount(Number(formatEther(estimatedGasCost * 2n)) * Number(toBigInt(ethUSDPrice) / toBigInt(1e8)), 2, 2)}`}`}</p>
-								<p className={'font-number'}>{`Fee: $${formatAmount(10, 2, 2)}`}</p>
+								<p className={'font-number'}>{`Gas: ${`$${formatAmount(Number(formatEther(estimatedGasCost)) * Number(coinPrice), 4, 4)} - $${formatAmount(Number(formatEther(estimatedGasCost * 2n)) * Number(coinPrice), 4, 4)}`}`}</p>
+								<p className={'font-number'}>{`Fee: $${formatAmount(10, 4, 4)}`}</p>
 							</div>
 						</span>
 					</span>
-					{/* {Number(toBigInt(ethUSDPrice) / toBigInt(1e8)).toString()} */}
 				</div>
 			</div>
 		),

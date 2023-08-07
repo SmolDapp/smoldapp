@@ -1,7 +1,8 @@
-import {arbitrum, fantom, gnosis, mainnet, optimism, polygon, polygonZkEvm} from 'viem/chains';
+import {arbitrum, fantom, mainnet, optimism, polygon, polygonZkEvm} from 'viem/chains';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
-import {localhost} from '@yearn-finance/web-lib/utils/wagmi/networks';
 import {indexedWagmiChains} from '@yearn-finance/web-lib/utils/wagmi/utils';
+
+import {gnosis} from './chains';
 
 import type {TAddress, TNDict} from '@yearn-finance/web-lib/types';
 import type {TChainContract, TExtendedChain} from '@yearn-finance/web-lib/utils/wagmi/utils';
@@ -17,8 +18,8 @@ export const SUPPORTED_CHAINS = [
 	polygon,
 	fantom,
 	polygonZkEvm,
-	arbitrum,
-	localhost
+	arbitrum
+	// localhost
 ];
 
 export const NFTMIGRATOOOR_CONTRACT_PER_CHAIN: TNDict<TAddress> = {
@@ -39,8 +40,18 @@ const SAFE_API_URI: {[chainId: number]: string} = {
 	42161: 'https://safe-transaction-arbitrum.safe.global'
 };
 
+export const coingeckoGasCoinIDs: TNDict<string> = {
+	1: 'ethereum',
+	10: 'ethereum',
+	100: 'xdai',
+	137: 'matic-network',
+	250: 'fantom',
+	42161: 'ethereum'
+};
+
 export type TAppExtendedChain = TExtendedChain & {
 	safeApiUri?: string
+	coingeckoGasCoinID: string
 	contracts: {
 		nftMigratooorContract?: TChainContract
 	}
@@ -58,4 +69,5 @@ for (const chain of Object.values(indexedWagmiChains)) {
 		}
 	};
 	extendedChain.safeApiUri = SAFE_API_URI?.[chain.id] || '';
+	extendedChain.coingeckoGasCoinID = coingeckoGasCoinIDs?.[chain.id] || 'ethereum';
 }
