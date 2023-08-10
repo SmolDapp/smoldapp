@@ -210,7 +210,7 @@ function ViewClonableSafe(): ReactElement {
 
 				<div
 					className={cl(
-						existingSafeArgs?.error || existingSafeArgs?.isLoading ? 'col-span-12 flex flex-col p-4 pt-0 text-neutral-900 md:p-6 md:pt-0 opacity-100' : 'pointer-events-none h-0 overflow-hidden opacity-0'
+						existingSafeArgs?.error && !existingSafeArgs?.isLoading ? 'col-span-12 flex flex-col p-4 pt-0 text-neutral-900 md:p-6 md:pt-0 opacity-100' : 'pointer-events-none h-0 overflow-hidden opacity-0'
 					)}>
 					<div className={'flex flex-row whitespace-pre rounded-md border border-red-200 !bg-red-200/60 p-2 text-xs font-bold text-red-600'}>
 						<IconWarning className={'mr-2 h-4 w-4 text-red-600'} />

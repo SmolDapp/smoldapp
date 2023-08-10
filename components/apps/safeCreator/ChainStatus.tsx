@@ -14,7 +14,7 @@ import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {getClient, getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 import {defaultTxStatus} from '@yearn-finance/web-lib/utils/web3/transaction';
 
-import {DEFAULT_FEES_USD, PROXY_FACTORY, SINGLETON} from './constants';
+import {DEFAULT_FEES_USD, PROXY_FACTORY, SINGLETON, SMOL_MS} from './constants';
 import {useSafeCreator} from './useSafeCreator';
 import {generateArgInitializers} from './utils';
 
@@ -192,7 +192,7 @@ function ChainStatus({
 					abi: DISPERSE_ABI,
 					functionName: 'disperseEther',
 					args: [
-						[toAddress(process.env.RECEIVER_ADDRESS)],
+						[SMOL_MS],
 						[fee]
 					]
 				})
