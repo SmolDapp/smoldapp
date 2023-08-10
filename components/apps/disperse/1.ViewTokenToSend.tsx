@@ -65,7 +65,7 @@ function ViewTokenToSend({onProceed}: {onProceed: VoidFunction}): ReactElement {
 		<section>
 			<div className={'box-0 grid w-full grid-cols-12'}>
 				<ViewSectionHeading
-					title={'What token do you want to send?'}
+					title={'Which token do you want to send?'}
 					content={'Pick the token you’d like to disperse, (aka send to multiple recipients or wallets). Token not listed? Don’t worry anon, just enter the token address manually. Go you.'} />
 				<div className={'col-span-12 p-4 pt-0 md:p-6 md:pt-0'}>
 					<form

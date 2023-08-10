@@ -40,7 +40,7 @@ function SectionWalletSelection({onSelect}: TViewWalletProps): ReactElement {
 		}
 		if (walletType === 'EMBED_GNOSIS_SAFE') {
 			return ({
-				name: 'Gnosis Safe',
+				name: 'Safe',
 				icon: <IconWalletSafe />
 			});
 		}
@@ -57,14 +57,14 @@ function SectionWalletSelection({onSelect}: TViewWalletProps): ReactElement {
 
 	return (
 		<Fragment>
-			<div className={'relative col-span-6 md:col-span-3'}>
+			<div className={'relative col-span-6 md:col-span-4'}>
 				<CardWithIcon
 					isSelected={walletProvider === 'INJECTED' || walletType === 'INJECTED' || ['EMBED_LEDGER', 'EMBED_GNOSIS_SAFE'].includes(walletType)}
 					icon={detectedWallet.icon}
 					label={detectedWallet.name}
 					onClick={async (): Promise<void> => ['EMBED_LEDGER', 'EMBED_GNOSIS_SAFE'].includes(walletType) ? undefined : onSelectWallet('INJECTED')} />
 			</div>
-			<div className={`relative col-span-6 md:col-span-3 ${['EMBED_LEDGER', 'EMBED_GNOSIS_SAFE'].includes(walletType) ? 'hidden' : 'flex'}`}>
+			<div className={`relative col-span-6 md:col-span-4 ${['EMBED_LEDGER', 'EMBED_GNOSIS_SAFE'].includes(walletType) ? 'hidden' : 'flex'}`}>
 				<CardWithIcon
 					isSelected={walletProvider === 'WALLET_CONNECT' || walletType === 'WALLET_CONNECT'}
 					icon={<IconWalletWalletConnect />}

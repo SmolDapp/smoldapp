@@ -3,11 +3,11 @@ import IconInfo from 'components/icons/IconInfo';
 import {SUPPORTED_CHAINS} from 'utils/constants';
 import {concat, encodePacked, getContractAddress, hexToBigInt, keccak256, toHex} from 'viem';
 import {useMountEffect} from '@react-hookz/web';
+import {AddressLike} from '@yearn-finance/web-lib/components/AddressLike';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import Renderable from '@yearn-finance/web-lib/components/Renderable';
 import {isZeroAddress, toAddress} from '@yearn-finance/web-lib/utils/address';
 import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUpdates';
-import {AddressLike} from '@common/AddressLike';
 import ViewSectionHeading from '@common/ViewSectionHeading';
 
 import ChainStatus from './ChainStatus';
@@ -45,14 +45,14 @@ type TViewNewSafe = {
 function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 	const shouldCancel = useRef(false);
 	const [isLoadingSafes, set_isLoadingSafes] = useState(false);
-	const [possibleSafe, set_possibleSafe] = useState<TNewSafe>({address: '' as TAddress, owners: [], salt: 0n, threshold: 0});
+	const [possibleSafe, set_possibleSafe] = useState<TNewSafe | undefined>(undefined);
 	const [currentSeed, set_currentSeed] = useState(0n);
 	const [prefix, set_prefix] = useState('0x');
 	const [suffix, set_suffix] = useState('');
 
 	useMountEffect((): void => {
 		set_currentSeed(hexToBigInt(keccak256(concat([toHex('smol'), toHex(Math.random().toString())]))));
-		set_possibleSafe({address: '' as TAddress, owners: [], salt: 0n, threshold: 0});
+		set_possibleSafe(undefined);
 	});
 
 	const compute = useCallback(async ({argInitializers, bytecode, prefix, suffix, saltNonce}: {
@@ -81,7 +81,7 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 
 	const generateCreate2Addresses = useCallback(async (): Promise<void> => {
 		let salt = currentSeed;
-		if (currentSeed === possibleSafe.salt) {
+		if (currentSeed === possibleSafe?.salt) {
 			salt = hexToBigInt(keccak256(concat([toHex('smol'), toHex(Math.random().toString())])));
 			set_possibleSafe({address: '' as TAddress, owners: [], salt: 0n, threshold: 0});
 		}
@@ -108,14 +108,85 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 			});
 			set_isLoadingSafes(false);
 		});
-	}, [currentSeed, possibleSafe.salt, owners, threshold, compute, prefix, suffix]);
+	}, [currentSeed, possibleSafe?.salt, owners, threshold, compute, prefix, suffix]);
+
+	function renderPossibleSafe(): ReactElement {
+		const {address, owners, threshold, salt} = possibleSafe as TNewSafe;
+		return (
+			<div className={'box-100 relative px-6 py-4'}>
+				<div className={'grid grid-cols-1 gap-20 transition-colors'}>
+					<div className={'flex flex-col gap-4'}>
+						<div className={'flex flex-col'}>
+							<small className={'text-neutral-500'}>{'Safe Address '}</small>
+							<b className={'font-number'}>
+								<Renderable
+									shouldRender={!!address}
+									fallback={<span className={'text-neutral-400'}>{'-'}</span>}>
+									<AddressLike address={address} />
+								</Renderable>
+							</b>
+						</div>
+						<div className={'flex flex-col'}>
+							<small className={'text-neutral-500'}>{'Owners '}</small>
+							<Renderable
+								shouldRender={!!owners && owners.length > 0}
+								fallback={(
+									<div>
+										<b className={'font-number block text-neutral-400'}>{'-'}</b>
+										<b className={'font-number block text-neutral-400'}>{'-'}</b>
+									</div>
+								)}>
+								<div>
+									{(owners || []).map((owner): ReactElement => (
+										<b key={owner} className={'font-number block'}>
+											<AddressLike address={owner} />
+										</b>
+									))}
+								</div>
+							</Renderable>
+						</div>
+						<div className={'flex flex-col'}>
+							<small className={'text-neutral-500'}>{'Threshold '}</small>
+							<b className={'font-number block'}>
+								<Renderable
+									shouldRender={!!threshold}
+									fallback={<span className={'text-neutral-400'}>{'-'}</span>}>
+									{`${threshold || 0} of ${(owners || []).length}`}
+								</Renderable>
+							</b>
+						</div>
+						<div className={'flex flex-col'}>
+							<small className={'text-neutral-500'}>{'Deployment status '}</small>
+							<Renderable
+								shouldRender={!!address}
+								fallback={<span className={'text-neutral-400'}>{'-'}</span>}>
+								<div className={'mt-1 grid grid-cols-3 gap-4'}>
+									{SUPPORTED_CHAINS
+										.filter((chain): boolean => chain.id !== 1101)
+										.map((chain): ReactElement => (
+											<ChainStatus
+												key={chain.id}
+												chain={chain}
+												safeAddress={toAddress(address)}
+												owners={owners || []}
+												threshold={threshold || 0}
+												salt={salt || 0n} />
+										))}
+								</div>
+							</Renderable>
+						</div>
+					</div>
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<section>
 			<div className={'box-0 grid w-full grid-cols-12'}>
 				<ViewSectionHeading
 					title={'Feeling fancy?'}
-					content={'With Smol, you can customize a bit your new safe. Enjoy!'} />
+					content={'Customize your SAFE’s address if you want. A smol perk for using Smol. '} />
 				<div className={'col-span-12 p-4 pt-0 md:p-6 md:pt-0'}>
 					<form
 						onSubmit={async (e): Promise<void> => e.preventDefault()}
@@ -129,8 +200,8 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 											<span className={'tooltip'}>
 												<IconInfo className={'h-3 w-3 text-neutral-500'} />
 												<span className={'tooltipLight top-full mt-1'}>
-													<div className={'font-number w-40 border border-neutral-300 bg-neutral-100 p-1 px-2 text-center text-xs text-neutral-900'}>
-														<p>{'You safe address will start with that. The longer it is, the longer it will be to find a safe matching this condition!'}</p>
+													<div className={'font-number w-60 border border-neutral-300 bg-neutral-100 p-1 px-2 text-center text-xs text-neutral-900'}>
+														<p>{'These are the letters and numbers at the beginning of your Safe address. Please note, the longer your custom string, the longer it will take to find a Safe.'}</p>
 													</div>
 												</span>
 											</span>
@@ -164,8 +235,8 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 											<span className={'tooltip'}>
 												<IconInfo className={'h-3 w-3 text-neutral-500'} />
 												<span className={'tooltipLight top-full mt-1'}>
-													<div className={'font-number w-40 border border-neutral-300 bg-neutral-100 p-1 px-2 text-center text-xs text-neutral-900'}>
-														<p>{'You safe address will end with that. The longer it is, the longer it will be to find a safe matching this condition!'}</p>
+													<div className={'font-number w-60 border border-neutral-300 bg-neutral-100 p-1 px-2 text-center text-xs text-neutral-900'}>
+														<p>{'These are the letters and numbers at the end of your Safe address. Please note, the longer your custom string, the longer it will take to find a Safe.'}</p>
 													</div>
 												</span>
 											</span>
@@ -227,79 +298,7 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 
 				<div className={'col-span-12 flex flex-col p-4 pt-0 text-neutral-900 md:p-6 md:pt-0'}>
 					<div className={'grid gap-4'}>
-						{([possibleSafe]).map(({address, owners, threshold, salt}: TNewSafe): ReactElement => (
-							<div key={address} className={'box-100 relative px-6 py-4'}>
-								<div className={'absolute right-2 top-2 flex w-[190px] flex-col rounded-md border border-neutral-200 bg-neutral-0 px-4 py-2'}>
-									<small className={'text-xxs text-neutral-500'}>{'Salt: '}</small>
-									<p className={'font-number whitespace-pre text-xxs text-neutral-600'}>
-										{(salt || 0n).toString().match(/.{1,26}/g)?.join('\n')}
-									</p>
-								</div>
-								<div className={'grid grid-cols-1 gap-20 transition-colors'}>
-									<div className={'flex flex-col gap-4'}>
-										<div className={'flex flex-col'}>
-											<small className={'text-neutral-500'}>{'Safe Address '}</small>
-											<b className={'font-number'}>
-												<Renderable
-													shouldRender={!!address}
-													fallback={<span className={'text-neutral-400'}>{'-'}</span>}>
-													<AddressLike address={address} />
-												</Renderable>
-											</b>
-										</div>
-										<div className={'flex flex-col'}>
-											<small className={'text-neutral-500'}>{'Owners '}</small>
-											<Renderable
-												shouldRender={!!owners && owners.length > 0}
-												fallback={(
-													<div>
-														<b className={'font-number block text-neutral-400'}>{'-'}</b>
-														<b className={'font-number block text-neutral-400'}>{'-'}</b>
-													</div>
-												)}>
-												<div>
-													{(owners || []).map((owner): ReactElement => (
-														<b key={owner} className={'font-number block'}>
-															<AddressLike address={owner} />
-														</b>
-													))}
-												</div>
-											</Renderable>
-										</div>
-										<div className={'flex flex-col'}>
-											<small className={'text-neutral-500'}>{'Threshold '}</small>
-											<b className={'font-number block'}>
-												<Renderable
-													shouldRender={!!threshold}
-													fallback={<span className={'text-neutral-400'}>{'-'}</span>}>
-													{`${threshold || 0} of ${(owners || []).length}`}
-												</Renderable>
-											</b>
-										</div>
-										<div className={'flex flex-col'}>
-											<small className={'text-neutral-500'}>{'Deployment status '}</small>
-											<Renderable
-												shouldRender={!!address}
-												fallback={<span className={'text-neutral-400'}>{'-'}</span>}>
-												<div className={'mt-1 grid grid-cols-3 gap-4'}>
-													{SUPPORTED_CHAINS
-														.filter((chain): boolean => chain.id !== 1101)
-														.map((chain): ReactElement => (
-															<ChainStatus
-																key={chain.id}
-																chain={chain}
-																safeAddress={toAddress(address)}
-																owners={owners || []}
-																threshold={threshold || 0}
-																salt={salt || 0n} />
-														))}
-												</div>
-											</Renderable>
-										</div>
-									</div>
-								</div>
-							</div>
-						))}
+						{possibleSafe ? renderPossibleSafe() : null}
 					</div>
 				</div>
 			</div>

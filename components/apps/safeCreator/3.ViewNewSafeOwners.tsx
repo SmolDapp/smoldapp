@@ -1,5 +1,6 @@
 import React, {useCallback, useState} from 'react';
 import IconInfo from 'components/icons/IconInfo';
+import IconWarning from 'components/icons/IconWarning';
 import {useMountEffect} from '@react-hookz/web';
 import AddressLikeInput from '@safeCreatooor/AddressLikeInput';
 import {Button} from '@yearn-finance/web-lib/components/Button';
@@ -109,8 +110,8 @@ function ViewNewSafeOwners(props: TViewNewSafeOwnersProps): ReactElement {
 		<section>
 			<div className={'box-0 grid w-full grid-cols-12'}>
 				<ViewSectionHeading
-					title={'One new safe, coming right up.'}
-					content={'You need owners. They will be in charge of your Safe Account. Please, tell me more about them!'} />
+					title={'One new Safe, coming right up.'}
+					content={'Your Safe needs owners. Let us know the other addresses or ENS of the accounts you want to be in charge of your Safe alongside you.'} />
 				<div className={'col-span-12 p-4 pt-0 md:p-6 md:pt-0'}>
 					<form
 						onSubmit={async (e): Promise<void> => e.preventDefault()}
@@ -144,50 +145,60 @@ function ViewNewSafeOwners(props: TViewNewSafeOwnersProps): ReactElement {
 						</div>
 
 
-						<div className={'mt-4 flex flex-row items-start justify-between space-x-4'}>
-							<button
-								type={'button'}
-								onClick={(): void => onAddNewOwnerAsSibling(owners[owners.length - 1].UUID)}
-								className={'group -mt-4 rounded-md border border-transparent py-2 pl-1 pr-20 focus:underline'}>
-								<b className={'text-xs text-neutral-900 group-hover:underline'}>
-									{'+ Add a new owner'}
-								</b>
-							</button>
-							<div>
-								<div className={'mb-2 flex flex-row items-center space-x-2'}>
-									<div className={'box-0 relative flex h-10 w-full items-center'}>
-										<div className={'absolute right-[110%] text-xs text-neutral-600'}>
-											<div className={'flex w-fit flex-row items-center space-x-1'}>
-												<p className={'font-inter font-semibold opacity-50'}>
-													{'Threshold'}
-												</p>
-												<span className={'tooltip'}>
-													<IconInfo className={'h-3 w-3 text-neutral-500 opacity-50'} />
-													<span className={'tooltipLight top-full mt-1'}>
-														<div className={'font-number w-40 border border-neutral-300 bg-neutral-100 p-1 px-2 text-center text-xs text-neutral-900'}>
-															<p>{'Any transaction requires the confirmation of at least this number of owners. You can change this later.'}</p>
-														</div>
+						<div className={'mr-14 mt-4 flex flex-col'}>
+							<div className={'mt-4 flex flex-row items-start justify-between space-x-4'}>
+								<button
+									type={'button'}
+									onClick={(): void => onAddNewOwnerAsSibling(owners[owners.length - 1].UUID)}
+									className={'group -mt-4 rounded-md border border-transparent py-2 pl-1 pr-20 focus:underline'}>
+									<b className={'text-xs text-neutral-900 group-hover:underline'}>
+										{'+ Add a new owner'}
+									</b>
+								</button>
+								<div>
+									<div className={'mb-2 flex flex-row items-center space-x-2'}>
+										<div className={'box-0 relative flex h-10 w-full items-center'}>
+											<div className={'absolute right-[110%] text-xs text-neutral-600'}>
+												<div className={'flex w-fit flex-row items-center space-x-1'}>
+													<p className={'font-inter font-semibold opacity-50'}>
+														{'Threshold'}
+													</p>
+													<span className={'tooltip'}>
+														<IconInfo className={'h-3 w-3 text-neutral-500 opacity-50'} />
+														<span className={'tooltipLight top-full mt-1'}>
+															<div className={'font-number w-40 border border-neutral-300 bg-neutral-100 p-1 px-2 text-center text-xs text-neutral-900'}>
+																<p>{'Any transaction requires the confirmation of at least this number of owners. You can change this later.'}</p>
+															</div>
+														</span>
 													</span>
-												</span>
+												</div>
+											</div>
+											<div className={'flex h-10 w-full flex-row items-center justify-between space-x-2 px-2 py-4'}>
+												<button
+													type={'button'}
+													className={'flex h-6 w-6 items-center justify-center rounded-md bg-neutral-900 text-center text-neutral-0 outline outline-offset-2 transition-colors focus-within:outline-neutral-900 hover:bg-neutral-800 disabled:bg-neutral-300'}
+													disabled={threshold <= 1}
+													onClick={(): void => set_threshold(threshold - 1)}>
+													<p className={'font-number pr-[1px]'}>{'-'}</p>
+												</button>
+												<p>{threshold}</p>
+												<button
+													type={'button'}
+													className={'flex h-6 w-6 items-center justify-center rounded-md bg-neutral-900 text-center text-neutral-0 outline outline-offset-2 transition-colors focus-within:outline-neutral-900 hover:bg-neutral-800 disabled:bg-neutral-300'}
+													disabled={threshold >= owners.length}
+													onClick={(): void => set_threshold(threshold + 1)}>
+													<p className={'font-number pl-[1px]'}>{'+'}</p>
+												</button>
 											</div>
 										</div>
-										<div className={'flex h-10 w-full flex-row items-center justify-between space-x-2 px-2 py-4'}>
-											<button
-												type={'button'}
-												className={'flex h-6 w-6 items-center justify-center rounded-md bg-neutral-900 text-center text-neutral-0 outline outline-offset-2 transition-colors focus-within:outline-neutral-900 hover:bg-neutral-800 disabled:bg-neutral-300'}
-												disabled={threshold <= 1}
-												onClick={(): void => set_threshold(threshold - 1)}>
-												<p className={'font-number pr-[1px]'}>{'-'}</p>
-											</button>
-											<p>{threshold}</p>
-											<button
-												type={'button'}
-												className={'flex h-6 w-6 items-center justify-center rounded-md bg-neutral-900 text-center text-neutral-0 outline outline-offset-2 transition-colors focus-within:outline-neutral-900 hover:bg-neutral-800 disabled:bg-neutral-300'}
-												disabled={threshold >= owners.length}
-												onClick={(): void => set_threshold(threshold + 1)}>
-												<p className={'font-number pl-[1px]'}>{'+'}</p>
-											</button>
-										</div>
+									</div>
+								</div>
+							</div>
+							<div className={'flex flex-row justify-between space-x-4'}>
+								<div className={'-mt-1 w-3/4'} style={{visibility: owners.length === 1 ? 'visible' : 'hidden'}}>
+									<div className={'flex flex-row whitespace-pre rounded-md border border-orange-200 !bg-orange-200/60 p-2 text-xs font-bold text-orange-600'}>
+										<IconWarning className={'mr-2 h-4 w-4 text-orange-600'} />
+										{'We recomend a threshold of at least 1/2.\nYou can use any other wallet or even the Safe app on your phone as another owner.'}
 									</div>
 								</div>
 								<Button

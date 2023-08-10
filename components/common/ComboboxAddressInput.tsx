@@ -236,7 +236,7 @@ function ComboboxAddressInput({possibleValues, value, onChangeValue, onAddValue}
 				<div className={'relative'}>
 					<Combobox.Button
 						onClick={(): void => set_isOpen((o: boolean): boolean => !o)}
-						className={'box-0 grow-1 col-span-12 flex h-10 w-full items-center p-2 px-4 md:col-span-9'}>
+						className={'box-0 grow-1 col-span-12 flex h-12 w-full items-center p-2 px-4 md:col-span-9'}>
 						{renderElement()}
 						{isLoadingTokenData && (
 							<div className={'absolute right-8'}>

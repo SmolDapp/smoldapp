@@ -1,5 +1,6 @@
 import React, {useCallback, useState} from 'react';
 import AddressInput, {defaultInputAddressLike} from 'components/common/AddressInput';
+import IconWarning from 'components/icons/IconWarning';
 import {SUPPORTED_CHAINS} from 'utils/constants';
 import {fromHex,type Hex} from 'viem';
 import axios from 'axios';
@@ -8,6 +9,7 @@ import {fetchTransaction} from '@wagmi/core';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import Renderable from '@yearn-finance/web-lib/components/Renderable';
 import {isZeroAddress, toAddress} from '@yearn-finance/web-lib/utils/address';
+import {cl} from '@yearn-finance/web-lib/utils/cl';
 import {getClient, getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 import ViewSectionHeading from '@common/ViewSectionHeading';
 
@@ -25,16 +27,18 @@ type TExistingSafeArgs = {
 	salt: bigint,
 	threshold: number,
 	tx?: FetchTransactionResult,
+	error?: string,
 	isLoading: boolean,
 }
 function ViewClonableSafe(): ReactElement {
 	const [inputedValue, set_inputedValue] = useState<TInputAddressLike>(defaultInputAddressLike);
-	const [existingSafeArgs, set_existingSafeArgs] = useState<TExistingSafeArgs | undefined>(undefined);
+	const [existingSafeArgs, set_existingSafeArgs] = useState<TExistingSafeArgs | {error: string, isLoading: boolean} | undefined>(undefined);
 
 	const retrieveSafeTxHash = useCallback(async (address: TAddress): Promise<{hash: Hex, chainID: number} | undefined> => {
 		for (const chain of SUPPORTED_CHAINS) {
 			const publicClient = getClient(chain.id);
 			const byteCode = await publicClient.getBytecode({address});
+			console.warn(byteCode);
 			if (byteCode) {
 				let txHash: Hex | null = '0x0';
 
@@ -94,15 +98,87 @@ function ViewClonableSafe(): ReactElement {
 			const {owners, threshold, salt} = decodeArgInitializers(input as Hex);
 
 			set_existingSafeArgs({owners, threshold, isLoading: false, address, salt, tx: tx});
+		} else {
+			set_existingSafeArgs({error: 'No safe found at this address', isLoading: false});
 		}
 	}, [decodeArgInitializers, retrieveSafeTxHash]);
+
+	function renderDeploymentData(): ReactElement {
+		const safeArgs = existingSafeArgs as TExistingSafeArgs | undefined;
+		return (
+			<div className={'box-100 relative px-6 py-4'}>
+				<div className={'grid grid-cols-1 gap-20 transition-colors'}>
+					<div className={'flex flex-col gap-4'}>
+						<div className={'flex flex-col'}>
+							<small className={'text-neutral-500'}>{'Safe Address '}</small>
+							<b className={'font-number'}>
+								<Renderable
+									shouldRender={!!safeArgs?.address}
+									fallback={<span className={'text-neutral-400'}>{'-'}</span>}>
+									{safeArgs?.address}
+								</Renderable>
+							</b>
+						</div>
+						<div className={'flex flex-col'}>
+							<small className={'text-neutral-500'}>{'Owners '}</small>
+							<Renderable
+								shouldRender={!!safeArgs?.owners && safeArgs?.owners.length > 0}
+								fallback={(
+									<div>
+										<b className={'font-number block text-neutral-400'}>{'-'}</b>
+										<b className={'font-number block text-neutral-400'}>{'-'}</b>
+									</div>
+								)}>
+								<div>
+									{(safeArgs?.owners || []).map((owner): ReactElement => (
+										<b key={owner} className={'font-number block'}>{owner}</b>
+									))}
+								</div>
+							</Renderable>
+						</div>
+						<div className={'flex flex-col'}>
+							<small className={'text-neutral-500'}>{'Threshold '}</small>
+							<b className={'font-number block'}>
+								<Renderable
+									shouldRender={!!safeArgs?.threshold}
+									fallback={<span className={'text-neutral-400'}>{'-'}</span>}>
+									{`${safeArgs?.threshold || 0} of ${(safeArgs?.owners || []).length}`}
+								</Renderable>
+							</b>
+						</div>
+						<div className={'flex flex-col'}>
+							<small className={'text-neutral-500'}>{'Deployment status '}</small>
+							<Renderable
+								shouldRender={!!safeArgs?.address}
+								fallback={<span className={'text-neutral-400'}>{'-'}</span>}>
+								<div className={'mt-1 grid grid-cols-3 gap-4'}>
+									{SUPPORTED_CHAINS
+										.filter((chain): boolean => chain.id !== 1101)
+										.map((chain): ReactElement => (
+											<ChainStatus
+												key={chain.id}
+												chain={chain}
+												safeAddress={toAddress(safeArgs?.address)}
+												originalTx={safeArgs?.tx}
+												owners={safeArgs?.owners || []}
+												threshold={safeArgs?.threshold || 0}
+												salt={safeArgs?.salt || 0n} />
+										))}
+								</div>
+							</Renderable>
+						</div>
+					</div>
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<section>
 			<div className={'box-0 grid w-full grid-cols-12'}>
 				<ViewSectionHeading
-					title={'Let’s make that safe multi chain anon. Hum. Which vault?'}
-					content={'Boring warning: Please note:\nWhen cloning an existing safe, you’ll be recreating the ‘initial state’ of the safe.\nSo make sure the signers of the initial state of the safe are the signers you want to clone.'} />
+					title={'One new safe, coming right up.'}
+					content={'Please note:\nWhen cloning an existing , you’re recreating the ‘initial state’ of the Safe. E.g the Safe will be created with the same signers you picked when you originally deployed it. So make sure those initial signers are the signers you want to clone. Otherwise make a new Safe'} />
 				<div className={'col-span-12 p-4 pt-0 md:p-6 md:pt-0'}>
 					<form
 						onSubmit={async (e): Promise<void> => e.preventDefault()}
@@ -125,76 +201,20 @@ function ViewClonableSafe(): ReactElement {
 					</form>
 				</div>
 
-				<div className={'col-span-12 flex flex-col p-4 pt-0 text-neutral-900 md:p-6 md:pt-0'}>
-					<div className={'box-100 relative px-6 py-4'}>
-						<div className={'absolute right-2 top-2 flex flex-col rounded-lg border border-neutral-200 bg-neutral-0 px-4 py-2'}>
-							<small className={'text-xxs text-neutral-500'}>{'Salt: '}</small>
-							<p className={'font-number whitespace-pre text-xxs text-neutral-600'}>
-								{(existingSafeArgs?.salt || 0n).toString().match(/.{1,26}/g)?.join('\n')}
-							</p>
-						</div>
-						<div className={'grid grid-cols-1 gap-20 transition-colors'}>
-							<div className={'flex flex-col gap-4'}>
-								<div className={'flex flex-col'}>
-									<small className={'text-neutral-500'}>{'Safe Address '}</small>
-									<b className={'font-number'}>
-										<Renderable
-											shouldRender={!!existingSafeArgs?.address}
-											fallback={<span className={'text-neutral-400'}>{'-'}</span>}>
-											{existingSafeArgs?.address}
-										</Renderable>
-									</b>
-								</div>
-								<div className={'flex flex-col'}>
-									<small className={'text-neutral-500'}>{'Owners '}</small>
-									<Renderable
-										shouldRender={!!existingSafeArgs?.owners && existingSafeArgs?.owners.length > 0}
-										fallback={(
-											<div>
-												<b className={'font-number block text-neutral-400'}>{'-'}</b>
-												<b className={'font-number block text-neutral-400'}>{'-'}</b>
-											</div>
-										)}>
-										<div>
-											{(existingSafeArgs?.owners || []).map((owner): ReactElement => (
-												<b key={owner} className={'font-number block'}>{owner}</b>
-											))}
-										</div>
-									</Renderable>
-								</div>
-								<div className={'flex flex-col'}>
-									<small className={'text-neutral-500'}>{'Threshold '}</small>
-									<b className={'font-number block'}>
-										<Renderable
-											shouldRender={!!existingSafeArgs?.threshold}
-											fallback={<span className={'text-neutral-400'}>{'-'}</span>}>
-											{`${existingSafeArgs?.threshold || 0} of ${(existingSafeArgs?.owners || []).length}`}
-										</Renderable>
-									</b>
-								</div>
-								<div className={'flex flex-col'}>
-									<small className={'text-neutral-500'}>{'Deployment status '}</small>
-									<Renderable
-										shouldRender={!!existingSafeArgs?.address}
-										fallback={<span className={'text-neutral-400'}>{'-'}</span>}>
-										<div className={'mt-1 grid grid-cols-3 gap-4'}>
-											{SUPPORTED_CHAINS
-												.filter((chain): boolean => chain.id !== 1101)
-												.map((chain): ReactElement => (
-													<ChainStatus
-														key={chain.id}
-														chain={chain}
-														safeAddress={toAddress(existingSafeArgs?.address)}
-														originalTx={existingSafeArgs?.tx}
-														owners={existingSafeArgs?.owners || []}
-														threshold={existingSafeArgs?.threshold || 0}
-														salt={existingSafeArgs?.salt || 0n} />
-												))}
-										</div>
-									</Renderable>
-								</div>
-							</div>
-						</div>
+				<div
+					className={cl(
+						(!existingSafeArgs?.error && !existingSafeArgs?.isLoading) ? 'col-span-12 flex flex-col p-4 pt-0 text-neutral-900 md:p-6 md:pt-0 opacity-100' : 'pointer-events-none h-0 overflow-hidden opacity-0'
+					)}>
+					{renderDeploymentData()}
+				</div>
+
+				<div
+					className={cl(
+						existingSafeArgs?.error || existingSafeArgs?.isLoading ? 'col-span-12 flex flex-col p-4 pt-0 text-neutral-900 md:p-6 md:pt-0 opacity-100' : 'pointer-events-none h-0 overflow-hidden opacity-0'
+					)}>
+					<div className={'flex flex-row whitespace-pre rounded-md border border-red-200 !bg-red-200/60 p-2 text-xs font-bold text-red-600'}>
+						<IconWarning className={'mr-2 h-4 w-4 text-red-600'} />
+						{'Uh oh, this doesn’t appear to be a Safe address.\nPlease check you typed the correct address as we couldn’t find a Safe for this address.'}
 					</div>
 				</div>
 			</div>

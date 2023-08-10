@@ -350,7 +350,7 @@ const ViewTable = memo(function ViewTable({onProceed}: {onProceed: VoidFunction}
 						))}
 					</div>
 				</div>
-				<div className={'rounded-b-0 relative col-span-12 flex w-full max-w-4xl flex-row items-center justify-between bg-neutral-900 p-4 text-neutral-0 md:px-6 md:py-4'}>
+				<div className={'rounded-b-0 relative col-span-12 flex w-full max-w-4xl flex-row items-center justify-between bg-neutral-900 p-4 text-neutral-0 md:rounded-b-md md:px-6 md:py-4'}>
 					<div className={'flex w-3/4 flex-col'}>
 						<dl className={'container whitespace-nowrap text-xs'}>
 							<dt>{'You have'}</dt>

@@ -7,7 +7,7 @@ const thumbnailVariants = {
 };
 
 export function scrollToTargetAdjusted(element: HTMLElement): void {
-	const headerOffset = 81 - 16;
+	const headerOffset = 32;
 	if (!element) {
 		return;
 	}

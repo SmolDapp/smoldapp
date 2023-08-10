@@ -4,6 +4,7 @@ import Link from 'next/link';
 import LogoDisperse from '@disperse/Logo';
 import LogoMigratooor from '@migratooor/Logo';
 import LogoNFTMigratooor from '@nftmigratooor/Logo';
+import LogoSafeCreator from '@safeCreatooor/Logo';
 import LogoTokenlistooor from '@tokenlistooor/Logo';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 
@@ -16,12 +17,24 @@ import type {ReactElement} from 'react';
 
 const	apps = [
 	{
+		href: '/safe',
+		title: 'MultiSafe',
+		description: (
+			<span>
+				{'One address, all the chains. Deploy your Safe across '}
+				<span className={'font-semibold text-orange-500'}>{'multiple chains'}</span>
+				{'.'}
+			</span>
+		),
+		icon: <LogoSafeCreator className={'h-[80px] w-[80px]'} />
+	},
+	{
 		href: '/disperse',
 		title: 'Disperse',
 		description: (
 			<span>
 				<span className={'font-semibold text-orange-500'}>{'Distribute'}</span>
-				{' ether or tokens to multiple addresses'}
+				{' ether or tokens to multiple addresses.'}
 			</span>
 		),
 		icon: <LogoDisperse className={'h-[80px] w-[80px]'} />
@@ -62,8 +75,9 @@ const	apps = [
 		title: 'Migratooor',
 		description: (
 			<span>
-				{'The hassle-free solution for your '}
-				<span className={'font-semibold text-orange-500'}>{'wallet-to-wallet migration'}</span>
+				{'The hassle-free solution to '}
+				<span className={'font-semibold text-orange-500'}>{'migrate'}</span>
+				{' your tokens.'}
 			</span>
 		),
 		icon: <LogoMigratooor className={'h-[80px] w-[80px]'} />
@@ -71,7 +85,6 @@ const	apps = [
 	{
 		href: '/nftmigratooor',
 		title: 'NFTMigratooor',
-		// description: 'The easiest way to migrate your NFTs from one wallet to another.',
 		description: (
 			<span>
 				{'Easily '}
@@ -83,7 +96,6 @@ const	apps = [
 	}, {
 		href: '/tokenlistooor',
 		title: 'Tokenlistooor',
-		// description: 'Up to date automatic token lists for your dApp.',
 		description: (
 			<span>
 				{'An up to date automatic '}

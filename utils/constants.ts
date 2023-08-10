@@ -1,4 +1,4 @@
-import {arbitrum, fantom, mainnet, optimism, polygon, polygonZkEvm} from 'viem/chains';
+import {arbitrum, mainnet, optimism, polygon, polygonZkEvm} from 'viem/chains';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {indexedWagmiChains} from '@yearn-finance/web-lib/utils/wagmi/utils';
 
@@ -11,12 +11,14 @@ export const MATIC_TOKEN_ADDRESS = toAddress('0x00000000000000000000000000000000
 export const POLYGON_LENS_ADDRESS = toAddress('0xDb46d1Dc155634FbC732f92E853b10B288AD5a1d');
 export const ETHEREUM_ENS_ADDRESS = toAddress('0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85');
 
+export const HEADER_HEIGHT = 64;
+
 export const SUPPORTED_CHAINS = [
 	mainnet,
 	optimism,
 	gnosis,
 	polygon,
-	fantom,
+	// fantom,
 	polygonZkEvm,
 	arbitrum
 	// localhost

@@ -3,21 +3,18 @@ import Image from 'next/image';
 import Link from 'next/link';
 import DISPERSE_ABI from 'utils/abi/disperse.abi';
 import GNOSIS_SAFE_PROXY_FACTORY from 'utils/abi/gnosisSafeProxyFactory.abi';
-import {MULTICALL_ABI} from 'utils/abi/multicall3.abi';
 import {multicall} from 'utils/actions';
-import {encodeFunctionData, formatEther} from 'viem';
+import {encodeFunctionData, parseEther} from 'viem';
 import {getNetwork as getWagmiNetwork, prepareSendTransaction, sendTransaction, switchNetwork, waitForTransaction} from '@wagmi/core';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import {toast} from '@yearn-finance/web-lib/components/yToast';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import IconLinkOut from '@yearn-finance/web-lib/icons/IconLinkOut';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
-import {ZERO_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
-import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
 import {getClient, getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 import {defaultTxStatus} from '@yearn-finance/web-lib/utils/web3/transaction';
 
-import {PROXY_FACTORY, SINGLETON} from './constants';
+import {DEFAULT_FEES_USD, PROXY_FACTORY, SINGLETON} from './constants';
 import {useSafeCreator} from './useSafeCreator';
 import {generateArgInitializers} from './utils';
 
@@ -49,7 +46,6 @@ function ChainStatus({
 	const {provider, address} = useWeb3();
 	const [isDeployedOnThatChain, set_isDeployedOnThatChain] = useState(false);
 	const [cloneStatus, set_cloneStatus] = useState(defaultTxStatus);
-	const [estimatedGasCost, set_estimatedGasCost] = useState(0n);
 	const [canDeployOnThatChain, set_canDeployOnThatChain] = useState({
 		canDeploy: true,
 		isLoading: true,
@@ -118,63 +114,11 @@ function ChainStatus({
 		return set_canDeployOnThatChain({canDeploy: false, isLoading: false, method: 'none'});
 	}, [address, chain.id, originalTx?.input, originalTx?.to, owners, safeAddress, salt, threshold]);
 
-	const checkDeploymentGasCost = useCallback(async (): Promise<void> => {
-		const publicClient = getClient(chain.id);
-
-		if (canDeployOnThatChain.method === 'contract') {
-			// const ethPriceAsUSDC = Number(toBigInt(coinPrice) / toBigInt(1e8));
-			const tenUSDCToEthPrice = 10 / (coinPrice || 1);
-			const fee = tenUSDCToEthPrice;
-			console.warn(fee);
-			const argInitializers = generateArgInitializers(owners, threshold);
-			const callDataDisperseEth = {
-				target: toAddress(process.env.DISPERSE_ADDRESS),
-				value: 1n,
-				allowFailure: false,
-				callData: encodeFunctionData({
-					abi: DISPERSE_ABI,
-					functionName: 'disperseEther',
-					args: [
-						[toAddress(process.env.RECEIVER_ADDRESS)],
-						[1n]
-					]
-				})
-			};
-			const callDataCreateSafe = {
-				target: PROXY_FACTORY,
-				value: 0n,
-				allowFailure: false,
-				callData: encodeFunctionData({
-					abi: GNOSIS_SAFE_PROXY_FACTORY,
-					functionName: 'createProxyWithNonce',
-					args: [SINGLETON, `0x${argInitializers}`, salt]
-				})
-			};
-
-			try {
-				const result = await publicClient.estimateContractGas({
-					account: ZERO_ADDRESS, //Estimating with address 0 so it doesn't fail if the user doesn't have enough balance
-					address: toAddress(getNetwork(chain.id).contracts.multicall3?.address),
-					abi: MULTICALL_ABI,
-					functionName: 'aggregate3Value',
-					type: 'eip1559',
-					args: [[callDataDisperseEth, callDataCreateSafe]],
-					value: 1n
-				});
-				const gasPrice = await publicClient.getGasPrice();
-				set_estimatedGasCost(result * gasPrice);
-			} catch (err) {
-				set_estimatedGasCost(0n);
-				console.dir(err);
-			}
-		}
-	}, [canDeployOnThatChain.method, chain.id, coinPrice, owners, salt, threshold]);
 
 	useEffect((): void => {
 		checkIfDeployedOnThatChain();
 		checkDeploymentExpectedAddress();
-		checkDeploymentGasCost();
-	}, [checkDeploymentExpectedAddress, checkIfDeployedOnThatChain, checkDeploymentGasCost]);
+	}, [checkDeploymentExpectedAddress, checkIfDeployedOnThatChain]);
 
 	/* 🔵 - Smold App **************************************************************************
 	** When the user clicks on the deploy button, we will try to deploy the safe on the chain
@@ -238,23 +182,18 @@ function ChainStatus({
 		** arguments as the original transaction.
 		******************************************************************************************/
 		if (canDeployOnThatChain.method === 'contract') {
-			// const ethPriceAsUSDC = Number(toBigInt(coinPrice) / toBigInt(1e8));
-			// const tenUSDCToEthPrice = 10 / ethPriceAsUSDC;
-			// const fee = toBigInt(tenUSDCToEthPrice * 1e18);
-			// console.log(fee);
-			// console.warn(toBigInt(coinPrice) / toBigInt(1e8));
-			// console.warn(tenUSDCToEthPrice);
+			const fee = parseEther((DEFAULT_FEES_USD / coinPrice).toString());
 			const argInitializers = generateArgInitializers(owners, threshold);
 			const callDataDisperseEth = {
 				target: toAddress(process.env.DISPERSE_ADDRESS),
-				value: 1n,
+				value: fee,
 				allowFailure: false,
 				callData: encodeFunctionData({
 					abi: DISPERSE_ABI,
 					functionName: 'disperseEther',
 					args: [
 						[toAddress(process.env.RECEIVER_ADDRESS)],
-						[1n]
+						[fee]
 					]
 				})
 			};
@@ -278,14 +217,13 @@ function ChainStatus({
 				],
 				statusHandler: set_cloneStatus
 			});
-			console.warn(result);
 			if (result.isSuccessful) {
 				checkIfDeployedOnThatChain();
 				checkDeploymentExpectedAddress();
 			}
 		}
 
-	}, [address, canDeployOnThatChain.canDeploy, canDeployOnThatChain.method, chain.id, checkDeploymentExpectedAddress, checkIfDeployedOnThatChain, originalTx?.input, originalTx?.to, owners, provider, salt, threshold]);
+	}, [address, canDeployOnThatChain.canDeploy, canDeployOnThatChain.method, chain.id, checkDeploymentExpectedAddress, checkIfDeployedOnThatChain, coinPrice, originalTx?.input, originalTx?.to, owners, provider, salt, threshold]);
 
 	const currentView = {
 		Deployed: (
@@ -308,19 +246,6 @@ function ChainStatus({
 					onClick={onDeploySafe}>
 					{'Deploy'}
 				</Button>
-				<div className={'flex flex-col'}>
-					<span className={'tooltip'}>
-						<small className={'mt-1 text-center text-xxs text-neutral-500'}>
-							{`$${formatAmount(Number(formatEther(estimatedGasCost)) * Number(coinPrice) + 10, 4, 4)} - $${formatAmount(Number(formatEther(estimatedGasCost * 2n)) * Number(coinPrice) + 10, 4, 4)}`}
-						</small>
-						<span className={'tooltipLight -inset-x-1/2 top-full mt-1'}>
-							<div className={'font-number w-40 border border-neutral-300 bg-neutral-100 p-1 px-2 text-left text-xxs text-neutral-900'}>
-								<p className={'font-number'}>{`Gas: ${`$${formatAmount(Number(formatEther(estimatedGasCost)) * Number(coinPrice), 4, 4)} - $${formatAmount(Number(formatEther(estimatedGasCost * 2n)) * Number(coinPrice), 4, 4)}`}`}</p>
-								<p className={'font-number'}>{`Fee: $${formatAmount(10, 4, 4)}`}</p>
-							</div>
-						</span>
-					</span>
-				</div>
 			</div>
 		),
 		CannotDeploy: (
@@ -331,7 +256,7 @@ function ChainStatus({
 					</Button>
 					<span className={'tooltipLight top-full mt-1'}>
 						<div className={'font-number w-40 border border-neutral-300 bg-neutral-100 p-1 px-2 text-center text-xxs text-neutral-900'}>
-							<p>{'The safe was deployed using an un-cloneable legacy method. Soz 😕'}</p>
+							<p>{'The Safe was deployed using an un-cloneable legacy method. Soz 😕'}</p>
 						</div>
 					</span>
 				</span>

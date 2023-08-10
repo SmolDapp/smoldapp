@@ -18,12 +18,12 @@ function Safe(): ReactElement {
 
 	return (
 		<div className={'mx-auto grid w-full max-w-4xl'}>
-			<div className={'mb-10 mt-6 flex flex-col justify-center md:mt-20'}>
-				<h1 className={'-ml-1 mt-4 w-full text-3xl tracking-tight text-neutral-900 md:mt-6 md:w-1/2 md:text-5xl'}>
-					{'Clone a Safe.'}
+			<div className={'mt-6 flex flex-col justify-center md:mt-20'}>
+				<h1 className={'-ml-1 mt-4 w-full text-3xl tracking-tight text-neutral-900 md:mt-6 md:text-5xl'}>
+					{'Make your multi-sig, multi-chain.'}
 				</h1>
-				<b className={'mt-4 w-full text-base leading-normal text-neutral-500 md:w-2/3 md:text-lg md:leading-8'}>
-					{'Just because having the same address on all chains is way fancier.'}
+				<b className={'mt-4 w-full whitespace-pre text-base leading-normal text-neutral-500 md:w-2/3 md:text-lg md:leading-8'}>
+					{'Get the same Safe address on all chains. \nWow, fancy!'}
 				</b>
 			</div>
 
@@ -71,22 +71,22 @@ export default function SafeWrapper(): ReactElement {
 		<SafeCreatorContextApp>
 			<>
 				<DefaultSeo
-					title={'Safe Creator - SmolDapp'}
-					defaultTitle={'Safe Creator - SmolDapp'}
-					description={'Create a same, same address, every chain. Fancy.'}
+					title={'MultiSafe - SmolDapp'}
+					defaultTitle={'MultiSafe - SmolDapp'}
+					description={'One address, all the chains. Deploy your Safe across multiple chains.'}
 					openGraph={{
 						type: 'website',
 						locale: 'en-US',
 						url: 'https://smold.app/safe',
-						site_name: 'Safe Creator - SmolDapp',
-						title: 'Safe Creator - SmolDapp',
-						description: 'Create a same, same address, every chain. Fancy.',
+						site_name: 'MultiSafe - SmolDapp',
+						title: 'MultiSafe - SmolDapp',
+						description: 'One address, all the chains. Deploy your Safe across multiple chains.',
 						images: [
 							{
-								url: 'https://smold.app/og_disperse.png',
+								url: 'https://smold.app/og_multisafe.png',
 								width: 800,
 								height: 400,
-								alt: 'Safe Creator'
+								alt: 'MultiSafe'
 							}
 						]
 					}}
