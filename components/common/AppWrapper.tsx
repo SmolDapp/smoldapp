@@ -19,7 +19,7 @@ function SideBar(): ReactElement {
 	function renderNoNavView(): ReactElement {
 		return (
 			<div
-				className={cl('fixed inset-y-0 left-0 z-50 flex h-full w-52 flex-col pt-1 px-2 transition-all duration-75',
+				className={cl('fixed top-0 left-0 z-50 flex flex-col pt-1 px-2 transition-all duration-75',
 					!isSidebarOpen ? 'opacity-100' : 'opacity-0',
 					!isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
 				)}>
@@ -43,7 +43,7 @@ function SideBar(): ReactElement {
 							<div className={'rounded-full border border-neutral-200 bg-neutral-0 p-2'}>
 								<Logo className={'h-4 text-neutral-900'} />
 							</div>
-							<p className={'font-semibold'}>{'smol'}</p>
+							<p className={'hidden font-semibold md:block'}>{'smol'}</p>
 						</div>
 					</Link>
 				</div>

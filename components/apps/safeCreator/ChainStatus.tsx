@@ -227,33 +227,37 @@ function ChainStatus({
 
 	const currentView = {
 		Deployed: (
-			<div className={'flex flex-row items-center space-x-2'}>
+			<div className={'flex flex-col items-center gap-2 md:flex-row'}>
 				<Button className={'!h-8'} isDisabled>
 					{'Deployed'}
 				</Button>
 				<Link href={`${getNetwork(chain.id).defaultBlockExplorer}/address/${safeAddress}`} target={'_blank'}>
-					<Button className={'!h-8'}>
+					<Button className={'hidden !h-8 md:block'}>
 						<IconLinkOut className={'h-4 w-4 !text-white'} />
 					</Button>
+					<p className={'block text-center text-xs text-neutral-600 md:hidden'}>{'See on explorer'}</p>
 				</Link>
 			</div>
 		),
 		CanDeploy: (
-			<div className={'flex flex-col items-center justify-center'}>
+			<div className={'flex flex-col items-center gap-2 md:flex-row'}>
 				<Button
 					className={'!h-8'}
 					isBusy={cloneStatus.pending}
 					onClick={onDeploySafe}>
 					{'Deploy'}
 				</Button>
+				<p className={'block text-center text-xs text-neutral-600 md:hidden'}>&nbsp;</p>
 			</div>
 		),
 		CannotDeploy: (
 			<div>
-				<span className={'tooltip flex items-center justify-center'}>
-					<Button className={'!h-8'} isDisabled>
-						{'Not possible'}
+				<span className={'tooltip flex flex-col items-center justify-center gap-2 md:flex-row'}>
+					<Button className={'white !h-8'} isDisabled>
+						{'Impossible'}
 					</Button>
+					<p className={'block text-center text-xs text-neutral-600 md:hidden'}>&nbsp;</p>
+
 					<span className={'tooltipLight top-full mt-1'}>
 						<div className={'font-number w-40 border border-neutral-300 bg-neutral-100 p-1 px-2 text-center text-xxs text-neutral-900'}>
 							<p>{'The Safe was deployed using an un-cloneable legacy method. Soz 😕'}</p>
@@ -276,7 +280,7 @@ function ChainStatus({
 	];
 
 	return (
-		<div key={chain.id} className={'box-0 flex flex-col items-center justify-center p-4'}>
+		<div key={chain.id} className={'box-0 flex w-full flex-col items-center justify-center p-4 pb-2 md:pb-4'}>
 			<div className={'h-8 w-8'}>
 				<Image
 					src={'chains/' + chain.id + '.svg'}
@@ -284,7 +288,7 @@ function ChainStatus({
 					height={32}
 					alt={chain.name} />
 			</div>
-			<p className={'mt-1 text-sm text-neutral-700'}>
+			<p className={'mt-1 text-center text-sm text-neutral-700'}>
 				{getNetwork(chain.id).name}
 			</p>
 			<div className={'mt-4'}>

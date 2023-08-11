@@ -126,7 +126,7 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 		const {address, owners, threshold, salt} = possibleSafe as TNewSafe;
 		return (
 			<div className={'p-4 pt-0 md:p-6 md:pt-0'}>
-				<div className={'box-100 relative px-6 py-4'}>
+				<div className={'box-100 relative p-4 md:px-6'}>
 					{possibleSafe?.prefix !== prefix || possibleSafe?.suffix !== suffix ? (
 						<>
 							<div className={'box-0 absolute right-2 top-2 hidden w-52 flex-row p-2 text-xs md:flex'}>
@@ -202,7 +202,7 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 								<Renderable
 									shouldRender={!!address}
 									fallback={<span className={'text-neutral-400'}>{'-'}</span>}>
-									<div className={'mt-1 grid grid-cols-2 gap-4 md:grid-cols-3'}>
+									<div className={'mt-1 grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-4'}>
 										{SUPPORTED_CHAINS
 											.filter((chain): boolean => chain.id !== 1101)
 											.map((chain): ReactElement => (

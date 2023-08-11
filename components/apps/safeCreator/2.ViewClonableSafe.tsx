@@ -106,12 +106,12 @@ function ViewClonableSafe(): ReactElement {
 	function renderDeploymentData(): ReactElement {
 		const safeArgs = existingSafeArgs as TExistingSafeArgs | undefined;
 		return (
-			<div className={'box-100 relative px-6 py-4'}>
+			<div className={'box-100 relative p-4 md:px-6'}>
 				<div className={'grid grid-cols-1 gap-20 transition-colors'}>
 					<div className={'flex flex-col gap-4'}>
 						<div className={'flex flex-col'}>
 							<small className={'text-neutral-500'}>{'Safe Address '}</small>
-							<b className={'font-number'}>
+							<b className={'font-number addr break-all text-sm'}>
 								<Renderable
 									shouldRender={!!safeArgs?.address}
 									fallback={<span className={'text-neutral-400'}>{'-'}</span>}>
@@ -131,7 +131,7 @@ function ViewClonableSafe(): ReactElement {
 								)}>
 								<div>
 									{(safeArgs?.owners || []).map((owner): ReactElement => (
-										<b key={owner} className={'font-number block'}>{owner}</b>
+										<b key={owner} className={'font-number addr block break-all text-sm md:text-base'}>{owner}</b>
 									))}
 								</div>
 							</Renderable>
@@ -151,7 +151,7 @@ function ViewClonableSafe(): ReactElement {
 							<Renderable
 								shouldRender={!!safeArgs?.address}
 								fallback={<span className={'text-neutral-400'}>{'-'}</span>}>
-								<div className={'mt-1 grid grid-cols-3 gap-4'}>
+								<div className={'mt-1 grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-4'}>
 									{SUPPORTED_CHAINS
 										.filter((chain): boolean => chain.id !== 1101)
 										.map((chain): ReactElement => (
@@ -203,7 +203,7 @@ function ViewClonableSafe(): ReactElement {
 
 				<div
 					className={cl(
-						(!existingSafeArgs?.error && !existingSafeArgs?.isLoading) ? 'col-span-12 flex flex-col p-4 pt-0 text-neutral-900 md:p-6 md:pt-0 opacity-100' : 'pointer-events-none h-0 overflow-hidden opacity-0'
+						(!existingSafeArgs?.error && !existingSafeArgs?.isLoading) || existingSafeArgs === undefined ? 'col-span-12 flex flex-col p-4 pt-0 text-neutral-900 md:p-6 md:pt-0 opacity-100' : 'pointer-events-none h-0 overflow-hidden opacity-0'
 					)}>
 					{renderDeploymentData()}
 				</div>
