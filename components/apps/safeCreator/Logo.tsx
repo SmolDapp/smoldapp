@@ -61,174 +61,174 @@ function	LogoSafeCreator(props: React.SVGProps<SVGSVGElement>): ReactElement {
 			</g>
 			<defs>
 				<radialGradient id={'paint0_radial_503_75'} cx={'0'} cy={'0'} r={'1'} gradientUnits={'userSpaceOnUse'} gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
-					<stop offset={'0.49975'} stop-color={'#0D0D0D'} stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
+					<stop offset={'0.49975'} stopColor={'#0D0D0D'} stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient id={'paint1_radial_503_75'} cx={'0'} cy={'0'} r={'1'} gradientUnits={'userSpaceOnUse'} gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
-					<stop offset={'0.49975'} stop-color={'#0D0D0D'} stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
+					<stop offset={'0.49975'} stopColor={'#0D0D0D'} stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient id={'paint2_radial_503_75'} cx={'0'} cy={'0'} r={'1'} gradientUnits={'userSpaceOnUse'} gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
-					<stop offset={'0.49975'} stop-color={'#0D0D0D'} stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
+					<stop offset={'0.49975'} stopColor={'#0D0D0D'} stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient id={'paint3_radial_503_75'} cx={'0'} cy={'0'} r={'1'} gradientUnits={'userSpaceOnUse'} gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
-					<stop offset={'0.49975'} stop-color={'#0D0D0D'} stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
+					<stop offset={'0.49975'} stopColor={'#0D0D0D'} stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient id={'paint4_radial_503_75'} cx={'0'} cy={'0'} r={'1'} gradientUnits={'userSpaceOnUse'} gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
-					<stop offset={'0.49975'} stop-color={'#0D0D0D'} stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
+					<stop offset={'0.49975'} stopColor={'#0D0D0D'} stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient id={'paint5_radial_503_75'} cx={'0'} cy={'0'} r={'1'} gradientUnits={'userSpaceOnUse'} gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
-					<stop offset={'0.49975'} stop-color={'#0D0D0D'} stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
+					<stop offset={'0.49975'} stopColor={'#0D0D0D'} stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient id={'paint6_radial_503_75'} cx={'0'} cy={'0'} r={'1'} gradientUnits={'userSpaceOnUse'} gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
-					<stop offset={'0.49975'} stop-color={'#0D0D0D'} stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
+					<stop offset={'0.49975'} stopColor={'#0D0D0D'} stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient id={'paint7_radial_503_75'} cx={'0'} cy={'0'} r={'1'} gradientUnits={'userSpaceOnUse'} gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
-					<stop offset={'0.49975'} stop-color={'#0D0D0D'} stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
+					<stop offset={'0.49975'} stopColor={'#0D0D0D'} stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient id={'paint8_radial_503_75'} cx={'0'} cy={'0'} r={'1'} gradientUnits={'userSpaceOnUse'} gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
-					<stop offset={'0.49975'} stop-color={'#0D0D0D'} stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
+					<stop offset={'0.49975'} stopColor={'#0D0D0D'} stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient id={'paint9_radial_503_75'} cx={'0'} cy={'0'} r={'1'} gradientUnits={'userSpaceOnUse'} gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
-					<stop offset={'0.49975'} stop-color={'#0D0D0D'} stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
+					<stop offset={'0.49975'} stopColor={'#0D0D0D'} stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient id={'paint10_radial_503_75'} cx={'0'} cy={'0'} r={'1'} gradientUnits={'userSpaceOnUse'} gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
-					<stop offset={'0.49975'} stop-color={'#0D0D0D'} stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
+					<stop offset={'0.49975'} stopColor={'#0D0D0D'} stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient id={'paint11_radial_503_75'} cx={'0'} cy={'0'} r={'1'} gradientUnits={'userSpaceOnUse'} gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
-					<stop offset={'0.49975'} stop-color={'#0D0D0D'} stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
+					<stop offset={'0.49975'} stopColor={'#0D0D0D'} stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient id={'paint12_radial_503_75'} cx={'0'} cy={'0'} r={'1'} gradientUnits={'userSpaceOnUse'} gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
-					<stop offset={'0.49975'} stop-color={'#0D0D0D'} stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
+					<stop offset={'0.49975'} stopColor={'#0D0D0D'} stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient id={'paint13_radial_503_75'} cx={'0'} cy={'0'} r={'1'} gradientUnits={'userSpaceOnUse'} gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
-					<stop offset={'0.49975'} stop-color={'#0D0D0D'} stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
+					<stop offset={'0.49975'} stopColor={'#0D0D0D'} stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient id={'paint14_radial_503_75'} cx={'0'} cy={'0'} r={'1'} gradientUnits={'userSpaceOnUse'} gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
-					<stop offset={'0.49975'} stop-color={'#0D0D0D'} stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
+					<stop offset={'0.49975'} stopColor={'#0D0D0D'} stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient id={'paint15_radial_503_75'} cx={'0'} cy={'0'} r={'1'} gradientUnits={'userSpaceOnUse'} gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
-					<stop offset={'0.49975'} stop-color={'#0D0D0D'} stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
+					<stop offset={'0.49975'} stopColor={'#0D0D0D'} stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient id={'paint16_radial_503_75'} cx={'0'} cy={'0'} r={'1'} gradientUnits={'userSpaceOnUse'} gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
-					<stop offset={'0.49975'} stop-color={'#0D0D0D'} stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
+					<stop offset={'0.49975'} stopColor={'#0D0D0D'} stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient id={'paint17_radial_503_75'} cx={'0'} cy={'0'} r={'1'} gradientUnits={'userSpaceOnUse'} gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
-					<stop offset={'0.49975'} stop-color={'#0D0D0D'} stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
+					<stop offset={'0.49975'} stopColor={'#0D0D0D'} stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient id={'paint18_radial_503_75'} cx={'0'} cy={'0'} r={'1'} gradientUnits={'userSpaceOnUse'} gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
-					<stop offset={'0.49975'} stop-color={'#0D0D0D'} stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
+					<stop offset={'0.49975'} stopColor={'#0D0D0D'} stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient id={'paint19_radial_503_75'} cx={'0'} cy={'0'} r={'1'} gradientUnits={'userSpaceOnUse'} gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
-					<stop offset={'0.49975'} stop-color={'#0D0D0D'} stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
+					<stop offset={'0.49975'} stopColor={'#0D0D0D'} stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient id={'paint20_radial_503_75'} cx={'0'} cy={'0'} r={'1'} gradientUnits={'userSpaceOnUse'} gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
-					<stop offset={'0.49975'} stop-color={'#0D0D0D'} stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
+					<stop offset={'0.49975'} stopColor={'#0D0D0D'} stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient id={'paint21_radial_503_75'} cx={'0'} cy={'0'} r={'1'} gradientUnits={'userSpaceOnUse'} gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
-					<stop offset={'0.49975'} stop-color={'#0D0D0D'} stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
+					<stop offset={'0.49975'} stopColor={'#0D0D0D'} stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient id={'paint22_radial_503_75'} cx={'0'} cy={'0'} r={'1'} gradientUnits={'userSpaceOnUse'} gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
-					<stop offset={'0.49975'} stop-color={'#0D0D0D'} stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
+					<stop offset={'0.49975'} stopColor={'#0D0D0D'} stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient id={'paint23_radial_503_75'} cx={'0'} cy={'0'} r={'1'} gradientUnits={'userSpaceOnUse'} gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
-					<stop offset={'0.49975'} stop-color={'#0D0D0D'} stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
+					<stop offset={'0.49975'} stopColor={'#0D0D0D'} stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient id={'paint24_radial_503_75'} cx={'0'} cy={'0'} r={'1'} gradientUnits={'userSpaceOnUse'} gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
-					<stop offset={'0.49975'} stop-color={'#0D0D0D'} stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
+					<stop offset={'0.49975'} stopColor={'#0D0D0D'} stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient id={'paint25_radial_503_75'} cx={'0'} cy={'0'} r={'1'} gradientUnits={'userSpaceOnUse'} gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
-					<stop offset={'0.49975'} stop-color={'#0D0D0D'} stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
+					<stop offset={'0.49975'} stopColor={'#0D0D0D'} stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient id={'paint26_radial_503_75'} cx={'0'} cy={'0'} r={'1'} gradientUnits={'userSpaceOnUse'} gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
-					<stop offset={'0.49975'} stop-color={'#0D0D0D'} stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
+					<stop offset={'0.49975'} stopColor={'#0D0D0D'} stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient id={'paint27_radial_503_75'} cx={'0'} cy={'0'} r={'1'} gradientUnits={'userSpaceOnUse'} gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
-					<stop offset={'0.49975'} stop-color={'#0D0D0D'} stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
+					<stop offset={'0.49975'} stopColor={'#0D0D0D'} stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient id={'paint28_radial_503_75'} cx={'0'} cy={'0'} r={'1'} gradientUnits={'userSpaceOnUse'} gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
-					<stop offset={'0.49975'} stop-color={'#0D0D0D'} stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
+					<stop offset={'0.49975'} stopColor={'#0D0D0D'} stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient id={'paint29_radial_503_75'} cx={'0'} cy={'0'} r={'1'} gradientUnits={'userSpaceOnUse'} gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
-					<stop offset={'0.49975'} stop-color={'#0D0D0D'} stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
+					<stop offset={'0.49975'} stopColor={'#0D0D0D'} stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient id={'paint30_radial_503_75'} cx={'0'} cy={'0'} r={'1'} gradientUnits={'userSpaceOnUse'} gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
-					<stop offset={'0.49975'} stop-color={'#0D0D0D'} stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
+					<stop offset={'0.49975'} stopColor={'#0D0D0D'} stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient id={'paint31_radial_503_75'} cx={'0'} cy={'0'} r={'1'} gradientUnits={'userSpaceOnUse'} gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
-					<stop offset={'0.49975'} stop-color={'#0D0D0D'} stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
+					<stop offset={'0.49975'} stopColor={'#0D0D0D'} stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient id={'paint32_radial_503_75'} cx={'0'} cy={'0'} r={'1'} gradientUnits={'userSpaceOnUse'} gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
-					<stop offset={'0.49975'} stop-color={'#0D0D0D'} stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
+					<stop offset={'0.49975'} stopColor={'#0D0D0D'} stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<radialGradient id={'paint33_radial_503_75'} cx={'0'} cy={'0'} r={'1'} gradientUnits={'userSpaceOnUse'} gradientTransform={'translate(511.36 256) rotate(180) scale(511.36 2045.44)'}>
-					<stop offset={'0.25'} stop-color={'#0D0D0D'}/>
-					<stop offset={'0.49975'} stop-color={'#0D0D0D'} stop-opacity={'0.75'}/>
-					<stop offset={'0.75'} stop-color={'#0D0D0D'}/>
+					<stop offset={'0.25'} stopColor={'#0D0D0D'}/>
+					<stop offset={'0.49975'} stopColor={'#0D0D0D'} stopOpacity={'0.75'}/>
+					<stop offset={'0.75'} stopColor={'#0D0D0D'}/>
 				</radialGradient>
 				<clipPath id={'clip0_503_75'}>
 					<rect width={'512'} height={'512'} rx={'256'} fill={'white'}/>
