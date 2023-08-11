@@ -1,24 +1,28 @@
 import assert from 'assert';
 import DISPERSE_ABI from 'utils/abi/disperse.abi';
-import {assertAddress, handleTx, toWagmiProvider} from 'utils/wagmiProvider';
+import {SINGLETON} from '@safeCreatooor/constants';
 import {erc20ABI, erc721ABI, getPublicClient, prepareSendTransaction, readContract, sendTransaction, waitForTransaction} from '@wagmi/core';
 import {MAX_UINT_256} from '@yearn-finance/web-lib/utils/constants';
 import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
+import {handleTx, toWagmiProvider} from '@yearn-finance/web-lib/utils/wagmi/provider';
+import {assertAddress} from '@yearn-finance/web-lib/utils/wagmi/utils';
 import {defaultTxStatus} from '@yearn-finance/web-lib/utils/web3/transaction';
 
 import ERC1155_ABI from './abi/ERC1155.abi';
+import GNOSIS_SAFE_PROXY_FACTORY from './abi/gnosisSafeProxyFactory.abi';
+import {MULTICALL_ABI} from './abi/multicall3.abi';
 import NFT_MIGRATOOOR_ABI from './abi/NFTMigratooor.abi';
 
-import type {BaseError} from 'viem';
+import type {BaseError, Hex} from 'viem';
 import type {Connector} from 'wagmi';
 import type {TAddress} from '@yearn-finance/web-lib/types';
+import type {TWriteTransaction} from '@yearn-finance/web-lib/utils/wagmi/provider';
 import type {TTxResponse} from '@yearn-finance/web-lib/utils/web3/transaction';
-import type {TWriteTransaction} from './wagmiProvider';
 
 //Because USDT do not return a boolean on approve, we need to use this ABI
 const ALTERNATE_ERC20_APPROVE_ABI = [{'constant': false, 'inputs': [{'name': '_spender', 'type': 'address'}, {'name': '_value', 'type': 'uint256'}], 'name': 'approve', 'outputs': [], 'payable': false, 'stateMutability': 'nonpayable', 'type': 'function'}] as const;
 
-/* 🔵 - Yearn Finance **********************************************************
+/* 🔵 - Smold App **************************************************************
 ** isApprovedERC20 is a _VIEW_ function that checks if a token is approved for
 ** a spender.
 ******************************************************************************/
@@ -40,7 +44,7 @@ export async function isApprovedERC20(props: TIsApprovedERC20): Promise<boolean>
 	return (result || 0n) >= toBigInt(props.amount || MAX_UINT_256);
 }
 
-/* 🔵 - Yearn Finance **********************************************************
+/* 🔵 - Smold App **************************************************************
 ** approveERC20 is a _WRITE_ function that approves a token for a spender.
 **
 ** @param spenderAddress - The address of the spender.
@@ -72,7 +76,7 @@ export async function approveERC20(props: TApproveERC20): Promise<TTxResponse> {
 	});
 }
 
-/* 🔵 - Yearn Finance **********************************************************
+/* 🔵 - Smold App **************************************************************
 ** approveAllERC721 is a _WRITE_ function that approves a spender to spend all
 ** of a user's NFTs.
 **
@@ -95,7 +99,7 @@ export async function approveAllERC721(props: TApproveAllERC721): Promise<TTxRes
 	});
 }
 
-/* 🔵 - Yearn Finance **********************************************************
+/* 🔵 - Smold App **************************************************************
 ** transferERC721 is a _WRITE_ function that transfers an ERC721 token to a
 ** recipient.
 **
@@ -120,7 +124,7 @@ export async function transferERC721(props: TTransferERC721): Promise<TTxRespons
 	});
 }
 
-/* 🔵 - Yearn Finance **********************************************************
+/* 🔵 - Smold App **************************************************************
 ** batchTransferERC721 is a _WRITE_ function that transfers a group of ERC721
 ** tokens to a recipient.
 **
@@ -148,7 +152,7 @@ export async function batchTransferERC721(props: TBatchTransferERC721): Promise<
 
 
 
-/* 🔵 - Yearn Finance **********************************************************
+/* 🔵 - Smold App **************************************************************
 ** transferERC721 is a _WRITE_ function that transfers an ERC721 token to a
 ** recipient.
 **
@@ -216,7 +220,7 @@ export async function listERC1155(props: TListERC1155): Promise<[bigint[], bigin
 	return [filteredTokenIDs, filteredAmounts];
 }
 
-/* 🔵 - Yearn Finance **********************************************************
+/* 🔵 - Smold App **************************************************************
 ** transferERC20 is a _WRITE_ function that transfers a token to a recipient.
 **
 ** @param spenderAddress - The address of the spender.
@@ -240,7 +244,7 @@ export async function transferERC20(props: TTransferERC20): Promise<TTxResponse>
 
 
 
-/* 🔵 - Yearn Finance **********************************************************
+/* 🔵 - Smold App **************************************************************
 ** transferEther is a _WRITE_ function that transfers ETH to a recipient.
 ** Here, ETH represents the chain's native coin.
 **
@@ -299,7 +303,7 @@ export async function transferEther(props: TTransferEther): Promise<TTxResponse>
 }
 
 
-/* 🔵 - Yearn Finance **********************************************************
+/* 🔵 - Smold App **************************************************************
 ** disperseETH is a _WRITE_ function that disperses ETH to a list of addresses.
 **
 ** @param receivers - The addresses of the receivers.
@@ -328,7 +332,7 @@ export async function disperseETH(props: TDisperseETH): Promise<TTxResponse> {
 	});
 }
 
-/* 🔵 - Yearn Finance **********************************************************
+/* 🔵 - Smold App **************************************************************
 ** disperseERC20 is a _WRITE_ function that disperses ERC20 to a list of
 ** addresses.
 **
@@ -356,5 +360,59 @@ export async function disperseERC20(props: TDisperseERC20): Promise<TTxResponse>
 		abi: DISPERSE_ABI,
 		functionName: 'disperseToken',
 		args: [props.tokenToDisperse, props.receivers, props.amounts]
+	});
+}
+
+/* 🔵 - Smold App **************************************************************
+** cloneSafe is a _WRITE_ function that clone an existing safe using the
+** createProxyWithNonce method.
+**
+** @param receivers - The addresses of the receivers.
+** @param amounts - The amounts of ETH to send to each receiver.
+******************************************************************************/
+type TCloneSafe = TWriteTransaction & {
+	initializers: Hex,
+	salt: bigint,
+};
+export async function cloneSafe(props: TCloneSafe): Promise<TTxResponse> {
+	assertAddress(props.contractAddress);
+
+	return await handleTx(props, {
+		address: props.contractAddress,
+		abi: GNOSIS_SAFE_PROXY_FACTORY,
+		functionName: 'createProxyWithNonce',
+		args: [SINGLETON, props.initializers, props.salt]
+	});
+}
+
+
+
+/* 🔵 - Yearn Finance **********************************************************
+** multicall is a _WRITE_ function that can be used to cast a multicall
+**
+** @app - common
+** @param protocols - an array of protocols to vote for.
+** @param amounts - an array of amounts to vote for each protocol.
+******************************************************************************/
+type TMulticall = TWriteTransaction & {
+	multicallData: {
+		target: TAddress,
+		callData: Hex,
+		value: bigint,
+		allowFailure: boolean
+	}[];
+};
+export async function multicall(props: TMulticall): Promise<TTxResponse> {
+	assert(props.connector, 'No connector');
+	assert(props.multicallData.length > 0, 'Nothing to do');
+	assertAddress(props.contractAddress, 'ContractAddress');
+
+	const value = props.multicallData.reduce((a, b): bigint => a + b.value, 0n);
+	return await handleTx(props, {
+		address: props.contractAddress,
+		abi: MULTICALL_ABI,
+		functionName: 'aggregate3Value',
+		args: [props.multicallData],
+		value: value
 	});
 }

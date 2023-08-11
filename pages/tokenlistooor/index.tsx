@@ -6,7 +6,9 @@ import LEGACY_TOKEN_LISTS from 'utils/legacyTokenLists';
 import {motion} from 'framer-motion';
 import {MigratooorContextApp} from '@migratooor/useMigratooor';
 
+import type {Variants} from 'framer-motion';
 import type {ReactElement} from 'react';
+import type {TAddress} from '@yearn-finance/web-lib/types';
 
 export type TTokenListItem = {
 	name: string;
@@ -16,6 +18,14 @@ export type TTokenListItem = {
 	URI: string;
 	keywords: string[];
 	tokenCount: number;
+	tokens: {
+		address: TAddress,
+		name: string,
+		symbol: string,
+		logoURI: string,
+		chainId: number,
+		decimals: number
+	}[],
 	version: {
 		major: number;
 		minor: number;
@@ -30,7 +40,7 @@ export type TTokenListSummary = {
 }
 
 const variants = {
-	enter: (i: number): any => ({
+	enter: (i: number): unknown => ({
 		y: 0,
 		opacity: 1,
 		transition: {
@@ -43,12 +53,12 @@ const variants = {
 };
 
 function	Home({summary}: {summary: TTokenListSummary}): ReactElement {
-	const	allLists = summary.lists;
-	const	[typeOfList, set_typeOfList] = useState<'tokens' | 'pools' | 'legacy'>('tokens');
+	const allLists = summary.lists;
+	const [typeOfList, set_typeOfList] = useState<'tokens' | 'pools' | 'legacy'>('tokens');
 
-	const	{tokens, pools} = useMemo((): {tokens: TTokenListItem[], pools: TTokenListItem[]} => {
-		const	tokens: TTokenListItem[] = [];
-		const	pools: TTokenListItem[] = [];
+	const {tokens, pools} = useMemo((): {tokens: TTokenListItem[], pools: TTokenListItem[]} => {
+		const tokens: TTokenListItem[] = [];
+		const pools: TTokenListItem[] = [];
 		allLists.forEach((list: TTokenListItem): void => {
 			if (list.name.toLowerCase().includes('token pool')) {
 				pools.push(list);
@@ -60,7 +70,7 @@ function	Home({summary}: {summary: TTokenListSummary}): ReactElement {
 	}, [allLists]);
 
 
-	const	listToRender = typeOfList === 'tokens' ? tokens : typeOfList === 'pools' ? pools : undefined;
+	const listToRender = typeOfList === 'tokens' ? tokens : typeOfList === 'pools' ? pools : undefined;
 	return (
 		<>
 			<TokenListHero summary={summary} />
@@ -94,7 +104,7 @@ function	Home({summary}: {summary: TTokenListSummary}): ReactElement {
 								custom={i}
 								initial={'initial'}
 								whileInView={'enter'}
-								variants={variants}
+								variants={variants as Variants}
 								className={'box-0 relative flex w-full pt-4 md:pt-6'}>
 								<LegacyTokenListCard item={tokenListItem} />
 							</motion.div>
@@ -105,7 +115,7 @@ function	Home({summary}: {summary: TTokenListSummary}): ReactElement {
 							custom={i}
 							initial={'initial'}
 							whileInView={'enter'}
-							variants={variants}
+							variants={variants as Variants}
 							className={'box-0 relative flex w-full pt-4 md:pt-6'}>
 							<TokenListCard item={tokenListItem} />
 						</motion.div>
@@ -152,12 +162,19 @@ export default function Wrapper({summary}: {summary: TTokenListSummary}): ReactE
 }
 
 Wrapper.getInitialProps = async (): Promise<unknown> => {
-	const	shaRes = await fetch('https://api.github.com/repos/migratooor/tokenlists/commits?sha=main&per_page=1');
-	const	shaJson = await shaRes.json();
-	const	gihubCallResponse = (shaJson as [{sha: string}]);
-	const	[{sha}] = gihubCallResponse;
-	const	listRes = await fetch(`https://raw.githubusercontent.com/Migratooor/tokenLists/${sha}/lists/summary.json`);
-	const	tokenListResponse = await listRes.json();
+	try {
+		const shaRes = await fetch('https://api.github.com/repos/migratooor/tokenlists/commits?sha=main&per_page=1');
+		const shaJson = await shaRes.json();
+		const gihubCallResponse = (shaJson as [{sha: string}]);
+		const [{sha}] = gihubCallResponse;
+		const listRes = await fetch(`https://raw.githubusercontent.com/Migratooor/tokenLists/${sha}/lists/summary.json`);
+		const tokenListResponse = await listRes.json();
 
-	return {summary: tokenListResponse};
+		return {summary: tokenListResponse};
+	} catch (error) {
+		const listRes = await fetch('https://raw.githubusercontent.com/Migratooor/tokenLists/main/lists/summary.json');
+		const tokenListResponse = await listRes.json();
+
+		return {summary: tokenListResponse};
+	}
 };

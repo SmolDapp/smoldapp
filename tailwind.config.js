@@ -57,7 +57,9 @@ module.exports = {
 				800: withOpacityValue('--color-neutral-800'),
 				900: withOpacityValue('--color-neutral-900')
 			},
-			pink: colors.pink
+			pink: colors.pink,
+			red: colors.rose,
+			green: colors.emerald
 		},
 		extend: {
 			fontFamily: {

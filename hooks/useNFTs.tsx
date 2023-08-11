@@ -2,12 +2,12 @@ import {useCallback} from 'react';
 import {ETHEREUM_ENS_ADDRESS, POLYGON_LENS_ADDRESS} from 'utils/constants';
 import {decodeAsset} from 'utils/decodeAsset';
 import {retrieveENSNameFromNode} from 'utils/tools.ens';
-import {getClient} from 'utils/wagmiUtils';
 import {getAbiItem, parseAbi} from 'viem';
 import {erc721ABI} from 'wagmi';
 import {multicall} from '@wagmi/core';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
+import {getClient} from '@yearn-finance/web-lib/utils/wagmi/utils';
 
 import type {TTokenInfo} from 'contexts/useTokenList';
 import type {TNFT} from 'utils/types/nftMigratooor';

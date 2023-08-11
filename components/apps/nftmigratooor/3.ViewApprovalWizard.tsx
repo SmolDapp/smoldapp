@@ -102,7 +102,7 @@ function ViewApprovalWizard(): ReactElement {
 		});
 		const result = await multicall({
 			chainId: safeChainID,
-			contracts: calls as any[]
+			contracts: calls as never[]
 		});
 		const newStatus: TDict<TApprovalStatus> = {};
 		Object.entries(groupedByCollection).forEach(([collectionAddress, collection], index): void => {

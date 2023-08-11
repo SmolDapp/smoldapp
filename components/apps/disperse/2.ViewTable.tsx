@@ -146,7 +146,7 @@ function AddressLikeInput({uuid, label, onChangeLabel, onChange, onPaste, isDupl
 }
 
 function AmountToSendInput({token, onChange}: {
-	token: TTokenInfo,
+	token: TTokenInfo | undefined,
 	amountToSend: TNormalizedBN | undefined,
 	onChange: (amount: TNormalizedBN) => void
 }): ReactElement {
@@ -167,7 +167,7 @@ function AmountToSendInput({token, onChange}: {
 					type={'number'}
 					onWheel={(e): void => e.preventDefault()}
 					min={0}
-					step={1 / 10 ** (token.decimals || 18)}
+					step={1 / 10 ** (token?.decimals || 18)}
 					inputMode={'numeric'}
 					placeholder={'0'}
 					pattern={'^((?:0|[1-9]+)(?:.(?:d+?[1-9]|[1-9]))?)$'}
@@ -253,15 +253,15 @@ const ViewTable = memo(function ViewTable({onProceed}: {onProceed: VoidFunction}
 			try {
 				if (addressAmount[1].includes('.') || addressAmount[1].includes(',')) {
 					const normalizedAmount = Number(addressAmount[1]);
-					const raw = parseUnits(normalizedAmount, tokenToDisperse.decimals || 18);
-					const amount = toNormalizedBN(raw, tokenToDisperse.decimals || 18);
+					const raw = parseUnits(normalizedAmount, tokenToDisperse?.decimals || 18);
+					const amount = toNormalizedBN(raw, tokenToDisperse?.decimals || 18);
 					row.amount = amount;
 				} else {
-					const amount = toNormalizedBN(addressAmount[1], tokenToDisperse.decimals || 18);
+					const amount = toNormalizedBN(addressAmount[1], tokenToDisperse?.decimals || 18);
 					row.amount = amount;
 				}
 			} catch (e) {
-				row.amount = toNormalizedBN(0n, tokenToDisperse.decimals || 18);
+				row.amount = toNormalizedBN(0n, tokenToDisperse?.decimals || 18);
 			}
 			return row;
 		});
@@ -295,9 +295,13 @@ const ViewTable = memo(function ViewTable({onProceed}: {onProceed: VoidFunction}
 	}, [disperseArray, checkAlreadyExists]);
 
 	const balanceOf = useMemo((): number => {
-		const balance = balances?.[tokenToDisperse.address]?.normalized;
+		if (isZeroAddress(tokenToDisperse?.address)) {
+			return 0;
+		}
+		const balance = balances?.[toAddress(tokenToDisperse?.address)]?.normalized;
 		return balance || 0;
 	}, [balances, tokenToDisperse]);
+
 	const totalToDisperse = useMemo((): number => {
 		return disperseArray.reduce((acc, row): number => acc + Number(row.amount?.normalized || 0), 0);
 	}, [disperseArray]);
@@ -346,20 +350,20 @@ const ViewTable = memo(function ViewTable({onProceed}: {onProceed: VoidFunction}
 						))}
 					</div>
 				</div>
-				<div className={'rounded-b-0 relative col-span-12 flex w-full max-w-4xl flex-row items-center justify-between bg-neutral-900 p-4 text-neutral-0 md:px-6 md:py-4'}>
+				<div className={'rounded-b-0 relative col-span-12 flex w-full max-w-4xl flex-row items-center justify-between bg-neutral-900 p-4 text-neutral-0 md:rounded-b-md md:px-6 md:py-4'}>
 					<div className={'flex w-3/4 flex-col'}>
-						<dl className={'container text-xs'}>
+						<dl className={'container whitespace-nowrap text-xs'}>
 							<dt>{'You have'}</dt>
 							<span className={'filler'} />
 							<dd suppressHydrationWarning>
-								{`${formatAmount(balanceOf, tokenToDisperse.decimals)} ${tokenToDisperse.symbol}`}
+								{`${formatAmount(balanceOf, tokenToDisperse?.decimals || 18)} ${tokenToDisperse?.symbol || ''}`}
 							</dd>
 						</dl>
-						<dl className={'container text-xs'}>
+						<dl className={'container whitespace-nowrap text-xs'}>
 							<dt>{'You are sending'}</dt>
 							<span className={'filler'} />
 							<dd suppressHydrationWarning className={isAboveBalance ? 'text-[#FE0000]' : ''}>
-								{`${formatAmount(totalToDisperse, tokenToDisperse.decimals)} ${tokenToDisperse.symbol}`}
+								{`${formatAmount(totalToDisperse, tokenToDisperse?.decimals || 18)} ${tokenToDisperse?.symbol || ''}`}
 							</dd>
 						</dl>
 					</div>

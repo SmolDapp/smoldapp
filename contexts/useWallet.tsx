@@ -1,18 +1,18 @@
 import React, {createContext, memo, useCallback, useContext, useMemo, useState} from 'react';
 import {useTokenList} from 'contexts/useTokenList';
-import {useBalances} from 'hooks/useBalances';
 import {MATIC_TOKEN_ADDRESS} from 'utils/constants';
 import defaultTokenList from 'utils/tokenLists.json';
-import {getNativeToken} from 'utils/wagmiProvider';
 import {useLocalStorageValue, useMountEffect, useUpdateEffect} from '@react-hookz/web';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
+import {useBalances} from '@yearn-finance/web-lib/hooks/useBalances';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {ETH_TOKEN_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
 import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUpdates';
+import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 
-import type {TUseBalancesTokens} from 'hooks/useBalances';
 import type {Dispatch, ReactElement, SetStateAction} from 'react';
+import type {TUseBalancesTokens} from '@yearn-finance/web-lib/hooks/useBalances';
 import type {TDict} from '@yearn-finance/web-lib/types';
 import type {TBalanceData} from '@yearn-finance/web-lib/types/hooks';
 import type {TTokenInfo} from './useTokenList';
@@ -44,7 +44,7 @@ const defaultProps = {
 const WalletContext = createContext<TWalletContext>(defaultProps);
 export const WalletContextApp = memo(function WalletContextApp({children}: {children: ReactElement}): ReactElement {
 	const {tokenList} = useTokenList();
-	const {chainID, isActive} = useWeb3();
+	const {isActive} = useWeb3();
 	const {safeChainID} = useChainID();
 	const [walletProvider, set_walletProvider] = useState('NONE');
 	const {value: extraTokens, set: saveExtraTokens} = useLocalStorageValue<TUseBalancesTokens[]>('smoldapp/tokens', {defaultValue: []});
@@ -60,13 +60,15 @@ export const WalletContextApp = memo(function WalletContextApp({children}: {chil
 				}
 				tokens.push({token: toAddress(token.address), decimals: Number(token.decimals), name: token.name, symbol: token.symbol});
 			});
-		const nativeToken = getNativeToken();
-		tokens.push({
-			token: toAddress(ETH_TOKEN_ADDRESS),
-			decimals: nativeToken.decimals,
-			name: nativeToken.name,
-			symbol: nativeToken.symbol
-		});
+		const {wrappedToken} = getNetwork(safeChainID).contracts;
+		if (wrappedToken) {
+			tokens.push({
+				token: ETH_TOKEN_ADDRESS,
+				name: wrappedToken.coinName,
+				symbol: wrappedToken.coinSymbol,
+				decimals: wrappedToken.decimals
+			});
+		}
 		return tokens;
 	}, [safeChainID, tokenList]);
 
@@ -98,8 +100,8 @@ export const WalletContextApp = memo(function WalletContextApp({children}: {chil
 		if (tokensToFetch.length > 0) {
 			return await onRefresh(tokensToFetch);
 		}
-		return balances[chainID];
-	}, [balances, chainID, onRefresh, safeChainID, availableTokens]);
+		return balances;
+	}, [balances, onRefresh, safeChainID, availableTokens]);
 
 	const onLoadExtraTokens = useCallback(async (): Promise<void> => {
 		if (extraTokens) {
@@ -126,14 +128,14 @@ export const WalletContextApp = memo(function WalletContextApp({children}: {chil
 	**	Setup and render the Context provider to use in the app.
 	***************************************************************************/
 	const contextValue = useMemo((): TWalletContext => ({
-		balances: balances[chainID],
+		balances: balances,
 		balancesNonce: nonce,
 		isLoading: isLoading || false,
 		refresh: onRefresh,
 		refreshWithList: onRefreshWithList,
 		walletProvider,
 		set_walletProvider
-	}), [balances, isLoading, onRefresh, nonce, chainID, onRefreshWithList, walletProvider]);
+	}), [balances, isLoading, onRefresh, nonce, onRefreshWithList, walletProvider]);
 
 	return (
 		<WalletContext.Provider value={contextValue}>

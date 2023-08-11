@@ -1,6 +1,7 @@
 import React, {createContext, useCallback, useContext, useEffect, useMemo, useState} from 'react';
 import useNFTs from 'hooks/useNFTs';
 import {scrollToTargetAdjusted} from 'utils/animations';
+import {HEADER_HEIGHT} from 'utils/constants';
 import {alchemyToNFT, fetchAllAssetsFromAlchemy, fetchAllAssetsFromOpenSea, openseaToNFT} from 'utils/types/opensea';
 import {useMountEffect, useUpdateEffect} from '@react-hookz/web';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
@@ -170,7 +171,6 @@ export const NFTMigratooorContextApp = ({children}: {children: React.ReactElemen
 			let currentStepContainer;
 			const isEmbedWallet = ['EMBED_LEDGER', 'EMBED_GNOSIS_SAFE'].includes(walletType);
 			const scalooor = document?.getElementById('scalooor');
-			const headerHeight = 96;
 
 			if (currentStep === Step.WALLET && !isEmbedWallet) {
 				currentStepContainer = document?.getElementById('wallet');
@@ -183,7 +183,7 @@ export const NFTMigratooorContextApp = ({children}: {children: React.ReactElemen
 			}
 			const currentElementHeight = currentStepContainer?.offsetHeight;
 			if (scalooor?.style) {
-				scalooor.style.height = `calc(100vh - ${currentElementHeight}px - ${headerHeight}px + 36px)`;
+				scalooor.style.height = `calc(100vh - ${currentElementHeight}px - ${HEADER_HEIGHT}px + 36px)`;
 			}
 			if (currentStepContainer) {
 				scrollToTargetAdjusted(currentStepContainer);

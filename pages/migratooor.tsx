@@ -29,6 +29,15 @@ function	Migrate(): ReactElement {
 
 	return (
 		<div className={'mx-auto grid w-full max-w-4xl'}>
+			<div className={'mt-6 flex flex-col justify-center md:mt-20'}>
+				<h1 className={'-ml-1 mt-4 w-full text-3xl tracking-tight text-neutral-900 md:mt-6 md:w-1/2 md:text-5xl'}>
+					{'Migrate like a fancy bird.'}
+				</h1>
+				<b className={'mt-4 w-full text-base leading-normal text-neutral-500 md:w-2/3 md:text-lg md:leading-8'}>
+					{'The easiest way to migrate your tokens from one wallet to another.'}
+				</b>
+			</div>
+
 			<ViewWallet onSelect={onProceedWallet} />
 
 			<div

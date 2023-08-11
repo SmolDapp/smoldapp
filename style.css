@@ -3,7 +3,6 @@
 
 :root {
 }
-
 .font-mono {
 	font-family: 'Source Code Pro', monospace !important;
 }
@@ -22,25 +21,38 @@
 .yearn--listbox-menu-item {
 	@apply hover:!bg-neutral-100/80;
 }
-
-.yearn--button {
-	@apply rounded-md;
-	&[data-variant="reverted"] {
-		@apply text-neutral-900 bg-neutral-0 font-normal border border-transparent;
-		&:disabled {@apply bg-neutral-200 opacity-40;}
-		&:not(:disabled):not([aria-busy="true"]):hover {@apply bg-neutral-200;}
-
-		&[aria-busy="true"] svg {
-			@apply text-neutral-900;
+:root {
+	& .yearn--button {
+		@apply rounded-md;
+		&[data-variant="filled"] {
+			@apply focus-within:outline-neutral-900 outline-offset-2 outline;
 		}
-	}
-	&[data-variant="reverted-alt"] {
-		@apply text-neutral-900 bg-neutral-0 font-normal border border-transparent;
-		&:disabled {@apply bg-neutral-200 opacity-40;}
-		&:not(:disabled):not([aria-busy="true"]):hover {@apply bg-neutral-200;}
+		&[data-variant="reverted"] {
+			@apply text-neutral-900 bg-neutral-0 font-normal border border-transparent;
+			&:disabled {@apply bg-neutral-200 opacity-40;}
+			&:not(:disabled):not([aria-busy="true"]):hover {@apply bg-neutral-200;}
 
-		&[aria-busy="true"] svg {
-			@apply text-neutral-900;
+			&[aria-busy="true"] svg {
+				@apply text-neutral-900;
+			}
+		}
+		&[data-variant="reverted-alt"] {
+			@apply text-neutral-900 bg-neutral-0 font-normal border border-transparent;
+			&:disabled {@apply bg-neutral-200 opacity-40;}
+			&:not(:disabled):not([aria-busy="true"]):hover {@apply bg-neutral-200;}
+
+			&[aria-busy="true"] svg {
+				@apply text-neutral-900;
+			}
+		}
+		&[data-variant="light"] {
+			@apply text-neutral-900 bg-neutral-300 font-normal border border-transparent;
+			&:disabled {@apply bg-neutral-200 opacity-40;}
+			&:not(:disabled):not([aria-busy="true"]):hover {@apply bg-neutral-200;}
+
+			&[aria-busy="true"] svg {
+				@apply text-neutral-900;
+			}
 		}
 	}
 }
@@ -217,7 +229,18 @@ details {
 		@apply transition-colors hover:bg-neutral-200;
 	}
 }
-
+.box-700 {
+	@apply bg-neutral-700 border border-neutral-600/30 rounded-md;
+	&.hover {
+		@apply transition-colors hover:bg-neutral-600/30;
+	}
+}
+.box-900 {
+	@apply bg-neutral-900 border border-neutral-700 rounded-md;
+	&.hover {
+		@apply transition-colors hover:bg-neutral-700;
+	}
+}
 
 
 .tooltip {
@@ -227,6 +250,9 @@ details {
 .tooltip .tooltiptextsmall {
 	@apply text-xs text-center invisible bg-neutral-0 text-neutral-900 absolute z-50 right-1 opacity-0 transition-opacity p-2 rounded;
 	box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.16);
+}
+.tooltip .tooltipLight {
+	@apply invisible absolute z-50 opacity-0 transition-opacity flex justify-center items-center;
 }
 .tooltiptext {
 	top: 110%;
@@ -239,7 +265,8 @@ details {
 	margin-right: calc(-5rem + 4px);
 }
 .tooltip:hover .tooltiptext,
-.tooltip:hover .tooltiptextsmall {
+.tooltip:hover .tooltiptextsmall,
+.tooltip:hover .tooltipLight {
 	@apply visible opacity-100;
 }
 .tooltip .tooltiptext::after,
@@ -332,4 +359,11 @@ details {
 	& > svg {
 		@apply w-full h-full;
 	}
+}
+
+.addr > span {
+	& > span {
+		@apply break-normal;
+	}
+	@apply break-all;
 }

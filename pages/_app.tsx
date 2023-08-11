@@ -4,11 +4,12 @@ import AppWrapper from 'components/common/AppWrapper';
 import {MenuContextApp} from 'contexts/useMenu';
 import {TokenListContextApp} from 'contexts/useTokenList';
 import {WalletContextApp} from 'contexts/useWallet';
-import config from 'utils/wagmiConfig';
+import {SUPPORTED_CHAINS} from 'utils/constants';
 import {SafeProvider} from '@gnosis.pm/safe-apps-react-sdk';
 import {useLocalStorageValue} from '@react-hookz/web';
 import {Analytics} from '@vercel/analytics/react';
 import {WithYearn} from '@yearn-finance/web-lib/contexts/WithYearn';
+import {localhost} from '@yearn-finance/web-lib/utils/wagmi/networks';
 import {FeebackPopover} from '@common/FeebackPopover';
 
 import type {AppProps} from 'next/app';
@@ -25,10 +26,11 @@ const inter = Inter({
 
 function	MyApp(props: AppProps): ReactElement {
 	const {value: shouldHidePopover} = useLocalStorageValue<boolean>('smoldapp/feedback-popover');
+
 	return (
 		<>
 			<style jsx global>{`html {font-family: ${inter.style.fontFamily};}`}</style>
-			<WithYearn config={config}>
+			<WithYearn supportedChains={[...SUPPORTED_CHAINS, localhost]}>
 				<TokenListContextApp>
 					<WalletContextApp>
 						<MenuContextApp>

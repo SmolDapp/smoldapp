@@ -1,8 +1,10 @@
 import React, {createContext, useContext, useEffect, useMemo, useState} from 'react';
 import {scrollToTargetAdjusted} from 'utils/animations';
-import {getNativeToken} from 'utils/wagmiProvider';
+import {HEADER_HEIGHT} from 'utils/constants';
 import {useMountEffect, useUpdateEffect} from '@react-hookz/web';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
+import {ETH_TOKEN_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
+import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 
 import type {Dispatch, SetStateAction} from 'react';
 import type {TAddress} from '@yearn-finance/web-lib/types';
@@ -28,8 +30,16 @@ export type TSelected = {
 	set_disperseArray: Dispatch<SetStateAction<TDisperseElement[]>>,
 	onResetDisperse: () => void
 }
+const {wrappedToken: mainnetToken} = getNetwork(1).contracts;
 const defaultProps: TSelected = {
-	tokenToDisperse: getNativeToken(),
+	tokenToDisperse: {
+		address: ETH_TOKEN_ADDRESS,
+		chainId: 1,
+		name: mainnetToken?.coinName || 'Ether',
+		symbol: mainnetToken?.coinSymbol || 'ETH',
+		decimals: mainnetToken?.decimals || 18,
+		logoURI: `https://assets.smold.app/api/token/${1}/${ETH_TOKEN_ADDRESS}/logo-128.png`
+	},
 	currentStep: Step.WALLET,
 	disperseArray: [],
 	isDispersed: false,
@@ -53,6 +63,7 @@ export const DisperseContextApp = ({children}: {children: React.ReactElement}): 
 	const {address, isActive, walletType} = useWeb3();
 	const [currentStep, set_currentStep] = useState<Step>(Step.WALLET);
 	const [tokenToDisperse, set_tokenToDisperse] = useState<TTokenInfo>(defaultProps.tokenToDisperse);
+
 	const [disperseArray, set_disperseArray] = useState<TDisperseElement[]>([]);
 	const [isDispersed, set_isDispersed] = useState<boolean>(false);
 
@@ -111,7 +122,6 @@ export const DisperseContextApp = ({children}: {children: React.ReactElement}): 
 			let currentStepContainer;
 			const isEmbedWallet = ['EMBED_LEDGER', 'EMBED_GNOSIS_SAFE'].includes(walletType);
 			const scalooor = document?.getElementById('scalooor');
-			const headerHeight = 96;
 
 			if (currentStep === Step.WALLET && !isEmbedWallet) {
 				currentStepContainer = document?.getElementById('wallet');
@@ -124,7 +134,7 @@ export const DisperseContextApp = ({children}: {children: React.ReactElement}): 
 			}
 			const currentElementHeight = currentStepContainer?.offsetHeight;
 			if (scalooor?.style) {
-				scalooor.style.height = `calc(100vh - ${currentElementHeight}px - ${headerHeight}px + 36px)`;
+				scalooor.style.height = `calc(100vh - ${currentElementHeight}px - ${HEADER_HEIGHT}px + 36px)`;
 			}
 			if (currentStepContainer) {
 				scrollToTargetAdjusted(currentStepContainer);

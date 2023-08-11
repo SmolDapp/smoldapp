@@ -6,6 +6,7 @@ import ViewTable from '@disperse/2.ViewTable';
 import ViewApprovalWizard from '@disperse/3.ViewApprovalWizard';
 import {DisperseContextApp, Step, useDisperse} from '@disperse/useDisperse';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
+import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {ETH_TOKEN_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
 import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUpdates';
 
@@ -22,16 +23,16 @@ function Disperse(): ReactElement {
 		if (isGnosisSafe) {
 			return document.getElementById('DISPERSE_TOKENS')?.click();
 		}
-		if (tokenToDisperse.address === ETH_TOKEN_ADDRESS) {
+		if (toAddress(tokenToDisperse?.address) === ETH_TOKEN_ADDRESS) {
 			return document.getElementById('DISPERSE_TOKENS')?.click();
 		}
 		return document.getElementById('APPROVE_TOKEN_TO_DISPERSE')?.click();
 
-	}, [isGnosisSafe, set_currentStep, tokenToDisperse.address]);
+	}, [isGnosisSafe, set_currentStep, tokenToDisperse]);
 
 	return (
 		<div className={'mx-auto grid w-full max-w-4xl'}>
-			<div className={'mb-10 mt-6 flex flex-col justify-center md:mt-20'}>
+			<div className={'mt-6 flex flex-col justify-center md:mt-20'}>
 				<h1 className={'-ml-1 mt-4 w-full text-3xl tracking-tight text-neutral-900 md:mt-6 md:w-1/2 md:text-5xl'}>
 					{'Disperse tokens in a single click.'}
 				</h1>
