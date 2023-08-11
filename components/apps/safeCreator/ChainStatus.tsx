@@ -14,7 +14,7 @@ import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {getClient, getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 import {defaultTxStatus} from '@yearn-finance/web-lib/utils/web3/transaction';
 
-import {DEFAULT_FEES_USD, PROXY_FACTORY, SINGLETON, SMOL_MS} from './constants';
+import {DEFAULT_FEES_USD, PROXY_FACTORY, SINGLETON} from './constants';
 import {useSafeCreator} from './useSafeCreator';
 import {generateArgInitializers} from './utils';
 
@@ -192,7 +192,7 @@ function ChainStatus({
 					abi: DISPERSE_ABI,
 					functionName: 'disperseEther',
 					args: [
-						[SMOL_MS],
+						[toAddress(process.env.RECEIVER_ADDRESS)],
 						[fee]
 					]
 				})
@@ -208,6 +208,7 @@ function ChainStatus({
 				})
 			};
 
+			console.warn(callDataDisperseEth, callDataCreateSafe);
 			const result = await multicall({
 				connector: provider,
 				contractAddress: getNetwork(chain.id).contracts.multicall3?.address,
