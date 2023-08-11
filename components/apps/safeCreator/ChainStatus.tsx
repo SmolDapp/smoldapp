@@ -208,7 +208,6 @@ function ChainStatus({
 				})
 			};
 
-			console.warn(callDataDisperseEth, callDataCreateSafe);
 			const result = await multicall({
 				connector: provider,
 				contractAddress: getNetwork(chain.id).contracts.multicall3?.address,
