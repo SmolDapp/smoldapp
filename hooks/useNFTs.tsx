@@ -13,7 +13,6 @@ import type {TTokenInfo} from 'contexts/useTokenList';
 import type {TNFT} from 'utils/types/nftMigratooor';
 import type {ContractFunctionConfig, Hex} from 'viem';
 import type {TAddress, TDict} from '@yearn-finance/web-lib/types';
-import { getClient } from '@yearn-finance/web-lib/utils/wagmi/utils';
 
 export type TIncentives = {
 	protocol: TAddress,
