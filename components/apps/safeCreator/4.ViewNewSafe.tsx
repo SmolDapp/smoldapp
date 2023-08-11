@@ -4,7 +4,7 @@ import IconRefresh from 'components/icons/IconRefresh';
 import IconWarning from 'components/icons/IconWarning';
 import {SUPPORTED_CHAINS} from 'utils/constants';
 import {concat, encodePacked, getContractAddress, hexToBigInt, keccak256, toHex} from 'viem';
-import {useMountEffect} from '@react-hookz/web';
+import {useMountEffect, useUpdateEffect} from '@react-hookz/web';
 import {AddressLike} from '@yearn-finance/web-lib/components/AddressLike';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import Renderable from '@yearn-finance/web-lib/components/Renderable';
@@ -58,6 +58,10 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 		set_currentSeed(hexToBigInt(keccak256(concat([toHex('smol'), toHex(Math.random().toString())]))));
 		set_possibleSafe(undefined);
 	});
+
+	useUpdateEffect((): void => {
+		set_possibleSafe(undefined);
+	}, [owners, threshold]);
 
 	const compute = useCallback(async ({argInitializers, bytecode, prefix, suffix, saltNonce}: {
 		argInitializers: string,
@@ -124,25 +128,39 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 			<div className={'p-4 pt-0 md:p-6 md:pt-0'}>
 				<div className={'box-100 relative px-6 py-4'}>
 					{possibleSafe?.prefix !== prefix || possibleSafe?.suffix !== suffix ? (
-						<div className={'box-0 absolute right-2 top-2 flex w-52 flex-row p-2 text-xs'}>
-							<button
-								className={'mr-1 mt-0.5 h-3 w-3 min-w-[16px]'}
-								disabled={owners.some((owner): boolean => !owner || isZeroAddress(owner))}
-								onClick={(e: React.MouseEvent<HTMLButtonElement>): void => {
-									e.currentTarget.blur();
-									generateCreate2Addresses();
-								}}>
-								<IconRefresh
-									className={'h-3 w-3 min-w-[16px] cursor-pointer text-neutral-500 transition-colors hover:text-neutral-900'} />
-							</button>
-							{'Looks like you changed the prefix, please hit generate again.'}
-						</div>
+						<>
+							<div className={'box-0 absolute right-2 top-2 hidden w-52 flex-row p-2 text-xs md:flex'}>
+								<button
+									className={'mr-1 mt-0.5 h-3 w-3 min-w-[16px]'}
+									disabled={owners.some((owner): boolean => !owner || isZeroAddress(owner))}
+									onClick={(e: React.MouseEvent<HTMLButtonElement>): void => {
+										e.currentTarget.blur();
+										generateCreate2Addresses();
+									}}>
+									<IconRefresh
+										className={'h-3 w-3 min-w-[16px] cursor-pointer text-neutral-500 transition-colors hover:text-neutral-900'} />
+								</button>
+								{'Looks like you changed the prefix, please hit generate again.'}
+							</div>
+							<div className={'absolute right-2 top-2 block p-2 text-xs md:hidden'}>
+								<button
+									className={'mr-1 mt-0.5 h-3 w-3 min-w-[16px]'}
+									disabled={owners.some((owner): boolean => !owner || isZeroAddress(owner))}
+									onClick={(e: React.MouseEvent<HTMLButtonElement>): void => {
+										e.currentTarget.blur();
+										generateCreate2Addresses();
+									}}>
+									<IconRefresh
+										className={'h-3 w-3 min-w-[16px] cursor-pointer text-neutral-500 transition-colors hover:text-neutral-900'} />
+								</button>
+							</div>
+						</>
 					) : null}
 					<div className={'grid grid-cols-1 gap-20 transition-colors'}>
 						<div className={'flex flex-col gap-4'}>
 							<div className={'flex flex-col'}>
 								<small className={'text-neutral-500'}>{'Safe Address '}</small>
-								<b className={'font-number'}>
+								<b className={'font-number break-all text-sm md:text-base'}>
 									<Renderable
 										shouldRender={!!address}
 										fallback={<span className={'text-neutral-400'}>{'-'}</span>}>
@@ -162,7 +180,7 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 									)}>
 									<div>
 										{(owners || []).map((owner): ReactElement => (
-											<b key={owner} className={'font-number block'}>
+											<b key={owner} className={'font-number addr block text-sm md:text-base'}>
 												<AddressLike address={owner} />
 											</b>
 										))}
@@ -184,7 +202,7 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 								<Renderable
 									shouldRender={!!address}
 									fallback={<span className={'text-neutral-400'}>{'-'}</span>}>
-									<div className={'mt-1 grid grid-cols-3 gap-4'}>
+									<div className={'mt-1 grid grid-cols-2 gap-4 md:grid-cols-3'}>
 										{SUPPORTED_CHAINS
 											.filter((chain): boolean => chain.id !== 1101)
 											.map((chain): ReactElement => (
@@ -324,7 +342,7 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 										</div>
 									</div>
 									<div className={'mt-2'}>
-										<p className={'font-number max-w-[100%] whitespace-pre text-xxs text-neutral-400'}>
+										<p className={'font-number max-w-[100%] break-all text-xxs text-neutral-400 md:whitespace-pre md:break-normal'}>
 											{`Seed: ${currentSeed.toString()}`}
 										</p>
 									</div>

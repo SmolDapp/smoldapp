@@ -360,3 +360,10 @@ details {
 		@apply w-full h-full;
 	}
 }
+
+.addr > span {
+	& > span {
+		@apply break-normal;
+	}
+	@apply break-all;
+}

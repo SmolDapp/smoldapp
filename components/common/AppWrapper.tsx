@@ -56,7 +56,7 @@ function SideBar(): ReactElement {
 			{renderNoNavView()}
 			<div
 				className={cl(
-					'fixed inset-y-0 left-0 z-50 flex h-full w-52 flex-col border-r border-r-neutral-200 bg-neutral-50 pt-1 px-2 transition-transform',
+					'fixed inset-y-0 left-0 z-50 h-full w-52 flex-col border-r border-r-neutral-200 bg-neutral-50 pt-1 px-2 transition-transform hidden',
 					isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
 				)}>
 				<div className={'flex flex-row items-center justify-between'}>

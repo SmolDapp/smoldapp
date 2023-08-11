@@ -35,14 +35,14 @@ function Safe(): ReactElement {
 
 			<div
 				id={'flow'}
-				className={`pt-10 transition-opacity ${[Step.FLOW_DATA, Step.NEW_DEPLOY, Step.FLOW].includes(currentStep) ? 'opacity-100' : 'pointer-events-none h-0 overflow-hidden opacity-0'}`}>
+				className={`overflow-x-hidden pt-10 transition-opacity ${[Step.FLOW_DATA, Step.NEW_DEPLOY, Step.FLOW].includes(currentStep) ? 'opacity-100' : 'pointer-events-none h-0 overflow-hidden opacity-0'}`}>
 				<ViewFlowSelection />
 			</div>
 
 
 			<div
 				id={'flowData'}
-				className={`pt-10 transition-opacity ${[Step.FLOW_DATA, Step.NEW_DEPLOY].includes(currentStep) ? 'opacity-100' : 'pointer-events-none h-0 overflow-hidden opacity-0'}`}>
+				className={`overflow-hidden pt-10 transition-opacity${[Step.FLOW_DATA, Step.NEW_DEPLOY].includes(currentStep) ? 'opacity-100' : 'pointer-events-none h-0 overflow-hidden opacity-0'}`}>
 				{selectedFlow === 'EXISTING' ? <ViewClonableSafe /> : null}
 				{selectedFlow === 'NEW' ? (
 					<ViewNewSafeOwners
@@ -58,7 +58,7 @@ function Safe(): ReactElement {
 
 			<div
 				id={'newDeploy'}
-				className={`pt-10 transition-opacity ${[Step.NEW_DEPLOY].includes(currentStep) ? 'opacity-100' : 'pointer-events-none h-0 overflow-hidden opacity-0'}`}>
+				className={`overflow-x-hidden pt-10 transition-opacity ${[Step.NEW_DEPLOY].includes(currentStep) ? 'opacity-100' : 'pointer-events-none h-0 overflow-hidden opacity-0'}`}>
 				{selectedFlow === 'NEW' ? <ViewNewSafe owners={owners} threshold={threshold} /> : null}
 			</div>
 

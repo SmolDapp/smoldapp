@@ -145,17 +145,17 @@ function ViewNewSafeOwners(props: TViewNewSafeOwnersProps): ReactElement {
 						</div>
 
 
-						<div className={'mr-14 mt-4 flex flex-col'}>
-							<div className={'mt-4 flex flex-row items-start justify-between space-x-4'}>
+						<div className={'-mt-4 mr-0 flex flex-col md:mr-14 md:mt-4'}>
+							<div className={'mt-4 flex flex-col items-start justify-between space-x-4 md:flex-row'}>
 								<button
 									type={'button'}
 									onClick={(): void => onAddNewOwnerAsSibling(owners[owners.length - 1].UUID)}
-									className={'group -mt-4 rounded-md border border-transparent py-2 pl-1 pr-20 focus:underline'}>
+									className={'group -mt-4 rounded-md border border-transparent py-2 pl-1 pr-0 focus:underline md:mt-[-36px] md:pr-20'}>
 									<b className={'text-xs text-neutral-900 group-hover:underline'}>
 										{'+ Add a new owner'}
 									</b>
 								</button>
-								<div>
+								<div className={'mt-0 flex w-full justify-end px-4 md:mt-[-10px] md:w-auto md:px-0'}>
 									<div className={'mb-2 flex flex-row items-center space-x-2'}>
 										<div className={'box-0 relative flex h-10 w-full items-center'}>
 											<div className={'absolute right-[110%] text-xs text-neutral-600'}>
@@ -194,10 +194,10 @@ function ViewNewSafeOwners(props: TViewNewSafeOwnersProps): ReactElement {
 									</div>
 								</div>
 							</div>
-							<div className={'flex flex-row justify-between space-x-4'}>
-								<div className={'-mt-1 w-3/4'} style={{visibility: owners.length === 1 ? 'visible' : 'hidden'}}>
-									<div className={'flex flex-row whitespace-pre rounded-md border border-orange-200 !bg-orange-200/60 p-2 text-xs font-bold text-orange-600'}>
-										<IconWarning className={'mr-2 h-4 w-4 text-orange-600'} />
+							<div className={'flex flex-col justify-between space-x-0 space-y-2 md:flex-row md:space-x-4 md:space-y-0'}>
+								<div className={'w-full md:-mt-1 md:w-3/4'} style={{display: owners.length === 1 ? 'flex' : 'none'}}>
+									<div className={'flex flex-row rounded-md border border-orange-200 !bg-orange-200/60 p-2 text-xs font-bold text-orange-600 md:whitespace-pre'}>
+										<IconWarning className={'mr-2 h-4 w-4 min-w-[16px] text-orange-600'} />
 										{'We recomend a threshold of at least 1/2.\nYou can use any other wallet or even the Safe app on your phone as another owner.'}
 									</div>
 								</div>
