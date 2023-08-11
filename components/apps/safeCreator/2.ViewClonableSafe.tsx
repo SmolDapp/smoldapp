@@ -178,7 +178,7 @@ function ViewClonableSafe(): ReactElement {
 			<div className={'box-0 grid w-full grid-cols-12'}>
 				<ViewSectionHeading
 					title={'One new safe, coming right up.'}
-					content={'Please note:\nWhen cloning an existing , you’re recreating the ‘initial state’ of the Safe. E.g the Safe will be created with the same signers you picked when you originally deployed it. So make sure those initial signers are the signers you want to clone. Otherwise make a new Safe'} />
+					content={'WARNING: your cloned safe will have the OG signers. If they are not frens anymore, create a new safe.'} />
 				<div className={'col-span-12 p-4 pt-0 md:p-6 md:pt-0'}>
 					<form
 						onSubmit={async (e): Promise<void> => e.preventDefault()}
