@@ -152,12 +152,12 @@ function	Index(props: {app: string}): ReactElement {
 							</p>
 						</div>
 						<div className={'mb-12 mt-8 flex flex-row items-center space-x-6'}>
-							<Link href={'https://twitter.com/smoldapp'}>
+							<Link href={'https://twitter.com/smoldapp'} target={'_blank'}>
 								<Button className={'w-[140px]'}>
 									{'Twitter'}
 								</Button>
 							</Link>
-							<Link href={'https://github.com/smoldapp'}>
+							<Link href={'https://github.com/smoldapp'} target={'_blank'}>
 								<Button className={'w-[140px]'}>
 									{'Github'}
 								</Button>
