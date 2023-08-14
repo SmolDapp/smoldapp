@@ -36,18 +36,14 @@ export const TokenListContextApp = ({children}: {children: React.ReactElement}):
 	const [tokenList, set_tokenList] = useState<TDict<TTokenInfo>>({});
 
 	const fetchTokensFromLists = useCallback(async (): Promise<void> => {
-		const [fromParaswap, fromYearn, fromOptimism, fromSmol] = await Promise.allSettled([
-			axios.get(`https://raw.githubusercontent.com/Migratooor/tokenLists/main/lists/${safeChainID}/paraswap.json`),
+		const [fromEtherscan, fromYearn, fromSmol] = await Promise.allSettled([
+			axios.get(`https://raw.githubusercontent.com/SmolDapp/tokenLists/main/lists/${safeChainID}/etherscan.json`),
 			axios.get(`https://raw.githubusercontent.com/Migratooor/tokenLists/main/lists/${safeChainID}/yearn.json`),
-			axios.get(`https://raw.githubusercontent.com/Migratooor/tokenLists/main/lists/${safeChainID}/optimism.json`),
 			axios.get(`https://raw.githubusercontent.com/Migratooor/tokenLists/main/lists/${safeChainID}/tokenlistooor.json`)
 		]);
 		const lists: TTokenInfo[] = [];
-		if (fromOptimism.status === 'fulfilled') {
-			lists.push(...(fromOptimism.value.data as TTokenList).tokens);
-		}
-		if (fromParaswap.status === 'fulfilled') {
-			lists.push(...(fromParaswap.value.data as TTokenList).tokens);
+		if (fromEtherscan.status === 'fulfilled') {
+			lists.push(...(fromEtherscan.value.data as TTokenList).tokens);
 		}
 		if (fromYearn.status === 'fulfilled') {
 			lists.push(...(fromYearn.value.data as TTokenList).tokens);
@@ -65,9 +61,6 @@ export const TokenListContextApp = ({children}: {children: React.ReactElement}):
 		}
 
 		for (const eachToken of lists) {
-			if (eachToken.logoURI === 'https://cdn.paraswap.io/token/token.png') {
-				continue;
-			}
 			if (!tokenListTokens[toAddress(eachToken.address)]) {
 				tokenListTokens[toAddress(eachToken.address)] = eachToken;
 			}
