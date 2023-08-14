@@ -4,7 +4,7 @@ import IconWarning from 'components/icons/IconWarning';
 import {SUPPORTED_CHAINS} from 'utils/constants';
 import {fromHex,type Hex} from 'viem';
 import axios from 'axios';
-import {CALL_INIT_SIGNATURE, SAFE_CREATION_SIGNATURE, SAFE_CREATION_TOPIC} from '@safeCreatooor/constants';
+import {CALL_INIT_SIGNATURE, SAFE_CREATION_SIGNATURE, SAFE_CREATION_TOPIC, SINGLETON_L1, SINGLETON_L2, SINGLETON_L2_DDP} from '@safeCreatooor/constants';
 import {fetchTransaction} from '@wagmi/core';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import Renderable from '@yearn-finance/web-lib/components/Renderable';
@@ -26,6 +26,7 @@ type TExistingSafeArgs = {
 	owners: TAddress[],
 	salt: bigint,
 	threshold: number,
+	singleton?: TAddress,
 	tx?: FetchTransactionResult,
 	error?: string,
 	isLoading: boolean,
@@ -38,7 +39,6 @@ function ViewClonableSafe(): ReactElement {
 		for (const chain of SUPPORTED_CHAINS) {
 			const publicClient = getClient(chain.id);
 			const byteCode = await publicClient.getBytecode({address});
-			console.warn(byteCode);
 			if (byteCode) {
 				let txHash: Hex | null = '0x0';
 
@@ -71,7 +71,12 @@ function ViewClonableSafe(): ReactElement {
 		return (undefined);
 	}, []);
 
-	const decodeArgInitializers = useCallback((argsHex: Hex): {owners: TAddress[], threshold: number, salt: bigint} => {
+	const decodeArgInitializers = useCallback((argsHex: Hex): {
+		owners: TAddress[],
+		threshold: number,
+		salt: bigint,
+		singleton: TAddress,
+	} => {
 		const allParts = (argsHex.substring(10)).match(/.{1,64}/g);
 		if (!allParts) {
 			throw new Error('Invalid args');
@@ -85,7 +90,14 @@ function ViewClonableSafe(): ReactElement {
 		const threshold = Number(parts[1]);
 		const ownersLength = Number(parts[8]);
 		const owners = parts.slice(9, 9 + ownersLength).map((owner): TAddress => toAddress(`0x${owner.substring(24)}`));
-		return ({owners, threshold, salt: fromHex(salt, 'bigint')});
+
+		let singleton = SINGLETON_L2;
+		if (argsHex.toLowerCase().includes('3e5c63644e683549055b9be8653de26e0b4cd36e')) {
+			singleton = SINGLETON_L2_DDP;
+		} else if (argsHex.toLowerCase().includes('d9db270c1b5e3bd161e8c8503c55ceabee709552')) {
+			singleton = SINGLETON_L1;
+		}
+		return ({owners, threshold, salt: fromHex(salt, 'bigint'), singleton});
 	}, []);
 
 	const retrieveSafe = useCallback(async (address: TAddress): Promise<void> => {
@@ -95,9 +107,9 @@ function ViewClonableSafe(): ReactElement {
 			const {hash, chainID} = result;
 			const tx = await fetchTransaction({hash, chainId: chainID});
 			const input = `0x${tx.input.substring(tx.input.indexOf(CALL_INIT_SIGNATURE))}`;
-			const {owners, threshold, salt} = decodeArgInitializers(input as Hex);
+			const {owners, threshold, salt, singleton} = decodeArgInitializers(input as Hex);
 
-			set_existingSafeArgs({owners, threshold, isLoading: false, address, salt, tx: tx});
+			set_existingSafeArgs({owners, threshold, isLoading: false, address, salt, singleton, tx: tx});
 		} else {
 			set_existingSafeArgs({error: 'No safe found at this address', isLoading: false});
 		}
@@ -160,6 +172,7 @@ function ViewClonableSafe(): ReactElement {
 												chain={chain}
 												safeAddress={toAddress(safeArgs?.address)}
 												originalTx={safeArgs?.tx}
+												singleton={safeArgs?.singleton}
 												owners={safeArgs?.owners || []}
 												threshold={safeArgs?.threshold || 0}
 												salt={safeArgs?.salt || 0n} />

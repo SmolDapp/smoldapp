@@ -13,7 +13,7 @@ import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUp
 import ViewSectionHeading from '@common/ViewSectionHeading';
 
 import ChainStatus from './ChainStatus';
-import {GNOSIS_SAFE_PROXY_CREATION_CODE, PROXY_FACTORY, SINGLETON} from './constants';
+import {GNOSIS_SAFE_PROXY_CREATION_CODE, PROXY_FACTORY_L2, SINGLETON_L2} from './constants';
 import {generateArgInitializers} from './utils';
 
 import type {ReactElement} from 'react';
@@ -77,7 +77,7 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 			['bytes', 'uint256'],
 			[keccak256(`0x${argInitializers}`), saltNonce]
 		));
-		const addrCreate2 = getContractAddress({bytecode, from: PROXY_FACTORY, opcode: 'CREATE2', salt});
+		const addrCreate2 = getContractAddress({bytecode, from: PROXY_FACTORY_L2, opcode: 'CREATE2', salt});
 		if (addrCreate2.startsWith(prefix) && addrCreate2.endsWith(suffix)) {
 			return ({address: addrCreate2, salt: saltNonce});
 		}
@@ -99,7 +99,7 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 		const argInitializers = generateArgInitializers(owners, threshold);
 		const bytecode = encodePacked(
 			['bytes', 'uint256'],
-			[GNOSIS_SAFE_PROXY_CREATION_CODE, hexToBigInt(SINGLETON)]
+			[GNOSIS_SAFE_PROXY_CREATION_CODE, hexToBigInt(SINGLETON_L2)]
 		);
 		const result = await compute({argInitializers, bytecode, prefix, suffix, saltNonce: salt});
 		if (shouldCancel.current) {
@@ -212,6 +212,7 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 													safeAddress={toAddress(address)}
 													owners={owners || []}
 													threshold={threshold || 0}
+													singleton={SINGLETON_L2}
 													salt={salt || 0n} />
 											))}
 									</div>
