@@ -14,7 +14,7 @@ import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {getClient, getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 import {defaultTxStatus} from '@yearn-finance/web-lib/utils/web3/transaction';
 
-import {DEFAULT_FEES_USD, PROXY_FACTORY, SINGLETON} from './constants';
+import {DEFAULT_FEES_USD, PROXY_FACTORY_L1, PROXY_FACTORY_L2, PROXY_FACTORY_L2_DDP, SINGLETON_L1, SINGLETON_L2, SINGLETON_L2_DDP} from './constants';
 import {useSafeCreator} from './useSafeCreator';
 import {generateArgInitializers} from './utils';
 
@@ -23,6 +23,19 @@ import type {TAppExtendedChain} from 'utils/constants';
 import type {TAddress} from '@yearn-finance/web-lib/types';
 import type {Chain, FetchTransactionResult} from '@wagmi/core';
 
+function getProxyFromSingleton(singleton: TAddress): TAddress {
+	if (singleton === SINGLETON_L2) {
+		return PROXY_FACTORY_L2;
+	}
+	if (singleton === SINGLETON_L2_DDP) {
+		return PROXY_FACTORY_L2_DDP;
+	}
+	if (singleton === SINGLETON_L1) {
+		return PROXY_FACTORY_L1;
+	}
+	return PROXY_FACTORY_L2;
+}
+
 type TChainStatusArgs = {
 	chain: Chain,
 	safeAddress: TAddress,
@@ -30,6 +43,7 @@ type TChainStatusArgs = {
 	owners: TAddress[],
 	threshold: number,
 	salt: bigint,
+	singleton?: TAddress
 }
 
 function ChainStatus({
@@ -38,7 +52,8 @@ function ChainStatus({
 	originalTx,
 	owners,
 	threshold,
-	salt
+	salt,
+	singleton
 }: TChainStatusArgs): ReactElement {
 	const {chainCoinPrices} = useSafeCreator();
 	const gasCoinID = (getNetwork(chain.id) as TAppExtendedChain).coingeckoGasCoinID;
@@ -80,13 +95,14 @@ function ChainStatus({
 		let prepareWriteAddress = toAddress();
 		let prepareCallAddress = toAddress();
 		try {
+			const signletonToUse = singleton || SINGLETON_L2;
 			const argInitializers = generateArgInitializers(owners, threshold);
 			const prepareWriteResult = await publicClient.simulateContract({
 				account: address,
-				address: PROXY_FACTORY,
+				address: getProxyFromSingleton(signletonToUse),
 				abi: GNOSIS_SAFE_PROXY_FACTORY,
 				functionName: 'createProxyWithNonce',
-				args: [SINGLETON, `0x${argInitializers}`, salt]
+				args: [signletonToUse, `0x${argInitializers}`, salt]
 			});
 			prepareWriteAddress = toAddress(prepareWriteResult.result);
 			if (prepareWriteAddress === safeAddress) {
@@ -112,7 +128,7 @@ function ChainStatus({
 			//
 		}
 		return set_canDeployOnThatChain({canDeploy: false, isLoading: false, method: 'none'});
-	}, [address, chain.id, originalTx?.input, originalTx?.to, owners, safeAddress, salt, threshold]);
+	}, [address, chain.id, originalTx?.input, originalTx?.to, owners, safeAddress, salt, singleton, threshold]);
 
 
 	useEffect((): void => {
@@ -183,6 +199,7 @@ function ChainStatus({
 		******************************************************************************************/
 		if (canDeployOnThatChain.method === 'contract') {
 			const fee = parseEther((DEFAULT_FEES_USD / coinPrice).toString());
+			const signletonToUse = singleton || SINGLETON_L2;
 			const argInitializers = generateArgInitializers(owners, threshold);
 			const callDataDisperseEth = {
 				target: toAddress(process.env.DISPERSE_ADDRESS),
@@ -197,14 +214,15 @@ function ChainStatus({
 					]
 				})
 			};
+
 			const callDataCreateSafe = {
-				target: PROXY_FACTORY,
+				target: getProxyFromSingleton(signletonToUse),
 				value: 0n,
 				allowFailure: false,
 				callData: encodeFunctionData({
 					abi: GNOSIS_SAFE_PROXY_FACTORY,
 					functionName: 'createProxyWithNonce',
-					args: [SINGLETON, `0x${argInitializers}`, salt]
+					args: [signletonToUse, `0x${argInitializers}`, salt]
 				})
 			};
 
@@ -223,7 +241,7 @@ function ChainStatus({
 			}
 		}
 
-	}, [address, canDeployOnThatChain.canDeploy, canDeployOnThatChain.method, chain.id, checkDeploymentExpectedAddress, checkIfDeployedOnThatChain, coinPrice, originalTx?.input, originalTx?.to, owners, provider, salt, threshold]);
+	}, [address, canDeployOnThatChain.canDeploy, canDeployOnThatChain.method, chain.id, checkDeploymentExpectedAddress, checkIfDeployedOnThatChain, coinPrice, originalTx?.input, originalTx?.to, owners, provider, salt, singleton, threshold]);
 
 	const currentView = {
 		Deployed: (

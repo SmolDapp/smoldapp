@@ -1,6 +1,6 @@
 import assert from 'assert';
 import DISPERSE_ABI from 'utils/abi/disperse.abi';
-import {SINGLETON} from '@safeCreatooor/constants';
+import {SINGLETON_L2} from '@safeCreatooor/constants';
 import {erc20ABI, erc721ABI, getPublicClient, prepareSendTransaction, readContract, sendTransaction, waitForTransaction} from '@wagmi/core';
 import {MAX_UINT_256} from '@yearn-finance/web-lib/utils/constants';
 import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
@@ -381,7 +381,7 @@ export async function cloneSafe(props: TCloneSafe): Promise<TTxResponse> {
 		address: props.contractAddress,
 		abi: GNOSIS_SAFE_PROXY_FACTORY,
 		functionName: 'createProxyWithNonce',
-		args: [SINGLETON, props.initializers, props.salt]
+		args: [SINGLETON_L2, props.initializers, props.salt]
 	});
 }
 
