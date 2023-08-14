@@ -1,5 +1,6 @@
 import React, {useMemo, useState} from 'react';
 import Link from 'next/link';
+import {useRouter} from 'next/router';
 import {DefaultSeo} from 'next-seo';
 import {extend} from 'dayjs';
 import dayjsDuration from 'dayjs/plugin/duration.js';
@@ -7,8 +8,10 @@ import relativeTime from 'dayjs/plugin/relativeTime.js';
 import weekday from 'dayjs/plugin/weekday.js';
 import {motion} from 'framer-motion';
 import {MigratooorContextApp} from '@migratooor/useMigratooor';
+import {useMountEffect} from '@react-hookz/web';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import IconGithub from '@yearn-finance/web-lib/icons/IconSocialGithub';
+import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUpdates';
 import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 import {ImageWithFallback} from '@common/ImageWithFallback';
 
@@ -34,7 +37,6 @@ const variants = {
 	initial: {y: 60, opacity: 0}
 };
 
-
 function TokenListHero({list}: {list: TTokenListItem}): ReactElement {
 	const fileName = (list.URI || '').replace('https://raw.githubusercontent.com/SmolDapp/tokenLists/main/lists/', '');
 
@@ -44,7 +46,7 @@ function TokenListHero({list}: {list: TTokenListItem}): ReactElement {
 				<div className={'relative w-full'}>
 					<div className={'absolute -top-10 left-0'}>
 						<Link href={'/tokenlistooor'}>
-							<p className={'text-xs text-neutral-400 transition-all hover:text-neutral-900 hover:underline'}>{'◁ Back'}</p>
+							<p className={'text-xs text-neutral-400 transition-all hover:text-neutral-900 hover:underline disabled:text-neutral-400/40'}>{'◁ Back'}</p>
 						</Link>
 					</div>
 					<div className={'absolute -top-10 right-0'}>
@@ -91,16 +93,25 @@ function TokenListHero({list}: {list: TTokenListItem}): ReactElement {
 	);
 }
 
-
-
 function	List({list}: {list: TTokenListItem}): ReactElement {
+	const router = useRouter();
 	const [currentPage, set_currentPage] = useState(1);
 	const [itemsPerPage] = useState(50);
 	const [search, set_search] = useState('');
 
+	useMountEffect((): void => {
+		const {query} = router;
+		if (query?.page) {
+			set_currentPage(Number(query.page));
+		}
+		if (query?.search) {
+			set_search(String(query.search));
+		}
+	});
+
 	const searchResult = useMemo((): TTokenListItem['tokens'] => {
 		return (
-			(list.tokens || [])
+			([...list.tokens] || [])
 				.filter((item): boolean => {
 					if (!search) {
 						return true;
@@ -120,7 +131,24 @@ function	List({list}: {list: TTokenListItem}): ReactElement {
 							className={'rounded-default border border-neutral-200 bg-neutral-100 px-3 py-1 text-xs leading-6 text-neutral-500 md:text-sm'}
 							type={'text'}
 							placeholder={'Search'}
-							onChange={(e): void => set_search(e.target.value)} />
+							onChange={(e): void => {
+								performBatchedUpdates((): void => {
+									set_search(e.target.value || '');
+									set_currentPage(1);
+									if (!e.target.value) {
+										const {search, ...queryNoSearch} = router.query;
+										search;
+										router.push({query: queryNoSearch});
+									} else {
+										router.push({
+											query: {
+												...router.query,
+												search: e.target.value
+											}
+										});
+									}
+								});
+							}} />
 					</div>
 				</div>
 				<div className={'grid grid-cols-1 gap-1 md:grid-cols-1'}>
@@ -128,7 +156,7 @@ function	List({list}: {list: TTokenListItem}): ReactElement {
 						.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
 						.map((item): ReactElement => (
 							<motion.div
-								key={item.address}
+								key={`${item.address}_${item.chainId}`}
 								custom={0}
 								initial={'initial'}
 								whileInView={'enter'}
@@ -148,7 +176,7 @@ function	List({list}: {list: TTokenListItem}): ReactElement {
 												href={`${getNetwork(item.chainId).blockExplorers}/token/${item.address}`}
 												target={'_blank'}
 												rel={'noreferrer'}>
-												<small className={'font-number block text-xxs text-neutral-700 transition-colors hover:text-neutral-900 hover:underline md:text-xs'}>
+												<small className={'font-number block text-xxs text-neutral-700 transition-colors hover:text-neutral-900 hover:underline disabled:text-neutral-400/40 md:text-xs'}>
 													{item.address}
 												</small>
 											</a>
@@ -184,36 +212,91 @@ function	List({list}: {list: TTokenListItem}): ReactElement {
 						))}
 				</div>
 				<div className={'flex items-center justify-between pt-4'}>
-					<div>
-						<button
-							className={'text-xs text-neutral-600 transition-all hover:text-neutral-900 hover:underline'}
-							type={'button'}
-							disabled={currentPage === 1}
-							onClick={(): void => {
-								set_currentPage(currentPage - 1);
-								window.scrollTo({top: 0, behavior: 'smooth'});
-							}}>
-							{'◁ Previous'}
-						</button>
+					<div className={'flex flex-row space-x-4'}>
+						<div>
+							<button
+								className={'cursor-pointer text-xs text-neutral-600 transition-all hover:text-neutral-900 hover:underline disabled:text-neutral-400/40'}
+								type={'button'}
+								disabled={currentPage === 1}
+								onClick={(): void => {
+									set_currentPage(1);
+									window.scrollTo({top: 0, behavior: 'smooth'});
+									router.push({
+										query: {
+											...router.query,
+											page: 1
+										}
+									});
+								}}>
+								{'◁◁ '}
+							</button>
+						</div>
+						<div>
+							<div>
+								<button
+									className={'cursor-pointer text-xs text-neutral-600 transition-all hover:text-neutral-900 hover:underline disabled:text-neutral-400/40'}
+									type={'button'}
+									disabled={currentPage === 1}
+									onClick={(): void => {
+										set_currentPage(currentPage - 1);
+										window.scrollTo({top: 0, behavior: 'smooth'});
+										router.push({
+											query: {
+												...router.query,
+												page: currentPage - 1
+											}
+										});
+									}}>
+									{'◁ Previous'}
+								</button>
+							</div>
+						</div>
 					</div>
 					<div>
 						<span className={'text-xs text-neutral-600'}>
 							{`Page ${currentPage} of ${Math.ceil(searchResult.length / itemsPerPage)}`}
 						</span>
 					</div>
-					<div>
-						<button
-							className={'text-xs text-neutral-600 transition-all hover:text-neutral-900 hover:underline'}
-							type={'button'}
-							disabled={currentPage === Math.ceil(searchResult.length / itemsPerPage)}
-							onClick={(): void => {
-								set_currentPage(currentPage + 1);
-								window.scrollTo({top: 0, behavior: 'smooth'});
-							}}>
-							{'Next ▷'}
-						</button>
+					<div className={'flex flex-row space-x-4'}>
+						<div>
+							<div>
+								<button
+									className={'text-xs text-neutral-600 transition-all hover:text-neutral-900 hover:underline disabled:text-neutral-400/40'}
+									type={'button'}
+									disabled={currentPage === Math.ceil(searchResult.length / itemsPerPage)}
+									onClick={(): void => {
+										set_currentPage(currentPage + 1);
+										window.scrollTo({top: 0, behavior: 'smooth'});
+										router.push({
+											query: {
+												...router.query,
+												page: currentPage + 1
+											}
+										});
+									}}>
+									{'Next ▷'}
+								</button>
+							</div>
+						</div>
+						<div>
+							<button
+								className={'cursor-pointer text-xs text-neutral-600 transition-all hover:text-neutral-900 hover:underline disabled:text-neutral-400/40'}
+								type={'button'}
+								disabled={currentPage === Math.ceil(searchResult.length / itemsPerPage)}
+								onClick={(): void => {
+									set_currentPage(Math.ceil(searchResult.length / itemsPerPage));
+									window.scrollTo({top: 0, behavior: 'smooth'});
+									router.push({
+										query: {
+											...router.query,
+											page: Math.ceil(searchResult.length / itemsPerPage)
+										}
+									});
+								}}>
+								{' ▷▷'}
+							</button>
+						</div>
 					</div>
-
 				</div>
 			</div>
 		</>
