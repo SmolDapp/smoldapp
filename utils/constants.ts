@@ -1,6 +1,5 @@
 import {arbitrum, mainnet, optimism, polygon, polygonZkEvm} from 'viem/chains';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
-import {localhost} from '@yearn-finance/web-lib/utils/wagmi/networks';
 import {indexedWagmiChains} from '@yearn-finance/web-lib/utils/wagmi/utils';
 
 import {gnosis} from './chains';
@@ -21,8 +20,8 @@ export const SUPPORTED_CHAINS = [
 	polygon,
 	// fantom,
 	polygonZkEvm,
-	arbitrum,
-	localhost
+	arbitrum
+	// localhost
 ];
 
 export const NFTMIGRATOOOR_CONTRACT_PER_CHAIN: TNDict<TAddress> = {
