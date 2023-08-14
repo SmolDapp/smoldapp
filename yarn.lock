@@ -2915,10 +2915,10 @@
   dependencies:
     lodash "^4"
 
-"@yearn-finance/web-lib@^0.20.134":
-  version "0.20.136"
-  resolved "https://registry.yarnpkg.com/@yearn-finance/web-lib/-/web-lib-0.20.136.tgz#ccf42aa574eba4b47d778b847b5e02410aeadf02"
-  integrity sha512-BV/gnhonp7exIi0P3NeS4JtVesOEhWMidNVCM23SPVg+H4yW3HdaKPNmMka4bzsv9uQNQVipg3R9fzJX/WZluw==
+"@yearn-finance/web-lib@^0.20.140":
+  version "0.20.140"
+  resolved "https://registry.yarnpkg.com/@yearn-finance/web-lib/-/web-lib-0.20.140.tgz#01dfd7bf699a0f6c0205e68d5965c27c02b72252"
+  integrity sha512-p1+JjKu/EA+oXc8D086rX7tkh1MMuILH0t3VUYIqHzCTb8Oh/n94q9b1hjU/6YIBrBZc132B0XQTt/Z1Pknbdg==
   dependencies:
     "@babel/preset-typescript" "^7.22.5"
     "@headlessui/react" "^1.7.16"
