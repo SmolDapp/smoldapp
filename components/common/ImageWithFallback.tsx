@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import Image from 'next/image';
+import {useUpdateEffect} from '@react-hookz/web';
 import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUpdates';
 
 import type {ImageProps} from 'next/image';
@@ -9,6 +10,11 @@ function ImageWithFallback(props: ImageProps): ReactElement {
 	const {alt, src, ...rest} = props;
 	const [imageSrc, set_imageSrc] = useState(`${src}?fallback=true`);
 	const [imageStyle, set_imageStyle] = useState<CSSProperties>({});
+
+	useUpdateEffect((): void => {
+		set_imageSrc(`${src}?fallback=true`);
+		set_imageStyle({});
+	}, [src]);
 
 	return (
 		<Image
