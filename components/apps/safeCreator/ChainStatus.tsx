@@ -96,6 +96,9 @@ function ChainStatus({
 		let prepareCallAddress = toAddress();
 		try {
 			const signletonToUse = singleton || SINGLETON_L2;
+			if (signletonToUse === SINGLETON_L1) {
+				return set_canDeployOnThatChain({canDeploy: false, isLoading: false, method: 'none'});
+			}
 			const argInitializers = generateArgInitializers(owners, threshold);
 			const prepareWriteResult = await publicClient.simulateContract({
 				account: address,

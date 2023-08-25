@@ -37,35 +37,47 @@ function ViewClonableSafe(): ReactElement {
 
 	const retrieveSafeTxHash = useCallback(async (address: TAddress): Promise<{hash: Hex, chainID: number} | undefined> => {
 		for (const chain of SUPPORTED_CHAINS) {
-			const publicClient = getClient(chain.id);
-			const byteCode = await publicClient.getBytecode({address});
-			if (byteCode) {
-				let txHash: Hex | null = '0x0';
+			try {
+				const publicClient = getClient(chain.id);
+				const byteCode = await publicClient.getBytecode({address});
+				if (byteCode) {
+					let txHash: Hex | null = '0x0';
 
-				const safeAPI = (getNetwork(chain.id) as TAppExtendedChain).safeApiUri;
-				if (!safeAPI) {
-					const rangeLimit = 10_000_000n;
-					const currentBlockNumber = await publicClient.getBlockNumber();
-					const deploymentBlockNumber = 0n;
-					for (let i = deploymentBlockNumber; i < currentBlockNumber; i += rangeLimit) {
-						const logs = await publicClient.getLogs({
-							address,
-							fromBlock: i,
-							toBlock: i + rangeLimit
-						});
-						if (logs.length > 0 && logs[0].topics?.[0] === SAFE_CREATION_TOPIC) {
-							txHash = logs[0].transactionHash;
+					const safeAPI = (getNetwork(chain.id) as TAppExtendedChain).safeApiUri;
+					if (safeAPI) {
+						try {
+							const {data: creationData} = await axios.get(`${safeAPI}/api/v1/safes/${toAddress(address)}/creation/`);
+							if (creationData?.transactionHash) {
+								txHash = creationData.transactionHash;
+							}
+							if (txHash) {
+								return ({hash: txHash, chainID: chain.id});
+							}
+						} catch (error) {
+							// nothing
 						}
 					}
-				} else {
-					const {data: creationData} = await axios.get(`${safeAPI}/api/v1/safes/${toAddress(address)}/creation/`);
-					if (creationData?.transactionHash) {
-						txHash = creationData.transactionHash;
+					if (!safeAPI) {
+						const rangeLimit = 10_000_000n;
+						const currentBlockNumber = await publicClient.getBlockNumber();
+						const deploymentBlockNumber = 0n;
+						for (let i = deploymentBlockNumber; i < currentBlockNumber; i += rangeLimit) {
+							const logs = await publicClient.getLogs({
+								address,
+								fromBlock: i,
+								toBlock: i + rangeLimit
+							});
+							if (logs.length > 0 && logs[0].topics?.[0] === SAFE_CREATION_TOPIC) {
+								txHash = logs[0].transactionHash;
+							}
+						}
+					}
+					if (txHash) {
+						return ({hash: txHash, chainID: chain.id});
 					}
 				}
-				if (txHash) {
-					return ({hash: txHash, chainID: chain.id});
-				}
+			} catch (error) {
+				// nothing
 			}
 		}
 		return (undefined);
@@ -105,6 +117,10 @@ function ViewClonableSafe(): ReactElement {
 		const result = await retrieveSafeTxHash(address);
 		if (result) {
 			const {hash, chainID} = result;
+			if (!hash) {
+				console.warn(hash);
+				return set_existingSafeArgs({error: 'No safe found at this address', isLoading: false});
+			}
 			const tx = await fetchTransaction({hash, chainId: chainID});
 			const input = `0x${tx.input.substring(tx.input.indexOf(CALL_INIT_SIGNATURE))}`;
 			const {owners, threshold, salt, singleton} = decodeArgInitializers(input as Hex);
