@@ -148,7 +148,7 @@ function	Index(props: {app: string}): ReactElement {
 						<h1 className={'flex text-5xl font-bold lowercase text-neutral-900 md:text-8xl'}>{'Smol'}</h1>
 						<div className={'mb-2 mt-4'}>
 							<p className={'w-10/12 text-lg'}>
-								{'The registry for small, simple, and secure dapps for all your needs.'}
+								{'Simple, smart and elegant dapps, designed to make your crypto journey a little bit easier.'}
 							</p>
 						</div>
 						<div className={'mb-12 mt-8 flex flex-row items-center space-x-6'}>
