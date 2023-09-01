@@ -9,6 +9,8 @@
 @layer base {
 
 .max-w-4xl {@apply max-w-[888px] px-4;}
+.max-w-5xl {@apply max-w-[992px] px-4;}
+
 
 .font-number {
 	@apply font-mono tabular-nums;
@@ -197,7 +199,7 @@ details {
 	box-shadow: none !important;
 }
 .checkbox {
-	@apply text-neutral-900 accent-neutral-900 rounded-sm;
+	@apply text-neutral-900 accent-neutral-900 rounded-md;
 }
 .yearn--tab {
 	@apply mx-5 flex h-full flex-col justify-center text-base cursor-pointer font-normal;
@@ -308,7 +310,7 @@ details {
 ** A custom overwrite is required for dark/light mode
 **************************************************************************************************/
 .appBox {
-	@apply relative flex aspect-video h-full w-full cursor-pointer flex-col items-start border border-neutral-300 p-4 transition-colors rounded-default hover:bg-neutral-900 hover:text-neutral-0 duration-[400ms] ;
+	@apply relative flex aspect-video h-full w-full cursor-pointer flex-col items-start border border-neutral-300 p-4 transition-colors rounded-md hover:bg-neutral-900 hover:text-neutral-0 duration-[400ms] ;
 }
 
 /**************************************************************************************************

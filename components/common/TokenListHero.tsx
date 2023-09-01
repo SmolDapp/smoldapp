@@ -39,11 +39,11 @@ function TokenListHero({summary}: {summary: TTokenListSummary | undefined}): Rea
 	const time = useTimer({endTime: nextSundayNoon.valueOf() / 1000});
 
 	return (
-		<div className={'relative isolate overflow-hidden bg-neutral-0'}>
-			<div className={'mx-auto grid max-w-4xl grid-cols-1 px-6 pb-0 pt-10 md:grid-cols-2 md:pb-10 md:pt-20'}>
+		<div className={'relative isolate overflow-hidden'}>
+			<div className={'mx-auto grid max-w-5xl grid-cols-1 px-6 pb-0 pt-10 md:grid-cols-2 md:pb-10 md:pt-20'}>
 				<div className={'w-full'}>
 					<div>
-						<span className={'rounded-default border border-neutral-200 bg-neutral-100 px-3 py-1 text-xs leading-6 text-neutral-500 md:text-sm'}>
+						<span className={'rounded-md border border-neutral-200 bg-neutral-100 px-3 py-1 text-xs leading-6 text-neutral-500 md:text-sm'}>
 							{'Last update: '}
 							<span className={'inline-flex items-center pl-2 font-bold text-neutral-900'}>
 								<span suppressHydrationWarning>{relativeTimeFormat(summary?.timestamp || 0)}</span>

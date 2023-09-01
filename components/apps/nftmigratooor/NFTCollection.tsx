@@ -42,7 +42,7 @@ const NFTCollection = memo(function NFTCollection(props: TNFTCollectionProps): R
 								type={'checkbox'}
 								onChange={(): void => onSelectAll(!isCollectionSelected, collectionItems)}
 								value={''}
-								className={'h-4 w-4 rounded-sm border-neutral-400 text-pink-400 indeterminate:ring-2 focus:ring-2 focus:ring-pink-400 focus:ring-offset-neutral-100'}
+								className={'h-4 w-4 rounded-md border-neutral-400 text-pink-400 indeterminate:ring-2 focus:ring-2 focus:ring-pink-400 focus:ring-offset-neutral-100'}
 							/>
 						</div>
 						<div className={'text-left text-sm'}>

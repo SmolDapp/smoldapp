@@ -128,7 +128,7 @@ export function FeebackPopover(): ReactElement {
 						style={styles.popper}
 						{...attributes.popper}>
 						{({close}): ReactElement => (
-							<div className={'flex flex-col space-y-2 overflow-hidden rounded-lg border border-neutral-300/50 bg-neutral-0 p-6 pb-3 shadow shadow-transparent'}>
+							<div className={'flex flex-col space-y-2 overflow-hidden rounded-md border border-neutral-300/50 bg-neutral-0 p-6 pb-3 shadow shadow-transparent'}>
 								<select
 									name={'type'}
 									id={'type'}

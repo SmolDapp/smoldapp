@@ -23,8 +23,6 @@
 	--color-red-900: 0 100% 45%;
 	--color-red-300: 0 100% 95%;
 	--color-red-200: 0 100% 90%;
-
-	--default-rounded: 6px;
 }
 
 :root.dark {
@@ -96,29 +94,25 @@ label[aria-invalid="true"] {
 ** extra tailwind class
 **************************************************************************/
 .flex-center {@apply flex justify-center items-center;}
-.rounded-default {border-radius: var(--default-rounded);}
+.rounded-default {
+	@apply rounded-md;
+}
 .rounded-b-default {
-	border-bottom-left-radius: var(--default-rounded);
-	border-bottom-right-radius: var(--default-rounded);
+	@apply rounded-b-md;
 }
 .rounded-t-default {
-	border-top-left-radius: var(--default-rounded);
-	border-top-right-radius: var(--default-rounded);
+	@apply rounded-t-md;
 }
 .rounded-l-default {
-	border-top-left-radius: var(--default-rounded);
-	border-bottom-left-radius: var(--default-rounded);
+	@apply rounded-l-md;
 }
 .rounded-r-default {
-	border-top-right-radius: var(--default-rounded);
-	border-bottom-right-radius: var(--default-rounded);
+	@apply rounded-r-md;
 }
 
 /* -- Button.tsx ------------------------------------------------------- */
 .yearn--button {
-	@apply cursor-pointer px-4 flex justify-center items-center h-10 text-sm transition-all relative;
-
-	border-radius: var(--default-rounded);
+	@apply cursor-pointer px-4 flex justify-center items-center h-10 text-sm transition-all relative rounded-md;
 
 	&[data-variant="filled"] {
 		@apply text-neutral-0 bg-neutral-900 font-normal border border-transparent;
@@ -310,7 +304,7 @@ label[aria-invalid="true"] {
 }
 
 .mobile-nav-item {
-	@apply flex flex-col items-start justify-between rounded bg-neutral-100;
+	@apply flex flex-col items-start justify-between rounded-md bg-neutral-100;
 	& > p {
 		@apply p-2 text-base font-bold text-neutral-900;
 	}
@@ -392,10 +386,10 @@ select:focus {
 	}
 }
 .yearn--modalMobileMenu-select {
-	@apply rounded-default relative ml-1 flex flex-row items-center bg-neutral-500/10 py-1 pl-2 text-neutral-500;
+	@apply rounded-md relative ml-1 flex flex-row items-center bg-neutral-500/10 py-1 pl-2 text-neutral-500;
 }
 .yearn--modalMobileMenu-walletCard {
-	@apply rounded-default flex cursor-pointer flex-col items-center justify-center bg-neutral-100 py-4 px-2 text-center transition-colors;
+	@apply rounded-md flex cursor-pointer flex-col items-center justify-center bg-neutral-100 py-4 px-2 text-center transition-colors;
 }
 .yearn--modalMobileMenu-childrenWrapper {
 	@apply mb-4 space-y-2 px-2;

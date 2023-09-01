@@ -25,6 +25,19 @@ export const SUPPORTED_CHAINS = [
 	// localhost
 ];
 
+export const SUPPORTED_CHAIN_IDS: TNDict<string> = {
+	1: 'Ethereum',
+	10: 'Optimism',
+	56: 'Binance Smart Chain',
+	100: 'Gnosis',
+	137: 'Polygon',
+	250: 'Fantom',
+	1101: 'Polygon ZKEVM',
+	8453: 'Base',
+	42161: 'Arbitrum',
+	43114: 'Avalanche'
+};
+
 export const NFTMIGRATOOOR_CONTRACT_PER_CHAIN: TNDict<TAddress> = {
 	1: toAddress('0x100CCFF9117E168158a6BE35081694fBbe394fBB'),
 	10: toAddress('0x6dfd3a052bb73e609d9c2381dc48de5e2662575e'),
@@ -77,3 +90,4 @@ for (const chain of Object.values(indexedWagmiChains)) {
 	extendedChain.safeApiUri = SAFE_API_URI?.[chain.id] || '';
 	extendedChain.coingeckoGasCoinID = coingeckoGasCoinIDs?.[chain.id] || 'ethereum';
 }
+

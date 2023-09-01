@@ -95,7 +95,7 @@ function ApprovalWizardItem({
 						<IconChevronBoth className={'h-4 w-4 text-neutral-500 transition-colors group-hover:text-neutral-900'} />
 					</div>
 				</summary>
-				<div className={'font-number rounded-default mt-2 space-y-2 bg-neutral-100 text-sm'}>
+				<div className={'font-number mt-2 space-y-2 rounded-md bg-neutral-100 text-sm'}>
 					<ul className={'list-inside list-disc px-4 py-2'}>
 						{collection.map((item): ReactElement => (
 							<li key={item.tokenID.toString()} className={'text-left text-sm'}>
@@ -129,7 +129,7 @@ function ApprovalWizardItem({
 						<IconChevronBoth className={'h-4 w-4 text-neutral-500 transition-colors group-hover:text-neutral-900'} />
 					</div>
 				</summary>
-				<div className={'font-number rounded-default mt-2 space-y-2 bg-neutral-100 text-sm'}>
+				<div className={'font-number mt-2 space-y-2 rounded-md bg-neutral-100 text-sm'}>
 					<ul className={'list-inside list-disc px-4 py-2'}>
 						{collection.map((item): ReactElement => (
 							<li key={item.tokenID.toString()} className={'text-left text-sm'}>

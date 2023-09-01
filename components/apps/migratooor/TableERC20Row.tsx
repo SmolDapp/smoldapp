@@ -198,7 +198,7 @@ function TableERC20Row({address: tokenAddress, balance}: TERC20RowProps): ReactE
 								onChange={onChangeAmount} />
 							<button
 								onClick={onSelect}
-								className={'ml-2 cursor-pointer rounded-sm border border-neutral-900 bg-neutral-100 px-2 py-1 text-xxs text-neutral-900 transition-colors hover:bg-neutral-900 hover:text-neutral-0'}>
+								className={'ml-2 cursor-pointer rounded-md border border-neutral-900 bg-neutral-100 px-2 py-1 text-xxs text-neutral-900 transition-colors hover:bg-neutral-900 hover:text-neutral-0'}>
 								{'max'}
 							</button>
 						</div>

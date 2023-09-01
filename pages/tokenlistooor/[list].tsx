@@ -6,6 +6,7 @@ import {extend} from 'dayjs';
 import dayjsDuration from 'dayjs/plugin/duration.js';
 import relativeTime from 'dayjs/plugin/relativeTime.js';
 import weekday from 'dayjs/plugin/weekday.js';
+import {SUPPORTED_CHAIN_IDS} from 'utils/constants';
 import {motion} from 'framer-motion';
 import {MigratooorContextApp} from '@migratooor/useMigratooor';
 import {useMountEffect} from '@react-hookz/web';
@@ -41,8 +42,8 @@ function TokenListHero({list}: {list: TTokenListItem}): ReactElement {
 	const fileName = (list.URI || '').replace('https://raw.githubusercontent.com/SmolDapp/tokenLists/main/lists/', '');
 
 	return (
-		<div className={'relative isolate overflow-hidden bg-neutral-0'}>
-			<div className={'mx-auto grid max-w-4xl grid-cols-1 pb-0 pt-10 md:grid-cols-1 md:pb-10 md:pt-20'}>
+		<div className={'relative isolate mt-6 overflow-hidden'}>
+			<div className={'mx-auto grid max-w-5xl grid-cols-1 pb-0 pt-10 md:grid-cols-1 md:pb-10 md:pt-20'}>
 				<div className={'relative w-full'}>
 					<div className={'absolute -top-10 left-0'}>
 						<Link href={'/tokenlistooor'}>
@@ -50,7 +51,7 @@ function TokenListHero({list}: {list: TTokenListItem}): ReactElement {
 						</Link>
 					</div>
 					<div className={'absolute -top-10 right-0'}>
-						<div className={'rounded-default w-full border border-dashed border-neutral-300 bg-neutral-0 px-3 py-1 text-xs leading-6 text-neutral-500 md:text-sm'}>
+						<div className={'w-full rounded-md border border-dashed border-neutral-300 bg-neutral-0 px-3 py-1 text-xs leading-6 text-neutral-500 md:text-sm'}>
 							{'Last update: '}
 							<span className={'inline-flex items-center pl-2 font-bold text-neutral-900'}>
 								<span>{list.timestamp}</span>
@@ -93,11 +94,12 @@ function TokenListHero({list}: {list: TTokenListItem}): ReactElement {
 	);
 }
 
-function	List({list}: {list: TTokenListItem}): ReactElement {
+function TokenListContent({list}: {list: TTokenListItem}): ReactElement {
 	const router = useRouter();
 	const [currentPage, set_currentPage] = useState(1);
 	const [itemsPerPage] = useState(50);
 	const [search, set_search] = useState('');
+	const [network, set_network] = useState(-1);
 
 	useMountEffect((): void => {
 		const {query} = router;
@@ -109,9 +111,28 @@ function	List({list}: {list: TTokenListItem}): ReactElement {
 		}
 	});
 
+	const availableNetworks = useMemo((): {value: number, label: string}[] => {
+		const networks: {value: number, label: string}[] = [];
+		([...list.tokens] || []).forEach((item): void => {
+			if (!networks.find((network): boolean => network.value === item.chainId)) {
+				networks.push({
+					value: item.chainId,
+					label: SUPPORTED_CHAIN_IDS[item.chainId] as any || `Chain #${item.chainId}`
+				});
+			}
+		});
+		return networks;
+	}, [list.tokens]);
+
 	const searchResult = useMemo((): TTokenListItem['tokens'] => {
 		return (
 			([...list.tokens] || [])
+				.filter((item): boolean => {
+					if (network === -1) {
+						return true;
+					}
+					return item.chainId === network;
+				})
 				.filter((item): boolean => {
 					if (!search) {
 						return true;
@@ -119,186 +140,210 @@ function	List({list}: {list: TTokenListItem}): ReactElement {
 					return item.name.toLowerCase().startsWith(search.toLowerCase()) || item.symbol.toLowerCase().startsWith(search.toLowerCase()) || item.address.toLowerCase().startsWith(search.toLowerCase());
 				})
 		);
-	}, [list.tokens, search]);
+	}, [list.tokens, search, network]);
 
 	return (
-		<>
-			<TokenListHero list={list} />
-			<div className={'mx-auto grid w-full max-w-4xl pb-32'}>
-				<div className={'flex items-center justify-between py-4 md:pt-0'}>
-					<div>
-						<input
-							className={'rounded-default border border-neutral-200 bg-neutral-100 px-3 py-1 text-xs leading-6 text-neutral-500 md:text-sm'}
-							type={'text'}
-							placeholder={'Search'}
-							onChange={(e): void => {
-								performBatchedUpdates((): void => {
-									set_search(e.target.value || '');
-									set_currentPage(1);
-									if (!e.target.value) {
-										const {search, ...queryNoSearch} = router.query;
-										search;
-										router.push({query: queryNoSearch});
-									} else {
-										router.push({
-											query: {
-												...router.query,
-												search: e.target.value
-											}
-										});
-									}
-								});
-							}} />
-					</div>
+		<div className={'mx-auto grid w-full max-w-5xl pb-32'}>
+			<div className={'flex items-center space-x-4 py-4 md:pt-0'}>
+				<div>
+					<input
+						className={'rounded-md border border-neutral-200 bg-neutral-0 px-3 py-1 text-xs leading-6 text-neutral-500 md:text-sm'}
+						type={'text'}
+						placeholder={'Search'}
+						onChange={(e): void => {
+							performBatchedUpdates((): void => {
+								set_search(e.target.value || '');
+								set_currentPage(1);
+								if (!e.target.value) {
+									const {search, ...queryNoSearch} = router.query;
+									search;
+									router.push({query: queryNoSearch});
+								} else {
+									router.push({
+										query: {
+											...router.query,
+											search: e.target.value
+										}
+									});
+								}
+							});
+						}} />
 				</div>
-				<div className={'grid grid-cols-1 gap-1 md:grid-cols-1'}>
-					{searchResult
-						.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-						.map((item): ReactElement => (
-							<motion.div
-								key={`${item.address}_${item.chainId}`}
-								custom={0}
-								initial={'initial'}
-								whileInView={'enter'}
-								variants={variants as Variants}
-								className={'box-0 relative flex w-full p-4 md:p-6'}>
-								<div className={'grid w-full grid-cols-12 items-center gap-4'}>
-									<div className={'col-span-12 flex flex-row items-center space-x-4 md:col-span-7'}>
-										<ImageWithFallback
-											alt={`${item.address}_${item.name}_${item.symbol}`}
-											width={40}
-											height={40}
-											quality={90}
-											unoptimized
-											src={item.logoURI} />
-										<div>
+				<div>
+					<select
+						className={'rounded-md border border-neutral-200 bg-neutral-0 px-3 py-1 pr-10 text-xs leading-6 text-neutral-500 md:text-sm'}
+						value={network}
+						onChange={(e): void => {
+							performBatchedUpdates((): void => {
+								set_network(Number(e.target.value));
+								set_currentPage(1);
+								if (Number(e.target.value) === -1) {
+									const {network, ...queryNoNetwork} = router.query;
+									network;
+									router.push({query: queryNoNetwork});
+								} else {
+									router.push({
+										query: {
+											...router.query,
+											network: e.target.value
+										}
+									});
+								}
+							});
+						}}>
+						<option value={-1}>{'All Networks'}</option>
+						{availableNetworks.map((network): ReactElement => (
+							<option key={network.value} value={network.value}>{network.label}</option>
+						))}
+					</select>
+				</div>
+			</div>
+			<div className={'grid grid-cols-1 divide-y divide-neutral-100 rounded-md border border-neutral-200 bg-neutral-0 md:grid-cols-1'}>
+				{searchResult
+					.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+					.map((item): ReactElement => (
+						<motion.div
+							key={`${item.address}_${item.chainId}`}
+							custom={0}
+							initial={'initial'}
+							whileInView={'enter'}
+							variants={variants as Variants}
+							className={'relative flex w-full p-4 transition-colors hover:bg-neutral-50/40 md:p-6'}>
+							<div className={'grid w-full grid-cols-12 items-center gap-4'}>
+								<div className={'col-span-12 flex flex-row items-center space-x-6 md:col-span-8'}>
+									<ImageWithFallback
+										alt={`${item.address}_${item.name}_${item.symbol}`}
+										width={40}
+										height={40}
+										quality={90}
+										unoptimized
+										src={item.logoURI} />
+									<div>
+										<p className={'text-sm'}>
+											{item.name}
+											<span className={'text-xs text-neutral-600'}>{` - (${item.symbol})`}</span>
+										</p>
+										<span className={'font-number mt-2 block !font-mono text-xxs text-neutral-600 transition-colors md:text-xs'}>
 											<a
 												href={`${getNetwork(item.chainId).blockExplorers}/token/${item.address}`}
 												target={'_blank'}
-												rel={'noreferrer'}>
-												<small className={'font-number block text-xxs text-neutral-700 transition-colors hover:text-neutral-900 hover:underline disabled:text-neutral-400/40 md:text-xs'}>
-													{item.address}
-												</small>
+												rel={'noreferrer'}
+												className={'font-mono hover:text-neutral-900 hover:underline'}>
+												{item.address}
 											</a>
-											<b>{item.name}</b>
-										</div>
-									</div>
-									<div className={'col-span-5 mr-4 md:col-span-2'}>
-										<div className={'text-ellipsis'}>
-											<small className={'block text-xxs text-neutral-700 md:text-xs'}>
-												{'Symbol'}
-											</small>
-											<b title={item.symbol} className={'block truncate'}>{item.symbol}</b>
-										</div>
-									</div>
-									<div className={'col-span-5 md:col-span-2'}>
-										<div>
-											<small className={'block text-xxs text-neutral-700 md:text-xs'}>
-												{'Chain'}
-											</small>
-											<b>{getNetwork(item.chainId).name}</b>
-										</div>
-									</div>
-									<div className={'col-span-2 md:col-span-1'}>
-										<div>
-											<small className={'block text-xxs text-neutral-700 md:text-xs'}>
-												{'Decimals'}
-											</small>
-											<b>{item.decimals}</b>
-										</div>
+											{` • ${item.decimals} decimals`}
+										</span>
 									</div>
 								</div>
-							</motion.div>
-						))}
-				</div>
-				<div className={'flex items-center justify-between pt-4'}>
-					<div className={'flex flex-row space-x-4'}>
+
+								<div className={'col-span-12 flex justify-end text-right md:col-span-4'}>
+									<div>
+										<small className={'block text-xxs text-neutral-700 md:text-xs'}>
+											{'Chain'}
+										</small>
+										<b>{getNetwork(item.chainId).name}</b>
+									</div>
+								</div>
+							</div>
+						</motion.div>
+					))}
+			</div>
+			<div className={'flex items-center justify-between pt-4'}>
+				<div className={'flex flex-row space-x-6'}>
+					<div>
+						<button
+							className={'cursor-pointer text-xs text-neutral-600 transition-all hover:text-neutral-900 hover:underline disabled:text-neutral-400/40'}
+							type={'button'}
+							disabled={currentPage === 1}
+							onClick={(): void => {
+								set_currentPage(1);
+								window.scrollTo({top: 0, behavior: 'smooth'});
+								router.push({
+									query: {
+										...router.query,
+										page: 1
+									}
+								});
+							}}>
+							{'◁◁ '}
+						</button>
+					</div>
+					<div>
 						<div>
 							<button
 								className={'cursor-pointer text-xs text-neutral-600 transition-all hover:text-neutral-900 hover:underline disabled:text-neutral-400/40'}
 								type={'button'}
 								disabled={currentPage === 1}
 								onClick={(): void => {
-									set_currentPage(1);
+									set_currentPage(currentPage - 1);
 									window.scrollTo({top: 0, behavior: 'smooth'});
 									router.push({
 										query: {
 											...router.query,
-											page: 1
+											page: currentPage - 1
 										}
 									});
 								}}>
-								{'◁◁ '}
-							</button>
-						</div>
-						<div>
-							<div>
-								<button
-									className={'cursor-pointer text-xs text-neutral-600 transition-all hover:text-neutral-900 hover:underline disabled:text-neutral-400/40'}
-									type={'button'}
-									disabled={currentPage === 1}
-									onClick={(): void => {
-										set_currentPage(currentPage - 1);
-										window.scrollTo({top: 0, behavior: 'smooth'});
-										router.push({
-											query: {
-												...router.query,
-												page: currentPage - 1
-											}
-										});
-									}}>
-									{'◁ Previous'}
-								</button>
-							</div>
-						</div>
-					</div>
-					<div>
-						<span className={'text-xs text-neutral-600'}>
-							{`Page ${currentPage} of ${Math.ceil(searchResult.length / itemsPerPage)}`}
-						</span>
-					</div>
-					<div className={'flex flex-row space-x-4'}>
-						<div>
-							<div>
-								<button
-									className={'text-xs text-neutral-600 transition-all hover:text-neutral-900 hover:underline disabled:text-neutral-400/40'}
-									type={'button'}
-									disabled={currentPage === Math.ceil(searchResult.length / itemsPerPage)}
-									onClick={(): void => {
-										set_currentPage(currentPage + 1);
-										window.scrollTo({top: 0, behavior: 'smooth'});
-										router.push({
-											query: {
-												...router.query,
-												page: currentPage + 1
-											}
-										});
-									}}>
-									{'Next ▷'}
-								</button>
-							</div>
-						</div>
-						<div>
-							<button
-								className={'cursor-pointer text-xs text-neutral-600 transition-all hover:text-neutral-900 hover:underline disabled:text-neutral-400/40'}
-								type={'button'}
-								disabled={currentPage === Math.ceil(searchResult.length / itemsPerPage)}
-								onClick={(): void => {
-									set_currentPage(Math.ceil(searchResult.length / itemsPerPage));
-									window.scrollTo({top: 0, behavior: 'smooth'});
-									router.push({
-										query: {
-											...router.query,
-											page: Math.ceil(searchResult.length / itemsPerPage)
-										}
-									});
-								}}>
-								{' ▷▷'}
+								{'◁ Previous'}
 							</button>
 						</div>
 					</div>
 				</div>
+				<div>
+					<span className={'text-xs text-neutral-600'}>
+						{`Page ${currentPage} of ${Math.ceil(searchResult.length / itemsPerPage)}`}
+					</span>
+				</div>
+				<div className={'flex flex-row space-x-6'}>
+					<div>
+						<div>
+							<button
+								className={'text-xs text-neutral-600 transition-all hover:text-neutral-900 hover:underline disabled:text-neutral-400/40'}
+								type={'button'}
+								disabled={currentPage === Math.ceil(searchResult.length / itemsPerPage)}
+								onClick={(): void => {
+									set_currentPage(currentPage + 1);
+									window.scrollTo({top: 0, behavior: 'smooth'});
+									router.push({
+										query: {
+											...router.query,
+											page: currentPage + 1
+										}
+									});
+								}}>
+								{'Next ▷'}
+							</button>
+						</div>
+					</div>
+					<div>
+						<button
+							className={'cursor-pointer text-xs text-neutral-600 transition-all hover:text-neutral-900 hover:underline disabled:text-neutral-400/40'}
+							type={'button'}
+							disabled={currentPage === Math.ceil(searchResult.length / itemsPerPage)}
+							onClick={(): void => {
+								set_currentPage(Math.ceil(searchResult.length / itemsPerPage));
+								window.scrollTo({top: 0, behavior: 'smooth'});
+								router.push({
+									query: {
+										...router.query,
+										page: Math.ceil(searchResult.length / itemsPerPage)
+									}
+								});
+							}}>
+							{' ▷▷'}
+						</button>
+					</div>
+				</div>
 			</div>
+		</div>
+	);
+}
+
+function	List({list}: {list: TTokenListItem}): ReactElement {
+	return (
+		<>
+			<TokenListHero list={list} />
+			<TokenListContent list={list} />
 		</>
 	);
 }

@@ -74,7 +74,7 @@ function	Home({summary}: {summary: TTokenListSummary}): ReactElement {
 	return (
 		<>
 			<TokenListHero summary={summary} />
-			<div className={'mx-auto mt-10 grid w-full max-w-4xl'}>
+			<div className={'mx-auto mt-10 grid w-full max-w-5xl'}>
 				<menu className={'mb-4 flex flex-row justify-end text-xs'}>
 					<button
 						onClick={(): void => set_typeOfList('tokens')}
@@ -95,7 +95,7 @@ function	Home({summary}: {summary: TTokenListSummary}): ReactElement {
 					</button>
 				</menu>
 			</div>
-			<div className={'mx-auto grid w-full max-w-4xl'}>
+			<div className={'mx-auto grid w-full max-w-5xl'}>
 				<div id={'tokenlistooor'} className={'grid grid-cols-1 gap-6 pb-32 md:grid-cols-3'}>
 					{typeOfList === 'legacy' ? (
 						(LEGACY_TOKEN_LISTS || []).map((tokenListItem, i): ReactElement => (
