@@ -41,7 +41,7 @@ const SAFE_API_URI: {[chainId: number]: string} = {
 	10:	'https://safe-transaction-optimism.safe.global',
 	100: 'https://safe-transaction-gnosis-chain.safe.global',
 	137: 'https://safe-transaction-polygon.safe.global',
-	8453: 'https://safe-transaction-mainnet.safe.global',
+	8453: 'https://safe-transaction-base.safe.global',
 	42161: 'https://safe-transaction-arbitrum.safe.global'
 };
 
