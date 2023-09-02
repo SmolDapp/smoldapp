@@ -32,7 +32,24 @@ module.exports = (phase) => withTM(withPWA({
 	},
 	redirects() {
 		return [
-			{source: '/', has: [{type: 'host', value: 'multisafe.app'}], destination: '/safe', permanent: true},
+			{
+				source: '/',
+				has: [{type: 'host', value: 'multisafe.app'}],
+				destination: '/safe',
+				permanent: true
+			},
+			{
+				source: '/',
+				has: [{type: 'host', value: 'tokenlistooor.com'}],
+				destination: '/tokenlistooor',
+				permanent: true
+			},
+			{
+				source: '/',
+				has: [{type: 'host', value: 'migratooor.com'}],
+				destination: '/migratooor',
+				permanent: true
+			},
 			// {source: '/', has: [{type: 'host', value: 'migrate.smold.app'}], destination: '/migratooor', permanent: true},
 			{
 				source: '/github',
