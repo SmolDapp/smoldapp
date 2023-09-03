@@ -94,7 +94,7 @@ export function FeebackPopover(): ReactElement {
 				'\t\t\t\tFrom: [wallet-not-connected]',
 			`\t\t\t\tChain: ${chainID}`,
 			`\t\t\t\tWallet: ${isWalletLedger ? 'ledger' : isWalletSafe ? 'safe' : connector?.id || 'Unknown'}`,
-			`\t\t\t\tOrigin: [${router.asPath}](https://yearn.finance/${router.asPath})`
+			`\t\t\t\tOrigin: [${router.asPath}](https://smold.app/${router.asPath})`
 		].join('\n'));
 		try {
 			await axios.post('/api/report', formData, {

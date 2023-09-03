@@ -6,7 +6,7 @@ const	TOKEN_LISTS = [
 	},
 	{
 		name: 'Yearn',
-		uri: 'https://ydaemon.yearn.finance/tokenlist',
+		uri: 'https://ydaemon.yearn.fi/tokenlist',
 		imageSrc: 'https://raw.githubusercontent.com/yearn/yearn-assets/master/icons/multichain-tokens/1/0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e/logo.svg'
 	},
 	{
