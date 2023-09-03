@@ -25,10 +25,9 @@ function ViewApprovalWizard(): ReactElement {
 	const {address, chainID} = useWeb3();
 	const {selected, set_selected, destinationAddress} = useMigratooor();
 	const {balances, refresh, balancesNonce} = useWallet();
-	const {walletType, provider} = useWeb3();
+	const {isWalletSafe, provider} = useWeb3();
 	const [isApproving, set_isApproving] = useState(false);
 	const {sdk} = useSafeAppsSDK();
-	const isGnosisSafe = (walletType === 'EMBED_GNOSIS_SAFE');
 
 	const onUpdateStatus = useCallback((tokenAddress: TAddress, status: TSelectedStatus): void => {
 		set_selected((prev): TDict<TSelectedElement> => ({
@@ -160,7 +159,7 @@ function ViewApprovalWizard(): ReactElement {
 	**********************************************************************************************/
 	const onHandleMigration = useCallback(async (): Promise<void> => {
 		const allSelected = Object.values(selected).filter((token): boolean => token.isSelected && token.status !== 'success');
-		if (isGnosisSafe) {
+		if (isWalletSafe) {
 			return onMigrateSelectedForGnosis(allSelected);
 		}
 
@@ -199,7 +198,7 @@ function ViewApprovalWizard(): ReactElement {
 			});
 		}
 
-	}, [address, chainID, destinationAddress, isGnosisSafe, onMigrateERC20, onMigrateETH, onMigrateSelectedForGnosis, selected]);
+	}, [address, chainID, destinationAddress, isWalletSafe, onMigrateERC20, onMigrateETH, onMigrateSelectedForGnosis, selected]);
 
 	return (
 		<section>

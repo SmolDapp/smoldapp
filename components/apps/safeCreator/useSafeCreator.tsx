@@ -37,7 +37,7 @@ const defaultProps: TSelected = {
 
 const SafeCreatorContext = createContext<TSelected>(defaultProps);
 export const SafeCreatorContextApp = ({children}: {children: React.ReactElement}): React.ReactElement => {
-	const {address, isActive, walletType} = useWeb3();
+	const {address, isActive, isWalletLedger, isWalletSafe} = useWeb3();
 	const [currentStep, set_currentStep] = useState<Step>(Step.WALLET);
 	const [selectedFlow, set_selectedFlow] = useState<'NONE' | 'EXISTING' | 'NEW'>('NONE');
 	const {data: chainCoinPrices} = useSWR<TPriceFromGecko>(
@@ -52,13 +52,13 @@ export const SafeCreatorContextApp = ({children}: {children: React.ReactElement}
 	** If the wallet is not connected, jump to the WALLET section to connect.
 	**********************************************************************************************/
 	useEffect((): void => {
-		const isEmbedWallet = ['EMBED_LEDGER', 'EMBED_GNOSIS_SAFE'].includes(walletType);
+		const isEmbedWallet = isWalletLedger || isWalletSafe;
 		if ((isActive && address) || isEmbedWallet) {
 			set_currentStep(Step.FLOW);
 		} else if (!isActive || !address) {
 			set_currentStep(Step.WALLET);
 		}
-	}, [address, isActive, walletType]);
+	}, [address, isActive, isWalletLedger, isWalletSafe]);
 
 	/**********************************************************************************************
 	** This effect is used to handle some UI transitions and sections jumps. Once the current step
@@ -67,7 +67,7 @@ export const SafeCreatorContextApp = ({children}: {children: React.ReactElement}
 	**********************************************************************************************/
 	useMountEffect((): void => {
 		setTimeout((): void => {
-			const isEmbedWallet = ['EMBED_LEDGER', 'EMBED_GNOSIS_SAFE'].includes(walletType);
+			const isEmbedWallet = isWalletLedger || isWalletSafe;
 			if (currentStep === Step.WALLET && !isEmbedWallet) {
 				document?.getElementById('wallet')?.scrollIntoView({behavior: 'smooth', block: 'start'});
 			} else if (currentStep === Step.FLOW || isEmbedWallet) {
@@ -89,7 +89,7 @@ export const SafeCreatorContextApp = ({children}: {children: React.ReactElement}
 	useUpdateEffect((): void => {
 		setTimeout((): void => {
 			let currentStepContainer;
-			const isEmbedWallet = ['EMBED_LEDGER', 'EMBED_GNOSIS_SAFE'].includes(walletType);
+			const isEmbedWallet = isWalletLedger || isWalletSafe;
 			const scalooor = document?.getElementById('scalooor');
 
 			if (currentStep === Step.WALLET && !isEmbedWallet) {
@@ -109,7 +109,7 @@ export const SafeCreatorContextApp = ({children}: {children: React.ReactElement}
 				scrollToTargetAdjusted(currentStepContainer);
 			}
 		}, 0);
-	}, [currentStep, walletType]);
+	}, [currentStep, isWalletLedger, isWalletSafe]);
 
 	const contextValue = useMemo((): TSelected => ({
 		currentStep,

@@ -22,7 +22,7 @@ import type {TDict} from '@yearn-finance/web-lib/types';
 import type {BaseTransaction} from '@gnosis.pm/safe-apps-sdk';
 
 function ViewApprovalWizard(): ReactElement {
-	const {address, provider, walletType} = useWeb3();
+	const {address, provider, isWalletSafe} = useWeb3();
 	const {safeChainID} = useChainID();
 	const {selected, set_selected, set_nfts, destinationAddress} = useNFTMigratooor();
 	const [isApproving, set_isApproving] = useState(false);
@@ -408,7 +408,7 @@ function ViewApprovalWizard(): ReactElement {
 	**********************************************************************************************/
 	const onHandleMigration = useCallback(async (): Promise<void> => {
 		await onClearMigration();
-		if (walletType === 'EMBED_GNOSIS_SAFE') {
+		if (isWalletSafe) {
 			return onMigrateSelectedForGnosis(groupedByCollection);
 		}
 
@@ -447,7 +447,7 @@ function ViewApprovalWizard(): ReactElement {
 			}
 		}
 		set_migrated(successfulMigrations);
-	}, [onClearMigration, walletType, onMigrateSelectedForGnosis, groupedByCollection, collectionStatus, onMigrateSomeERC1155Tokens, onMigrateOneToken, collectionApprovalStatus, onMigrateSomeERC721Tokens, onApproveAllCollection]);
+	}, [onClearMigration, isWalletSafe, onMigrateSelectedForGnosis, groupedByCollection, collectionStatus, onMigrateSomeERC1155Tokens, onMigrateOneToken, collectionApprovalStatus, onMigrateSomeERC721Tokens, onApproveAllCollection]);
 
 	return (
 		<section>

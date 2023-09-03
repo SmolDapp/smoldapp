@@ -10,6 +10,7 @@ import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {toAddress, truncateHex} from '@yearn-finance/web-lib/utils/address';
 
 import type {ReactElement} from 'react';
+import { useAccount } from 'wagmi';
 
 type TRequestType = 'bug' | 'feature';
 
@@ -47,7 +48,8 @@ export function FeebackPopover(): ReactElement {
 	const [telegramHandle, set_telegramHandle] = useState<string>();
 	const [isSubmitDisabled, set_isSubmitDisabled] = useState<boolean>(false);
 	const [description, set_description] = useState<string>();
-	const {address, chainID, ens, lensProtocolHandle, walletType} = useWeb3();
+	const {address, chainID, ens, lensProtocolHandle, isWalletLedger, isWalletSafe} = useWeb3();
+	const {connector} = useAccount();
 	const router = useRouter();
 	const {value: hasPopover, set: set_hasPopover} = useLocalStorageValue<boolean>('smoldapp/feedback-popover');
 	const {styles, attributes} = usePopper(referenceElement, popperElement, {
@@ -91,7 +93,7 @@ export function FeebackPopover(): ReactElement {
 				`\t\t\t\tFrom: [${reporter}](https://etherscan.io/address/${address})` :
 				'\t\t\t\tFrom: [wallet-not-connected]',
 			`\t\t\t\tChain: ${chainID}`,
-			`\t\t\t\tWallet: ${walletType}`,
+			`\t\t\t\tWallet: ${isWalletLedger ? 'ledger' : isWalletSafe ? 'safe' : connector?.id || 'Unknown'}`,
 			`\t\t\t\tOrigin: [${router.asPath}](https://yearn.finance/${router.asPath})`
 		].join('\n'));
 		try {

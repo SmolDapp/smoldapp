@@ -46,7 +46,7 @@ const defaultProps: TSelected = {
 
 const MigratooorContext = createContext<TSelected>(defaultProps);
 export const MigratooorContextApp = ({children}: {children: React.ReactElement}): React.ReactElement => {
-	const {address, isActive, walletType} = useWeb3();
+	const {address, isActive, isWalletLedger, isWalletSafe} = useWeb3();
 	const [destinationAddress, set_destinationAddress] = useState<TAddress>(toAddress());
 	const [selected, set_selected] = useState(defaultProps.selected);
 	const [currentStep, set_currentStep] = useState<Step>(Step.WALLET);
@@ -66,13 +66,13 @@ export const MigratooorContextApp = ({children}: {children: React.ReactElement})
 	** If the wallet is not connected, jump to the WALLET section to connect.
 	**********************************************************************************************/
 	useEffect((): void => {
-		const isEmbedWallet = ['EMBED_LEDGER', 'EMBED_GNOSIS_SAFE'].includes(walletType);
+		const isEmbedWallet = isWalletLedger || isWalletSafe;
 		if ((isActive && address) || isEmbedWallet) {
 			set_currentStep(Step.DESTINATION);
 		} else if (!isActive || !address) {
 			set_currentStep(Step.WALLET);
 		}
-	}, [address, isActive, walletType]);
+	}, [address, isActive, isWalletLedger, isWalletSafe]);
 
 	/**********************************************************************************************
 	** This effect is used to handle some UI transitions and sections jumps. Once the current step
@@ -81,7 +81,7 @@ export const MigratooorContextApp = ({children}: {children: React.ReactElement})
 	**********************************************************************************************/
 	useMountEffect((): void => {
 		setTimeout((): void => {
-			const isEmbedWallet = ['EMBED_LEDGER', 'EMBED_GNOSIS_SAFE'].includes(walletType);
+			const isEmbedWallet = isWalletLedger || isWalletSafe;
 			if (currentStep === Step.WALLET && !isEmbedWallet) {
 				document?.getElementById('wallet')?.scrollIntoView({behavior: 'smooth', block: 'start'});
 			} else if (currentStep === Step.DESTINATION || isEmbedWallet) {
@@ -103,7 +103,7 @@ export const MigratooorContextApp = ({children}: {children: React.ReactElement})
 	useUpdateEffect((): void => {
 		setTimeout((): void => {
 			let currentStepContainer;
-			const isEmbedWallet = ['EMBED_LEDGER', 'EMBED_GNOSIS_SAFE'].includes(walletType);
+			const isEmbedWallet = isWalletLedger || isWalletSafe;
 			const scalooor = document?.getElementById('scalooor');
 
 			if (currentStep === Step.WALLET && !isEmbedWallet) {
@@ -123,7 +123,7 @@ export const MigratooorContextApp = ({children}: {children: React.ReactElement})
 				scrollToTargetAdjusted(currentStepContainer);
 			}
 		}, 0);
-	}, [currentStep, walletType]);
+	}, [currentStep, isWalletLedger, isWalletSafe]);
 
 	const contextValue = useMemo((): TSelected => ({
 		selected,

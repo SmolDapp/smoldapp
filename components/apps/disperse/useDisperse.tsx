@@ -60,7 +60,7 @@ export function newVoidRow(): TDisperseElement {
 
 const DisperseContext = createContext<TSelected>(defaultProps);
 export const DisperseContextApp = ({children}: {children: React.ReactElement}): React.ReactElement => {
-	const {address, isActive, walletType} = useWeb3();
+	const {address, isActive, isWalletSafe, isWalletLedger} = useWeb3();
 	const [currentStep, set_currentStep] = useState<Step>(Step.WALLET);
 	const [tokenToDisperse, set_tokenToDisperse] = useState<TTokenInfo>(defaultProps.tokenToDisperse);
 
@@ -83,13 +83,13 @@ export const DisperseContextApp = ({children}: {children: React.ReactElement}): 
 	** If the wallet is not connected, jump to the WALLET section to connect.
 	**********************************************************************************************/
 	useEffect((): void => {
-		const isEmbedWallet = ['EMBED_LEDGER', 'EMBED_GNOSIS_SAFE'].includes(walletType);
+		const isEmbedWallet = isWalletSafe || isWalletLedger;
 		if ((isActive && address) || isEmbedWallet) {
 			set_currentStep(Step.TOSEND);
 		} else if (!isActive || !address) {
 			set_currentStep(Step.WALLET);
 		}
-	}, [address, isActive, walletType]);
+	}, [address, isActive, isWalletSafe, isWalletLedger]);
 
 	/**********************************************************************************************
 	** This effect is used to handle some UI transitions and sections jumps. Once the current step
@@ -98,7 +98,7 @@ export const DisperseContextApp = ({children}: {children: React.ReactElement}): 
 	**********************************************************************************************/
 	useMountEffect((): void => {
 		setTimeout((): void => {
-			const isEmbedWallet = ['EMBED_LEDGER', 'EMBED_GNOSIS_SAFE'].includes(walletType);
+			const isEmbedWallet = isWalletSafe || isWalletLedger;
 			if (currentStep === Step.WALLET && !isEmbedWallet) {
 				document?.getElementById('wallet')?.scrollIntoView({behavior: 'smooth', block: 'start'});
 			} else if (currentStep === Step.TOSEND || isEmbedWallet) {
@@ -120,7 +120,7 @@ export const DisperseContextApp = ({children}: {children: React.ReactElement}): 
 	useUpdateEffect((): void => {
 		setTimeout((): void => {
 			let currentStepContainer;
-			const isEmbedWallet = ['EMBED_LEDGER', 'EMBED_GNOSIS_SAFE'].includes(walletType);
+			const isEmbedWallet = isWalletSafe || isWalletLedger;
 			const scalooor = document?.getElementById('scalooor');
 
 			if (currentStep === Step.WALLET && !isEmbedWallet) {
@@ -140,7 +140,7 @@ export const DisperseContextApp = ({children}: {children: React.ReactElement}): 
 				scrollToTargetAdjusted(currentStepContainer);
 			}
 		}, 0);
-	}, [currentStep, walletType]);
+	}, [currentStep, isWalletLedger, isWalletSafe]);
 
 	const contextValue = useMemo((): TSelected => ({
 		currentStep,

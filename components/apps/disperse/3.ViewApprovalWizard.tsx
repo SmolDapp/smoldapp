@@ -136,11 +136,10 @@ function DisperseWizardItem({row}: {row: TDisperseElement}): ReactElement {
 }
 
 function ViewApprovalWizard(): ReactElement {
-	const {address, provider, walletType, chainID} = useWeb3();
+	const {address, provider, isWalletSafe, chainID} = useWeb3();
 	const {onResetDisperse, tokenToDisperse, disperseArray, isDispersed} = useDisperse();
 	const {refresh} = useWallet();
 	const {sdk} = useSafeAppsSDK();
-	const isGnosisSafe = (walletType === 'EMBED_GNOSIS_SAFE');
 	const [disperseStatus, set_disperseStatus] = useState(defaultTxStatus);
 	const {data: allowance, refetch} = useContractRead({
 		abi: erc20ABI,
@@ -197,7 +196,7 @@ function ViewApprovalWizard(): ReactElement {
 	}, [address, chainID, disperseArray, sdk.txs, tokenToDisperse]);
 
 	const onDisperseTokens = useCallback(async (): Promise<void> => {
-		if (isGnosisSafe) {
+		if (isWalletSafe) {
 			return await onDisperseTokensForGnosis();
 		}
 
@@ -272,7 +271,7 @@ function ViewApprovalWizard(): ReactElement {
 				}
 			}
 		}
-	}, [isGnosisSafe, disperseArray, tokenToDisperse, onDisperseTokensForGnosis, provider, onResetDisperse, refresh, chainID]);
+	}, [isWalletSafe, disperseArray, tokenToDisperse, onDisperseTokensForGnosis, provider, onResetDisperse, refresh, chainID]);
 
 	function renderStatusIndicator(): ReactElement {
 		if (isDispersed) {
@@ -300,7 +299,7 @@ function ViewApprovalWizard(): ReactElement {
 					</p>
 				</div>
 
-				{(shouldApprove && !isGnosisSafe) && (
+				{(shouldApprove && !isWalletSafe) && (
 					<ApprovalWizard
 						refetch={async (): Promise<void> => {
 							await refetch();

@@ -13,14 +13,13 @@ import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUp
 import type {ReactElement} from 'react';
 
 function Disperse(): ReactElement {
-	const {walletType} = useWeb3();
+	const {isWalletSafe} = useWeb3();
 	const {tokenToDisperse, currentStep, set_currentStep} = useDisperse();
-	const isGnosisSafe = (walletType === 'EMBED_GNOSIS_SAFE');
 
 	const onStartDisperse = useCallback((): void => {
 		set_currentStep(Step.CONFIRMATION);
 		document?.getElementById('tldr')?.scrollIntoView({behavior: 'smooth', block: 'center'});
-		if (isGnosisSafe) {
+		if (isWalletSafe) {
 			return document.getElementById('DISPERSE_TOKENS')?.click();
 		}
 		if (toAddress(tokenToDisperse?.address) === ETH_TOKEN_ADDRESS) {
@@ -28,7 +27,7 @@ function Disperse(): ReactElement {
 		}
 		return document.getElementById('APPROVE_TOKEN_TO_DISPERSE')?.click();
 
-	}, [isGnosisSafe, set_currentStep, tokenToDisperse]);
+	}, [isWalletSafe, set_currentStep, tokenToDisperse]);
 
 	return (
 		<div className={'mx-auto grid w-full max-w-4xl'}>

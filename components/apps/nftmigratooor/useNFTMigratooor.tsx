@@ -48,7 +48,7 @@ const defaultProps: TSelected = {
 const NFTMigratooorContext = createContext<TSelected>(defaultProps);
 export const NFTMigratooorContextApp = ({children}: {children: React.ReactElement}): React.ReactElement => {
 	const filterNFTs = useNFTs();
-	const {address, isActive, walletType} = useWeb3();
+	const {address, isActive, isWalletLedger, isWalletSafe} = useWeb3();
 	const {safeChainID} = useChainID();
 	const [destinationAddress, set_destinationAddress] = useState<TAddress>(toAddress());
 	const [isFetchingNFTs, set_isFetchingNFTs] = useState(false);
@@ -132,13 +132,13 @@ export const NFTMigratooorContextApp = ({children}: {children: React.ReactElemen
 	** If the wallet is not connected, jump to the WALLET section to connect.
 	**********************************************************************************************/
 	useEffect((): void => {
-		const isEmbedWallet = ['EMBED_LEDGER', 'EMBED_GNOSIS_SAFE'].includes(walletType);
+		const isEmbedWallet = isWalletLedger || isWalletSafe;
 		if ((isActive && address) || isEmbedWallet) {
 			set_currentStep(Step.DESTINATION);
 		} else if (!isActive || !address) {
 			set_currentStep(Step.WALLET);
 		}
-	}, [address, isActive, walletType]);
+	}, [address, isActive, isWalletLedger, isWalletSafe]);
 
 	/**********************************************************************************************
 	** This effect is used to handle some UI transitions and sections jumps. Once the current step
@@ -147,7 +147,7 @@ export const NFTMigratooorContextApp = ({children}: {children: React.ReactElemen
 	**********************************************************************************************/
 	useMountEffect((): void => {
 		setTimeout((): void => {
-			const isEmbedWallet = ['EMBED_LEDGER', 'EMBED_GNOSIS_SAFE'].includes(walletType);
+			const isEmbedWallet = isWalletLedger || isWalletSafe;
 			if (currentStep === Step.WALLET && !isEmbedWallet) {
 				document?.getElementById('wallet')?.scrollIntoView({behavior: 'smooth', block: 'start'});
 			} else if (currentStep === Step.DESTINATION || isEmbedWallet) {
@@ -169,7 +169,7 @@ export const NFTMigratooorContextApp = ({children}: {children: React.ReactElemen
 	useUpdateEffect((): void => {
 		setTimeout((): void => {
 			let currentStepContainer;
-			const isEmbedWallet = ['EMBED_LEDGER', 'EMBED_GNOSIS_SAFE'].includes(walletType);
+			const isEmbedWallet = isWalletLedger || isWalletSafe;
 			const scalooor = document?.getElementById('scalooor');
 
 			if (currentStep === Step.WALLET && !isEmbedWallet) {
@@ -189,7 +189,7 @@ export const NFTMigratooorContextApp = ({children}: {children: React.ReactElemen
 				scrollToTargetAdjusted(currentStepContainer);
 			}
 		}, 0);
-	}, [currentStep, walletType]);
+	}, [currentStep, isWalletLedger, isWalletSafe]);
 
 	/**********************************************************************************************
 	** For some small performance improvements, we memoize the context value.
