@@ -1,4 +1,4 @@
-import {arbitrum, base, mainnet, optimism, polygon, polygonZkEvm} from 'viem/chains';
+import {arbitrum, base, mainnet, optimism, polygon, polygonZkEvm} from 'wagmi/chains';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {indexedWagmiChains} from '@yearn-finance/web-lib/utils/wagmi/utils';
 

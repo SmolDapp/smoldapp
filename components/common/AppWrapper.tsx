@@ -8,7 +8,7 @@ import IconChevronBottom from '@yearn-finance/web-lib/icons/IconChevronBottom';
 import IconLinkOut from '@yearn-finance/web-lib/icons/IconLinkOut';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
 
-import {NetworkSelector, WalletSelector} from './HeaderAlt';
+import {NetworkSelector, WalletSelector} from './HeaderElements';
 
 import type {AppProps} from 'next/app';
 import type {ReactElement} from 'react';
