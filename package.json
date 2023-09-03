@@ -22,7 +22,7 @@
 		"@tanstack/react-virtual": "^3.0.0-beta.54",
 		"@vercel/analytics": "^1.0.1",
 		"@wagmi/core": "^1.3.10",
-		"@yearn-finance/web-lib": "^2.0.8",
+		"@yearn-finance/web-lib": "^2.0.13",
 		"axios": "^1.4.0",
 		"dayjs": "^1.11.8",
 		"formidable": "^2.1.1",
