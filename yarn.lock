@@ -3014,10 +3014,10 @@
   resolved "https://registry.yarnpkg.com/@xtuc/long/-/long-4.2.2.tgz#d291c6a4e97989b5c61d9acf396ae4fe133a718d"
   integrity sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==
 
-"@yearn-finance/web-lib@^3.0.21":
-  version "3.0.21"
-  resolved "https://registry.yarnpkg.com/@yearn-finance/web-lib/-/web-lib-3.0.21.tgz#f0a597bb85cdf0431e234b2c0a76b21e94017de7"
-  integrity sha512-BNEkyWyKqSMpX7M73zaUzSwrjzHjozVonIeN2McfJ99+v9PrzMimZdxMK7CZdKc3MHNGWCVXr7d4OMGes/OY2g==
+"@yearn-finance/web-lib@^3.0.22":
+  version "3.0.22"
+  resolved "https://registry.yarnpkg.com/@yearn-finance/web-lib/-/web-lib-3.0.22.tgz#d570d657f24836bc85c25dcecc8a1289c075671b"
+  integrity sha512-G1M3rj3vYObv7wbYKA5p3Gl12jUiMTKrjtleq9QmWnGlVklJxsp1HunRupkJ4lq5BpkJYYOu8L1PuxIu5OwhYA==
   dependencies:
     "@babel/core" "^7.0.0-0"
     "@babel/preset-typescript" "^7.22.11"

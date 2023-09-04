@@ -9,7 +9,7 @@ import {toSafeChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {IconChevronBottom} from '@yearn-finance/web-lib/icons/IconChevronBottom';
 import {IconWallet} from '@yearn-finance/web-lib/icons/IconWallet';
 import {truncateHex} from '@yearn-finance/web-lib/utils/address';
-import {useConnectModal, useAccountModal, useChainModal} from '@rainbow-me/rainbowkit';
+import {useAccountModal, useChainModal} from '@rainbow-me/rainbowkit';
 
 import type {ReactElement} from 'react';
 import type {Chain} from 'wagmi';
@@ -181,10 +181,9 @@ export function NetworkSelector({networks}: {networks: number[]}): ReactElement 
 }
 
 export function WalletSelector(): ReactElement {
-	const {openConnectModal} = useConnectModal();
 	const {openAccountModal} = useAccountModal();
 	const {openChainModal} = useChainModal();
-	const {isActive, address, ens, lensProtocolHandle} = useWeb3();
+	const {isActive, address, ens, lensProtocolHandle, openLoginModal} = useWeb3();
 
 	const [walletIdentity, set_walletIdentity] = useState<string | undefined>(undefined);
 	const isMounted = useIsMounted();
@@ -214,7 +213,7 @@ export function WalletSelector(): ReactElement {
 				} else if (!isActive && address) {
 					openChainModal?.();
 				} else {
-					openConnectModal?.();
+					openLoginModal();
 				}
 			}}>
 			<div suppressHydrationWarning className={'font-inter text-sm font-medium cursor-pointer'}>
