@@ -6,7 +6,7 @@ import LogoOpensea from 'components/icons/LogoOpensea';
 import LogoRarible from 'components/icons/LogoRarible';
 import {ETHEREUM_ENS_ADDRESS} from 'utils/constants';
 import {useNetwork} from 'wagmi';
-import IconLinkOut from '@yearn-finance/web-lib/icons/IconLinkOut';
+import {IconLinkOut} from '@yearn-finance/web-lib/icons/IconLinkOut';
 import {toAddress, truncateHex} from '@yearn-finance/web-lib/utils/address';
 import {NFTWithFallback} from '@common/NFTWithFallback';
 

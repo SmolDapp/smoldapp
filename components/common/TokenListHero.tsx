@@ -6,7 +6,7 @@ import relativeTime from 'dayjs/plugin/relativeTime.js';
 import weekday from 'dayjs/plugin/weekday.js';
 import {useTimer} from 'hooks/useTimer';
 import {Button} from '@yearn-finance/web-lib/components/Button';
-import IconGithub from '@yearn-finance/web-lib/icons/IconSocialGithub';
+import {IconSocialGithub} from '@yearn-finance/web-lib/icons/IconSocialGithub';
 import {copyToClipboard} from '@yearn-finance/web-lib/utils/helpers';
 
 import type {TTokenListSummary} from 'pages/tokenlistooor';
@@ -59,7 +59,7 @@ function TokenListHero({summary}: {summary: TTokenListSummary | undefined}): Rea
 					<div className={'mt-6 flex items-center gap-x-6 md:mt-10'}>
 						<Link href={'https://github.com/migratooor/tokenlists/'} target={'_blank'}>
 							<Button>
-								<IconGithub className={'mr-4 h-6 w-6'} />
+								<IconSocialGithub className={'mr-4 h-6 w-6'} />
 								{'Github'}
 							</Button>
 						</Link>

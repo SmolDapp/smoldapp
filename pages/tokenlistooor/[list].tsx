@@ -11,8 +11,8 @@ import {motion} from 'framer-motion';
 import {MigratooorContextApp} from '@migratooor/useMigratooor';
 import {useMountEffect} from '@react-hookz/web';
 import {Button} from '@yearn-finance/web-lib/components/Button';
-import IconGithub from '@yearn-finance/web-lib/icons/IconSocialGithub';
-import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUpdates';
+import {IconSocialGithub} from '@yearn-finance/web-lib/icons/IconSocialGithub';
+import {performBatchedUpdates} from '@yearn-finance/web-lib/utils/performBatchedUpdates';
 import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 import {ImageWithFallback} from '@common/ImageWithFallback';
 
@@ -78,7 +78,7 @@ function TokenListHero({list}: {list: TTokenListItem}): ReactElement {
 					<div className={'mt-6 flex items-center gap-x-6 md:mt-10'}>
 						<Link href={`https://github.com/SmolDapp/tokenLists/blob/main/lists/${fileName}`} target={'_blank'}>
 							<Button>
-								<IconGithub className={'mr-4 h-6 w-6'} />
+								<IconSocialGithub className={'mr-4 h-6 w-6'} />
 								{'Github'}
 							</Button>
 						</Link>

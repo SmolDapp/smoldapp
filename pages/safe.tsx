@@ -6,7 +6,7 @@ import ViewClonableSafe from '@safeCreatooor/2.ViewClonableSafe';
 import ViewNewSafeOwners from '@safeCreatooor/3.ViewNewSafeOwners';
 import ViewNewSafe from '@safeCreatooor/4.ViewNewSafe';
 import {SafeCreatorContextApp, Step, useSafeCreator} from '@safeCreatooor/useSafeCreator';
-import performBatchedUpdates from '@yearn-finance/web-lib/utils/performBatchedUpdates';
+import {performBatchedUpdates} from '@yearn-finance/web-lib/utils/performBatchedUpdates';
 
 import type {ReactElement} from 'react';
 import type {TAddress} from '@yearn-finance/web-lib/types';

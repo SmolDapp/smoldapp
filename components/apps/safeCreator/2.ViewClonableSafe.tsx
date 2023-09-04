@@ -7,7 +7,7 @@ import axios from 'axios';
 import {CALL_INIT_SIGNATURE, SAFE_CREATION_SIGNATURE, SAFE_CREATION_TOPIC, SINGLETON_L1, SINGLETON_L2, SINGLETON_L2_DDP} from '@safeCreatooor/constants';
 import {fetchTransaction} from '@wagmi/core';
 import {Button} from '@yearn-finance/web-lib/components/Button';
-import Renderable from '@yearn-finance/web-lib/components/Renderable';
+import {Renderable} from '@yearn-finance/web-lib/components/Renderable';
 import {isZeroAddress, toAddress} from '@yearn-finance/web-lib/utils/address';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
 import {getClient, getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';

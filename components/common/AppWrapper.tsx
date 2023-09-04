@@ -4,8 +4,8 @@ import Meta from 'components/common/Meta';
 import Logo from 'components/icons/logo';
 import thumbnailVariants from 'utils/animations';
 import {AnimatePresence, motion} from 'framer-motion';
-import IconChevronBottom from '@yearn-finance/web-lib/icons/IconChevronBottom';
-import IconLinkOut from '@yearn-finance/web-lib/icons/IconLinkOut';
+import {IconChevronBottom} from '@yearn-finance/web-lib/icons/IconChevronBottom';
+import {IconLinkOut} from '@yearn-finance/web-lib/icons/IconLinkOut';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
 
 import {NetworkSelector, WalletSelector} from './HeaderElements';

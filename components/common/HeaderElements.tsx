@@ -6,8 +6,8 @@ import {Listbox, Transition} from '@headlessui/react';
 import {useIsMounted} from '@react-hookz/web';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {toSafeChainID} from '@yearn-finance/web-lib/hooks/useChainID';
-import IconChevronBottom from '@yearn-finance/web-lib/icons/IconChevronBottom';
-import IconWallet from '@yearn-finance/web-lib/icons/IconWallet';
+import {IconChevronBottom} from '@yearn-finance/web-lib/icons/IconChevronBottom';
+import {IconWallet} from '@yearn-finance/web-lib/icons/IconWallet';
 import {truncateHex} from '@yearn-finance/web-lib/utils/address';
 import {useConnectModal, useAccountModal, useChainModal} from '@rainbow-me/rainbowkit';
 
