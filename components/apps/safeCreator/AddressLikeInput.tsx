@@ -109,7 +109,7 @@ function AddressLikeInput({
 						set_isValidDestination('undetermined');
 						onChangeLabel(e.target.value);
 					}}
-					className={'w-full overflow-x-scroll border-none bg-transparent px-0 py-4 font-mono text-sm font-bold outline-none scrollbar-none'}
+					className={'smol--input font-mono font-bold'}
 					type={'text'} />
 			</div>
 			<label

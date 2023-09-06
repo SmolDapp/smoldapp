@@ -117,7 +117,7 @@ function AddressLikeInput({uuid, label, onChangeLabel, onChange, onPaste, isDupl
 						set_isValidDestination('undetermined');
 						onChangeLabel(e.target.value);
 					}}
-					className={'w-full overflow-x-scroll border-none bg-transparent px-0 py-4 font-mono text-sm font-bold outline-none scrollbar-none'}
+					className={'smol--input font-mono font-bold'}
 					type={'text'} />
 			</div>
 			<label
@@ -163,7 +163,7 @@ function AmountToSendInput({token, onChange}: {
 		<div key={token?.address} className={'box-0 flex h-10 w-full items-center p-2'}>
 			<div className={'flex h-10 w-full flex-row items-center justify-between px-0 py-4'}>
 				<input
-					className={'w-full overflow-x-scroll border-none bg-transparent px-0 py-4 font-mono text-sm font-bold outline-none scrollbar-none'}
+					className={'smol--input font-mono font-bold'}
 					type={'number'}
 					onWheel={(e): void => e.preventDefault()}
 					min={0}

@@ -149,7 +149,7 @@ function TableERC20Row({address: tokenAddress, balance}: TERC20RowProps): ReactE
 								<div className={'tooltip'}>
 									<IconInfo className={'h-[14px] w-[14px] text-neutral-900'} />
 									<span className={'tooltiptext text-xs'}>
-										<p>{'This amount will be reduced by the sum of the transaction fees incurred during the migration of other tokens, as well as any eventual donations.'}</p>
+										<p>{'This amount will be reduced by the sum of the transaction fees incurred during the migration of other tokens.'}</p>
 									</span>
 								</div>
 							) : null}

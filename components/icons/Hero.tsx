@@ -6,7 +6,7 @@ function	Hero(props: React.SVGProps<SVGSVGElement>): ReactElement {
 	return (
 		<svg
 			{...props}
-			className={'w-2/5 text-orange-600'}
+			className={'w-2/5 text-primary-600'}
 			viewBox={'0 0 142 123'}
 			fill={'none'}
 			xmlns={'http://www.w3.org/2000/svg'}>

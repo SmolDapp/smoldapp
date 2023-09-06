@@ -22,7 +22,7 @@ class MyDocument extends Document {
 						crossOrigin={'anonymous'} />
 					<link href={'https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;700&display=swap'} rel={'stylesheet'} />
 				</Head>
-				<body className={'bg-[#1d4ed803] transition-colors duration-150'}>
+				<body className={'bg-primary-50 transition-colors duration-150'}>
 					<PatternBackground />
 					<Main />
 					<NextScript />

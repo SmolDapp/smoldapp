@@ -27,19 +27,6 @@
 	--color-red-200: 0 100% 90%;
 }
 
-:root.dark {
-	--color-neutral-900: 229 34% 100%;
-	--color-neutral-800: 229 34% 96%;
-	--color-neutral-600: 229 34% 90%;
-	--color-neutral-500: 229 34% 90%;
-	--color-neutral-400: 229 34% 48%;
-	--color-neutral-300: 229 34% 36%;
-	--color-neutral-200: 229 34% 24%;
-	--color-neutral-100: 229 34% 16%;
-	--color-neutral-50: 229 34% 8%;
-	--color-neutral-0: 229 34% 13%;
-}
-
 
 body {@apply text-neutral-900;}
 h1 {@apply text-xl font-bold text-neutral-900;}
@@ -96,47 +83,46 @@ label[aria-invalid="true"] {
 ** extra tailwind class
 **************************************************************************/
 .flex-center {@apply flex justify-center items-center;}
-.rounded-default {
-	@apply rounded-md;
-}
-.rounded-b-default {
-	@apply rounded-b-md;
-}
-.rounded-t-default {
-	@apply rounded-t-md;
-}
-.rounded-l-default {
-	@apply rounded-l-md;
-}
-.rounded-r-default {
-	@apply rounded-r-md;
-}
+.rounded-default {@apply rounded-md;}
+.rounded-b-default {@apply rounded-b-md;}
+.rounded-t-default {@apply rounded-t-md;}
+.rounded-l-default {@apply rounded-l-md;}
+.rounded-r-default {@apply rounded-r-md;}
 
 /* -- Button.tsx ------------------------------------------------------- */
 .yearn--button {
-	@apply cursor-pointer px-4 flex justify-center items-center h-10 text-sm transition-all relative rounded-md;
+	@apply cursor-pointer px-4 flex justify-center items-center h-10 text-sm transition-all relative focus-within:outline-primary-600 outline-offset-2 outline rounded-md outline-transparent;
 
 	&[data-variant="filled"] {
-		@apply text-neutral-0 bg-neutral-900 font-normal border border-transparent;
-		&:disabled {@apply bg-neutral-700 opacity-40;}
-		&:not(:disabled):not([aria-busy="true"]):hover {@apply bg-neutral-800;}
+		@apply text-primary-0 bg-primary-600 font-normal border border-transparent;
+		&:disabled {@apply bg-primary-600 opacity-40;}
+		&:not(:disabled):not([aria-busy="true"]):hover {@apply bg-primary-700;}
 	}
 	&[data-variant="light"] {
-		@apply text-neutral-900 bg-neutral-100 border border-transparent;
+		@apply text-primary-900 bg-primary-100 border border-transparent;
 		&:disabled {@apply opacity-40;}
-		&:not(:disabled):not([aria-busy="true"]):hover {@apply bg-neutral-200;}
+		&:not(:disabled):not([aria-busy="true"]):hover {@apply bg-primary-200;}
 	}
 	&[data-variant="outlined"] {
-		@apply text-neutral-900 bg-transparent border border-neutral-900;
+		@apply text-primary-900 bg-transparent border border-primary-900;
 		&:disabled {@apply opacity-40;}
-		&:not(:disabled):not([aria-busy="true"]):hover {@apply bg-neutral-900 text-neutral-0;}
+		&:not(:disabled):not([aria-busy="true"]):hover {@apply bg-primary-900 text-primary-0;}
 	}
 	&[data-variant="reverted"] {
-		@apply text-neutral-900 bg-neutral-0 font-normal border border-transparent;
-		&:disabled {@apply bg-neutral-200 opacity-40;}
-		&:not(:disabled):not([aria-busy="true"]):hover {@apply bg-neutral-200;}
+		@apply text-primary-600 bg-primary-0 font-normal border border-transparent;
+		&:disabled {@apply bg-primary-200 opacity-40;}
+		&:not(:disabled):not([aria-busy="true"]):hover {@apply bg-primary-200;}
 		&[aria-busy="true"] svg {
-			@apply text-neutral-900;
+			@apply text-primary-900;
+		}
+	}
+	&[data-variant="reverted-alt"] {
+		@apply text-primary-900 bg-primary-0 font-normal border border-transparent focus:outline-primary-0;
+		&:disabled {@apply bg-primary-200 opacity-40;}
+		&:not(:disabled):not([aria-busy="true"]):hover {@apply bg-primary-200;}
+
+		&[aria-busy="true"] svg {
+			@apply text-primary-900;
 		}
 	}
 	&[aria-busy="true"] {
@@ -144,6 +130,17 @@ label[aria-invalid="true"] {
 		color: transparent !important;
 	}
 	&:disabled {@apply cursor-not-allowed;}
+}
+
+.smol--input-wrapper {
+	@apply flex h-10 w-full items-center rounded-md border border-primary-200/60 bg-neutral-0 p-2 transition-colors;
+
+	&:has(input:focus) {
+		@apply border-primary-400;
+	}
+}
+.smol--input {
+	@apply w-full overflow-x-scroll border-none bg-transparent px-0 py-4 text-sm outline-none scrollbar-none;
 }
 
 /* 🔵 - Yearn Finance ******************************************************
@@ -257,11 +254,6 @@ label[aria-invalid="true"] {
 .yearn--modal-overlay {
 	@apply fixed inset-0 z-10 bg-neutral-900/60 transition-opacity;
 }
-:root.dark {
-	& .yearn--modal-overlay {
-		@apply bg-neutral-100/90;
-	}
-}
 .yearn--modal {
 	@apply inline-block overflow-hidden relative z-50 w-full text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:align-middle md:mb-96 bg-neutral-0;
 
@@ -299,11 +291,15 @@ label[aria-invalid="true"] {
 	@apply h-4 w-4 min-w-[16px] cursor-pointer transition-colors text-neutral-300 group-hover:text-neutral-500;
 }
 
-:root.dark {
-	& .yearn--sort-chevron--off {
-		@apply text-neutral-200;
-	}
+
+.yearn--toast-options {
+	@apply !w-screen text-sm text-neutral-700 !px-4 !rounded-none !shadow-none !py-2 !max-w-full;
 }
+
+.yearn--toast-button {
+	@apply text-xs px-3 py-1 text-[#0657F9] bg-white;
+}
+
 
 .mobile-nav-item {
 	@apply flex flex-col items-start justify-between rounded-md bg-neutral-100;
@@ -330,25 +326,6 @@ label[aria-invalid="true"] {
 	visibility: hidden;
 }
 
-
-.yearn--toast-options {
-	@apply !w-screen text-sm text-neutral-700 !px-4 !rounded-none !shadow-none !py-2 !max-w-full;
-}
-
-.yearn--toast-button {
-	@apply text-xs px-3 py-1 text-[#0657F9] bg-white;
-}
-
-
-.yearn--shadow {
-	box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.16);
-}
-
-:root.dark {
-	& .yearn--shadow {
-		@apply border-solid border border-neutral-200;
-	}
-}
 
 .font-number {
 	@apply font-mono tabular-nums;

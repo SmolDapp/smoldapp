@@ -21,13 +21,13 @@ function SectionWalletSelection({onSelect}: TViewWalletProps): ReactElement {
 
 	return (
 		<Fragment>
-			<div className={`relative col-span-6 md:col-span-4 flex`}>
+			<div className={'relative col-span-6 flex md:col-span-4'}>
 				<CardWithIcon
 					isSelected={isActive}
 					icon={<IconWalletWalletConnect />}
 					label={'WalletConnect'}
 					onClick={async (): Promise<void> => {
-						await onConnect()
+						await onConnect();
 						onSelect();
 					}} />
 			</div>

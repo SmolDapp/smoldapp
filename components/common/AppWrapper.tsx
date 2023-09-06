@@ -138,9 +138,10 @@ function SideBar(): ReactElement {
 
 function Header(): ReactElement {
 	return (
-		<div id={'head'} className={'fixed inset-x-0 top-0 z-50 w-full border-b border-neutral-100 bg-neutral-0/95'}>
-			<div id={'head'} className={'bg-[#1d4ed803] pl-52 pr-10'}>
-				<div className={'mx-auto p-4'}>
+		<div id={'head'} className={'fixed inset-x-0 top-0 z-50 w-full border-b border-primary-100'}>
+			<div id={'head'} className={'bg-primary-50/95 pl-52 pr-10'}>
+				<div className={'mx-auto flex flex-row justify-between p-4'}>
+					<div />
 					<div className={'flex items-center justify-end'}>
 						<NetworkSelector networks={[]} />
 						<WalletSelector />

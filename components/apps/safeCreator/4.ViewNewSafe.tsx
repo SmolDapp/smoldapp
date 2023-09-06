@@ -274,7 +274,7 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 												type={'text'}
 												value={prefix}
 												pattern={'^0x[a-fA-F0-9]{0,6}$'}
-												className={'w-full overflow-x-scroll border-none bg-transparent px-0 py-4 font-mono text-sm font-bold outline-none scrollbar-none'} />
+												className={'smol--input font-mono font-bold'} />
 										</div>
 									</div>
 								</div>
@@ -306,7 +306,7 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 												type={'text'}
 												value={suffix}
 												pattern={'[a-fA-F0-9]{0,6}$'}
-												className={'w-full overflow-x-scroll border-none bg-transparent px-0 py-4 font-mono text-sm font-bold outline-none scrollbar-none'} />
+												className={'smol--input font-mono font-bold'} />
 										</div>
 									</div>
 								</div>

@@ -1,8 +1,8 @@
 @import './style.base.css';
-@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;700&display=swap');
 
 :root {
-	@apply bg-neutral-0;
+	@apply bg-primary-50;
 }
 .font-mono {
 	font-family: 'Source Code Pro', monospace !important;
@@ -23,41 +23,6 @@
 
 .yearn--listbox-menu-item {
 	@apply hover:!bg-neutral-100/80;
-}
-:root {
-	& .yearn--button {
-		@apply rounded-md;
-		&[data-variant="filled"] {
-			@apply focus-within:outline-neutral-900 outline-offset-2 outline;
-		}
-		&[data-variant="reverted"] {
-			@apply text-neutral-900 bg-neutral-0 font-normal border border-transparent;
-			&:disabled {@apply bg-neutral-200 opacity-40;}
-			&:not(:disabled):not([aria-busy="true"]):hover {@apply bg-neutral-200;}
-
-			&[aria-busy="true"] svg {
-				@apply text-neutral-900;
-			}
-		}
-		&[data-variant="reverted-alt"] {
-			@apply text-neutral-900 bg-neutral-0 font-normal border border-transparent;
-			&:disabled {@apply bg-neutral-200 opacity-40;}
-			&:not(:disabled):not([aria-busy="true"]):hover {@apply bg-neutral-200;}
-
-			&[aria-busy="true"] svg {
-				@apply text-neutral-900;
-			}
-		}
-		&[data-variant="light"] {
-			@apply text-neutral-900 bg-neutral-300 font-normal border border-transparent;
-			&:disabled {@apply bg-neutral-200 opacity-40;}
-			&:not(:disabled):not([aria-busy="true"]):hover {@apply bg-neutral-200;}
-
-			&[aria-busy="true"] svg {
-				@apply text-neutral-900;
-			}
-		}
-	}
 }
 .yearn--button-smaller {
 	@apply !rounded-md;
@@ -194,14 +159,34 @@ details {
 	}
 }
 
-[type='checkboxx'],
-[type='checkboxx']:focus {
-	@apply outline-none focus:outline-none focus:ring-0 active:ring-0;
-	box-shadow: none !important;
-}
 .checkbox {
-	@apply text-neutral-900 accent-neutral-900 rounded-md;
+	@apply text-primary-500 accent-primary-500 rounded-sm border-primary-500 focus:outline-primary-500 outline-none !ring-transparent indeterminate:border-primary-200 indeterminate:bg-primary-200 indeterminate:text-primary-200 indeterminate:accent-primary-200 indeterminate:focus:outline-primary-200 indeterminate:after:absolute indeterminate:after:ml-[0.2rem] indeterminate:after:mt-[6px] indeterminate:after:w-[0.5rem] indeterminate:after:border-[0.05rem] indeterminate:after:border-solid indeterminate:after:border-white indeterminate:focus:after:w-[0.5rem] indeterminate:focus:after:rounded-none indeterminate:focus:after:border-[0.125rem] indeterminate:focus:after:border-b-0 indeterminate:focus:after:border-l-0 indeterminate:focus:after:border-r-0;
+
+	@apply focus:!outline-none focus:!ring-transparent;
+
+
+	&[aria-busy="true"] {
+		@apply border-neutral-300 bg-neutral-300 text-neutral-300 accent-neutral-300 rounded-sm focus:outline-neutral-300 relative after:animate-spin;
+		background-image: none;
+	}
+	&[aria-busy="true"]:after {
+		height: 12px;
+		width: 12px;
+		position: absolute;
+		left: 1px;
+		top: 1px;
+		background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 512 512' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M415.136 355.749L415.133 355.754C405.65 372.24 411.246 393.373 427.754 402.867C444.239 412.349 465.369 406.755 474.865 390.251C496.879 352.28 509.5 308.05 509.5 261C509.5 118.219 393.781 2.5 251 2.5C231.919 2.5 216.5 17.9193 216.5 37C216.5 56.0807 231.919 71.5 251 71.5C355.619 71.5 440.5 156.381 440.5 261C440.5 295.547 431.223 327.917 415.136 355.749Z' fill='white' stroke='white' stroke-width='5' /%3e%3c/svg%3e");
+	}
+
+	&[aria-invalid="true"] {
+		background-image: url("data:image/svg+xml,%3csvg height='1em' viewBox='0 0 384 512' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z'/%3e%3c/svg%3e");
+		background-repeat: no-repeat;
+		background-position: center;
+		@apply border-red-200 bg-red-200 text-red-200 accent-red-200 focus:outline-red-200;
+	}
 }
+
+
 .yearn--tab {
 	@apply mx-5 flex h-full flex-col justify-center text-base cursor-pointer font-normal;
 	&.selected {
@@ -209,42 +194,17 @@ details {
 	}
 }
 .box-0 {
-	@apply bg-neutral-0 border border-neutral-200 rounded-md;
-	&.hover {
-		@apply transition-colors hover:bg-neutral-100;
-	}
-}
-.box-50 {
-	@apply bg-neutral-100/50 border border-neutral-200 rounded-md;
+	@apply bg-neutral-0 border border-primary-200/60 rounded-md shadow-sm;
 	&.hover {
 		@apply transition-colors hover:bg-neutral-100;
 	}
 }
 .box-100 {
-	@apply bg-neutral-100 border border-neutral-200 rounded-md;
+	@apply bg-primary-50 border border-primary-200/60 rounded-md;
 	&.hover {
-		@apply transition-colors hover:bg-neutral-200;
+		@apply transition-colors hover:bg-primary-100;
 	}
 }
-.box-200 {
-	@apply bg-neutral-200 border border-neutral-200 rounded-md;
-	&.hover {
-		@apply transition-colors hover:bg-neutral-200;
-	}
-}
-.box-700 {
-	@apply bg-neutral-700 border border-neutral-600/30 rounded-md;
-	&.hover {
-		@apply transition-colors hover:bg-neutral-600/30;
-	}
-}
-.box-900 {
-	@apply bg-neutral-900 border border-neutral-700 rounded-md;
-	&.hover {
-		@apply transition-colors hover:bg-neutral-700;
-	}
-}
-
 
 .tooltip {
 	@apply relative cursor-help;
@@ -311,7 +271,7 @@ details {
 ** A custom overwrite is required for dark/light mode
 **************************************************************************************************/
 .appBox {
-	@apply relative flex aspect-video h-full w-full cursor-pointer flex-col items-start border border-neutral-300 p-4 transition-colors rounded-md hover:bg-neutral-900 hover:text-neutral-0 duration-[400ms] ;
+	@apply relative flex aspect-video h-full w-full cursor-pointer flex-col items-start border border-primary-200 p-4 transition-colors rounded-md bg-primary-0 hover:bg-primary-500 hover:text-primary-0;
 }
 
 /**************************************************************************************************

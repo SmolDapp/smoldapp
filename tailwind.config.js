@@ -31,7 +31,20 @@ module.exports = {
 			'white': 'rgb(255, 255, 255)',
 			'transparent': 'transparent',
 			'inherit': 'inherit',
-			'orange': {
+			primary: {
+				0: '#FFFFFF',
+				50: '#ebf4f3',
+				100: '#d7eae6',
+				200: '#b0d5cd',
+				300: '#88bfb5',
+				400: '#61aa9c',
+				500: '#399583',
+				600: '#2e7769',
+				700: '#22594f',
+				800: '#173c34',
+				900: '#0b1e1a'
+			},
+			orange: {
 				50: '#fff7ed',
 				100: '#ffedd5',
 				200: '#fed7aa',
