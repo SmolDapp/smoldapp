@@ -8,11 +8,6 @@ import LogoSafeCreator from '@safeCreatooor/Logo';
 import LogoTokenlistooor from '@tokenlistooor/Logo';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 
-import DisperseWrapper from './disperse';
-import WrapperMigrate from './migratooor';
-import WrapperNFTMigratooor from './nftmigratooor';
-
-import type {GetServerSidePropsContext, GetServerSidePropsResult} from 'next';
 import type {ReactElement} from 'react';
 
 const	apps = [
@@ -127,19 +122,7 @@ function	AppBox({app}: {app: typeof apps[0]}): ReactElement {
 	);
 }
 
-function	Index(props: {app: string}): ReactElement {
-	const {app} = props;
-	if (app === 'disperse') {
-		return <DisperseWrapper />;
-	}
-	if (app === 'migrate') {
-		return <WrapperMigrate />;
-	}
-	if (app === 'nftmigratooor') {
-		return <WrapperNFTMigratooor />;
-	}
-
-
+function	Index(): ReactElement {
 	return (
 		<Fragment>
 			<div className={'mx-auto grid w-full max-w-4xl'}>
@@ -179,24 +162,3 @@ function	Index(props: {app: string}): ReactElement {
 }
 
 export default Index;
-
-
-type TResult = {
-	app?: string
-}
-export async function getServerSideProps(context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<TResult>> {
-	const {host} = context.req.headers;
-	if (host === 'disperse.smold.app') {
-		return {props: {app: 'disperse'}};
-	}
-	if (host === 'migrate.smold.app' || host === 'migratooor.smold.app' || host === 'migratooor.com') {
-		return {props: {app: 'migrate'}};
-	}
-	if (host === 'nftmigratooor.smold.app') {
-		return {props: {app: 'nftmigratooor'}};
-	}
-
-	return {
-		props: {}
-	};
-}
