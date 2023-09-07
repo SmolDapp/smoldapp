@@ -13,7 +13,7 @@ export type TCardWithIcon = {
 export default function CardWithIcon({isSelected, onClick, label, icon}: TCardWithIcon): ReactElement {
 	return (
 		<button
-			className={`hover group relative flex w-full items-center justify-center p-4 md:p-6 ${isSelected ? 'box-100' : 'box-0'}`}
+			className={'hover box-0 group relative flex w-full items-center justify-center p-4 md:p-6'}
 			onClick={onClick}>
 			<div className={'relative flex w-full flex-col items-center justify-center'}>
 				<div

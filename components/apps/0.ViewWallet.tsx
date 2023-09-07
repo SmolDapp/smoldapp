@@ -1,6 +1,5 @@
 import React, {Fragment} from 'react';
 import CardWithIcon from 'components/common/CardWithIcon';
-import {useIsMounted} from '@react-hookz/web';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {IconWalletWalletConnect} from '@yearn-finance/web-lib/icons/IconWalletWalletConnect';
 import ViewSectionHeading from '@common/ViewSectionHeading';
@@ -13,11 +12,6 @@ type TViewWalletProps = {
 
 function SectionWalletSelection({onSelect}: TViewWalletProps): ReactElement {
 	const {isActive, onConnect} = useWeb3();
-
-	const isMounted = useIsMounted();
-	if (!isMounted()) {
-		return <Fragment />;
-	}
 
 	return (
 		<Fragment>

@@ -308,8 +308,8 @@ const ViewTable = memo(function ViewTable({onProceed}: {onProceed: VoidFunction}
 	const isAboveBalance = totalToDisperse > balanceOf;
 
 	return (
-		<section>
-			<div className={'box-0 relative w-full'}>
+		<section className={'box-0'}>
+			<div className={'relative w-full'}>
 				<div className={'flex flex-col p-4 text-neutral-900 md:p-6 md:pb-4'}>
 					<div className={'w-full md:w-3/4'}>
 						<b>{'Who gets what?'}</b>
@@ -350,7 +350,7 @@ const ViewTable = memo(function ViewTable({onProceed}: {onProceed: VoidFunction}
 						))}
 					</div>
 				</div>
-				<div className={'rounded-b-0 relative col-span-12 flex w-full max-w-4xl flex-row items-center justify-between bg-neutral-900 p-4 text-neutral-0 md:rounded-b-md md:px-6 md:py-4'}>
+				<div className={'sticky inset-x-0 bottom-0 z-20 flex w-full max-w-5xl flex-row items-center justify-between rounded-b-[5px] bg-primary-600 p-4 text-primary-0 md:relative md:px-6 md:py-4'}>
 					<div className={'flex w-3/4 flex-col'}>
 						<dl className={'container whitespace-nowrap text-xs'}>
 							<dt>{'You have'}</dt>

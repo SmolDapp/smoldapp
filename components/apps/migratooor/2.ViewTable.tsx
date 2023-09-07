@@ -6,6 +6,7 @@ import {useMigratooor} from '@migratooor/useMigratooor';
 import {useMountEffect} from '@react-hookz/web';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
+import {IconSettings} from '@yearn-finance/web-lib/icons/IconSettings';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {toBigInt, toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 
@@ -70,20 +71,22 @@ function TableLine({tokenAddress, balance, index}: {
 
 	return (
 		<Fragment>
-			<div className={'col-span-12 ml-1 flex w-full flex-row items-center gap-3'}>
-				<input
-					ref={inputRef}
-					type={'checkbox'}
-					className={'checkbox cursor-pointer'}
-					tabIndex={-1}
-					checked={isSelected}
-					onChange={(event: React.ChangeEvent<HTMLInputElement>): void => {
-						if (!event.target.checked) {
-							onSelect(0n);
-						} else {
-							onSelect(balance.raw);
-						}
-					}} />
+			<div className={'relative col-span-12 flex w-full flex-row items-center gap-3'}>
+				<div className={'absolute right-4 top-2 z-20 md:relative md:right-auto md:top-auto'}>
+					<input
+						ref={inputRef}
+						type={'checkbox'}
+						className={'checkbox cursor-pointer'}
+						tabIndex={-1}
+						checked={isSelected}
+						onChange={(event: React.ChangeEvent<HTMLInputElement>): void => {
+							if (!event.target.checked) {
+								onSelect(0n);
+							} else {
+								onSelect(balance.raw);
+							}
+						}} />
+				</div>
 				<TokenInput
 					index={index}
 					allowance={toNormalizedBN(0)}
@@ -99,11 +102,11 @@ function TableLine({tokenAddress, balance, index}: {
 	);
 }
 
-
 const ViewTable = memo(function ViewTable({onProceed}: {onProceed: VoidFunction}): ReactElement {
 	const {isActive, chainID} = useWeb3();
 	const {selected} = useMigratooor();
 	const {balances, balancesNonce, isLoading} = useWallet();
+	const {openTokenListModal} = useTokenList();
 	const [search, set_search] = useState<string>('');
 
 	const isValid = useMemo((): boolean => {
@@ -144,7 +147,10 @@ const ViewTable = memo(function ViewTable({onProceed}: {onProceed: VoidFunction}
 	return (
 		<section className={'box-0'}>
 			<div className={'relative w-full'}>
-				<div className={'col-span-12 flex flex-col p-4 text-neutral-900 md:p-6 md:pb-2'}>
+				<div className={'relative col-span-12 flex flex-col p-4 text-neutral-900 md:p-6 md:pb-2'}>
+					<div className={'absolute right-4 top-4 cursor-pointer'} onClick={openTokenListModal}>
+						<IconSettings className={'transition-color h-4 w-4 text-neutral-400 hover:text-neutral-900'} />
+					</div>
 					<div className={'w-full md:w-3/4'}>
 						<b>{'Which tokens do you want to dump?'}</b>
 						<p className={'text-sm text-neutral-500'}>
@@ -163,7 +169,7 @@ const ViewTable = memo(function ViewTable({onProceed}: {onProceed: VoidFunction}
 					</div>
 				</div>
 
-				<div className={'flex w-full flex-col gap-2 px-6'}>
+				<div className={'flex w-full flex-col gap-2 overflow-x-hidden px-0 md:px-6'}>
 					{balancesToDisplay.length === 0 && isLoading ? (
 						<div className={'col-span-12 flex min-h-[200px] flex-col items-center justify-center'}>
 							<IconSpinner />
