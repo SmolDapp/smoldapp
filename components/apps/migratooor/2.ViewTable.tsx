@@ -69,6 +69,10 @@ function TableLine({tokenAddress, balance, index}: {
 		}
 	});
 
+	if (!tokenList[toAddress(tokenAddress)]) {
+		return <div />;
+	}
+
 	return (
 		<Fragment>
 			<div className={'relative col-span-12 flex w-full flex-row items-center gap-3'}>
