@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import Meta from 'components/common/Meta';
 import Logo from 'components/icons/logo';
 import thumbnailVariants from 'utils/animations';
@@ -15,9 +16,11 @@ function Header(): ReactElement {
 			<div className={'bg-primary-50/95'}>
 				<div className={'mx-auto flex flex-row justify-between p-4'}>
 					<div className={'flex items-center justify-start'}>
-						<div className={'flex items-center justify-center rounded-full bg-white p-2'}>
-							<Logo className={'h-4 w-4'} />
-						</div>
+						<Link href={'/'}>
+							<div className={'flex items-center justify-center rounded-full bg-white p-2'}>
+								<Logo className={'h-4 w-4'} />
+							</div>
+						</Link>
 					</div>
 					<div className={'flex items-center justify-end'}>
 						<NetworkSelector networks={[]} />
