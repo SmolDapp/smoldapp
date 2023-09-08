@@ -46,7 +46,23 @@ module.exports = (phase) => withTM(withPWA({
 			},
 			{
 				source: '/',
-				has: [{type: 'host', value: 'migratooor.com'}],
+				has: [{type: 'host', value: 'disperse.smold.app'}],
+				destination: '/disperse',
+				permanent: true
+			},
+			{
+				source: '/',
+				has: [
+					{type: 'host', value: 'migratooor.com'},
+					{type: 'host', value: 'migrate.smold.app'},
+					{type: 'host', value: 'migratooor.smold.app'}
+				],
+				destination: '/migratooor',
+				permanent: true
+			},
+			{
+				source: '/',
+				has: [{type: 'host', value: 'nftmigratooor.smold.app'}],
 				destination: '/migratooor',
 				permanent: true
 			},

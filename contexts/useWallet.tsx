@@ -1,6 +1,5 @@
 import React, {createContext, memo, useCallback, useContext, useMemo, useState} from 'react';
 import {useTokenList} from 'contexts/useTokenList';
-import {MATIC_TOKEN_ADDRESS} from 'utils/constants';
 import defaultTokenList from 'utils/tokenLists.json';
 import {useLocalStorageValue, useMountEffect, useUpdateEffect} from '@react-hookz/web';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
@@ -8,28 +7,32 @@ import {useBalances} from '@yearn-finance/web-lib/hooks/useBalances';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {ETH_TOKEN_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
+import {toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import {performBatchedUpdates} from '@yearn-finance/web-lib/utils/performBatchedUpdates';
 import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 
 import type {Dispatch, ReactElement, SetStateAction} from 'react';
+import type {TToken} from 'utils/types';
 import type {TUseBalancesTokens} from '@yearn-finance/web-lib/hooks/useBalances';
-import type {TDict} from '@yearn-finance/web-lib/types';
+import type {TAddress, TDict} from '@yearn-finance/web-lib/types';
 import type {TBalanceData} from '@yearn-finance/web-lib/types/hooks';
-import type {TTokenInfo} from './useTokenList';
+import type {TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 
 export type TWalletContext = {
 	balances: TDict<TBalanceData>,
+	getBalance: (tokenAddress: TAddress) => TNormalizedBN,
 	balancesNonce: number,
 	isLoading: boolean,
 	walletProvider: string,
 	refresh: (tokenList?: TUseBalancesTokens[], shouldSaveInStorage?: boolean) => Promise<TDict<TBalanceData>>,
-	refreshWithList: (tokenList: TDict<TTokenInfo>) => Promise<TDict<TBalanceData>>,
+	refreshWithList: (tokenList: TDict<TToken>) => Promise<TDict<TBalanceData>>,
 	set_walletProvider: Dispatch<SetStateAction<string>>,
 }
 
 const defaultProps = {
 	balances: {},
 	balancesNonce: 0,
+	getBalance: (): TNormalizedBN => toNormalizedBN(0),
 	isLoading: true,
 	walletProvider: 'NONE',
 	refresh: async (): Promise<TDict<TBalanceData>> => ({}),
@@ -47,7 +50,7 @@ export const WalletContextApp = memo(function WalletContextApp({children}: {chil
 	const {isActive} = useWeb3();
 	const {safeChainID} = useChainID();
 	const [walletProvider, set_walletProvider] = useState('NONE');
-	const {value: extraTokens, set: saveExtraTokens} = useLocalStorageValue<TUseBalancesTokens[]>('smoldapp/tokens', {defaultValue: []});
+	const {value: extraTokens, set: saveExtraTokens} = useLocalStorageValue<TUseBalancesTokens[]>('dumpservices/tokens', {defaultValue: []});
 
 	const availableTokens = useMemo((): TUseBalancesTokens[] => {
 		const withDefaultTokens = [...Object.values(tokenList), ...defaultTokenList.tokens];
@@ -55,18 +58,20 @@ export const WalletContextApp = memo(function WalletContextApp({children}: {chil
 		withDefaultTokens
 			.filter((token): boolean => token.chainId === safeChainID)
 			.forEach((token): void => {
-				if (safeChainID === 137 && toAddress(token.address) === MATIC_TOKEN_ADDRESS) {
-					return;
-				}
-				tokens.push({token: toAddress(token.address), decimals: Number(token.decimals), name: token.name, symbol: token.symbol});
+				tokens.push({
+					token: toAddress(token.address),
+					decimals: Number(token.decimals),
+					name: token.name,
+					symbol: token.symbol
+				});
 			});
 		const {wrappedToken} = getNetwork(safeChainID).contracts;
 		if (wrappedToken) {
 			tokens.push({
-				token: ETH_TOKEN_ADDRESS,
+				token: toAddress(ETH_TOKEN_ADDRESS),
+				decimals: wrappedToken.decimals,
 				name: wrappedToken.coinName,
-				symbol: wrappedToken.coinSymbol,
-				decimals: wrappedToken.decimals
+				symbol: wrappedToken.coinSymbol
 			});
 		}
 		return tokens;
@@ -86,13 +91,18 @@ export const WalletContextApp = memo(function WalletContextApp({children}: {chil
 		return updatedBalances;
 	}, [update, updateSome, saveExtraTokens, extraTokens]);
 
-	const onRefreshWithList = useCallback(async (newTokenList: TDict<TTokenInfo>): Promise<TDict<TBalanceData>> => {
+	const onRefreshWithList = useCallback(async (newTokenList: TDict<TToken>): Promise<TDict<TBalanceData>> => {
 		const withDefaultTokens = [...Object.values(newTokenList)];
 		const tokens: TUseBalancesTokens[] = [];
 		withDefaultTokens
 			.filter((token): boolean => token.chainId === safeChainID)
 			.forEach((token): void => {
-				tokens.push({token: token.address, decimals: Number(token.decimals), name: token.name, symbol: token.symbol});
+				tokens.push({
+					token: toAddress(token.address),
+					decimals: Number(token.decimals),
+					name: token.name,
+					symbol: token.symbol
+				});
 			});
 		const tokensToFetch = tokens.filter((token): boolean => {
 			return !availableTokens.find((availableToken): boolean => availableToken.token === token.token);
@@ -108,7 +118,6 @@ export const WalletContextApp = memo(function WalletContextApp({children}: {chil
 			await updateSome(extraTokens);
 		}
 	}, [extraTokens, updateSome]);
-
 
 	useMountEffect((): void => {
 		if (!isActive) {
@@ -130,6 +139,12 @@ export const WalletContextApp = memo(function WalletContextApp({children}: {chil
 	const contextValue = useMemo((): TWalletContext => ({
 		balances: balances,
 		balancesNonce: nonce,
+		getBalance: (tokenAddress: TAddress): TNormalizedBN => (
+			toNormalizedBN(
+				balances?.[toAddress(tokenAddress)]?.raw || 0,
+				balances?.[toAddress(tokenAddress)]?.decimals || 18
+			)
+		),
 		isLoading: isLoading || false,
 		refresh: onRefresh,
 		refreshWithList: onRefreshWithList,

@@ -3,6 +3,7 @@ import {usePopper} from 'react-popper';
 import {useRouter} from 'next/router';
 import IconBug from 'components/icons/IconBug';
 import html2canvas from 'html2canvas';
+import {useAccount} from 'wagmi';
 import axios from 'axios';
 import {Popover as PopoverHeadlessUI, Portal, Transition} from '@headlessui/react';
 import {useLocalStorageValue} from '@react-hookz/web';
@@ -10,7 +11,6 @@ import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {toAddress, truncateHex} from '@yearn-finance/web-lib/utils/address';
 
 import type {ReactElement} from 'react';
-import { useAccount } from 'wagmi';
 
 type TRequestType = 'bug' | 'feature';
 
@@ -112,7 +112,7 @@ export function FeebackPopover(): ReactElement {
 		<Portal>
 			<PopoverHeadlessUI className={'relative z-50'}>
 				<PopoverHeadlessUI.Button
-					className={'fixed bottom-5 right-5 flex h-10 w-10 items-center justify-center rounded-full bg-orange-500'}
+					className={'fixed bottom-5 right-5 flex h-10 w-10 items-center justify-center rounded-full bg-primary-500'}
 					ref={set_referenceElement}>
 					<IconBug className={'h-4 w-4 text-neutral-0'} />
 				</PopoverHeadlessUI.Button>

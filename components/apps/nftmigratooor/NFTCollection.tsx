@@ -33,8 +33,8 @@ const NFTCollection = memo(function NFTCollection(props: TNFTCollectionProps): R
 		<details
 			open
 			className={'detailsMigrate group'}>
-			<summary className={`flex flex-col items-start border-y border-l-2 border-b-neutral-200 bg-neutral-100 py-4 transition-colors ${isCollectionSelected ? 'border-l-neutral-900 border-t-transparent' : 'border-transparent'}`}>
-				<div className={'flex w-full flex-row items-start justify-between md:items-center'}>
+			<summary className={`flex flex-col items-start border-l-2 bg-neutral-100 p-0 transition-colors ${isCollectionSelected ? 'border-l-primary-600' : 'border-l-transparent'}`}>
+				<div className={'flex w-full flex-row items-start justify-between border-y border-b-neutral-200 border-t-transparent p-4 md:items-center'}>
 					<div className={'flex w-3/4 flex-row items-center space-x-0 md:w-auto md:space-x-6'}>
 						<div className={'mr-4 flex items-center'}>
 							<input
@@ -42,7 +42,7 @@ const NFTCollection = memo(function NFTCollection(props: TNFTCollectionProps): R
 								type={'checkbox'}
 								onChange={(): void => onSelectAll(!isCollectionSelected, collectionItems)}
 								value={''}
-								className={'h-4 w-4 rounded-md border-neutral-400 text-pink-400 indeterminate:ring-2 focus:ring-2 focus:ring-pink-400 focus:ring-offset-neutral-100'}
+								className={'checkbox cursor-pointer'}
 							/>
 						</div>
 						<div className={'text-left text-sm'}>

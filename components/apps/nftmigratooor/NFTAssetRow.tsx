@@ -57,7 +57,7 @@ const NFTAsset = memo(function NFTAsset(props: TNFTAssetProps): ReactElement {
 		<div
 			role={'button'}
 			onClick={(): void => onSelect(nft)}
-			className={`group relative grid w-full grid-cols-1 border-y-0 border-l-2 border-r-0 border-solid border-neutral-200 px-4 py-2 text-left transition-colors hover:bg-neutral-50/50 md:grid-cols-9 md:px-6 md:pl-16 ${isSelected ? 'border-neutral-900 bg-neutral-50/50' : 'border-transparent'}`}>
+			className={`group relative grid w-full grid-cols-1 border-y-0 border-l-2 border-r-0 border-solid border-neutral-200 px-4 py-2 text-left transition-colors hover:bg-neutral-50/50 md:grid-cols-9 md:px-6 md:pl-16 ${isSelected ? 'border-primary-600 bg-neutral-50/50' : 'border-transparent'}`}>
 			<div className={'col-span-5 mb-2 flex h-14 flex-row items-center justify-between py-4 md:mb-0 md:py-0'}>
 				<div className={'flex flex-row items-center space-x-4 md:space-x-6'}>
 					<input
@@ -65,7 +65,7 @@ const NFTAsset = memo(function NFTAsset(props: TNFTAssetProps): ReactElement {
 						onChange={(): void => undefined} //Nothing, the whole button is taking care of the click
 						type={'checkbox'}
 						value={''}
-						className={'h-4 w-4 rounded-md border-neutral-400 text-pink-400 indeterminate:ring-2 focus:ring-2 focus:ring-pink-400 focus:ring-offset-neutral-100'} />
+						className={'checkbox cursor-pointer'} />
 					<div className={'flex h-8 min-h-[48px] w-8 min-w-[48px] md:h-10 md:w-10'}>
 						<AssetImage {...props} />
 						{/* {(nft.imageURL || '').endsWith('.mov') || ['mov', 'mp4'].includes(nft?.imageType || '') ? (

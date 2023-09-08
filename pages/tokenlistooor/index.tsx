@@ -163,16 +163,16 @@ export default function Wrapper({summary}: {summary: TTokenListSummary}): ReactE
 
 Wrapper.getInitialProps = async (): Promise<unknown> => {
 	try {
-		const shaRes = await fetch('https://api.github.com/repos/migratooor/tokenlists/commits?sha=main&per_page=1');
+		const shaRes = await fetch('https://api.github.com/repos/smoldapp/tokenlists/commits?sha=main&per_page=1');
 		const shaJson = await shaRes.json();
 		const gihubCallResponse = (shaJson as [{sha: string}]);
 		const [{sha}] = gihubCallResponse;
-		const listRes = await fetch(`https://raw.githubusercontent.com/Migratooor/tokenLists/${sha}/lists/summary.json`);
+		const listRes = await fetch(`https://raw.githubusercontent.com/smoldapp/tokenLists/${sha}/lists/summary.json`);
 		const tokenListResponse = await listRes.json();
 
 		return {summary: tokenListResponse};
 	} catch (error) {
-		const listRes = await fetch('https://raw.githubusercontent.com/Migratooor/tokenLists/main/lists/summary.json');
+		const listRes = await fetch('https://raw.githubusercontent.com/smoldapp/tokenLists/main/lists/summary.json');
 		const tokenListResponse = await listRes.json();
 
 		return {summary: tokenListResponse};

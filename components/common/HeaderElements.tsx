@@ -3,13 +3,13 @@ import Image from 'next/image';
 import assert from 'assert';
 import {useConnect, usePublicClient} from 'wagmi';
 import {Listbox, Transition} from '@headlessui/react';
+import {useAccountModal, useChainModal} from '@rainbow-me/rainbowkit';
 import {useIsMounted} from '@react-hookz/web';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {toSafeChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {IconChevronBottom} from '@yearn-finance/web-lib/icons/IconChevronBottom';
 import {IconWallet} from '@yearn-finance/web-lib/icons/IconWallet';
 import {truncateHex} from '@yearn-finance/web-lib/utils/address';
-import {useAccountModal, useChainModal} from '@rainbow-me/rainbowkit';
 
 import type {ReactElement} from 'react';
 import type {Chain} from 'wagmi';
@@ -216,7 +216,7 @@ export function WalletSelector(): ReactElement {
 					openLoginModal();
 				}
 			}}>
-			<div suppressHydrationWarning className={'font-inter text-sm font-medium cursor-pointer'}>
+			<div suppressHydrationWarning className={'font-inter cursor-pointer text-sm font-medium'}>
 				{walletIdentity ? (walletIdentity) : (
 					<span>
 						<IconWallet className={'yearn--header-nav-item mt-0.5 block h-4 w-4 md:hidden'} />

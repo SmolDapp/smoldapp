@@ -28,7 +28,7 @@ function	Migrate(): ReactElement {
 	}, [set_currentStep]);
 
 	return (
-		<div className={'mx-auto grid w-full max-w-4xl'}>
+		<div className={'mx-auto grid w-full max-w-5xl'}>
 			<div className={'mt-6 flex flex-col justify-center md:mt-20'}>
 				<h1 className={'-ml-1 mt-4 w-full text-3xl tracking-tight text-neutral-900 md:mt-6 md:w-1/2 md:text-5xl'}>
 					{'Migrate like a fancy bird.'}

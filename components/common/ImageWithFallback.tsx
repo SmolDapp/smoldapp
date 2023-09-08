@@ -6,13 +6,13 @@ import {performBatchedUpdates} from '@yearn-finance/web-lib/utils/performBatched
 import type {ImageProps} from 'next/image';
 import type {CSSProperties, ReactElement} from 'react';
 
-function ImageWithFallback(props: ImageProps): ReactElement {
-	const {alt, src, ...rest} = props;
-	const [imageSrc, set_imageSrc] = useState(`${src}?fallback=true`);
+function ImageWithFallback(props: ImageProps & {altSrc?: string}): ReactElement {
+	const {alt, src, altSrc, ...rest} = props;
+	const [imageSrc, set_imageSrc] = useState(altSrc ? src : `${src}?fallback=true`);
 	const [imageStyle, set_imageStyle] = useState<CSSProperties>({});
 
 	useUpdateEffect((): void => {
-		set_imageSrc(`${src}?fallback=true`);
+		set_imageSrc(altSrc ? src : `${src}?fallback=true`);
 		set_imageStyle({});
 	}, [src]);
 
@@ -24,6 +24,10 @@ function ImageWithFallback(props: ImageProps): ReactElement {
 			loading={'eager'}
 			onError={(): void => {
 				performBatchedUpdates((): void => {
+					if (altSrc && imageSrc !== `${altSrc}?fallback=true`) {
+						set_imageSrc(`${altSrc}?fallback=true`);
+						return;
+					}
 					set_imageSrc('/placeholder.png');
 					set_imageStyle({filter: 'opacity(0.2)'});
 				});

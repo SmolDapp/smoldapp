@@ -8,11 +8,6 @@ import LogoSafeCreator from '@safeCreatooor/Logo';
 import LogoTokenlistooor from '@tokenlistooor/Logo';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 
-import DisperseWrapper from './disperse';
-import WrapperMigrate from './migratooor';
-import WrapperNFTMigratooor from './nftmigratooor';
-
-import type {GetServerSidePropsContext, GetServerSidePropsResult} from 'next';
 import type {ReactElement} from 'react';
 
 const	apps = [
@@ -22,7 +17,7 @@ const	apps = [
 		description: (
 			<span>
 				{'One address, all the chains. Deploy your Safe across '}
-				<span className={'font-semibold text-orange-500'}>{'multiple chains'}</span>
+				<span className={'font-semibold text-primary-500 transition-colors group-hover:text-primary-0'}>{'multiple chains'}</span>
 				{'.'}
 			</span>
 		),
@@ -33,7 +28,7 @@ const	apps = [
 		title: 'Disperse',
 		description: (
 			<span>
-				<span className={'font-semibold text-orange-500'}>{'Distribute'}</span>
+				<span className={'font-semibold text-primary-500 transition-colors group-hover:text-primary-0'}>{'Distribute'}</span>
 				{' ether or tokens to multiple addresses.'}
 			</span>
 		),
@@ -45,7 +40,7 @@ const	apps = [
 		description: (
 			<span>
 				{'The easiest way to '}
-				<span className={'font-semibold text-orange-500'}>{'donate'}</span>
+				<span className={'font-semibold text-primary-500 transition-colors group-hover:text-primary-0'}>{'donate'}</span>
 				{' to the crypto projects you love.'}
 			</span>
 		),
@@ -60,7 +55,7 @@ const	apps = [
 		title: 'Dump Services',
 		description: (
 			<span>
-				<span className={'font-semibold text-orange-500'}>{'Dump'}</span>
+				<span className={'font-semibold text-primary-500 transition-colors group-hover:text-primary-0'}>{'Dump'}</span>
 				{' your tokens like a pro'}
 			</span>
 		),
@@ -76,7 +71,7 @@ const	apps = [
 		description: (
 			<span>
 				{'The hassle-free solution to '}
-				<span className={'font-semibold text-orange-500'}>{'migrate'}</span>
+				<span className={'font-semibold text-primary-500 transition-colors group-hover:text-primary-0'}>{'migrate'}</span>
 				{' your tokens.'}
 			</span>
 		),
@@ -88,7 +83,7 @@ const	apps = [
 		description: (
 			<span>
 				{'Easily '}
-				<span className={'font-semibold text-orange-500'}>{'migrate your NFTs'}</span>
+				<span className={'font-semibold text-primary-500 transition-colors group-hover:text-primary-0'}>{'migrate your NFTs'}</span>
 				{' to your new wallet.'}
 			</span>
 		),
@@ -99,7 +94,7 @@ const	apps = [
 		description: (
 			<span>
 				{'An up to date automatic '}
-				<span className={'font-semibold text-orange-500'}>{'tokenList'}</span>
+				<span className={'font-semibold text-primary-500 transition-colors group-hover:text-primary-0'}>{'tokenList'}</span>
 				{' for your dApp.'}
 			</span>
 		),
@@ -113,8 +108,8 @@ function	AppBox({app}: {app: typeof apps[0]}): ReactElement {
 			prefetch={false}
 			key={app.href}
 			href={app.href}
-			className={'relative bg-neutral-0'}>
-			<div id={app.href} className={'appBox'}>
+			className={'relative'}>
+			<div id={app.href} className={'appBox group'}>
 				<div className={'box-0 !rounded-full'}>
 					{app.icon}
 				</div>
@@ -127,19 +122,7 @@ function	AppBox({app}: {app: typeof apps[0]}): ReactElement {
 	);
 }
 
-function	Index(props: {app: string}): ReactElement {
-	const {app} = props;
-	if (app === 'disperse') {
-		return <DisperseWrapper />;
-	}
-	if (app === 'migrate') {
-		return <WrapperMigrate />;
-	}
-	if (app === 'nftmigratooor') {
-		return <WrapperNFTMigratooor />;
-	}
-
-
+function	Index(): ReactElement {
 	return (
 		<Fragment>
 			<div className={'mx-auto grid w-full max-w-4xl'}>
@@ -152,12 +135,12 @@ function	Index(props: {app: string}): ReactElement {
 							</p>
 						</div>
 						<div className={'mb-12 mt-8 flex flex-row items-center space-x-6'}>
-							<Link href={'https://twitter.com/smoldapp'} target={'_blank'}>
+							<Link tabIndex={-1} href={'https://twitter.com/smoldapp'} target={'_blank'}>
 								<Button className={'w-[140px]'}>
 									{'Twitter'}
 								</Button>
 							</Link>
-							<Link href={'https://github.com/smoldapp'} target={'_blank'}>
+							<Link tabIndex={-1} href={'https://github.com/smoldapp'} target={'_blank'}>
 								<Button className={'w-[140px]'}>
 									{'Github'}
 								</Button>
@@ -179,24 +162,3 @@ function	Index(props: {app: string}): ReactElement {
 }
 
 export default Index;
-
-
-type TResult = {
-	app?: string
-}
-export async function getServerSideProps(context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<TResult>> {
-	const {host} = context.req.headers;
-	if (host === 'disperse.smold.app') {
-		return {props: {app: 'disperse'}};
-	}
-	if (host === 'migrate.smold.app' || host === 'migratooor.smold.app' || host === 'migratooor.com') {
-		return {props: {app: 'migrate'}};
-	}
-	if (host === 'nftmigratooor.smold.app') {
-		return {props: {app: 'nftmigratooor'}};
-	}
-
-	return {
-		props: {}
-	};
-}

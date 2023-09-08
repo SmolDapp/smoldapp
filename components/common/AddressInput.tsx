@@ -80,26 +80,24 @@ function AddressInput({value, onChangeValue}: {
 	}, [onChangeValue, currentLabel]);
 
 	return (
-		<div className={'box-0 flex h-10 w-full items-center p-2'}>
-			<div className={'flex h-10 w-full flex-row items-center justify-between px-0 py-4'}>
-				<input
-					aria-invalid={status === 'invalid'}
-					onFocus={async (): Promise<void> => {
-						isFocused.current = true;
-						onChange(value.label);
-					}}
-					onBlur={(): void => {
-						isFocused.current = false;
-					}}
-					onChange={async (e): Promise<void> => onChange(e.target.value)}
-					required
-					autoComplete={'off'}
-					spellCheck={false}
-					placeholder={'0x...'}
-					type={'text'}
-					value={value.label}
-					className={'w-full overflow-x-scroll border-none bg-transparent px-0 py-4 font-mono text-sm font-bold outline-none scrollbar-none'} />
-			</div>
+		<div className={'smol--input-wrapper'}>
+			<input
+				aria-invalid={status === 'invalid'}
+				onFocus={async (): Promise<void> => {
+					isFocused.current = true;
+					onChange(value.label);
+				}}
+				onBlur={(): void => {
+					isFocused.current = false;
+				}}
+				onChange={async (e): Promise<void> => onChange(e.target.value)}
+				required
+				autoComplete={'off'}
+				spellCheck={false}
+				placeholder={'0x...'}
+				type={'text'}
+				value={value.label}
+				className={'smol--input font-mono font-bold'} />
 			<label
 				className={status === 'invalid' || status === 'warning' ? 'relative' : 'pointer-events-none relative h-4 w-4'}>
 				<span className={status === 'invalid' || status === 'warning' ? 'tooltip' : 'pointer-events-none'}>
