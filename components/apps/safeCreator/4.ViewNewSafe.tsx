@@ -204,6 +204,7 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 									fallback={<span className={'text-neutral-400'}>{'-'}</span>}>
 									<div className={'mt-1 grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-4'}>
 										{SUPPORTED_CHAINS
+											.filter((chain): boolean => chain.id !== 1101)
 											.map((chain): ReactElement => (
 												<ChainStatus
 													key={chain.id}
