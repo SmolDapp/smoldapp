@@ -92,6 +92,7 @@ module.exports = (phase) => withTM(withPWA({
 		JSON_RPC_URL: {
 			1: process.env.RPC_URL_MAINNET,
 			10: process.env.RPC_URL_OPTIMISM,
+			56: process.env.RPC_URL_BINANCE,
 			137: process.env.RPC_URL_POLYGON,
 			250: process.env.RPC_URL_FANTOM,
 			8453: process.env.RPC_URL_BASE,

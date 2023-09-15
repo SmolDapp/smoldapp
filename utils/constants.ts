@@ -1,4 +1,4 @@
-import {arbitrum, base, mainnet, optimism, polygon, polygonZkEvm} from 'wagmi/chains';
+import {arbitrum, base, bsc,mainnet, optimism, polygon, polygonZkEvm} from 'wagmi/chains';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {indexedWagmiChains} from '@yearn-finance/web-lib/utils/wagmi/utils';
 
@@ -16,6 +16,7 @@ export const HEADER_HEIGHT = 64;
 export const SUPPORTED_CHAINS = [
 	mainnet,
 	optimism,
+	bsc,
 	gnosis,
 	polygon,
 	// fantom,
@@ -42,6 +43,7 @@ export const NFTMIGRATOOOR_CONTRACT_PER_CHAIN: TNDict<TAddress> = {
 	1: toAddress('0x100CCFF9117E168158a6BE35081694fBbe394fBB'),
 	10: toAddress('0x6dfd3a052bb73e609d9c2381dc48de5e2662575e'),
 	100: toAddress('0xC813978A4c104250B1d2bC198cC7bE74b68Cd81b'),
+	56: toAddress('0x0fcDe4444ac4f595Dd802e0e872D11D4B28a0b06'),
 	137: toAddress('0x0e5b46E4b2a05fd53F5a4cD974eb98a9a613bcb7'),
 	250: toAddress('0x291F9794fFB8Cd1F71CE5478E40b5E29a029dbE9'),
 	1101: toAddress('0xA3a3C48F1d5191968D3dEF7A5aE4c860589Bf380'),
@@ -52,6 +54,7 @@ export const NFTMIGRATOOOR_CONTRACT_PER_CHAIN: TNDict<TAddress> = {
 const SAFE_API_URI: {[chainId: number]: string} = {
 	1: 'https://safe-transaction-mainnet.safe.global',
 	10:	'https://safe-transaction-optimism.safe.global',
+	56: 'https://safe-transaction-bsc.safe.global',
 	100: 'https://safe-transaction-gnosis-chain.safe.global',
 	137: 'https://safe-transaction-polygon.safe.global',
 	8453: 'https://safe-transaction-base.safe.global',
@@ -61,6 +64,7 @@ const SAFE_API_URI: {[chainId: number]: string} = {
 export const coingeckoGasCoinIDs: TNDict<string> = {
 	1: 'ethereum',
 	10: 'ethereum',
+	56: 'binancecoin',
 	100: 'xdai',
 	137: 'matic-network',
 	250: 'fantom',
