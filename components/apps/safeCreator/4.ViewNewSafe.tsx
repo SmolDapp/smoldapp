@@ -124,6 +124,7 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 
 	function renderPossibleSafe(): ReactElement {
 		const {address, owners, threshold, salt} = possibleSafe as TNewSafe;
+
 		return (
 			<div className={'p-4 pt-0 md:p-6 md:pt-0'}>
 				<div className={'box-100 relative p-4 md:px-6'}>
