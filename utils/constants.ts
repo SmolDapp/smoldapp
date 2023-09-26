@@ -1,4 +1,4 @@
-import {arbitrum, base, bsc, goerli, mainnet, optimism, polygon, polygonZkEvm} from 'wagmi/chains';
+import {arbitrum, base, baseGoerli, bsc, goerli, mainnet, optimism, polygon, polygonZkEvm} from 'wagmi/chains';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {indexedWagmiChains} from '@yearn-finance/web-lib/utils/wagmi/utils';
 
@@ -25,7 +25,8 @@ export const SUPPORTED_CHAINS = [
 	arbitrum,
 
 	//Testnets
-	goerli
+	goerli,
+	baseGoerli
 	// localhost
 ];
 
@@ -62,6 +63,7 @@ const SAFE_API_URI: {[chainId: number]: string} = {
 	100: 'https://safe-transaction-gnosis-chain.safe.global',
 	137: 'https://safe-transaction-polygon.safe.global',
 	8453: 'https://safe-transaction-base.safe.global',
+	84531: 'https://safe-transaction-base.safe.global',
 	42161: 'https://safe-transaction-arbitrum.safe.global'
 };
 

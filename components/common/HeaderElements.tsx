@@ -91,7 +91,7 @@ export function NetworkSelector({networks}: {networks: number[]}): ReactElement 
 		return (
 			chainsForInjected
 				.filter(({id}): boolean => (
-					![5, 1337].includes(id) && ((networks.length > 0 && networks.includes(id)) || true)
+					![5, 1337, 84531].includes(id) && ((networks.length > 0 && networks.includes(id)) || true)
 				))
 				.map((network: Chain): TNetwork => (
 					{value: network.id, label: network.name}

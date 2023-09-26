@@ -229,13 +229,16 @@ function ChainStatus({
 				})
 			};
 
+			const multicallData = [];
+			if (![5, 1337, 84531].includes(chain.id)) {
+				multicallData.push(callDataDisperseEth);
+			}
+			multicallData.push(callDataCreateSafe);
+
 			const result = await multicall({
 				connector: provider,
 				contractAddress: getNetwork(chain.id).contracts.multicall3?.address,
-				multicallData: [
-					callDataDisperseEth,
-					callDataCreateSafe
-				],
+				multicallData: multicallData,
 				statusHandler: set_cloneStatus
 			});
 			if (result.isSuccessful) {
