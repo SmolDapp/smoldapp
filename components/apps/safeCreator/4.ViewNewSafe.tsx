@@ -13,7 +13,7 @@ import {performBatchedUpdates} from '@yearn-finance/web-lib/utils/performBatched
 import ViewSectionHeading from '@common/ViewSectionHeading';
 
 import ChainStatus from './ChainStatus';
-import {GNOSIS_SAFE_PROXY_CREATION_CODE, PROXY_FACTORY_L2, SINGLETON_L2} from './constants';
+import {GNOSIS_SAFE_PROXY_CREATION_CODE, PROXY_FACTORY_L2, PROXY_FACTORY_L2_DDP, SINGLETON_L2, SINGLETON_L2_DDP} from './constants';
 import {generateArgInitializers} from './utils';
 
 import type {ReactElement} from 'react';
@@ -26,7 +26,8 @@ type TNewSafe = {
 	salt: bigint,
 	threshold: number,
 	prefix: string,
-	suffix: string
+	suffix: string,
+	singleton: `0x${string}`,
 }
 type TOwners = {
 	address: TAddress | undefined,
@@ -53,6 +54,10 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 	const [currentSeed, set_currentSeed] = useState(0n);
 	const [prefix, set_prefix] = useState('0x');
 	const [suffix, set_suffix] = useState('');
+	const [factory, set_factory] = useState('ssf');
+
+	const FACTORY = factory == "ssf" ? PROXY_FACTORY_L2 : PROXY_FACTORY_L2_DDP
+	const SINGLETON = factory == "ssf" ? SINGLETON_L2 : SINGLETON_L2_DDP
 
 	useMountEffect((): void => {
 		set_currentSeed(hexToBigInt(keccak256(concat([toHex('smol'), toHex(Math.random().toString())]))));
@@ -77,7 +82,7 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 			['bytes', 'uint256'],
 			[keccak256(`0x${argInitializers}`), saltNonce]
 		));
-		const addrCreate2 = getContractAddress({bytecode, from: PROXY_FACTORY_L2, opcode: 'CREATE2', salt});
+		const addrCreate2 = getContractAddress({bytecode, from: FACTORY, opcode: 'CREATE2', salt});
 		if (addrCreate2.startsWith(prefix) && addrCreate2.endsWith(suffix)) {
 			return ({address: addrCreate2, salt: saltNonce});
 		}
@@ -85,21 +90,17 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 		set_currentSeed(newSalt);
 		await new Promise((resolve): NodeJS.Timeout => setTimeout(resolve, 0));
 		return compute({argInitializers, bytecode, prefix, suffix, saltNonce: newSalt});
-	}, [shouldCancel]);
+	}, [shouldCancel, factory]);
 
 	const generateCreate2Addresses = useCallback(async (): Promise<void> => {
 		set_possibleSafe(undefined);
 		let salt = currentSeed;
-		if (currentSeed === possibleSafe?.salt) {
-			salt = hexToBigInt(keccak256(concat([toHex('smol'), toHex(Math.random().toString())])));
-			set_possibleSafe({address: '' as TAddress, owners: [], salt: 0n, threshold: 0, prefix, suffix});
-		}
 
 		set_isLoadingSafes(true);
 		const argInitializers = generateArgInitializers(owners, threshold);
 		const bytecode = encodePacked(
 			['bytes', 'uint256'],
-			[GNOSIS_SAFE_PROXY_CREATION_CODE, hexToBigInt(SINGLETON_L2)]
+			[GNOSIS_SAFE_PROXY_CREATION_CODE, hexToBigInt(SINGLETON)]
 		);
 		const result = await compute({argInitializers, bytecode, prefix, suffix, saltNonce: salt});
 		if (shouldCancel.current) {
@@ -116,11 +117,13 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 				owners,
 				threshold,
 				prefix,
-				suffix
+				suffix,
+				singleton: SINGLETON
 			});
+			set_currentSeed(result.salt);
 			set_isLoadingSafes(false);
 		});
-	}, [currentSeed, possibleSafe?.salt, owners, threshold, compute, prefix, suffix]);
+	}, [currentSeed, possibleSafe?.salt, owners, threshold, compute, prefix, suffix, factory]);
 
 	function renderPossibleSafe(): ReactElement {
 		const {address, owners, threshold, salt} = possibleSafe as TNewSafe;
@@ -128,7 +131,7 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 		return (
 			<div className={'p-4 pt-0 md:p-6 md:pt-0'}>
 				<div className={'box-100 relative p-4 md:px-6'}>
-					{possibleSafe?.prefix !== prefix || possibleSafe?.suffix !== suffix ? (
+					{possibleSafe?.prefix !== prefix || possibleSafe?.suffix !== suffix || possibleSafe.singleton !== SINGLETON || possibleSafe.salt !== currentSeed ? (
 						<>
 							<div className={'box-0 absolute right-2 top-2 hidden w-52 flex-row p-2 text-xs md:flex'}>
 								<button
@@ -141,7 +144,7 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 									<IconRefresh
 										className={'h-3 w-3 min-w-[16px] cursor-pointer text-neutral-500 transition-colors hover:text-neutral-900'} />
 								</button>
-								{'Looks like you changed the prefix, please hit generate again.'}
+								{'Looks like you changed the Safe configuration, please hit generate again.'}
 							</div>
 							<div className={'absolute right-2 top-2 block p-2 text-xs md:hidden'}>
 								<button
@@ -212,7 +215,7 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 													safeAddress={toAddress(address)}
 													owners={owners || []}
 													threshold={threshold || 0}
-													singleton={SINGLETON_L2}
+													singleton={possibleSafe?.singleton}
 													salt={salt || 0n} />
 											))}
 									</div>
@@ -227,7 +230,7 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 
 	return (
 		<section>
-			<div className={'box-0 grid w-full grid-cols-12'}>
+			<div className={'box-0 grid w-full grid-cols-12 overflow-hidden'}>
 				<ViewSectionHeading
 					title={'Feeling fancy?'}
 					content={
@@ -335,17 +338,61 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 										) : null}
 									</Button>
 								</div>
-								<div className={'col-span-2'}>
-									<div className={'mt-1'} style={{display: ((prefix.length + suffix.length) > 5) ? 'flex' : 'none'}}>
+								<div className='col-span-3'>
+									<div className={'mt-1 mb-4'} style={{display: ((prefix.length + suffix.length) > 5) ? 'flex' : 'none'}}>
 										<div className={'flex flex-row whitespace-pre rounded-md border border-orange-200 !bg-orange-200/60 p-2 text-xs font-bold text-orange-600'}>
 											<IconWarning className={'mr-2 h-4 w-4 text-orange-600'} />
 											{'The more characters you add, the longer it will take to find a safe (which can be hours).'}
 										</div>
 									</div>
-									<div className={'mt-2'}>
-										<p className={'font-number max-w-[100%] break-all text-xxs text-neutral-400 md:whitespace-pre md:break-normal'}>
-											{`Seed: ${currentSeed.toString()}`}
-										</p>
+									<div className={'mt-1 pb-2 text-xs text-neutral-600'}>
+										<div className={'flex w-fit flex-row items-center space-x-1'}>
+											<p className={'font-inter font-semibold'}>{'Seed'}</p>
+											<span className={'tooltip'}>
+												<IconInfo className={'h-3 w-3 text-neutral-500'} />
+												<span className={'tooltipLight top-full mt-1'}>
+													<div className={'font-number w-60 border border-neutral-300 bg-neutral-100 p-1 px-2 text-center text-xs text-neutral-900'}>
+														<p>{'This is a numeric value that determines the address of your safe.'}</p>
+													</div>
+												</span>
+											</span>
+										</div>
+									</div>
+									<div className={'box-0 flex h-10 w-full items-center p-2'}>
+										<div className={'flex h-10 w-full flex-row items-center justify-between px-0 py-4'}>
+											<input
+												onChange={(e): void => {
+													const {value} = e.target;
+													set_currentSeed(BigInt(value.replace(/\D/g,'')));
+												}}
+												type={'text'}
+												value={currentSeed.toString()}
+												pattern={'[0-9]{0,512}$'}
+												className={'smol--input font-mono font-bold'} />
+										</div>
+									</div>
+								</div>
+								<div className='col-span-3'>
+									<div className={'mt-1 pb-2 text-xs text-neutral-600'}>
+										<div className={'flex w-fit flex-row items-center space-x-1'}>
+											<p className={'font-inter font-semibold'}>{'Factory'}</p>
+											<span className={'tooltip'}>
+												<IconInfo className={'h-3 w-3 text-neutral-500'} />
+												<span className={'tooltipLight top-full mt-1'}>
+													<div className={'font-number w-60 border border-neutral-300 bg-neutral-100 p-1 px-2 text-center text-xs text-neutral-900'}>
+														<p>{'This is a numeric value that determines the address of your safe.'}</p>
+													</div>
+												</span>
+											</span>
+										</div>
+									</div>
+									<div className={'box-0 flex h-10 w-full items-center p-2'}>
+										<div className={'flex h-10 w-full flex-row items-center justify-between px-0 py-4'}>
+											<select className={'smol--input font-mono font-bold'} value={factory} onChange={e => set_factory(e.target.value)}>
+												<option value="ssf">Safe Singleton Factory</option>
+												<option value="ddp">Deterministic Deployment Proxy</option>
+											</select>	
+										</div>
 									</div>
 								</div>
 							</div>
