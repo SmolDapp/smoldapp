@@ -380,7 +380,7 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 												<IconInfo className={'h-3 w-3 text-neutral-500'} />
 												<span className={'tooltipLight top-full mt-1'}>
 													<div className={'font-number w-60 border border-neutral-300 bg-neutral-100 p-1 px-2 text-center text-xs text-neutral-900'}>
-														<p>{'This is a numeric value that determines the address of your safe.'}</p>
+														<p>{'This is the factory contract that will be used to deploy your Safe.'}</p>
 													</div>
 												</span>
 											</span>
