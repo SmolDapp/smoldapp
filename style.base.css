@@ -104,9 +104,9 @@ label[aria-invalid="true"] {
 		&:not(:disabled):not([aria-busy="true"]):hover {@apply bg-primary-200;}
 	}
 	&[data-variant="outlined"] {
-		@apply text-primary-900 bg-transparent border border-primary-900;
+		@apply text-primary-600 bg-transparent border border-primary-600;
 		&:disabled {@apply opacity-40;}
-		&:not(:disabled):not([aria-busy="true"]):hover {@apply bg-primary-900 text-primary-0;}
+		&:not(:disabled):not([aria-busy="true"]):hover {@apply bg-primary-600 text-primary-0;}
 	}
 	&[data-variant="reverted"] {
 		@apply text-primary-600 bg-primary-0 font-normal border border-transparent;

@@ -160,7 +160,7 @@ details {
 }
 
 .checkbox {
-	@apply text-primary-500 accent-primary-500 rounded-sm border-primary-500 focus:outline-primary-500 outline-none !ring-transparent indeterminate:border-primary-200 indeterminate:bg-primary-200 indeterminate:text-primary-200 indeterminate:accent-primary-200 indeterminate:focus:outline-primary-200 indeterminate:after:absolute indeterminate:after:ml-[0.2rem] indeterminate:after:mt-[6px] indeterminate:after:w-[0.5rem] indeterminate:after:border-[0.05rem] indeterminate:after:border-solid indeterminate:after:border-white indeterminate:focus:after:w-[0.5rem] indeterminate:focus:after:rounded-none indeterminate:focus:after:border-[0.125rem] indeterminate:focus:after:border-b-0 indeterminate:focus:after:border-l-0 indeterminate:focus:after:border-r-0;
+	@apply text-primary-600 accent-primary-600 rounded-sm border-primary-600 focus:outline-primary-600 outline-none !ring-transparent indeterminate:border-primary-200 indeterminate:bg-primary-200 indeterminate:text-primary-200 indeterminate:accent-primary-200 indeterminate:focus:outline-primary-200 indeterminate:after:absolute indeterminate:after:ml-[0.2rem] indeterminate:after:mt-[6px] indeterminate:after:w-[0.5rem] indeterminate:after:border-[0.05rem] indeterminate:after:border-solid indeterminate:after:border-white indeterminate:focus:after:w-[0.5rem] indeterminate:focus:after:rounded-none indeterminate:focus:after:border-[0.125rem] indeterminate:focus:after:border-b-0 indeterminate:focus:after:border-l-0 indeterminate:focus:after:border-r-0;
 
 	@apply focus:!outline-none focus:!ring-transparent;
 

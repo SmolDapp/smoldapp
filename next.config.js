@@ -101,7 +101,7 @@ module.exports = (phase) => withTM(withPWA({
 			8453: process.env.RPC_URL_BASE,
 			80001: process.env.RPC_URL_POLYGON_TESTNET,
 			42161: process.env.RPC_URL_ARBITRUM,
-			11155111: process.env.RPC_URL_SEPOLIA,
+			11155111: process.env.RPC_URL_SEPOLIA
 		},
 		ALCHEMY_KEY: process.env.ALCHEMY_KEY,
 		ALCHEMY_API_KEY: process.env.ALCHEMY_API_KEY,

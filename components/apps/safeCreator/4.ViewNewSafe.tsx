@@ -1,22 +1,25 @@
-import React, {useCallback, useRef, useState} from 'react';
+import React, {Fragment, useCallback, useRef, useState} from 'react';
+import IconCircleCross from 'components/icons/IconCircleCross';
 import IconInfo from 'components/icons/IconInfo';
 import IconRefresh from 'components/icons/IconRefresh';
 import IconWarning from 'components/icons/IconWarning';
 import {SUPPORTED_CHAINS} from 'utils/constants';
 import {concat, encodePacked, getContractAddress, hexToBigInt, keccak256, toHex} from 'viem';
+import {Dialog, Transition} from '@headlessui/react';
 import {useMountEffect, useUpdateEffect} from '@react-hookz/web';
 import {AddressLike} from '@yearn-finance/web-lib/components/AddressLike';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import {Renderable} from '@yearn-finance/web-lib/components/Renderable';
 import {isZeroAddress, toAddress} from '@yearn-finance/web-lib/utils/address';
 import {performBatchedUpdates} from '@yearn-finance/web-lib/utils/performBatchedUpdates';
+import Toggle from '@common/toggle';
 import ViewSectionHeading from '@common/ViewSectionHeading';
 
 import ChainStatus from './ChainStatus';
 import {GNOSIS_SAFE_PROXY_CREATION_CODE, PROXY_FACTORY_L2, PROXY_FACTORY_L2_DDP, SINGLETON_L2, SINGLETON_L2_DDP} from './constants';
 import {generateArgInitializers} from './utils';
 
-import type {ReactElement} from 'react';
+import type {Dispatch, ReactElement, SetStateAction} from 'react';
 import type {Hex} from 'viem';
 import type {TAddress} from '@yearn-finance/web-lib/types';
 
@@ -43,6 +46,83 @@ export function newVoidOwner(): TOwners {
 	});
 }
 
+
+
+
+
+type TTokenListHandlerPopover = {
+	isOpen: boolean,
+	set_isOpen: Dispatch<SetStateAction<boolean>>,
+}
+function TokenListHandlerPopover({
+	isOpen,
+	set_isOpen
+}: TTokenListHandlerPopover): React.ReactElement {
+	const cancelButtonRef = useRef(null);
+
+	return (
+		<Transition.Root show={isOpen} as={Fragment}>
+			<Dialog as={'div'} className={'relative z-50'} initialFocus={cancelButtonRef} onClose={set_isOpen}>
+				<Transition.Child
+					as={Fragment}
+					enter={'ease-out duration-300'}
+					enterFrom={'opacity-0'}
+					enterTo={'opacity-100'}
+					leave={'ease-in duration-200'}
+					leaveFrom={'opacity-100'}
+					leaveTo={'opacity-0'}>
+					<div className={'fixed inset-0 bg-neutral-900/20 transition-opacity'} />
+				</Transition.Child>
+
+				<div className={'fixed inset-0 z-10 w-screen overflow-y-auto'}>
+					<div className={'flex min-h-full items-end justify-center p-4 text-center sm:items-start sm:p-0'}>
+						<Transition.Child
+							as={Fragment}
+							enter={'ease-out duration-300'}
+							enterFrom={'opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95'}
+							enterTo={'opacity-100 translate-y-0 sm:scale-100'}
+							leave={'ease-in duration-200'}
+							leaveFrom={'opacity-100 translate-y-0 sm:scale-100'}
+							leaveTo={'opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95'}>
+							<Dialog.Panel className={'relative rounded-lg bg-white pb-4 pt-5 text-left shadow-xl transition-all sm:my-24 sm:w-full sm:max-w-2xl'}>
+								<div
+									onClick={(): void => set_isOpen(false)}
+									className={'absolute -right-2 -top-2'}>
+									<div className={'group cursor-pointer rounded-full bg-white'}>
+										<IconCircleCross className={'h-6 w-6 text-neutral-600 transition-colors hover:text-neutral-900'} aria-hidden={'true'} />
+									</div>
+								</div>
+
+								<div className={'sm:flex sm:items-start'}>
+									<div className={'mt-3 text-center sm:mt-0 sm:text-left'}>
+										<Dialog.Title as={'h3'} className={'text-gray-900 px-4 text-base font-semibold leading-6 md:px-6'}>
+											{'Export mode settings'}
+										</Dialog.Title>
+
+										<div className={'mt-4 px-4 md:mt-6 md:px-6'}>
+											<div className={'rounded-md bg-primary-50 p-2 md:p-4'}>
+												<p className={'text-sm text-neutral-700'}>
+													{'So, you are an expert, right? Good for you! You can use this section to customize your Safe’s address. A smol perk for using Smol.\nSmol charges a smol '}
+													{'.'}
+												</p>
+											</div>
+										</div>
+									</div>
+								</div>
+							</Dialog.Panel>
+						</Transition.Child>
+					</div>
+				</div>
+			</Dialog>
+		</Transition.Root>
+	);
+}
+
+
+
+
+
+
 type TViewNewSafe = {
 	owners: TAddress[],
 	threshold: number,
@@ -50,14 +130,15 @@ type TViewNewSafe = {
 function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 	const shouldCancel = useRef(false);
 	const [isLoadingSafes, set_isLoadingSafes] = useState(false);
+	const [shouldUseExpertMode, set_shouldUseExpertMode] = useState(false);
 	const [possibleSafe, set_possibleSafe] = useState<TNewSafe | undefined>(undefined);
 	const [currentSeed, set_currentSeed] = useState(0n);
 	const [prefix, set_prefix] = useState('0x');
 	const [suffix, set_suffix] = useState('');
 	const [factory, set_factory] = useState('ssf');
 
-	const FACTORY = factory == "ssf" ? PROXY_FACTORY_L2 : PROXY_FACTORY_L2_DDP
-	const SINGLETON = factory == "ssf" ? SINGLETON_L2 : SINGLETON_L2_DDP
+	const FACTORY = factory == 'ssf' ? PROXY_FACTORY_L2 : PROXY_FACTORY_L2_DDP;
+	const SINGLETON = factory == 'ssf' ? SINGLETON_L2 : SINGLETON_L2_DDP;
 
 	useMountEffect((): void => {
 		set_currentSeed(hexToBigInt(keccak256(concat([toHex('smol'), toHex(Math.random().toString())]))));
@@ -94,7 +175,7 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 
 	const generateCreate2Addresses = useCallback(async (): Promise<void> => {
 		set_possibleSafe(undefined);
-		let salt = currentSeed;
+		const salt = currentSeed;
 
 		set_isLoadingSafes(true);
 		const argInitializers = generateArgInitializers(owners, threshold);
@@ -230,7 +311,41 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 
 	return (
 		<section>
-			<div className={'box-0 grid w-full grid-cols-12 overflow-hidden'}>
+			<div className={'box-0 relative grid w-full grid-cols-12 overflow-hidden'}>
+				{/* <div className={'absolute right-4 top-4 cursor-pointer'} onClick={(): void => undefined}>
+					<Button variant={'outlined'} className={'!h-8 gap-2 px-2 text-xs'}>
+						<IconSettings className={'h-3 w-3'} />
+						{'Settings'}
+					</Button>
+				</div> */}
+				<div className={'absolute right-4 top-4 flex flex-col space-y-4'} onClick={(): void => undefined}>
+					<div className={`flex flex-row items-center justify-center space-x-2 rounded-md border p-2 transition-colors ${shouldUseExpertMode ? 'border-primary-600' : 'border-primary-600/20'}`}>
+						<p className={`text-xs transition-colors ${shouldUseExpertMode ? 'text-primary-600' : 'text-primary-600/20'}`}>
+							{'Expert'}
+						</p>
+						<Toggle
+							isEnabled={shouldUseExpertMode}
+							onChange={(): void => set_shouldUseExpertMode(!shouldUseExpertMode)} />
+					</div>
+
+					<div className={`flex flex-row items-center justify-center space-x-2 rounded-md border p-2 transition-colors ${shouldUseExpertMode ? 'border-primary-600' : 'border-primary-600/20'}`}>
+						<p className={`text-xs transition-colors ${shouldUseExpertMode ? 'text-primary-600' : 'text-primary-600/20'}`}>
+							{'Expert'}
+						</p>
+						<input
+							type={'checkbox'}
+							className={'checkbox cursor-pointer'}
+							tabIndex={-1}
+							checked={shouldUseExpertMode}
+							onChange={(): void => set_shouldUseExpertMode(!shouldUseExpertMode)} />
+					</div>
+
+					<TokenListHandlerPopover
+						isOpen={shouldUseExpertMode}
+						set_isOpen={set_shouldUseExpertMode} />
+				</div>
+
+
 				<ViewSectionHeading
 					title={'Feeling fancy?'}
 					content={
@@ -338,8 +453,8 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 										) : null}
 									</Button>
 								</div>
-								<div className='col-span-3'>
-									<div className={'mt-1 mb-4'} style={{display: ((prefix.length + suffix.length) > 5) ? 'flex' : 'none'}}>
+								<div className={'col-span-3'}>
+									<div className={'mb-4 mt-1'} style={{display: ((prefix.length + suffix.length) > 5) ? 'flex' : 'none'}}>
 										<div className={'flex flex-row whitespace-pre rounded-md border border-orange-200 !bg-orange-200/60 p-2 text-xs font-bold text-orange-600'}>
 											<IconWarning className={'mr-2 h-4 w-4 text-orange-600'} />
 											{'The more characters you add, the longer it will take to find a safe (which can be hours).'}
@@ -368,11 +483,11 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 												type={'text'}
 												value={currentSeed.toString()}
 												pattern={'[0-9]{0,512}$'}
-												className={'smol--input font-mono font-bold'} />
+												className={'smol--input font-number font-bold'} />
 										</div>
 									</div>
 								</div>
-								<div className='col-span-3'>
+								<div className={'col-span-3'}>
 									<div className={'mt-1 pb-2 text-xs text-neutral-600'}>
 										<div className={'flex w-fit flex-row items-center space-x-1'}>
 											<p className={'font-inter font-semibold'}>{'Factory'}</p>
@@ -389,9 +504,9 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 									<div className={'box-0 flex h-10 w-full items-center p-2'}>
 										<div className={'flex h-10 w-full flex-row items-center justify-between px-0 py-4'}>
 											<select className={'smol--input font-mono font-bold'} value={factory} onChange={e => set_factory(e.target.value)}>
-												<option value="ssf">Safe Singleton Factory</option>
-												<option value="ddp">Deterministic Deployment Proxy</option>
-											</select>	
+												<option value={'ssf'}>{'Safe Singleton Factory'}</option>
+												<option value={'ddp'}>{'Deterministic Deployment Proxy'}</option>
+											</select>
 										</div>
 									</div>
 								</div>
