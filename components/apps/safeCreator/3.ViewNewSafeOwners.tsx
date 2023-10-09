@@ -176,18 +176,18 @@ function ViewNewSafeOwners(props: TViewNewSafeOwnersProps): ReactElement {
 											<div className={'flex h-10 w-full flex-row items-center justify-between space-x-2 px-2 py-4'}>
 												<button
 													type={'button'}
-													className={'flex h-6 w-6 items-center justify-center rounded-md bg-neutral-900 text-center text-neutral-0 outline outline-offset-2 transition-colors focus-within:outline-neutral-900 hover:bg-neutral-800 disabled:bg-neutral-300'}
+													className={'flex h-6 w-6 items-center justify-center rounded-md bg-primary-600 text-center text-neutral-0 outline outline-offset-2 transition-colors focus-within:outline-primary-600 hover:bg-primary-800 disabled:opacity-10'}
 													disabled={threshold <= 1}
 													onClick={(): void => set_threshold(threshold - 1)}>
-													<p className={'font-number pr-[1px]'}>{'-'}</p>
+													<svg className={'h-3 w-3'} xmlns={'http://www.w3.org/2000/svg'} height={'1em'} viewBox={'0 0 448 512'}><path d={'M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z'} fill={'currentColor'}/></svg>
 												</button>
-												<p>{threshold}</p>
+												<p className={'font-number'}>{threshold}</p>
 												<button
 													type={'button'}
-													className={'flex h-6 w-6 items-center justify-center rounded-md bg-neutral-900 text-center text-neutral-0 outline outline-offset-2 transition-colors focus-within:outline-neutral-900 hover:bg-neutral-800 disabled:bg-neutral-300'}
+													className={'flex h-6 w-6 items-center justify-center rounded-md bg-primary-600 text-center text-neutral-0 outline outline-offset-2 transition-colors focus-within:outline-primary-600 hover:bg-primary-800 disabled:opacity-10'}
 													disabled={threshold >= owners.length}
 													onClick={(): void => set_threshold(threshold + 1)}>
-													<p className={'font-number pl-[1px]'}>{'+'}</p>
+													<svg className={'h-3 w-3'} xmlns={'http://www.w3.org/2000/svg'} height={'1em'} viewBox={'0 0 448 512'}><path d={'M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z'} fill={'currentColor'}/></svg>
 												</button>
 											</div>
 										</div>

@@ -282,7 +282,7 @@ function TokenListHandlerPopover({
 
 								<div className={'sm:flex sm:items-start'}>
 									<div className={'mt-3 text-center sm:mt-0 sm:text-left'}>
-										<Dialog.Title as={'h3'} className={'text-gray-900 px-4 text-base font-semibold leading-6 md:px-6'}>
+										<Dialog.Title as={'h3'} className={'px-4 text-base font-semibold leading-6 text-neutral-900 md:px-6'}>
 											{'Manage your list of tokens'}
 										</Dialog.Title>
 

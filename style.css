@@ -196,7 +196,7 @@ details {
 .box-0 {
 	@apply bg-neutral-0 border border-primary-200/60 rounded-md shadow-sm;
 	&.hover {
-		@apply transition-colors hover:bg-neutral-100;
+		@apply transition-colors hover:bg-primary-100;
 	}
 }
 .box-100 {

@@ -238,9 +238,9 @@ function TokenListContent({list}: {list: TTokenListItem}): ReactElement {
 
 								<div className={'col-span-12 flex justify-end text-right md:col-span-4'}>
 									<div>
-										<small className={'block text-xxs text-neutral-700 md:text-xs'}>
+										<p className={'block text-xxs text-neutral-700 md:text-xs'}>
 											{'Chain'}
-										</small>
+										</p>
 										<b>{getNetwork(item.chainId).name}</b>
 									</div>
 								</div>

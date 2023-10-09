@@ -52,7 +52,9 @@ function Element(props: TElement): ReactElement {
 						{` - ${formatAmount(props.balanceNormalized, 6, props.decimals)}`}
 					</p>
 				</div>
-				<small className={'font-number text-xs text-neutral-500'}>{toAddress(props.address)}</small>
+				<small className={'font-number'}>
+					{toAddress(props.address)}
+				</small>
 			</div>
 		</div>
 	);

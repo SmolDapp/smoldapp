@@ -53,9 +53,9 @@ const NFTCollection = memo(function NFTCollection(props: TNFTCollectionProps): R
 					</div>
 
 					<div className={'groupHoverText relative flex flex-row items-center space-x-2 text-xs tabular-nums text-neutral-500'}>
-						<small className={'text-xxs tabular-nums text-neutral-500'}>
+						<p className={'text-xxs tabular-nums text-neutral-500'}>
 							{collectionItems.length > 1 ? `${collectionItems.length} tokens` : `${collectionItems.length} token`}
-						</small>
+						</p>
 						<IconChevronBoth className={'h-6 w-6 text-neutral-400 transition-colors group-hover:text-neutral-900'} />
 					</div>
 				</div>

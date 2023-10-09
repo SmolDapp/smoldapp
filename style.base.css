@@ -27,10 +27,11 @@
 	--color-red-200: 0 100% 90%;
 }
 
-
 body {@apply text-neutral-900;}
 h1 {@apply text-xl font-bold text-neutral-900;}
 h4 {@apply text-lg font-bold text-neutral-700;}
+h6 {@apply text-base font-bold text-neutral-700;}
+small {@apply text-xs font-normal text-neutral-500 leading-tight block;}
 #__next {@apply w-full h-full}
 
 /* 🔵 - Yearn Finance ******************************************************
@@ -91,7 +92,7 @@ label[aria-invalid="true"] {
 
 /* -- Button.tsx ------------------------------------------------------- */
 .yearn--button {
-	@apply cursor-pointer px-4 flex justify-center items-center h-10 text-sm transition-all relative focus-within:outline-primary-600 outline-offset-2 outline rounded-md outline-transparent;
+	@apply cursor-pointer flex justify-center items-center transition-all relative focus-within:outline-primary-600 outline-offset-2 outline rounded-md outline-transparent;
 
 	&[data-variant="filled"] {
 		@apply text-primary-0 bg-primary-600 font-normal border border-transparent;
@@ -129,6 +130,17 @@ label[aria-invalid="true"] {
 		@apply cursor-wait;
 		color: transparent !important;
 	}
+
+	&[data-size="tight"] {
+		@apply px-2 h-8 text-xs;
+	}
+	&:not([data-size="tight"]), &[data-size="normal"] {
+		@apply px-4 h-10 text-sm;
+	}
+	&[data-size="loose"] {
+		@apply px-4 h-10 text-sm;
+	}
+
 	&:disabled {@apply cursor-not-allowed;}
 }
 
@@ -141,6 +153,10 @@ label[aria-invalid="true"] {
 }
 .smol--input {
 	@apply w-full overflow-x-scroll border-none bg-transparent px-0 py-4 text-sm outline-none scrollbar-none;
+}
+
+select.smol--input {
+	@apply pr-7 truncate;
 }
 
 /* 🔵 - Yearn Finance ******************************************************
