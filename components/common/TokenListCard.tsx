@@ -44,7 +44,7 @@ function TokenListCard({item}: {item: TTokenListItem}): ReactElement {
 			<Link href={`/tokenlistooor/${fileName.replace('.json', '')}`} className={'font-number mt-auto grid w-full pt-6 text-left text-sm'}>
 				<div className={'border-y border-dashed border-neutral-200'}>
 					<div className={'flex flex-row items-center justify-between px-4 py-2 transition-colors md:px-6'}>
-						<small className={'text-neutral-500'}>{'Tokens '}</small>
+						<small>{'Tokens '}</small>
 						<b suppressHydrationWarning>{`${formatAmount(item.tokenCount, 0, 0)}`}</b>
 					</div>
 				</div>
@@ -58,7 +58,7 @@ function TokenListCard({item}: {item: TTokenListItem}): ReactElement {
 				<div className={'font-number group grid w-full text-left text-sm'}>
 					<div className={'border-t border-dashed border-neutral-200'}>
 						<span className={'flex cursor-pointer flex-row items-center justify-between px-4 py-2 transition-colors group-hover:bg-neutral-100 md:px-6'}>
-							<small className={'text-neutral-500'}>{'Link '}</small>
+							<small>{'Link '}</small>
 							<b suppressHydrationWarning className={'group-hover:underline'}>
 								{fileName}
 							</b>
@@ -97,13 +97,13 @@ function LegacyTokenListCard({item}: {item: Partial<TTokenListItem>}): ReactElem
 			<div className={'font-number mt-auto grid w-full divide-y divide-dashed divide-neutral-200 pt-6 text-left text-sm'}>
 				<div className={'border-y border-dashed border-neutral-200'}>
 					<div className={'flex flex-row items-center justify-between px-4 py-2 transition-colors md:px-6'}>
-						<small className={'text-neutral-500'}>{'Last Update '}</small>
+						<small>{'Last Update '}</small>
 						<b>{item?.timestamp ? dayjs().to(new Date(item.timestamp).valueOf()) : '-'}</b>
 					</div>
 				</div>
 				<div className={'border-y border-dashed border-neutral-200'}>
 					<span className={'flex cursor-pointer flex-row items-center justify-between px-4 py-2 transition-colors group-hover:bg-neutral-100 md:px-6'}>
-						<small className={'text-neutral-500'}>{'Link '}</small>
+						<small>{'Link '}</small>
 						<b className={'group-hover:underline'}>
 							{'list.json'}
 						</b>

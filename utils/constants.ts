@@ -1,4 +1,4 @@
-import {arbitrum, base, baseGoerli, bsc, goerli, mainnet, optimism, polygon, polygonZkEvm} from 'wagmi/chains';
+import {arbitrum,base, baseGoerli, bsc, goerli, mainnet, optimism, polygon, polygonZkEvm} from 'wagmi/chains';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {indexedWagmiChains} from '@yearn-finance/web-lib/utils/wagmi/utils';
 
@@ -19,8 +19,8 @@ export const SUPPORTED_CHAINS = [
 	bsc,
 	gnosis,
 	polygon,
-	// fantom,
 	polygonZkEvm,
+	// fantom,
 	base,
 	arbitrum,
 
@@ -28,6 +28,13 @@ export const SUPPORTED_CHAINS = [
 	goerli,
 	baseGoerli
 	// localhost
+	// sepolia,
+	// optimismGoerli,
+	// bscTestnet,
+	// polygonMumbai,
+	// polygonZkEvmTestnet,
+	// fantomTestnet,
+	// arbitrumGoerli
 ];
 
 export const SUPPORTED_CHAIN_IDS: TNDict<string> = {
@@ -55,10 +62,10 @@ export const NFTMIGRATOOOR_CONTRACT_PER_CHAIN: TNDict<TAddress> = {
 	42161: toAddress('0x7E08735690028cdF3D81e7165493F1C34065AbA2')
 };
 
-const SAFE_API_URI: {[chainId: number]: string} = {
+const SAFE_API_URI: { [chainId: number]: string } = {
 	1: 'https://safe-transaction-mainnet.safe.global',
 	5: 'https://safe-transaction-goerli.safe.global',
-	10:	'https://safe-transaction-optimism.safe.global',
+	10: 'https://safe-transaction-optimism.safe.global',
 	56: 'https://safe-transaction-bsc.safe.global',
 	100: 'https://safe-transaction-gnosis-chain.safe.global',
 	137: 'https://safe-transaction-polygon.safe.global',
@@ -79,12 +86,12 @@ export const coingeckoGasCoinIDs: TNDict<string> = {
 };
 
 export type TAppExtendedChain = TExtendedChain & {
-	safeApiUri?: string
-	coingeckoGasCoinID: string
+	safeApiUri?: string;
+	coingeckoGasCoinID: string;
 	contracts: {
-		nftMigratooorContract?: TChainContract
-	}
-}
+		nftMigratooorContract?: TChainContract;
+	};
+};
 for (const chain of Object.values(indexedWagmiChains)) {
 	if (!chain || typeof chain !== 'object' || !chain.id) {
 		continue;
@@ -98,6 +105,6 @@ for (const chain of Object.values(indexedWagmiChains)) {
 		}
 	};
 	extendedChain.safeApiUri = SAFE_API_URI?.[chain.id] || '';
-	extendedChain.coingeckoGasCoinID = coingeckoGasCoinIDs?.[chain.id] || 'ethereum';
+	extendedChain.coingeckoGasCoinID =
+		coingeckoGasCoinIDs?.[chain.id] || 'ethereum';
 }
-

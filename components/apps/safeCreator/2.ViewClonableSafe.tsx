@@ -138,7 +138,7 @@ function ViewClonableSafe(): ReactElement {
 				<div className={'grid grid-cols-1 gap-20 transition-colors'}>
 					<div className={'flex flex-col gap-4'}>
 						<div className={'flex flex-col'}>
-							<small className={'text-neutral-500'}>{'Safe Address '}</small>
+							<small>{'Safe Address '}</small>
 							<b className={'font-number addr break-all text-sm'}>
 								<Renderable
 									shouldRender={!!safeArgs?.address}
@@ -148,7 +148,7 @@ function ViewClonableSafe(): ReactElement {
 							</b>
 						</div>
 						<div className={'flex flex-col'}>
-							<small className={'text-neutral-500'}>{'Owners '}</small>
+							<small>{'Owners '}</small>
 							<Renderable
 								shouldRender={!!safeArgs?.owners && safeArgs?.owners.length > 0}
 								fallback={(
@@ -165,7 +165,7 @@ function ViewClonableSafe(): ReactElement {
 							</Renderable>
 						</div>
 						<div className={'flex flex-col'}>
-							<small className={'text-neutral-500'}>{'Threshold '}</small>
+							<small>{'Threshold '}</small>
 							<b className={'font-number block'}>
 								<Renderable
 									shouldRender={!!safeArgs?.threshold}
@@ -175,7 +175,7 @@ function ViewClonableSafe(): ReactElement {
 							</b>
 						</div>
 						<div className={'flex flex-col'}>
-							<small className={'text-neutral-500'}>{'Deployment status '}</small>
+							<small>{'Deployment status '}</small>
 							<Renderable
 								shouldRender={!!safeArgs?.address}
 								fallback={<span className={'text-neutral-400'}>{'-'}</span>}>

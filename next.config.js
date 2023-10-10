@@ -27,7 +27,8 @@ module.exports = (phase) => withTM(withPWA({
 			'tryroll.com',
 			'logo.assets.tkn.eth.limo',
 			'umaproject.org',
-			'cloudflare-ipfs.com'
+			'cloudflare-ipfs.com',
+			'assets.smold.app'
 		]
 	},
 	redirects() {
@@ -91,12 +92,17 @@ module.exports = (phase) => withTM(withPWA({
 	env: {
 		JSON_RPC_URL: {
 			1: process.env.RPC_URL_MAINNET,
+			5: process.env.RPC_URL_GOERLI,
 			10: process.env.RPC_URL_OPTIMISM,
 			56: process.env.RPC_URL_BINANCE,
+			97: process.env.RPC_URL_BINANCE_TESTNET,
 			137: process.env.RPC_URL_POLYGON,
 			250: process.env.RPC_URL_FANTOM,
+			420: process.env.RPC_URL_OPTIMISM_GOERLI,
 			8453: process.env.RPC_URL_BASE,
-			42161: process.env.RPC_URL_ARBITRUM
+			80001: process.env.RPC_URL_POLYGON_TESTNET,
+			42161: process.env.RPC_URL_ARBITRUM,
+			11155111: process.env.RPC_URL_SEPOLIA
 		},
 		ALCHEMY_KEY: process.env.ALCHEMY_KEY,
 		ALCHEMY_API_KEY: process.env.ALCHEMY_API_KEY,

@@ -58,7 +58,7 @@ function Safe(): ReactElement {
 
 			<div
 				id={'newDeploy'}
-				className={`overflow-x-hidden pt-10 transition-opacity ${[Step.NEW_DEPLOY].includes(currentStep) ? 'opacity-100' : 'pointer-events-none h-0 overflow-hidden opacity-0'}`}>
+				className={`pt-10 transition-opacity ${[Step.NEW_DEPLOY].includes(currentStep) ? 'opacity-100' : 'pointer-events-none h-0 overflow-hidden opacity-0'}`}>
 				{selectedFlow === 'NEW' ? <ViewNewSafe owners={owners} threshold={threshold} /> : null}
 			</div>
 
