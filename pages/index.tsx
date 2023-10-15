@@ -6,6 +6,7 @@ import LogoMigratooor from '@migratooor/Logo';
 import LogoNFTMigratooor from '@nftmigratooor/Logo';
 import LogoSafeCreator from '@safeCreatooor/Logo';
 import LogoTokenlistooor from '@tokenlistooor/Logo';
+import LogoAddressBook from '@addressBook/Logo';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 
 import type {ReactElement} from 'react';
@@ -99,6 +100,17 @@ const	apps = [
 			</span>
 		),
 		icon: <LogoTokenlistooor className={'h-[80px] w-[80px]'} />
+	}, {
+		href: '/address-book',
+		title: 'SmolSend',
+		description: (
+			<span>
+				{'Backend-less '}
+				<span className={'font-semibold text-primary-500 transition-colors group-hover:text-primary-0'}>{'trusted address book'}</span>
+				{' for token transfers'}
+			</span>
+		),
+		icon: <LogoAddressBook className={'h-[80px] w-[80px]'} />
 	}
 ];
 
