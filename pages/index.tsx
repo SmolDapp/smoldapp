@@ -1,12 +1,12 @@
 import React, {Fragment} from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import LogoAddressBook from '@addressBook/Logo';
 import LogoDisperse from '@disperse/Logo';
 import LogoMigratooor from '@migratooor/Logo';
 import LogoNFTMigratooor from '@nftmigratooor/Logo';
 import LogoSafeCreator from '@safeCreatooor/Logo';
 import LogoTokenlistooor from '@tokenlistooor/Logo';
-import LogoAddressBook from '@addressBook/Logo';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 
 import type {ReactElement} from 'react';

@@ -1,9 +1,9 @@
-import React, { useCallback } from 'react';
+import React, {useCallback} from 'react';
 import {DefaultSeo} from 'next-seo';
 import ViewWallet from 'components/apps/0.ViewWallet';
 import ViewAddressBookSection from '@addressBook/1.ViewAddressBookSection';
+import {AddressBookContextApp,Step, useAddressBook} from '@addressBook/useAddressBook';
 import ViewNewSafe from '@safeCreatooor/4.ViewNewSafe';
-import {useAddressBook, Step, AddressBookContextApp} from '@addressBook/useAddressBook';
 
 import type {ReactElement} from 'react';
 
@@ -13,7 +13,7 @@ function AddressBook(): ReactElement {
 	const onSendToken = useCallback((): void => {
 		// set_currentStep(Step.CONFIRMATION);
 		document?.getElementById('tldr')?.scrollIntoView({behavior: 'smooth', block: 'center'});
-	}, [set_currentStep]);
+	}, []);
 
 	return (
 		<div className={'mx-auto grid w-full max-w-4xl'}>

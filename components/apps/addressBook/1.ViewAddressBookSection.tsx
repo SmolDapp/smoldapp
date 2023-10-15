@@ -4,17 +4,18 @@ import IconCircleCross from 'components/icons/IconCircleCross';
 import IconWarning from 'components/icons/IconWarning';
 import {checkENSValidity} from 'utils/tools.ens';
 import {checkLensValidity} from 'utils/tools.lens';
-import { isNullAddress } from './utils';
+import {newVoidRow,useAddressBook} from '@addressBook/useAddressBook';
 import {useMountEffect, useUpdateEffect} from '@react-hookz/web';
-import {useAddressBook, newVoidRow} from '@addressBook/useAddressBook';
-import {IconLoader} from '@yearn-finance/web-lib/icons/IconLoader';
 import {Button} from '@yearn-finance/web-lib/components/Button';
+import {IconLoader} from '@yearn-finance/web-lib/icons/IconLoader';
 import {isZeroAddress, toAddress} from '@yearn-finance/web-lib/utils/address';
 import {performBatchedUpdates} from '@yearn-finance/web-lib/utils/performBatchedUpdates';
 
+import {isNullAddress} from './utils';
+
 import type {ReactElement} from 'react';
-import type {TAddressBookElement} from '@addressBook/useAddressBook';
 import type {TAddress} from '@yearn-finance/web-lib/types';
+import type {TAddressBookElement} from '@addressBook/useAddressBook';
 
 type TAddressLikeInput = {
 	uuid: string;
@@ -218,8 +219,8 @@ const ViewAddressBookSection = memo(function ViewAddressBookSection({onProceed}:
 			return true;
 		});
 	}, [addressBook, checkAlreadyExists]);
-	const isValidElement = (UUID: string) => {
-		const element = addressBook.find((row) => row.UUID === UUID);
+	const isValidElement = (UUID: string): boolean => {
+		const element = addressBook.find((row): boolean => row.UUID === UUID);
 		if (!element) {
 			return false;
 		}
@@ -233,7 +234,7 @@ const ViewAddressBookSection = memo(function ViewAddressBookSection({onProceed}:
 			return false;
 		}
 		return true;
-	}
+	};
 
 	return (
 		<section className={'box-0'}>

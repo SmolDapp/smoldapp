@@ -122,7 +122,7 @@ export const AddressBookContextApp = ({children}: {children: React.ReactElement}
 		addressBook,
 		set_addressBook,
 		currentStep,
-		set_currentStep,
+		set_currentStep
 	}), [currentStep, addressBook]);
 
 	return (
