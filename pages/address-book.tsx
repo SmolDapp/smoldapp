@@ -65,7 +65,7 @@ export default function AddressBookWrapper(): ReactElement {
 						description: 'Backend-less trusted address book for token transfers',
 						images: [
 							{
-								url: 'https://smold.app/og_disperse.png',
+								url: 'https://smold.app/og_address-book.png',
 								width: 800,
 								height: 400,
 								alt: 'smolSend'
