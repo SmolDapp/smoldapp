@@ -86,9 +86,7 @@ export const NFTMigratooorContextApp = ({children}: {children: React.ReactElemen
 		});
 
 		let assets: TNFT[] = [];
-		if (chainID === 1) {
-			assets = await handleOpenSeaAssets(toAddress(userAddress));
-		} else if ([1, 10, 137, 42161].includes(chainID)) {
+		if ([1, 10, 137, 42161].includes(chainID)) {
 			assets = await handleAlchemyAssets(toAddress(userAddress), chainID);
 		} else {
 			assets = await filterNFTs(toAddress(userAddress), chainID);
@@ -98,7 +96,7 @@ export const NFTMigratooorContextApp = ({children}: {children: React.ReactElemen
 			set_nfts(assets);
 			set_isFetchingNFTs(false);
 		});
-	}, [filterNFTs, handleAlchemyAssets, handleOpenSeaAssets]);
+	}, [filterNFTs, handleAlchemyAssets]);
 
 	/**********************************************************************************************
 	** Fetch all NFTs from OpenSea. The OpenSea API only returns 200 NFTs at a time, so we need to
