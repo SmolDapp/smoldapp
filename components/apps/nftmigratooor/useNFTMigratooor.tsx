@@ -2,7 +2,7 @@ import React, {createContext, useCallback, useContext, useEffect, useMemo, useSt
 import useNFTs from 'hooks/useNFTs';
 import {scrollToTargetAdjusted} from 'utils/animations';
 import {HEADER_HEIGHT} from 'utils/constants';
-import {alchemyToNFT, fetchAllAssetsFromAlchemy, fetchAllAssetsFromOpenSea, openseaToNFT} from 'utils/types/opensea';
+import {alchemyToNFT, fetchAllAssetsFromAlchemy} from 'utils/types/opensea';
 import {useMountEffect, useUpdateEffect} from '@react-hookz/web';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
@@ -55,12 +55,6 @@ export const NFTMigratooorContextApp = ({children}: {children: React.ReactElemen
 	const [nfts, set_nfts] = useState<TNFT[]>([]);
 	const [selected, set_selected] = useState<TNFT[]>([]);
 	const [currentStep, set_currentStep] = useState<Step>(Step.WALLET);
-
-	const handleOpenSeaAssets = useCallback(async (userAddress: TAddress): Promise<TNFT[]> => {
-		const rawAssets = await fetchAllAssetsFromOpenSea(userAddress);
-		const assets = rawAssets.map(openseaToNFT);
-		return (assets);
-	}, []);
 
 	const handleAlchemyAssets = useCallback(async (
 		userAddress: TAddress,
