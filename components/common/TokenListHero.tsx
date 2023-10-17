@@ -90,6 +90,7 @@ function TokenListHero({summary}: {summary: TTokenListSummary | undefined}): Rea
 							<div>
 								<b suppressHydrationWarning className={'font-number text-xl'}>{time}</b>
 								<p className={'pt-2 text-xs text-neutral-500'}>{'The next automatic update is just around the corner! Our lists are updated automatically with each new commit or every Sunday at midday, without any manual input.'}</p>
+								<p className={'pt-2 text-xs text-neutral-500'}>{'The tokenlistooor.json is an automatically curated list of tokens that appear in at least 5 of the lists below at the time of update.'}</p>
 							</div>
 						</div>
 					</div>
