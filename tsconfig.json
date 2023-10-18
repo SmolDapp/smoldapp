@@ -1,19 +1,41 @@
 {
 	"compilerOptions": {
-		"rootDirs": ["."],
+		"rootDirs": [
+			"."
+		],
 		"baseUrl": ".",
 		"paths": {
-			"@common/*": ["components/common/*"],
-			"@disperse/*": ["components/apps/disperse/*"],
-			"@migratooor/*": ["components/apps/migratooor/*"],
-			"@nftmigratooor/*": ["components/apps/nftmigratooor/*"],
-			"@tokenlistooor/*": ["components/apps/tokenlistooor/*"],
-			"@safeCreatooor/*": ["components/apps/safeCreator/*"],
+			"@common/*": [
+				"components/common/*"
+			],
+			"@disperse/*": [
+				"components/apps/disperse/*"
+			],
+			"@migratooor/*": [
+				"components/apps/migratooor/*"
+			],
+			"@nftmigratooor/*": [
+				"components/apps/nftmigratooor/*"
+			],
+			"@tokenlistooor/*": [
+				"components/apps/tokenlistooor/*"
+			],
+			"@safeCreatooor/*": [
+				"components/apps/safeCreator/*"
+			],
+			"@addressBook/*": [
+				"components/apps/addressBook/*"
+			]
 		},
 		/* Basic Options */
 		"target": "esnext",
 		"module": "esnext",
-		"lib": ["es6", "es7", "esnext", "dom"],
+		"lib": [
+			"es6",
+			"es7",
+			"esnext",
+			"dom"
+		],
 		"allowJs": true,
 		"jsx": "preserve",
 		"removeComments": false,
@@ -39,7 +61,11 @@
 		"noEmit": true,
 		"incremental": true,
 		"isolatedModules": true,
-		"plugins": [{"name": "next"}]
+		"plugins": [
+			{
+				"name": "next"
+			}
+		]
 	},
 	"exclude": [
 		"node_modules",

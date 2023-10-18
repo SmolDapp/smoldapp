@@ -1,6 +1,7 @@
 import React, {Fragment} from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import LogoAddressBook from '@addressBook/Logo';
 import LogoDisperse from '@disperse/Logo';
 import LogoMigratooor from '@migratooor/Logo';
 import LogoNFTMigratooor from '@nftmigratooor/Logo';
@@ -99,6 +100,17 @@ const	apps = [
 			</span>
 		),
 		icon: <LogoTokenlistooor className={'h-[80px] w-[80px]'} />
+	}, {
+		href: '/address-book',
+		title: 'SmolSend',
+		description: (
+			<span>
+				{'Backend-less '}
+				<span className={'font-semibold text-primary-500 transition-colors group-hover:text-primary-0'}>{'trusted address book'}</span>
+				{' for token transfers'}
+			</span>
+		),
+		icon: <LogoAddressBook className={'h-[80px] w-[80px]'} />
 	}
 ];
 
