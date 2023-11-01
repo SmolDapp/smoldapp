@@ -1,6 +1,8 @@
 import React, {memo, useCallback, useMemo, useState} from 'react';
+import {useRouter} from 'next/router';
 import IconCheck from 'components/icons/IconCheck';
 import IconCircleCross from 'components/icons/IconCircleCross';
+import IconSquarePlus from 'components/icons/IconSquarePlus';
 import IconWarning from 'components/icons/IconWarning';
 import {checkENSValidity} from 'utils/tools.ens';
 import {checkLensValidity} from 'utils/tools.lens';
@@ -10,8 +12,6 @@ import {Button} from '@yearn-finance/web-lib/components/Button';
 import {IconLoader} from '@yearn-finance/web-lib/icons/IconLoader';
 import {isZeroAddress, toAddress} from '@yearn-finance/web-lib/utils/address';
 import {performBatchedUpdates} from '@yearn-finance/web-lib/utils/performBatchedUpdates';
-import IconSquarePlus from 'components/icons/IconSquarePlus';
-import {Step} from '@safeCreatooor/useSafeCreator';
 import CardWithIcon from '@common/CardWithIcon';
 
 import {isNullAddress} from './utils';
@@ -19,7 +19,6 @@ import {isNullAddress} from './utils';
 import type {ReactElement} from 'react';
 import type {TAddress} from '@yearn-finance/web-lib/types';
 import type {TAddressBookElement} from '@addressBook/useAddressBook';
-import { useRouter } from 'next/router';
 
 type TAddressLikeInput = {
 	uuid: string;
@@ -201,12 +200,14 @@ const ViewAddressBookSection = memo(function ViewAddressBookSection({onProceed}:
 				</div>
 
 				<div className={'border-t border-neutral-200 p-6'}>
-					<div className={'flex flex-row gap-4 mb-4'}>
+					<div className={'mb-4 flex flex-row gap-4'}>
 						<CardWithIcon
 							icon={<IconSquarePlus />}
 							label={'Create a new one!'}
 							onClick={(): void => {
-								if (!isValid) return;
+								if (!isValid) {
+									return;
+								}
 								router.push(`${router.pathname}/create`);
 							}}
 						/>
@@ -214,7 +215,9 @@ const ViewAddressBookSection = memo(function ViewAddressBookSection({onProceed}:
 							icon={<svg xmlns={'http://www.w3.org/2000/svg'} height={'1em'} viewBox={'0 0 512 512'}><path d={'M64 480H288c17.7 0 32-14.3 32-32V384h32v64c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V224c0-35.3 28.7-64 64-64h64v32H64c-17.7 0-32 14.3-32 32V448c0 17.7 14.3 32 32 32zM224 320H448c17.7 0 32-14.3 32-32V64c0-17.7-14.3-32-32-32H224c-17.7 0-32 14.3-32 32V288c0 17.7 14.3 32 32 32zm-64-32V64c0-35.3 28.7-64 64-64H448c35.3 0 64 28.7 64 64V288c0 35.3-28.7 64-64 64H224c-35.3 0-64-28.7-64-64z'} fill={'currentColor'}/></svg>}
 							label={'Clone existing Address Book'}
 							onClick={(): void => {
-								if (!isValid) return;
+								if (!isValid) {
+									return;
+								}
 							}}
 						/>
 					</div>

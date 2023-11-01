@@ -1,27 +1,29 @@
-import React, {useState, useMemo, useEffect, useCallback} from 'react';
-import {DefaultSeo} from 'next-seo';
+import React, {useCallback,useEffect, useMemo, useState} from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import {AddressBookContextApp, TCategory, useAddressBook} from '@addressBook/useAddressBook';
-import AddressInput, { TInputAddressLike, defaultInputAddressLike } from '@common/AddressInput';
-import { Listbox } from '@headlessui/react'
+import {useRouter} from 'next/router';
+import {DefaultSeo} from 'next-seo';
 import assert from 'assert';
+import IconWarning from 'components/icons/IconWarning';
 import {useConnect, usePublicClient} from 'wagmi';
+import {AddressBookContextApp, useAddressBook} from '@addressBook/useAddressBook';
+import {isNullAddress} from '@addressBook/utils';
+import {Listbox} from '@headlessui/react';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import {toSafeChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {IconChevronBottom} from '@yearn-finance/web-lib/icons/IconChevronBottom';
+import {isZeroAddress} from '@yearn-finance/web-lib/utils/address';
+import AddressInput, {defaultInputAddressLike} from '@common/AddressInput';
 
 import type {ReactElement} from 'react';
 import type {Chain} from 'wagmi';
-import { isZeroAddress } from '@yearn-finance/web-lib/utils/address';
-import { isNullAddress } from '@addressBook/utils';
-import IconWarning from 'components/icons/IconWarning';
-import { useRouter } from 'next/router';
+import type {TCategory} from '@addressBook/useAddressBook';
+import type {TInputAddressLike} from '@common/AddressInput';
 
 const categories: TCategory[] = [
-  {value: 1, label: 'category 1'},
-  {value: 2, label: 'category 2'},
-  {value: 3, label: 'category 3'}
+	{value: 1, label: 'category 1'},
+	{value: 2, label: 'category 2'},
+	{value: 3, label: 'category 3'}
 ];
 type TNetwork = {value: number, label: string};
 
@@ -60,7 +62,7 @@ function CreateAddress(): ReactElement {
 		supportedNetworks.find((network): boolean => network.value === safeChainID)
 	), [safeChainID, supportedNetworks]);
 
-	useEffect(() => {
+	useEffect((): void => {
 		set_selectedChainNetwork(currentNetwork);
 	}, [currentNetwork]);
 
@@ -72,10 +74,10 @@ function CreateAddress(): ReactElement {
 			return false;
 		}
 		return true;
-	}, [address]);
+	}, [address, checkAlreadyExists]);
 
 	return (
-		<div className={'mx-auto grid gap-8 w-full max-w-4xl'}>
+		<div className={'mx-auto grid w-full max-w-4xl gap-8'}>
 			<div className={'mt-6 flex flex-col justify-center md:mt-20'}>
 				<h1 className={'-ml-1 mt-4 w-full text-3xl tracking-tight text-neutral-900 md:mt-6 md:w-2/3 md:text-3xl'}>
 					{'Add new address to the Address Book'}
@@ -99,29 +101,29 @@ function CreateAddress(): ReactElement {
 						maxLength={400}
 						className={'smol--input font-mono font-bold'}
 						onChange={({target:{value}}): void => set_description(value)}
-						placeholder={`Description of the address`}
+						placeholder={'Description of the address'}
 					/>
 				</div>
 				<div className={'smol--input-wrapper relative'}>
 					<Listbox
 						value={selectedCategory?.value}
-						onChange={(value: number) => {
-							set_selectedCategory(categories.find((category) => category.value === value));
+						onChange={(value: number): void => {
+							set_selectedCategory(categories.find((category): boolean => category.value === value));
 						}}
 					>
-						{({open}) => (
+						{({open}): ReactElement => (
 							<>
-								<Listbox.Button className={`smol--input font-mono font-bold text-left ${!selectedCategory?.label && 'text-neutral-400'}`}						>
+								<Listbox.Button className={`smol--input text-left font-mono font-bold ${!selectedCategory?.label && 'text-neutral-400'}`}						>
 									{selectedCategory?.label || 'Category...'}
 								</Listbox.Button>
 								<IconChevronBottom className={`h-3 w-3 transition-transform md:h-5 md:w-4 ${open ? '-rotate-180' : 'rotate-0'}`} />
-								<Listbox.Options className={'absolute left-0 top-12 z-10 w-full p-2 bg-white rounded-md shadow-lg'}>
-									{categories.map((category) => (
+								<Listbox.Options className={'absolute left-0 top-12 z-10 w-full rounded-md bg-white p-2 shadow-lg'}>
+									{categories.map((category): ReactElement => (
 										<Listbox.Option
 											key={category.value}
 											value={category.value}
 										>
-											{({ active }) => (
+											{({active}): ReactElement => (
 												<li
 													className={`${active ? 'bg-primary-300/50' : ''} cursor-pointer select-none p-2`}
 												>
@@ -138,13 +140,13 @@ function CreateAddress(): ReactElement {
 				<div className={'smol--input-wrapper relative'}>
 					<Listbox
 						value={selectedChainNetwork?.value}
-						onChange={(value: number) => {
-							set_selectedChainNetwork(supportedNetworks.find((network) => network.value === value));
+						onChange={(value: number): void => {
+							set_selectedChainNetwork(supportedNetworks.find((network): boolean => network.value === value));
 						}}
 					>
-						{({open}) => (
+						{({open}): ReactElement => (
 							<>
-								<Listbox.Button className={`flex flex-row gap-2 smol--input font-mono font-bold text-left ${!selectedChainNetwork?.label && 'text-gray-500'}`}>
+								<Listbox.Button className={`smol--input flex flex-row gap-2 text-left font-mono font-bold ${!selectedChainNetwork?.label && 'text-gray-500'}`}>
 									{!!selectedChainNetwork && (
 										<Image
 											id={selectedChainNetwork.value.toString()}
@@ -158,13 +160,13 @@ function CreateAddress(): ReactElement {
 									{selectedChainNetwork?.label || 'Network...'}
 								</Listbox.Button>
 								<IconChevronBottom className={`h-3 w-3 transition-transform md:h-5 md:w-4 ${open ? '-rotate-180' : 'rotate-0'}`} />
-								<Listbox.Options className={'absolute left-0 top-12 z-10 w-full p-2 bg-white rounded-md shadow-lg'}>
-									{supportedNetworks.map((network) => (
+								<Listbox.Options className={'absolute left-0 top-12 z-10 w-full rounded-md bg-white p-2 shadow-lg'}>
+									{supportedNetworks.map((network): ReactElement => (
 										<Listbox.Option
 											key={network.value}
 											value={network.value}
 										>
-											{({ active }) => (
+											{({active}): ReactElement => (
 												<div className={`flex flex-row gap-2 ${active ? 'bg-primary-300/50' : ''} cursor-pointer select-none p-2`}>
 													{!!network && (
 														<Image
@@ -186,7 +188,7 @@ function CreateAddress(): ReactElement {
 						)}
 					</Listbox>
 				</div>
-				<div className={'flex flex-row gap-8 items-center'}>
+				<div className={'flex flex-row items-center gap-8'}>
 					<Link href={'/address-book'}>
 						<p className={'text-sm text-neutral-400 transition-all hover:text-neutral-900 hover:underline disabled:text-neutral-400/40'}>{'◁ Back'}</p>
 					</Link>
@@ -194,16 +196,18 @@ function CreateAddress(): ReactElement {
 						variant={'filled'}
 						className={'yearn--button !w-[160px] rounded-md'}
 						onClick={(): void => {
-							set_addressBook([...addressBook, {
-								UUID: crypto.randomUUID(),
-								address: address.address!,
-								label: undefined,
-								description: description,
-								categories: selectedCategory ? [selectedCategory] : [],
-								chainsID: selectedChainNetwork ? [selectedChainNetwork.value] : [],
-								walletKind: 'EOA',
-								isFavorite: false
-							}]);
+							set_addressBook([
+								...addressBook, {
+									UUID: crypto.randomUUID(),
+									address: address.address!,
+									label: undefined,
+									description: description,
+									categories: selectedCategory ? [selectedCategory] : [],
+									chainsID: selectedChainNetwork ? [selectedChainNetwork.value] : [],
+									walletKind: 'EOA',
+									isFavorite: false
+								}
+							]);
 							router.replace('/address-book');
 						}}
 						disabled={!isValid}
