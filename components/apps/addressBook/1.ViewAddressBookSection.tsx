@@ -4,28 +4,31 @@ import IconCircleCross from 'components/icons/IconCircleCross';
 import IconWarning from 'components/icons/IconWarning';
 import {checkENSValidity} from 'utils/tools.ens';
 import {checkLensValidity} from 'utils/tools.lens';
-import {newVoidRow,useAddressBook} from '@addressBook/useAddressBook';
-import {useMountEffect, useUpdateEffect} from '@react-hookz/web';
+import {useAddressBook} from '@addressBook/useAddressBook';
+import {useUpdateEffect} from '@react-hookz/web';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import {IconLoader} from '@yearn-finance/web-lib/icons/IconLoader';
 import {isZeroAddress, toAddress} from '@yearn-finance/web-lib/utils/address';
 import {performBatchedUpdates} from '@yearn-finance/web-lib/utils/performBatchedUpdates';
+import IconSquarePlus from 'components/icons/IconSquarePlus';
+import {Step} from '@safeCreatooor/useSafeCreator';
+import CardWithIcon from '@common/CardWithIcon';
 
 import {isNullAddress} from './utils';
 
 import type {ReactElement} from 'react';
 import type {TAddress} from '@yearn-finance/web-lib/types';
 import type {TAddressBookElement} from '@addressBook/useAddressBook';
+import { useRouter } from 'next/router';
 
 type TAddressLikeInput = {
 	uuid: string;
 	label: string;
 	onChangeLabel: (label: string) => void;
 	onChange: (address: string | undefined) => void;
-	onPaste: (UUID: string, pasted: string) => void;
 	isDuplicate?: boolean;
 }
-function AddressLikeInput({uuid, label, onChangeLabel, onChange, onPaste, isDuplicate}: TAddressLikeInput): ReactElement {
+function AddressLikeInput({uuid, label, onChangeLabel, onChange, isDuplicate}: TAddressLikeInput): ReactElement {
 	const [isValidDestination, set_isValidDestination] = useState<boolean | 'undetermined'>('undetermined');
 	const [isValidish, set_isValidish] = useState<boolean | 'undetermined'>('undetermined');
 	const [isLoadingValidish, set_isLoadingValidish] = useState<boolean>(false);
@@ -44,17 +47,6 @@ function AddressLikeInput({uuid, label, onChangeLabel, onChange, onPaste, isDupl
 		}
 		return 'none';
 	}, [isValidDestination, isValidish, isDuplicate, label, isLoadingValidish]);
-
-	const looksValidAddress = useCallback((value: string): boolean => {
-		if (value.endsWith('.eth')) {
-			return true;
-		} if (value.endsWith('.lens')) {
-			return true;
-		} if (!isZeroAddress(toAddress(value))) {
-			return true;
-		}
-		return false;
-	}, []);
 
 	useUpdateEffect((): void => {
 		set_isValidDestination('undetermined');
@@ -98,15 +90,6 @@ function AddressLikeInput({uuid, label, onChangeLabel, onChange, onPaste, isDupl
 					spellCheck={false}
 					placeholder={'0x...'}
 					value={label}
-					onPaste={(e): void => {
-						const value = e.clipboardData.getData('text/plain');
-						const isValidValue = looksValidAddress(value);
-						if (isValidValue) {
-							set_isValidDestination('undetermined');
-							return;
-						}
-						onPaste(uuid, value);
-					}}
 					onChange={(e): void => {
 						set_isValidDestination('undetermined');
 						onChangeLabel(e.target.value);
@@ -140,11 +123,8 @@ function AddressLikeInput({uuid, label, onChangeLabel, onChange, onPaste, isDupl
 }
 
 const ViewAddressBookSection = memo(function ViewAddressBookSection({onProceed}: {onProceed: VoidFunction}): ReactElement {
+	const router = useRouter();
 	const {addressBook, set_addressBook} = useAddressBook();
-
-	useMountEffect((): void => {
-		set_addressBook([newVoidRow()]);
-	});
 
 	const checkAlreadyExists = useCallback((UUID: string, address: TAddress): boolean => {
 		if (isZeroAddress(address)) {
@@ -153,16 +133,10 @@ const ViewAddressBookSection = memo(function ViewAddressBookSection({onProceed}:
 		return addressBook.some((row): boolean => row.UUID !== UUID && row.address === address);
 	}, [addressBook]);
 
-	function onAddNewRow(): void {
-		set_addressBook([...addressBook, newVoidRow()]);
-	}
 	function onUpdateAddressByUUID(UUID: string, address: string | undefined): void {
 		set_addressBook(addressBook.map((row): TAddressBookElement => {
 			if (row.UUID !== UUID) {
 				return row;
-			}
-			if (!address || isZeroAddress(address)) {
-				return {...row, address: undefined};
 			}
 			return {...row, address: toAddress(address)};
 		}));
@@ -174,36 +148,6 @@ const ViewAddressBookSection = memo(function ViewAddressBookSection({onProceed}:
 			}
 			return {...row, label};
 		}));
-	}
-	function onHandleMultiplePaste(UUID: string, pasted: string): void {
-		const separators = [' ', '-', ';', ',', '.'];
-		const addressAmounts = pasted.split('\n').map((line): [string, string] => {
-			//remove all separators that are next to each other
-			let cleanedLine = separators.reduce((acc, separator): string => acc.replaceAll(separator + separator, separator), line);
-			for (let i = 0; i < 3; i++) {
-				cleanedLine = separators.reduce((acc, separator): string => acc.replaceAll(separator + separator, separator), cleanedLine);
-			}
-
-			const addressAmount = cleanedLine.split(separators.find((separator): boolean => cleanedLine.includes(separator)) ?? ' ');
-			return [addressAmount[0], addressAmount[1]];
-		});
-		const newRows = addressAmounts.map((addressAmount): TAddressBookElement => {
-			const row = newVoidRow();
-			row.address = toAddress(addressAmount[0]);
-			row.label = String(addressAmount[0]);
-
-			return row;
-		});
-		set_addressBook(
-			addressBook.reduce((acc, row): TAddressBookElement[] => {
-				if (row.UUID === UUID) {
-					if (row.address && !isZeroAddress(row.address)) {
-						return [...acc, row, ...newRows];
-					}
-					return [...acc, ...newRows];
-				}
-				return [...acc, row];
-			}, [] as TAddressBookElement[]));
 	}
 	const isValid = useMemo((): boolean => {
 		return addressBook.every((row): boolean => {
@@ -242,13 +186,13 @@ const ViewAddressBookSection = memo(function ViewAddressBookSection({onProceed}:
 				<div className={'flex flex-col p-4 text-neutral-900 md:p-6 md:pb-4'}>
 					<div className={'w-full md:w-3/4'}>
 						<b>
-							{addressBook.length > 1 || (addressBook[0]?.address && isValid)
+							{addressBook.length > 1
 								? 'My Address Book'
 								: 'Where is the Address Book?'
 							}
 						</b>
 						<p className={'text-sm text-neutral-500'}>
-							{addressBook.length > 1 || (addressBook[0]?.address && isValid)
+							{addressBook.length > 1
 								? 'Oh, you found it. Great! You can send a couple of tokens to your address or export the book.'
 								: 'You can import an existing Address Book or create a new one. Go ahead!'
 							}
@@ -257,14 +201,22 @@ const ViewAddressBookSection = memo(function ViewAddressBookSection({onProceed}:
 				</div>
 
 				<div className={'border-t border-neutral-200 p-6'}>
-					<div className={'mb-4'}>
-						<Button
-							disabled={!isValid}
-							onClick={onAddNewRow}
-							className={'yearn--button'}
-						>
-							{'Create!'}
-						</Button>
+					<div className={'flex flex-row gap-4 mb-4'}>
+						<CardWithIcon
+							icon={<IconSquarePlus />}
+							label={'Create a new one!'}
+							onClick={(): void => {
+								if (!isValid) return;
+								router.push(`${router.pathname}/create`);
+							}}
+						/>
+						<CardWithIcon
+							icon={<svg xmlns={'http://www.w3.org/2000/svg'} height={'1em'} viewBox={'0 0 512 512'}><path d={'M64 480H288c17.7 0 32-14.3 32-32V384h32v64c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V224c0-35.3 28.7-64 64-64h64v32H64c-17.7 0-32 14.3-32 32V448c0 17.7 14.3 32 32 32zM224 320H448c17.7 0 32-14.3 32-32V64c0-17.7-14.3-32-32-32H224c-17.7 0-32 14.3-32 32V288c0 17.7 14.3 32 32 32zm-64-32V64c0-35.3 28.7-64 64-64H448c35.3 0 64 28.7 64 64V288c0 35.3-28.7 64-64 64H224c-35.3 0-64-28.7-64-64z'} fill={'currentColor'}/></svg>}
+							label={'Clone existing Address Book'}
+							onClick={(): void => {
+								if (!isValid) return;
+							}}
+						/>
 					</div>
 					<div className={'grid grid-cols-1 gap-y-2'}>
 						{addressBook.map(({UUID}, i): ReactElement => (
@@ -275,7 +227,6 @@ const ViewAddressBookSection = memo(function ViewAddressBookSection({onProceed}:
 									label={addressBook[i].label || ''}
 									onChangeLabel={(label): void => onUpdateLabelByUUID(UUID, label)}
 									onChange={(address): void => onUpdateAddressByUUID(UUID, address)}
-									onPaste={onHandleMultiplePaste}
 								/>
 								<Button
 									disabled={!isValidElement(UUID)}

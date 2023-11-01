@@ -13,15 +13,15 @@ export enum	Step {
 	CONFIRMATION = 'confirmation'
 }
 
-export type TCategory = string;
+export type TCategory = {value: number; label: string;};
 export type TAddressBookElement = {
 	UUID: string;
-	address: TAddress | undefined;
+	address: TAddress;
 	label: string | undefined;
 	description: string | undefined;
 	categories: TCategory[];
 	chainsID: number[];
-	walletKind: 'EOA' | 'SWC' | undefined;
+	walletKind: 'EOA' | 'SWC';
 	isFavorite: boolean;
 };
 
@@ -37,19 +37,6 @@ const defaultProps: TSelected = {
 	set_addressBook: (): void => undefined,
 	set_currentStep: (): void => undefined
 };
-
-export function newVoidRow(): TAddressBookElement {
-	return ({
-		UUID: crypto.randomUUID(),
-		address: undefined,
-		label: undefined,
-		description: undefined,
-		categories: [],
-		chainsID: [],
-		walletKind: undefined,
-		isFavorite: false
-	});
-}
 
 const AddressBookContext = createContext<TSelected>(defaultProps);
 export const AddressBookContextApp = ({children}: {children: React.ReactElement}): React.ReactElement => {

@@ -6,12 +6,12 @@ import {cl} from '@yearn-finance/web-lib/utils/cl';
 import type {ReactElement} from 'react';
 
 export type TCardWithIcon = {
-	isSelected: boolean,
+	isSelected?: boolean,
 	onClick?: () => void;
 	label: string;
 	icon: ReactElement;
 }
-export default function CardWithIcon({isSelected, onClick, label, icon}: TCardWithIcon): ReactElement {
+export default function CardWithIcon({isSelected = false, onClick, label, icon}: TCardWithIcon): ReactElement {
 	return (
 		<button
 			className={cl('hover box-0 group relative flex w-full items-center justify-center p-4 md:p-6', isSelected ? '!bg-primary-50' : '')}
