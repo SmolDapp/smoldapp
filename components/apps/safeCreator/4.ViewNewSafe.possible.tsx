@@ -103,7 +103,7 @@ function PossibleSafe({possibleSafe, prefix, suffix, currentSeed, factory, shoul
 								fallback={<span className={'text-neutral-400'}>{'-'}</span>}>
 								<div className={'mt-1 grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-4'}>
 									{SUPPORTED_CHAINS
-										.filter((chain): boolean => ![5, 1337, 84531].includes(chain.id))
+										.filter((chain): boolean => ![5, 324, 1337, 84531].includes(chain.id))
 										.map((chain): ReactElement => (
 											<ChainStatus
 												key={chain.id}
@@ -118,6 +118,7 @@ function PossibleSafe({possibleSafe, prefix, suffix, currentSeed, factory, shoul
 								{shouldUseTestnets && (
 									<div className={'mt-6 grid grid-cols-2 gap-2 border-t border-primary-100 pt-6 md:grid-cols-3 md:gap-4'}>
 										{SUPPORTED_CHAINS
+											.filter((chain): boolean => ![324].includes(chain.id))
 											.filter((chain): boolean => [5, 1337, 84531].includes(chain.id))
 											.map((chain): ReactElement => (
 												<ChainStatus
