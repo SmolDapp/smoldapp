@@ -181,7 +181,7 @@ function ViewClonableSafe(): ReactElement {
 								fallback={<span className={'text-neutral-400'}>{'-'}</span>}>
 								<div className={'mt-1 grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-4'}>
 									{SUPPORTED_CHAINS
-										.filter((chain): boolean => [324].includes(chain.id))
+										.filter((chain): boolean => ![324].includes(chain.id))
 										.map((chain): ReactElement => (
 											<ChainStatus
 												key={chain.id}
