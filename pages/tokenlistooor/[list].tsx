@@ -20,6 +20,7 @@ import type {Variants} from 'framer-motion';
 import type {GetServerSidePropsResult, NextPageContext} from 'next';
 import type {TTokenListItem} from 'pages/tokenlistooor';
 import type {ReactElement} from 'react';
+import type {TExtendedChain} from '@yearn-finance/web-lib/utils/wagmi/utils';
 
 extend(relativeTime);
 extend(dayjsDuration);
@@ -88,6 +89,56 @@ function TokenListHero({list}: {list: TTokenListItem}): ReactElement {
 							</Button>
 						</Link>
 					</div>
+				</div>
+			</div>
+		</div>
+	);
+}
+
+function TokenListItem({item}: {item: TTokenListItem['tokens'][0]}): ReactElement {
+	const currentNetwork = useMemo((): TExtendedChain => {
+		try {
+			return getNetwork(item.chainId);
+		} catch (error) {
+			// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+			return {} as TExtendedChain;
+		}
+	}, [item.chainId]);
+
+	return (
+		<div className={'grid w-full grid-cols-12 items-center gap-4'}>
+			<div className={'col-span-12 flex flex-row items-center space-x-6 md:col-span-8'}>
+				<ImageWithFallback
+					alt={`${item.address}_${item.name}_${item.symbol}`}
+					width={40}
+					height={40}
+					quality={90}
+					unoptimized
+					src={item.logoURI} />
+				<div>
+					<p className={'text-sm'}>
+						{item.name}
+						<span className={'text-xs text-neutral-600'}>{` - (${item.symbol})`}</span>
+					</p>
+					<span className={'font-number mt-2 block !font-mono text-xxs text-neutral-600 transition-colors md:text-xs'}>
+						<a
+							href={`${currentNetwork?.blockExplorers || 'https://etherscan.io'}/token/${item.address}`}
+							target={'_blank'}
+							rel={'noreferrer'}
+							className={'font-mono hover:text-neutral-900 hover:underline'}>
+							{item.address}
+						</a>
+						{` • ${item.decimals} decimals`}
+					</span>
+				</div>
+			</div>
+
+			<div className={'col-span-12 flex justify-end text-right md:col-span-4'}>
+				<div>
+					<p className={'block text-xxs text-neutral-700 md:text-xs'}>
+						{'Chain'}
+					</p>
+					<b>{currentNetwork?.name || `Chain ${item.chainId}`}</b>
 				</div>
 			</div>
 		</div>
@@ -209,42 +260,7 @@ function TokenListContent({list}: {list: TTokenListItem}): ReactElement {
 							whileInView={'enter'}
 							variants={variants as Variants}
 							className={'relative flex w-full p-4 transition-colors hover:bg-neutral-50/40 md:p-6'}>
-							<div className={'grid w-full grid-cols-12 items-center gap-4'}>
-								<div className={'col-span-12 flex flex-row items-center space-x-6 md:col-span-8'}>
-									<ImageWithFallback
-										alt={`${item.address}_${item.name}_${item.symbol}`}
-										width={40}
-										height={40}
-										quality={90}
-										unoptimized
-										src={item.logoURI} />
-									<div>
-										<p className={'text-sm'}>
-											{item.name}
-											<span className={'text-xs text-neutral-600'}>{` - (${item.symbol})`}</span>
-										</p>
-										<span className={'font-number mt-2 block !font-mono text-xxs text-neutral-600 transition-colors md:text-xs'}>
-											<a
-												href={`${getNetwork(item.chainId).blockExplorers}/token/${item.address}`}
-												target={'_blank'}
-												rel={'noreferrer'}
-												className={'font-mono hover:text-neutral-900 hover:underline'}>
-												{item.address}
-											</a>
-											{` • ${item.decimals} decimals`}
-										</span>
-									</div>
-								</div>
-
-								<div className={'col-span-12 flex justify-end text-right md:col-span-4'}>
-									<div>
-										<p className={'block text-xxs text-neutral-700 md:text-xs'}>
-											{'Chain'}
-										</p>
-										<b>{getNetwork(item.chainId).name}</b>
-									</div>
-								</div>
-							</div>
+							<TokenListItem item={item} />
 						</motion.div>
 					))}
 			</div>
