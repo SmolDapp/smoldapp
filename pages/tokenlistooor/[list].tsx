@@ -122,7 +122,7 @@ function TokenListItem({item}: {item: TTokenListItem['tokens'][0]}): ReactElemen
 					</p>
 					<span className={'font-number mt-2 block !font-mono text-xxs text-neutral-600 transition-colors md:text-xs'}>
 						<a
-							href={`${currentNetwork?.blockExplorers || 'https://etherscan.io'}/token/${item.address}`}
+							href={`${currentNetwork?.blockExplorers?.etherscan?.url || 'https://etherscan.io'}/token/${item.address}`}
 							target={'_blank'}
 							rel={'noreferrer'}
 							className={'font-mono hover:text-neutral-900 hover:underline'}>
