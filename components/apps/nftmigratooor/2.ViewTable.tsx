@@ -5,7 +5,6 @@ import {isLensNFT} from 'utils/tools.lens';
 import NFTCollection from '@nftmigratooor/NFTCollection';
 import {useNFTMigratooor} from '@nftmigratooor/useNFTMigratooor';
 import {Button} from '@yearn-finance/web-lib/components/Button';
-import {performBatchedUpdates} from '@yearn-finance/web-lib/utils/performBatchedUpdates';
 
 import type {ReactElement} from 'react';
 import type {TNFT} from 'utils/types/nftMigratooor';
@@ -127,10 +126,8 @@ const ViewTableOpenSea = memo(function ViewTableOpenSea({onProceed}: {onProceed:
 					<div>
 						<Button
 							onClick={(): void => {
-								performBatchedUpdates((): void => {
-									set_selected(nfts);
-									onProceed();
-								});
+								set_selected(nfts);
+								onProceed();
 							}}
 							className={'yearn--button-smaller !w-full'}>
 							{'Select all'}

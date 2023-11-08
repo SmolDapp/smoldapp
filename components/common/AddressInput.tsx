@@ -6,7 +6,6 @@ import {checkLensValidity} from 'utils/tools.lens';
 import {IconLoader} from '@yearn-finance/web-lib/icons/IconLoader';
 import {isZeroAddress, toAddress} from '@yearn-finance/web-lib/utils/address';
 import {ZERO_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
-import {performBatchedUpdates} from '@yearn-finance/web-lib/utils/performBatchedUpdates';
 
 import type {ReactElement} from 'react';
 import type {TAddress} from '@yearn-finance/web-lib/types';
@@ -49,29 +48,21 @@ function AddressInput({value, onChangeValue}: {
 		currentLabel.current = label;
 
 		if (label.endsWith('.eth') && label.length > 4) {
-			performBatchedUpdates((): void => {
-				onChangeValue({address: undefined, label, isValid: 'undetermined'});
-				set_isLoadingValidish(true);
-			});
+			onChangeValue({address: undefined, label, isValid: 'undetermined'});
+			set_isLoadingValidish(true);
 			const [address, isValid] = await checkENSValidity(label);
-			performBatchedUpdates((): void => {
-				if (currentLabel.current === label) {
-					onChangeValue({address, label, isValid});
-				}
-				set_isLoadingValidish(false);
-			});
+			if (currentLabel.current === label) {
+				onChangeValue({address, label, isValid});
+			}
+			set_isLoadingValidish(false);
 		} else if (label.endsWith('.lens') && label.length > 5) {
-			performBatchedUpdates((): void => {
-				onChangeValue({address: undefined, label, isValid: 'undetermined'});
-				set_isLoadingValidish(true);
-			});
+			onChangeValue({address: undefined, label, isValid: 'undetermined'});
+			set_isLoadingValidish(true);
 			const [address, isValid] = await checkLensValidity(label);
-			performBatchedUpdates((): void => {
-				if (currentLabel.current === label) {
-					onChangeValue({address, label, isValid});
-				}
-				set_isLoadingValidish(false);
-			});
+			if (currentLabel.current === label) {
+				onChangeValue({address, label, isValid});
+			}
+			set_isLoadingValidish(false);
 		} else if (!isZeroAddress(toAddress(label))) {
 			onChangeValue({address: toAddress(label), label, isValid: true});
 		} else {

@@ -8,7 +8,6 @@ import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {ETH_TOKEN_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
 import {toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
-import {performBatchedUpdates} from '@yearn-finance/web-lib/utils/performBatchedUpdates';
 import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 
 import type {Dispatch, ReactElement, SetStateAction} from 'react';
@@ -121,9 +120,7 @@ export const WalletContextApp = memo(function WalletContextApp({children}: {chil
 
 	useMountEffect((): void => {
 		if (!isActive) {
-			performBatchedUpdates((): void => {
-				set_walletProvider('NONE');
-			});
+			set_walletProvider('NONE');
 		}
 	});
 

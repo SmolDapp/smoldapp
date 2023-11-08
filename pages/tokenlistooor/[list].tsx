@@ -12,7 +12,6 @@ import {MigratooorContextApp} from '@migratooor/useMigratooor';
 import {useMountEffect} from '@react-hookz/web';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import {IconSocialGithub} from '@yearn-finance/web-lib/icons/IconSocialGithub';
-import {performBatchedUpdates} from '@yearn-finance/web-lib/utils/performBatchedUpdates';
 import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 import {ImageWithFallback} from '@common/ImageWithFallback';
 
@@ -202,22 +201,20 @@ function TokenListContent({list}: {list: TTokenListItem}): ReactElement {
 						type={'text'}
 						placeholder={'Search'}
 						onChange={(e): void => {
-							performBatchedUpdates((): void => {
-								set_search(e.target.value || '');
-								set_currentPage(1);
-								if (!e.target.value) {
-									const {search, ...queryNoSearch} = router.query;
-									search;
-									router.push({query: queryNoSearch});
-								} else {
-									router.push({
-										query: {
-											...router.query,
-											search: e.target.value
-										}
-									});
-								}
-							});
+							set_search(e.target.value || '');
+							set_currentPage(1);
+							if (!e.target.value) {
+								const {search, ...queryNoSearch} = router.query;
+								search;
+								router.push({query: queryNoSearch});
+							} else {
+								router.push({
+									query: {
+										...router.query,
+										search: e.target.value
+									}
+								});
+							}
 						}} />
 				</div>
 				<div>
@@ -225,22 +222,20 @@ function TokenListContent({list}: {list: TTokenListItem}): ReactElement {
 						className={'rounded-md border border-neutral-200 bg-neutral-0 px-3 py-1 pr-10 text-xs leading-6 text-neutral-500 md:text-sm'}
 						value={network}
 						onChange={(e): void => {
-							performBatchedUpdates((): void => {
-								set_network(Number(e.target.value));
-								set_currentPage(1);
-								if (Number(e.target.value) === -1) {
-									const {network, ...queryNoNetwork} = router.query;
-									network;
-									router.push({query: queryNoNetwork});
-								} else {
-									router.push({
-										query: {
-											...router.query,
-											network: e.target.value
-										}
-									});
-								}
-							});
+							set_network(Number(e.target.value));
+							set_currentPage(1);
+							if (Number(e.target.value) === -1) {
+								const {network, ...queryNoNetwork} = router.query;
+								network;
+								router.push({query: queryNoNetwork});
+							} else {
+								router.push({
+									query: {
+										...router.query,
+										network: e.target.value
+									}
+								});
+							}
 						}}>
 						<option value={-1}>{'All Networks'}</option>
 						{availableNetworks.map((network): ReactElement => (

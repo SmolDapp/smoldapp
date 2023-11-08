@@ -7,7 +7,6 @@ import {useMountEffect, useUpdateEffect} from '@react-hookz/web';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {isZeroAddress, toAddress} from '@yearn-finance/web-lib/utils/address';
-import {performBatchedUpdates} from '@yearn-finance/web-lib/utils/performBatchedUpdates';
 
 import type {Dispatch, SetStateAction} from 'react';
 import type {TNFT} from 'utils/types/nftMigratooor';
@@ -73,11 +72,9 @@ export const NFTMigratooorContextApp = ({children}: {children: React.ReactElemen
 	}, []);
 
 	const fetchNFTs = useCallback(async (userAddress: TAddress, chainID: number): Promise<void> => {
-		performBatchedUpdates((): void => {
-			set_nfts([]);
-			set_selected([]);
-			set_isFetchingNFTs(true);
-		});
+		set_nfts([]);
+		set_selected([]);
+		set_isFetchingNFTs(true);
 
 		let assets: TNFT[] = [];
 		if ([1, 10, 137, 42161].includes(chainID)) {
@@ -86,10 +83,8 @@ export const NFTMigratooorContextApp = ({children}: {children: React.ReactElemen
 			assets = await filterNFTs(toAddress(userAddress), chainID);
 		}
 
-		performBatchedUpdates((): void => {
-			set_nfts(assets);
-			set_isFetchingNFTs(false);
-		});
+		set_nfts(assets);
+		set_isFetchingNFTs(false);
 	}, [filterNFTs, handleAlchemyAssets]);
 
 	/**********************************************************************************************
@@ -110,11 +105,9 @@ export const NFTMigratooorContextApp = ({children}: {children: React.ReactElemen
 	**********************************************************************************************/
 	useUpdateEffect((): void => {
 		if (!isActive) {
-			performBatchedUpdates((): void => {
-				set_selected([]);
-				set_nfts([]);
-				set_destinationAddress(toAddress());
-			});
+			set_selected([]);
+			set_nfts([]);
+			set_destinationAddress(toAddress());
 		}
 	}, [isActive]);
 

@@ -4,7 +4,6 @@ import {HEADER_HEIGHT} from 'utils/constants';
 import {useMountEffect, useUpdateEffect} from '@react-hookz/web';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
-import {performBatchedUpdates} from '@yearn-finance/web-lib/utils/performBatchedUpdates';
 
 import type {Dispatch, SetStateAction} from 'react';
 import type {TAddress, TDict} from '@yearn-finance/web-lib/types';
@@ -53,10 +52,8 @@ export const MigratooorContextApp = ({children}: {children: React.ReactElement})
 
 	useUpdateEffect((): void => {
 		if (!isActive) {
-			performBatchedUpdates((): void => {
-				set_selected(defaultProps.selected);
-				set_destinationAddress(toAddress());
-			});
+			set_selected(defaultProps.selected);
+			set_destinationAddress(toAddress());
 		}
 	}, [isActive]);
 

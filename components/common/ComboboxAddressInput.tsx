@@ -14,7 +14,6 @@ import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {decodeAsNumber, decodeAsString} from '@yearn-finance/web-lib/utils/decoder';
 import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
-import {performBatchedUpdates} from '@yearn-finance/web-lib/utils/performBatchedUpdates';
 
 import type {TTokenInfo} from 'contexts/useTokenList';
 import type {Dispatch, ReactElement, SetStateAction} from 'react';
@@ -132,22 +131,20 @@ function ComboboxAddressInput({possibleValues, value, onChangeValue, onAddValue}
 			set_isLoadingTokenData(false);
 		}
 
-		performBatchedUpdates((): void => {
-			onAddValue((prev: TDict<TTokenInfo>): TDict<TTokenInfo> => {
-				if (prev[_selected]) {
-					return (prev);
+		onAddValue((prev: TDict<TTokenInfo>): TDict<TTokenInfo> => {
+			if (prev[_selected]) {
+				return (prev);
+			}
+			return ({
+				...prev,
+				[toAddress(_selected)]: {
+					address: toAddress(_selected),
+					name: _tokenData?.name || '',
+					symbol: _tokenData?.symbol || '',
+					decimals: _tokenData?.decimals || 18,
+					chainId: safeChainID,
+					logoURI: `https://assets.smold.app/api/token/${safeChainID}/${toAddress(_selected)}/logo-128.png`
 				}
-				return ({
-					...prev,
-					[toAddress(_selected)]: {
-						address: toAddress(_selected),
-						name: _tokenData?.name || '',
-						symbol: _tokenData?.symbol || '',
-						decimals: _tokenData?.decimals || 18,
-						chainId: safeChainID,
-						logoURI: `https://assets.smold.app/api/token/${safeChainID}/${toAddress(_selected)}/logo-128.png`
-					}
-				});
 			});
 			onChangeValue(_selected);
 			set_isOpen(false);
@@ -202,10 +199,8 @@ function ComboboxAddressInput({possibleValues, value, onChangeValue, onAddValue}
 							autoCorrect={'off'}
 							spellCheck={false}
 							onChange={(event): void => {
-								performBatchedUpdates((): void => {
-									set_isOpen(true);
-									set_query(event.target.value);
-								});
+								set_isOpen(true);
+								set_query(event.target.value);
 							}} />
 					</p>
 					<small

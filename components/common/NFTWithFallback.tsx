@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import Image from 'next/image';
-import {performBatchedUpdates} from '@yearn-finance/web-lib/utils/performBatchedUpdates';
 
 import type {ImageProps} from 'next/image';
 import type {CSSProperties, ReactElement} from 'react';
@@ -17,10 +16,8 @@ function NFTWithFallback(props: ImageProps): ReactElement {
 			style={imageStyle}
 			loading={'eager'}
 			onError={(): void => {
-				performBatchedUpdates((): void => {
-					set_imageSrc('/placeholder-nft.png');
-					set_imageStyle({filter: 'contrast(0.9)', borderRadius: 4});
-				});
+				set_imageSrc('/placeholder-nft.png');
+				set_imageStyle({filter: 'contrast(0.9)', borderRadius: 4});
 			}}
 			{...rest}
 		/>

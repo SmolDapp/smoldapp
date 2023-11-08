@@ -12,7 +12,6 @@ import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {decodeAsBoolean} from '@yearn-finance/web-lib/utils/decoder';
 import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
-import {performBatchedUpdates} from '@yearn-finance/web-lib/utils/performBatchedUpdates';
 import {defaultTxStatus} from '@yearn-finance/web-lib/utils/web3/transaction';
 
 import type {ReactElement} from 'react';
@@ -122,18 +121,16 @@ function ViewApprovalWizard(): ReactElement {
 	** the list of selected NFTs.
 	**********************************************************************************************/
 	const onClearMigration = useCallback((): void => {
-		performBatchedUpdates((): void => {
-			set_selected((prev): TNFT[] => {
-				const newSelected: TNFT[] = [];
-				for (const asset of prev) {
-					if (!migrated[toAddress(asset.collection.address)]?.find((nft: TNFT): boolean => nft.tokenID === asset.tokenID)) {
-						newSelected.push(asset);
-					}
+		set_selected((prev): TNFT[] => {
+			const newSelected: TNFT[] = [];
+			for (const asset of prev) {
+				if (!migrated[toAddress(asset.collection.address)]?.find((nft: TNFT): boolean => nft.tokenID === asset.tokenID)) {
+					newSelected.push(asset);
 				}
-				return newSelected;
-			});
-			set_migrated({});
+			}
+			return newSelected;
 		});
+		set_migrated({});
 	}, [migrated]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	/**********************************************************************************************
@@ -145,22 +142,20 @@ function ViewApprovalWizard(): ReactElement {
 		tokenID: bigint[],
 		receipt?: TransactionReceipt
 	): void => {
-		performBatchedUpdates((): void => {
-			set_collectionStatus((prev): TDict<TWizardStatus> => ({
-				...prev,
-				[toAddress(collectionAddress)]: {...prev[toAddress(collectionAddress)], execute: 'Executed', receipt}
-			}));
-			set_nfts((prev): TNFT[] => {
-				const newNFTs = [...prev];
-				for (const id of tokenID) {
-					const index = newNFTs.findIndex((nft: TNFT): boolean => (
-						toBigInt(nft.tokenID) === toBigInt(id)
+		set_collectionStatus((prev): TDict<TWizardStatus> => ({
+			...prev,
+			[toAddress(collectionAddress)]: {...prev[toAddress(collectionAddress)], execute: 'Executed', receipt}
+		}));
+		set_nfts((prev): TNFT[] => {
+			const newNFTs = [...prev];
+			for (const id of tokenID) {
+				const index = newNFTs.findIndex((nft: TNFT): boolean => (
+					toBigInt(nft.tokenID) === toBigInt(id)
 						&& toAddress(nft.collection.address) === toAddress(collectionAddress)
-					));
-					newNFTs.splice(index, 1);
-				}
-				return newNFTs;
-			});
+				));
+				newNFTs.splice(index, 1);
+			}
+			return newNFTs;
 		});
 	}, []); // eslint-disable-line react-hooks/exhaustive-deps
 

@@ -15,7 +15,6 @@ import {IconLoader} from '@yearn-finance/web-lib/icons/IconLoader';
 import {isZeroAddress, toAddress} from '@yearn-finance/web-lib/utils/address';
 import {parseUnits, toBigInt, toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
-import {performBatchedUpdates} from '@yearn-finance/web-lib/utils/performBatchedUpdates';
 
 import type {TTokenInfo} from 'contexts/useTokenList';
 import type {ChangeEvent, ReactElement} from 'react';
@@ -68,22 +67,18 @@ function AddressLikeInput({uuid, label, onChangeLabel, onChange, onPaste, isDupl
 		if (label.endsWith('.eth')) {
 			set_isLoadingValidish(true);
 			checkENSValidity(label).then(([validishDest, isValid]): void => {
-				performBatchedUpdates((): void => {
-					set_isLoadingValidish(false);
-					set_isValidish(isValid);
-					set_isValidDestination(isValid);
-					onChange(validishDest);
-				});
+				set_isLoadingValidish(false);
+				set_isValidish(isValid);
+				set_isValidDestination(isValid);
+				onChange(validishDest);
 			});
 		} else if (label.endsWith('.lens')) {
 			set_isLoadingValidish(true);
 			checkLensValidity(label).then(([validishDest, isValid]): void => {
-				performBatchedUpdates((): void => {
-					set_isLoadingValidish(false);
-					set_isValidish(isValid);
-					set_isValidDestination(isValid);
-					onChange(validishDest);
-				});
+				set_isLoadingValidish(false);
+				set_isValidish(isValid);
+				set_isValidDestination(isValid);
+				onChange(validishDest);
 			});
 		} else if (!isZeroAddress(toAddress(label))) {
 			set_isValidDestination(true);

@@ -7,7 +7,6 @@ import {Button} from '@yearn-finance/web-lib/components/Button';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {isZeroAddress, toAddress} from '@yearn-finance/web-lib/utils/address';
 import {ETH_TOKEN_ADDRESS, ZERO_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
-import {performBatchedUpdates} from '@yearn-finance/web-lib/utils/performBatchedUpdates';
 import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 import ViewSectionHeading from '@common/ViewSectionHeading';
 
@@ -79,28 +78,24 @@ function ViewTokenToSend({onProceed}: {onProceed: VoidFunction}): ReactElement {
 								onAddValue={set_possibleTokenToReceive}
 								onChangeValue={(newToken): void => {
 									if ([Step.SELECTOR].includes(currentStep)) {
-										performBatchedUpdates((): void => {
-											set_tokenToSend(newToken);
-											set_tokenToDisperse({
-												address: toAddress(newToken as string),
-												chainId: 1,
-												name: possibleTokenToReceive[toAddress(newToken as string)]?.name || '',
-												symbol: possibleTokenToReceive[toAddress(newToken as string)]?.symbol || '',
-												decimals: possibleTokenToReceive[toAddress(newToken as string)]?.decimals || 0,
-												logoURI: possibleTokenToReceive[toAddress(newToken as string)]?.logoURI || ''
-											});
+										set_tokenToSend(newToken);
+										set_tokenToDisperse({
+											address: toAddress(newToken as string),
+											chainId: 1,
+											name: possibleTokenToReceive[toAddress(newToken as string)]?.name || '',
+											symbol: possibleTokenToReceive[toAddress(newToken as string)]?.symbol || '',
+											decimals: possibleTokenToReceive[toAddress(newToken as string)]?.decimals || 0,
+											logoURI: possibleTokenToReceive[toAddress(newToken as string)]?.logoURI || ''
 										});
 									} else {
-										performBatchedUpdates((): void => {
-											set_tokenToSend(newToken);
-											set_tokenToDisperse({
-												address: toAddress(newToken as string),
-												chainId: 1,
-												name: possibleTokenToReceive[toAddress(newToken as string)]?.name || '',
-												symbol: possibleTokenToReceive[toAddress(newToken as string)]?.symbol || '',
-												decimals: possibleTokenToReceive[toAddress(newToken as string)]?.decimals || 0,
-												logoURI: possibleTokenToReceive[toAddress(newToken as string)]?.logoURI || ''
-											});
+										set_tokenToSend(newToken);
+										set_tokenToDisperse({
+											address: toAddress(newToken as string),
+											chainId: 1,
+											name: possibleTokenToReceive[toAddress(newToken as string)]?.name || '',
+											symbol: possibleTokenToReceive[toAddress(newToken as string)]?.symbol || '',
+											decimals: possibleTokenToReceive[toAddress(newToken as string)]?.decimals || 0,
+											logoURI: possibleTokenToReceive[toAddress(newToken as string)]?.logoURI || ''
 										});
 									}
 								}} />

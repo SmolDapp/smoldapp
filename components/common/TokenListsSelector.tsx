@@ -6,7 +6,6 @@ import {useWallet} from 'contexts/useWallet';
 import axios from 'axios';
 import {useMountEffect, useThrottledCallback} from '@react-hookz/web';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
-import {performBatchedUpdates} from '@yearn-finance/web-lib/utils/performBatchedUpdates';
 
 import type {TTokenListItem, TTokenListSummary} from 'pages/tokenlistooor';
 import type {ReactElement} from 'react';
@@ -47,10 +46,8 @@ function TokenListsSelector(): ReactElement {
 
 	useMountEffect((): void => {
 		fetchTokenListSummary().then((tokenListSummary): void => {
-			performBatchedUpdates((): void => {
-				set_tokenlists(tokenListSummary);
-				set_selected(tokenListSummary.lists.filter((list): boolean => list.name === 'Tokenlistooor Token List'));
-			});
+			set_tokenlists(tokenListSummary);
+			set_selected(tokenListSummary.lists.filter((list): boolean => list.name === 'Tokenlistooor Token List'));
 		});
 	});
 
@@ -116,10 +113,8 @@ function TokenListsSelector(): ReactElement {
 										onClick={async (): Promise<void> => {
 											set_isRefreshing((s): TDict<boolean> => ({...s, [list.name]: true}));
 											await refreshWithList(tokenListTokensRef.current);
-											performBatchedUpdates((): void => {
-												set_selected((s): TTokenListItem[] => [...s, list]);
-												set_isRefreshing((s): TDict<boolean> => ({...s, [list.name]: false}));
-											});
+											set_selected((s): TTokenListItem[] => [...s, list]);
+											set_isRefreshing((s): TDict<boolean> => ({...s, [list.name]: false}));
 										}}
 										isBusy={isRefreshing[list.name]}
 										className={'h-6 p-2 text-xs'}>

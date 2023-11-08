@@ -8,7 +8,6 @@ import {DisperseContextApp, Step, useDisperse} from '@disperse/useDisperse';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {ETH_TOKEN_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
-import {performBatchedUpdates} from '@yearn-finance/web-lib/utils/performBatchedUpdates';
 
 import type {ReactElement} from 'react';
 
@@ -52,9 +51,7 @@ function Disperse(): ReactElement {
 				<ViewTokenToSend
 					onProceed={(): void => {
 						if (currentStep === Step.TOSEND) {
-							performBatchedUpdates((): void => {
-								set_currentStep(Step.SELECTOR);
-							});
+							set_currentStep(Step.SELECTOR);
 						}
 					}} />
 			</div>

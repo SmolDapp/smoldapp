@@ -11,7 +11,6 @@ import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {IconLoader} from '@yearn-finance/web-lib/icons/IconLoader';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {decodeAsBigInt, decodeAsString} from '@yearn-finance/web-lib/utils/decoder';
-import {performBatchedUpdates} from '@yearn-finance/web-lib/utils/performBatchedUpdates';
 import AddressInput, {defaultInputAddressLike} from '@common/AddressInput';
 import {ImageWithFallback} from '@common/ImageWithFallback';
 
@@ -91,10 +90,8 @@ function TokenListAddBox({onAddTokenList, onAddToken}: TTokenListAddBox): React.
 			return set_value({label, isValid: false, list: undefined});
 		}
 
-		performBatchedUpdates((): void => {
-			set_value({label, isValid: 'undetermined', list: undefined});
-			set_isLoadingTokenList(true);
-		});
+		set_value({label, isValid: 'undetermined', list: undefined});
+		set_isLoadingTokenList(true);
 
 		const [fromLabel] = await Promise.allSettled([axios.get(label)]);
 		if (fromLabel.status === 'fulfilled') {
@@ -106,24 +103,20 @@ function TokenListAddBox({onAddTokenList, onAddToken}: TTokenListAddBox): React.
 					const {address, name, symbol, logoURI, chainId, decimals} = eachToken;
 					return (Boolean(address && name !== undefined && symbol !== undefined && logoURI !== undefined && chainId && decimals));
 				});
-				performBatchedUpdates((): void => {
-					if (currentLabel.current === label) {
-						set_value({
-							label,
-							isValid: areTokensValid,
-							list: {...fromLabel.value.data as TTokenList, uri: label}
-						});
-					}
-					set_isLoadingTokenList(false);
-				});
-			}
-		} else {
-			performBatchedUpdates((): void => {
 				if (currentLabel.current === label) {
-					set_value({label, isValid: false, list: undefined});
+					set_value({
+						label,
+						isValid: areTokensValid,
+						list: {...fromLabel.value.data as TTokenList, uri: label}
+					});
 				}
 				set_isLoadingTokenList(false);
-			});
+			}
+		} else {
+			if (currentLabel.current === label) {
+				set_value({label, isValid: false, list: undefined});
+			}
+			set_isLoadingTokenList(false);
 		}
 	}, [currentLabel]);
 
@@ -404,10 +397,8 @@ export const TokenListContextApp = ({children}: {children: React.ReactElement}):
 				tokenListTokens[toAddress(eachToken.address)] = eachToken;
 			}
 		}
-		performBatchedUpdates((): void => {
-			set_tokenList(tokenListTokens);
-			set_lists(fromList);
-		});
+		set_tokenList(tokenListTokens);
+		set_lists(fromList);
 	}, [safeChainID]);
 	useEffect((): void => {
 		fetchTokensFromLists();
@@ -428,10 +419,8 @@ export const TokenListContextApp = ({children}: {children: React.ReactElement}):
 				}
 			}
 		}
-		performBatchedUpdates((): void => {
-			set_tokenListExtra(tokenListTokens);
-			set_extraLists(fromList);
-		});
+		set_tokenListExtra(tokenListTokens);
+		set_extraLists(fromList);
 	}, [extraTokenlist]);
 	useEffect((): void => {
 		fetchTokensFromExtraTokenlist();
@@ -448,10 +437,8 @@ export const TokenListContextApp = ({children}: {children: React.ReactElement}):
 					tokenListTokens[toAddress(eachToken.address)] = eachToken;
 				}
 			}
-			performBatchedUpdates((): void => {
-				set_tokenListCustom(tokenListTokens);
-				set_customLists({...customDefaultList, tokens: extraTokens});
-			});
+			set_tokenListCustom(tokenListTokens);
+			set_customLists({...customDefaultList, tokens: extraTokens});
 		}
 	}, [extraTokens]);
 
@@ -479,20 +466,16 @@ export const TokenListContextApp = ({children}: {children: React.ReactElement}):
 							tokenListTokens[toAddress(eachToken.address)] = eachToken;
 						}
 					}
-					performBatchedUpdates((): void => {
-						set_tokenList((prevTokenList: TDict<TTokenInfo>): TDict<TTokenInfo> => ({...prevTokenList, ...tokenListTokens}));
-						set_lists((prevLists: TTokenList[]): TTokenList[] => ([...prevLists, list]));
-						set_extraTokenlist([...(extraTokenlist || []), list.uri]);
-					});
+					set_tokenList((prevTokenList: TDict<TTokenInfo>): TDict<TTokenInfo> => ({...prevTokenList, ...tokenListTokens}));
+					set_lists((prevLists: TTokenList[]): TTokenList[] => ([...prevLists, list]));
+					set_extraTokenlist([...(extraTokenlist || []), list.uri]);
 				}}
 				onAddToken={(newToken: TTokenInfo): void => {
-					performBatchedUpdates((): void => {
-						set_tokenList((prevTokenList: TDict<TTokenInfo>): TDict<TTokenInfo> => ({
-							...prevTokenList,
-							newToken
-						}));
-						set_extraTokens([...(extraTokens || []), newToken]);
-					});
+					set_tokenList((prevTokenList: TDict<TTokenInfo>): TDict<TTokenInfo> => ({
+						...prevTokenList,
+						newToken
+					}));
+					set_extraTokens([...(extraTokens || []), newToken]);
 				}} />
 		</TokenList.Provider>
 	);

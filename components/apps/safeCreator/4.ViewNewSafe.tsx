@@ -1,7 +1,6 @@
 import React, {useCallback, useRef, useState} from 'react';
 import {concat, encodePacked, getContractAddress, hexToBigInt, keccak256, toHex} from 'viem';
 import {useMountEffect, useUpdateEffect} from '@react-hookz/web';
-import {performBatchedUpdates} from '@yearn-finance/web-lib/utils/performBatchedUpdates';
 import {PopoverSettings} from '@common/PopoverSettings';
 import {PopoverSettingsItemExpert} from '@common/PopoverSettings.item.expert';
 import {PopoverSettingsItemTestnets} from '@common/PopoverSettings.item.testnets';
@@ -110,19 +109,17 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 			return;
 		}
 		shouldCancel.current = false;
-		performBatchedUpdates((): void => {
-			set_possibleSafe({
-				address: result.address,
-				salt: result.salt,
-				owners,
-				threshold,
-				prefix,
-				suffix,
-				singleton: factory == 'ssf' ? SINGLETON_L2 : SINGLETON_L2_DDP
-			});
-			set_currentSeed(result.salt);
-			set_isLoadingSafes(false);
+		set_possibleSafe({
+			address: result.address,
+			salt: result.salt,
+			owners,
+			threshold,
+			prefix,
+			suffix,
+			singleton: factory == 'ssf' ? SINGLETON_L2 : SINGLETON_L2_DDP
 		});
+		set_currentSeed(result.salt);
+		set_isLoadingSafes(false);
 	}, [currentSeed, owners, threshold, compute, prefix, suffix, factory]);
 
 
