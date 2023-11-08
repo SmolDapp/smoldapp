@@ -145,9 +145,9 @@ function AddressLikeInput({uuid, label, onChangeLabel, onChange, onPaste, isDupl
 	);
 }
 
-function AmountToSendInput({token, onChange}: {
+function AmountToSendInput({token, amount, onChange}: {
 	token: TTokenInfo | undefined,
-	amountToSend: TNormalizedBN | undefined,
+	amount: TNormalizedBN | undefined,
 	onChange: (amount: TNormalizedBN) => void
 }): ReactElement {
 	/**********************************************************************************************
@@ -171,7 +171,8 @@ function AmountToSendInput({token, onChange}: {
 					inputMode={'numeric'}
 					placeholder={'0'}
 					pattern={'^((?:0|[1-9]+)(?:.(?:d+?[1-9]|[1-9]))?)$'}
-					onChange={onInputChange} />
+					onChange={onInputChange}
+					value={amount?.normalized} />
 			</div>
 		</div>
 	);
@@ -235,8 +236,9 @@ const ViewTable = memo(function ViewTable({onProceed}: {onProceed: VoidFunction}
 		}));
 	}
 	function onHandleMultiplePaste(UUID: string, pasted: string): void {
+		console.log(UUID, pasted);
 		const separators = [' ', '-', ';', ',', '.'];
-		const addressAmounts = pasted.split('\n').map((line): [string, string] => {
+		const addressAmounts = pasted.replaceAll(' ', '').replaceAll('\t', '').split('\n').map((line): [string, string] => {
 			//remove all separators that are next to each other
 			let cleanedLine = separators.reduce((acc, separator): string => acc.replaceAll(separator + separator, separator), line);
 			for (let i = 0; i < 3; i++) {
@@ -265,13 +267,19 @@ const ViewTable = memo(function ViewTable({onProceed}: {onProceed: VoidFunction}
 			}
 			return row;
 		});
+		const excludingEmptyRows = newRows.filter((row): boolean => Boolean(
+			row.address &&
+			row.amount &&
+			!isZeroAddress(row.address) &&
+			toBigInt(row.amount?.raw) !== 0n
+		));
 		set_disperseArray(
 			disperseArray.reduce((acc, row): TDisperseElement[] => {
 				if (row.UUID === UUID) {
 					if (row.address && row.amount && !isZeroAddress(row.address) && row.amount.raw !== 0n) {
-						return [...acc, row, ...newRows];
+						return [...acc, row, ...excludingEmptyRows];
 					}
-					return [...acc, ...newRows];
+					return [...acc, ...excludingEmptyRows];
 				}
 				return [...acc, row];
 			}, [] as TDisperseElement[]));
@@ -325,29 +333,31 @@ const ViewTable = memo(function ViewTable({onProceed}: {onProceed: VoidFunction}
 						<p className={'text-xs text-neutral-500'}>{'Amount'}</p>
 					</div>
 					<div className={'grid grid-cols-2 gap-x-4 gap-y-2'}>
-						{disperseArray.map(({UUID}, i): ReactElement => (
-							<Fragment key={UUID}>
-								<AddressLikeInput
-									uuid={UUID}
-									isDuplicate={checkAlreadyExists(UUID, toAddress(disperseArray[i].address))}
-									label={disperseArray[i].label}
-									onChangeLabel={(label): void => onUpdateLabelByUUID(UUID, label)}
-									onChange={(address): void => onUpdateAddressByUUID(UUID, address)}
-									onPaste={onHandleMultiplePaste} />
-								<div className={'flex flex-row items-center justify-center space-x-4'}>
-									<AmountToSendInput
-										token={tokenToDisperse}
-										amountToSend={disperseArray[i].amount}
-										onChange={(amount): void => onUpdateAmountByUUID(UUID, amount)} />
-									<IconSquareMinus
-										onClick={(): void => onRemoveRowByUUID(UUID)}
-										className={'h-4 w-4 cursor-pointer text-neutral-400 transition-colors hover:text-neutral-900'} />
-									<IconSquarePlus
-										onClick={(): void => onAddNewRowAsSibling(UUID)}
-										className={'h-4 w-4 cursor-pointer text-neutral-400 transition-colors hover:text-neutral-900'} />
-								</div>
-							</Fragment>
-						))}
+						{disperseArray.map(({UUID}, i): ReactElement => {
+							return (
+								<Fragment key={UUID}>
+									<AddressLikeInput
+										uuid={UUID}
+										isDuplicate={checkAlreadyExists(UUID, toAddress(disperseArray[i].address))}
+										label={disperseArray[i].label}
+										onChangeLabel={(label): void => onUpdateLabelByUUID(UUID, label)}
+										onChange={(address): void => onUpdateAddressByUUID(UUID, address)}
+										onPaste={onHandleMultiplePaste} />
+									<div className={'flex flex-row items-center justify-center space-x-4'}>
+										<AmountToSendInput
+											token={tokenToDisperse}
+											amount={disperseArray[i].amount}
+											onChange={(amount): void => onUpdateAmountByUUID(UUID, amount)} />
+										<IconSquareMinus
+											onClick={(): void => onRemoveRowByUUID(UUID)}
+											className={'h-4 w-4 cursor-pointer text-neutral-400 transition-colors hover:text-neutral-900'} />
+										<IconSquarePlus
+											onClick={(): void => onAddNewRowAsSibling(UUID)}
+											className={'h-4 w-4 cursor-pointer text-neutral-400 transition-colors hover:text-neutral-900'} />
+									</div>
+								</Fragment>
+							);
+						})}
 					</div>
 				</div>
 				<div className={'sticky inset-x-0 bottom-0 z-20 flex w-full max-w-5xl flex-row items-center justify-between rounded-b-[5px] bg-primary-600 p-4 text-primary-0 md:relative md:px-6 md:py-4'}>
