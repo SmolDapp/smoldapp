@@ -8,21 +8,20 @@ import {isZeroAddress} from '@yearn-finance/web-lib/utils/address';
 import type {Dispatch, ReactElement, SetStateAction} from 'react';
 import type {TAddress} from '@yearn-finance/web-lib/types';
 
-
 type TNewSafeForm = {
-	owners: TAddress[],
-	prefix: string,
-	set_prefix: Dispatch<SetStateAction<string>>,
-	suffix: string,
-	set_suffix: Dispatch<SetStateAction<string>>,
-	currentSeed: bigint,
-	set_currentSeed: Dispatch<SetStateAction<bigint>>,
-	factory: 'ssf' | 'ddp',
-	set_factory: Dispatch<SetStateAction<'ssf' | 'ddp'>>,
-	onGenerate: VoidFunction,
-	isLoadingSafes: boolean,
-	shouldCancel: React.MutableRefObject<boolean>
-}
+	owners: TAddress[];
+	prefix: string;
+	set_prefix: Dispatch<SetStateAction<string>>;
+	suffix: string;
+	set_suffix: Dispatch<SetStateAction<string>>;
+	currentSeed: bigint;
+	set_currentSeed: Dispatch<SetStateAction<bigint>>;
+	factory: 'ssf' | 'ddp';
+	set_factory: Dispatch<SetStateAction<'ssf' | 'ddp'>>;
+	onGenerate: VoidFunction;
+	isLoadingSafes: boolean;
+	shouldCancel: React.MutableRefObject<boolean>;
+};
 function NewSafeExpertForm(props: TNewSafeForm): ReactElement {
 	return (
 		<form
@@ -37,8 +36,15 @@ function NewSafeExpertForm(props: TNewSafeForm): ReactElement {
 								<span className={'tooltip'}>
 									<IconInfo className={'h-3 w-3 text-neutral-500'} />
 									<span className={'tooltipLight top-full mt-1'}>
-										<div className={'font-number w-60 border border-neutral-300 bg-neutral-100 p-1 px-2 text-center text-xs text-neutral-900'}>
-											<p>{'These are the letters and numbers at the beginning of your Safe address. Please note, the longer your custom string, the longer it will take to find a Safe.'}</p>
+										<div
+											className={
+												'font-number w-60 border border-neutral-300 bg-neutral-100 p-1 px-2 text-center text-xs text-neutral-900'
+											}>
+											<p>
+												{
+													'These are the letters and numbers at the beginning of your Safe address. Please note, the longer your custom string, the longer it will take to find a Safe.'
+												}
+											</p>
 										</div>
 									</span>
 								</span>
@@ -61,7 +67,8 @@ function NewSafeExpertForm(props: TNewSafeForm): ReactElement {
 									type={'text'}
 									value={props.prefix}
 									pattern={'^0x[a-fA-F0-9]{0,6}$'}
-									className={'smol--input font-mono font-bold'} />
+									className={'smol--input font-mono font-bold'}
+								/>
 							</div>
 						</div>
 					</div>
@@ -72,8 +79,15 @@ function NewSafeExpertForm(props: TNewSafeForm): ReactElement {
 								<span className={'tooltip'}>
 									<IconInfo className={'h-3 w-3 text-neutral-500'} />
 									<span className={'tooltipLight top-full mt-1'}>
-										<div className={'font-number w-60 border border-neutral-300 bg-neutral-100 p-1 px-2 text-center text-xs text-neutral-900'}>
-											<p>{'These are the letters and numbers at the end of your Safe address. Please note, the longer your custom string, the longer it will take to find a Safe.'}</p>
+										<div
+											className={
+												'font-number w-60 border border-neutral-300 bg-neutral-100 p-1 px-2 text-center text-xs text-neutral-900'
+											}>
+											<p>
+												{
+													'These are the letters and numbers at the end of your Safe address. Please note, the longer your custom string, the longer it will take to find a Safe.'
+												}
+											</p>
 										</div>
 									</span>
 								</span>
@@ -93,7 +107,8 @@ function NewSafeExpertForm(props: TNewSafeForm): ReactElement {
 									type={'text'}
 									value={props.suffix}
 									pattern={'[a-fA-F0-9]{0,6}$'}
-									className={'smol--input font-mono font-bold'} />
+									className={'smol--input font-mono font-bold'}
+								/>
 							</div>
 						</div>
 					</div>
@@ -104,8 +119,13 @@ function NewSafeExpertForm(props: TNewSafeForm): ReactElement {
 								<span className={'tooltip'}>
 									<IconInfo className={'h-3 w-3 text-neutral-500'} />
 									<span className={'tooltipLight top-full mt-1'}>
-										<div className={'font-number w-60 border border-neutral-300 bg-neutral-100 p-1 px-2 text-center text-xs text-neutral-900'}>
-											<p>{'This is the factory contract that will be used to deploy your Safe.'}</p>
+										<div
+											className={
+												'font-number w-60 border border-neutral-300 bg-neutral-100 p-1 px-2 text-center text-xs text-neutral-900'
+											}>
+											<p>
+												{'This is the factory contract that will be used to deploy your Safe.'}
+											</p>
 										</div>
 									</span>
 								</span>
@@ -127,11 +147,20 @@ function NewSafeExpertForm(props: TNewSafeForm): ReactElement {
 						</div>
 					</div>
 
-					<div aria-label={'seed'} className={'col-span-3'}>
-						<div className={'mb-4 mt-1'} style={{display: ((props.prefix.length + props.suffix.length) > 5) ? 'flex' : 'none'}}>
-							<div className={'flex flex-row whitespace-pre rounded-md border border-orange-200 !bg-orange-200/60 p-2 text-xs font-bold text-orange-600'}>
+					<div
+						aria-label={'seed'}
+						className={'col-span-3'}>
+						<div
+							className={'mb-4 mt-1'}
+							style={{display: props.prefix.length + props.suffix.length > 5 ? 'flex' : 'none'}}>
+							<div
+								className={
+									'flex flex-row whitespace-pre rounded-md border border-orange-200 !bg-orange-200/60 p-2 text-xs font-bold text-orange-600'
+								}>
 								<IconWarning className={'mr-2 h-4 w-4 text-orange-600'} />
-								{'The more characters you add, the longer it will take to find a safe (which can be hours).'}
+								{
+									'The more characters you add, the longer it will take to find a safe (which can be hours).'
+								}
 							</div>
 						</div>
 						<div className={'mt-1 pb-2 text-xs text-neutral-600'}>
@@ -140,7 +169,10 @@ function NewSafeExpertForm(props: TNewSafeForm): ReactElement {
 								<span className={'tooltip'}>
 									<IconInfo className={'h-3 w-3 text-neutral-500'} />
 									<span className={'tooltipLight top-full mt-1'}>
-										<div className={'font-number w-60 border border-neutral-300 bg-neutral-100 p-1 px-2 text-center text-xs text-neutral-900'}>
+										<div
+											className={
+												'font-number w-60 border border-neutral-300 bg-neutral-100 p-1 px-2 text-center text-xs text-neutral-900'
+											}>
 											<p>{'This is a numeric value that determines the address of your safe.'}</p>
 										</div>
 									</span>
@@ -152,12 +184,13 @@ function NewSafeExpertForm(props: TNewSafeForm): ReactElement {
 								<input
 									onChange={(e): void => {
 										const {value} = e.target;
-										props.set_currentSeed(BigInt(value.replace(/\D/g,'')));
+										props.set_currentSeed(BigInt(value.replace(/\D/g, '')));
 									}}
 									type={'text'}
 									value={props.currentSeed.toString()}
 									pattern={'[0-9]{0,512}$'}
-									className={'smol--input font-number font-bold'} />
+									className={'smol--input font-number font-bold'}
+								/>
 							</div>
 						</div>
 					</div>
@@ -178,13 +211,14 @@ function NewSafeExpertForm(props: TNewSafeForm): ReactElement {
 										e.currentTarget.blur();
 										props.shouldCancel.current = true;
 									}}
-									className={'absolute inset-0 z-50 flex items-center justify-center transition-colors hover:cursor-pointer hover:bg-neutral-900 hover:!text-neutral-0'}>
+									className={
+										'absolute inset-0 z-50 flex items-center justify-center transition-colors hover:cursor-pointer hover:bg-neutral-900 hover:!text-neutral-0'
+									}>
 									<p>{'Cancel'}</p>
 								</span>
 							) : null}
 						</Button>
 					</div>
-
 				</div>
 			</div>
 		</form>
@@ -205,8 +239,15 @@ function NewSafeStandardForm(props: TNewSafeForm): ReactElement {
 								<span className={'tooltip'}>
 									<IconInfo className={'h-3 w-3 text-neutral-500'} />
 									<span className={'tooltipLight top-full mt-1'}>
-										<div className={'font-number w-60 border border-neutral-300 bg-neutral-100 p-1 px-2 text-center text-xs text-neutral-900'}>
-											<p>{'These are the letters and numbers at the beginning of your Safe address. Please note, the longer your custom string, the longer it will take to find a Safe.'}</p>
+										<div
+											className={
+												'font-number w-60 border border-neutral-300 bg-neutral-100 p-1 px-2 text-center text-xs text-neutral-900'
+											}>
+											<p>
+												{
+													'These are the letters and numbers at the beginning of your Safe address. Please note, the longer your custom string, the longer it will take to find a Safe.'
+												}
+											</p>
 										</div>
 									</span>
 								</span>
@@ -229,7 +270,8 @@ function NewSafeStandardForm(props: TNewSafeForm): ReactElement {
 									type={'text'}
 									value={props.prefix}
 									pattern={'^0x[a-fA-F0-9]{0,6}$'}
-									className={'smol--input font-mono font-bold'} />
+									className={'smol--input font-mono font-bold'}
+								/>
 							</div>
 						</div>
 					</div>
@@ -240,8 +282,15 @@ function NewSafeStandardForm(props: TNewSafeForm): ReactElement {
 								<span className={'tooltip'}>
 									<IconInfo className={'h-3 w-3 text-neutral-500'} />
 									<span className={'tooltipLight top-full mt-1'}>
-										<div className={'font-number w-60 border border-neutral-300 bg-neutral-100 p-1 px-2 text-center text-xs text-neutral-900'}>
-											<p>{'These are the letters and numbers at the end of your Safe address. Please note, the longer your custom string, the longer it will take to find a Safe.'}</p>
+										<div
+											className={
+												'font-number w-60 border border-neutral-300 bg-neutral-100 p-1 px-2 text-center text-xs text-neutral-900'
+											}>
+											<p>
+												{
+													'These are the letters and numbers at the end of your Safe address. Please note, the longer your custom string, the longer it will take to find a Safe.'
+												}
+											</p>
 										</div>
 									</span>
 								</span>
@@ -261,14 +310,13 @@ function NewSafeStandardForm(props: TNewSafeForm): ReactElement {
 									type={'text'}
 									value={props.suffix}
 									pattern={'[a-fA-F0-9]{0,6}$'}
-									className={'smol--input font-mono font-bold'} />
+									className={'smol--input font-mono font-bold'}
+								/>
 							</div>
 						</div>
 					</div>
 					<div>
-						<p className={'font-inter pb-2 text-xs font-semibold text-neutral-600'}>
-							&nbsp;
-						</p>
+						<p className={'font-inter pb-2 text-xs font-semibold text-neutral-600'}>&nbsp;</p>
 						<Button
 							className={'group w-full'}
 							isBusy={props.isLoadingSafes}
@@ -284,21 +332,33 @@ function NewSafeStandardForm(props: TNewSafeForm): ReactElement {
 										e.currentTarget.blur();
 										props.shouldCancel.current = true;
 									}}
-									className={'absolute inset-0 z-50 flex items-center justify-center transition-colors hover:cursor-pointer hover:bg-neutral-900 hover:!text-neutral-0'}>
+									className={
+										'absolute inset-0 z-50 flex items-center justify-center transition-colors hover:cursor-pointer hover:bg-neutral-900 hover:!text-neutral-0'
+									}>
 									<p>{'Cancel'}</p>
 								</span>
 							) : null}
 						</Button>
 					</div>
 					<div className={'col-span-2'}>
-						<div className={'mt-1'} style={{display: ((props.prefix.length + props.suffix.length) > 5) ? 'flex' : 'none'}}>
-							<div className={'flex flex-row whitespace-pre rounded-md border border-orange-200 !bg-orange-200/60 p-2 text-xs font-bold text-orange-600'}>
+						<div
+							className={'mt-1'}
+							style={{display: props.prefix.length + props.suffix.length > 5 ? 'flex' : 'none'}}>
+							<div
+								className={
+									'flex flex-row whitespace-pre rounded-md border border-orange-200 !bg-orange-200/60 p-2 text-xs font-bold text-orange-600'
+								}>
 								<IconWarning className={'mr-2 h-4 w-4 text-orange-600'} />
-								{'The more characters you add, the longer it will take to find a safe (which can be hours).'}
+								{
+									'The more characters you add, the longer it will take to find a safe (which can be hours).'
+								}
 							</div>
 						</div>
 						<div className={'mt-0'}>
-							<p className={'font-number max-w-[100%] break-all text-xxs text-neutral-400 md:whitespace-pre md:break-normal'}>
+							<p
+								className={
+									'font-number max-w-[100%] break-all text-xxs text-neutral-400 md:whitespace-pre md:break-normal'
+								}>
 								{`Seed: ${props.currentSeed.toString()}`}
 							</p>
 						</div>

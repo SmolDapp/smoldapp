@@ -3,7 +3,7 @@ import Logo from 'components/icons/logo';
 
 import type {ReactElement} from 'react';
 
-function	Footer(): ReactElement {
+function Footer(): ReactElement {
 	return (
 		<footer className={'mx-auto mb-0 mt-auto flex w-full max-w-5xl flex-col pt-6 md:pt-0'}>
 			<div className={'grid h-10 w-full grid-cols-2'}>
@@ -13,7 +13,10 @@ function	Footer(): ReactElement {
 						href={'/github'}
 						target={'_blank'}
 						rel={'noreferrer'}>
-						<p className={'cursor-pointer text-xs text-neutral-500 transition-colors hover:text-neutral-900'}>
+						<p
+							className={
+								'cursor-pointer text-xs text-neutral-500 transition-colors hover:text-neutral-900'
+							}>
 							{'Github'}
 						</p>
 					</a>
@@ -22,6 +25,5 @@ function	Footer(): ReactElement {
 		</footer>
 	);
 }
-
 
 export default Footer;

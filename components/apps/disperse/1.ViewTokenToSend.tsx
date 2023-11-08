@@ -23,10 +23,10 @@ function ViewTokenToSend({onProceed}: {onProceed: VoidFunction}): ReactElement {
 	const [possibleTokenToReceive, set_possibleTokenToReceive] = useState<TDict<TTokenInfo>>({});
 
 	/* 🔵 - Yearn Finance **************************************************************************
-	** On mount, fetch the token list from the tokenlistooor repo for the cowswap token list, which
-	** will be used to populate the tokenToDisperse token combobox.
-	** Only the tokens in that list will be displayed as possible destinations.
-	**********************************************************************************************/
+	 ** On mount, fetch the token list from the tokenlistooor repo for the cowswap token list, which
+	 ** will be used to populate the tokenToDisperse token combobox.
+	 ** Only the tokens in that list will be displayed as possible destinations.
+	 **********************************************************************************************/
 	useDeepCompareEffect((): void => {
 		const possibleDestinationsTokens: TDict<TTokenInfo> = {};
 		const {wrappedToken} = getNetwork(safeChainID).contracts;
@@ -48,11 +48,10 @@ function ViewTokenToSend({onProceed}: {onProceed: VoidFunction}): ReactElement {
 		set_possibleTokenToReceive(possibleDestinationsTokens);
 	}, [tokenList, safeChainID]);
 
-
 	/* 🔵 - Yearn Finance **************************************************************************
-	** When the tokenToDisperse token changes, check if it is a valid tokenToDisperse token. The check is
-	** trivial as we only check if the address is valid.
-	**********************************************************************************************/
+	 ** When the tokenToDisperse token changes, check if it is a valid tokenToDisperse token. The check is
+	 ** trivial as we only check if the address is valid.
+	 **********************************************************************************************/
 	useUpdateEffect((): void => {
 		set_isValidTokenToReceive('undetermined');
 		if (!isZeroAddress(toAddress(tokenToSend))) {
@@ -65,12 +64,17 @@ function ViewTokenToSend({onProceed}: {onProceed: VoidFunction}): ReactElement {
 			<div className={'box-0 grid w-full grid-cols-12'}>
 				<ViewSectionHeading
 					title={'Which token do you want to send?'}
-					content={'Pick the token you’d like to disperse, (aka send to multiple recipients or wallets). Token not listed? Don’t worry anon, just enter the token address manually. Go you.'} />
+					content={
+						'Pick the token you’d like to disperse, (aka send to multiple recipients or wallets). Token not listed? Don’t worry anon, just enter the token address manually. Go you.'
+					}
+				/>
 				<div className={'col-span-12 p-4 pt-0 md:p-6 md:pt-0'}>
 					<form
 						suppressHydrationWarning
 						onSubmit={async (e): Promise<void> => e.preventDefault()}
-						className={'grid w-full grid-cols-12 flex-row items-center justify-between gap-4 md:w-3/4 md:gap-6'}>
+						className={
+							'grid w-full grid-cols-12 flex-row items-center justify-between gap-4 md:w-3/4 md:gap-6'
+						}>
 						<div className={'grow-1 col-span-12 flex h-10 w-full items-center md:col-span-9'}>
 							<ComboboxAddressInput
 								value={tokenToSend}
@@ -84,8 +88,10 @@ function ViewTokenToSend({onProceed}: {onProceed: VoidFunction}): ReactElement {
 											chainId: 1,
 											name: possibleTokenToReceive[toAddress(newToken as string)]?.name || '',
 											symbol: possibleTokenToReceive[toAddress(newToken as string)]?.symbol || '',
-											decimals: possibleTokenToReceive[toAddress(newToken as string)]?.decimals || 0,
-											logoURI: possibleTokenToReceive[toAddress(newToken as string)]?.logoURI || ''
+											decimals:
+												possibleTokenToReceive[toAddress(newToken as string)]?.decimals || 0,
+											logoURI:
+												possibleTokenToReceive[toAddress(newToken as string)]?.logoURI || ''
 										});
 									} else {
 										set_tokenToSend(newToken);
@@ -94,11 +100,14 @@ function ViewTokenToSend({onProceed}: {onProceed: VoidFunction}): ReactElement {
 											chainId: 1,
 											name: possibleTokenToReceive[toAddress(newToken as string)]?.name || '',
 											symbol: possibleTokenToReceive[toAddress(newToken as string)]?.symbol || '',
-											decimals: possibleTokenToReceive[toAddress(newToken as string)]?.decimals || 0,
-											logoURI: possibleTokenToReceive[toAddress(newToken as string)]?.logoURI || ''
+											decimals:
+												possibleTokenToReceive[toAddress(newToken as string)]?.decimals || 0,
+											logoURI:
+												possibleTokenToReceive[toAddress(newToken as string)]?.logoURI || ''
 										});
 									}
-								}} />
+								}}
+							/>
 						</div>
 						<div className={'col-span-12 md:col-span-3'}>
 							<Button

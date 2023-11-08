@@ -18,9 +18,15 @@ type TAddressLikeInput = {
 	onPaste: (UUID: string, pasted: string) => void;
 	isDuplicate?: boolean;
 	shouldAutoFocus?: boolean;
-}
+};
 function AddressLikeInput({
-	uuid, label, onChangeLabel, onChange, onPaste, isDuplicate, shouldAutoFocus
+	uuid,
+	label,
+	onChangeLabel,
+	onChange,
+	onPaste,
+	isDuplicate,
+	shouldAutoFocus
 }: TAddressLikeInput): ReactElement {
 	const [isValidDestination, set_isValidDestination] = useState<boolean | 'undetermined'>('undetermined');
 	const [isValidish, set_isValidish] = useState<boolean | 'undetermined'>('undetermined');
@@ -44,9 +50,11 @@ function AddressLikeInput({
 	const looksValidAddress = useCallback((value: string): boolean => {
 		if (value.endsWith('.eth')) {
 			return true;
-		} if (value.endsWith('.lens')) {
+		}
+		if (value.endsWith('.lens')) {
 			return true;
-		} if (!isZeroAddress(toAddress(value))) {
+		}
+		if (!isZeroAddress(toAddress(value))) {
 			return true;
 		}
 		return false;
@@ -105,21 +113,37 @@ function AddressLikeInput({
 						onChangeLabel(e.target.value);
 					}}
 					className={'smol--input font-mono font-bold'}
-					type={'text'} />
+					type={'text'}
+				/>
 			</div>
 			<label
 				htmlFor={`add_r_input_${uuid}`}
-				className={status === 'invalid' || status === 'warning' ? 'relative' : 'pointer-events-none relative h-4 w-4'}>
+				className={
+					status === 'invalid' || status === 'warning' ? 'relative' : 'pointer-events-none relative h-4 w-4'
+				}>
 				<span className={status === 'invalid' || status === 'warning' ? 'tooltip' : 'pointer-events-none'}>
 					<div className={'pointer-events-none relative h-4 w-4'}>
 						<IconCheck
-							className={`absolute h-4 w-4 text-[#16a34a] transition-opacity ${status === 'valid' ? 'opacity-100' : 'opacity-0'}`} />
+							className={`absolute h-4 w-4 text-[#16a34a] transition-opacity ${
+								status === 'valid' ? 'opacity-100' : 'opacity-0'
+							}`}
+						/>
 						<IconCircleCross
-							className={`absolute h-4 w-4 text-[#e11d48] transition-opacity ${status === 'invalid' ? 'opacity-100' : 'opacity-0'}`} />
+							className={`absolute h-4 w-4 text-[#e11d48] transition-opacity ${
+								status === 'invalid' ? 'opacity-100' : 'opacity-0'
+							}`}
+						/>
 						<IconWarning
-							className={`absolute h-4 w-4 text-[#e1891d] transition-opacity ${status === 'warning' ? 'opacity-100' : 'opacity-0'}`} />
+							className={`absolute h-4 w-4 text-[#e1891d] transition-opacity ${
+								status === 'warning' ? 'opacity-100' : 'opacity-0'
+							}`}
+						/>
 						<div className={'absolute inset-0 flex items-center justify-center'}>
-							<IconLoader className={`h-4 w-4 animate-spin text-neutral-900 transition-opacity ${status === 'pending' ? 'opacity-100' : 'opacity-0'}`} />
+							<IconLoader
+								className={`h-4 w-4 animate-spin text-neutral-900 transition-opacity ${
+									status === 'pending' ? 'opacity-100' : 'opacity-0'
+								}`}
+							/>
 						</div>
 					</div>
 					<span className={'tooltiptextsmall'}>

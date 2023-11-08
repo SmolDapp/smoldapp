@@ -12,7 +12,9 @@ import type {ReactElement} from 'react';
 
 function Header(): ReactElement {
 	return (
-		<div id={'head'} className={'fixed inset-x-0 top-0 z-50 w-full border-b border-primary-100'}>
+		<div
+			id={'head'}
+			className={'fixed inset-x-0 top-0 z-50 w-full border-b border-primary-100'}>
 			<div className={'bg-primary-50/95'}>
 				<div className={'mx-auto flex flex-row justify-between p-4'}>
 					<div className={'flex items-center justify-start'}>
@@ -32,8 +34,8 @@ function Header(): ReactElement {
 	);
 }
 
-function	AppWrapper(props: AppProps): ReactElement {
-	const	{Component, pageProps, router} = props;
+function AppWrapper(props: AppProps): ReactElement {
+	const {Component, pageProps, router} = props;
 
 	return (
 		<React.Fragment>
@@ -52,7 +54,8 @@ function	AppWrapper(props: AppProps): ReactElement {
 						<Component
 							key={router.route}
 							router={props.router}
-							{...pageProps} />
+							{...pageProps}
+						/>
 					</motion.div>
 				</AnimatePresence>
 			</div>

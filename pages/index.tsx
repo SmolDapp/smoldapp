@@ -10,14 +10,16 @@ import {Button} from '@yearn-finance/web-lib/components/Button';
 
 import type {ReactElement} from 'react';
 
-const	apps = [
+const apps = [
 	{
 		href: '/safe',
 		title: 'MultiSafe',
 		description: (
 			<span>
 				{'One address, all the chains. Deploy your Safe across '}
-				<span className={'font-semibold text-primary-500 transition-colors group-hover:text-primary-0'}>{'multiple chains'}</span>
+				<span className={'font-semibold text-primary-500 transition-colors group-hover:text-primary-0'}>
+					{'multiple chains'}
+				</span>
 				{'.'}
 			</span>
 		),
@@ -28,7 +30,9 @@ const	apps = [
 		title: 'Disperse',
 		description: (
 			<span>
-				<span className={'font-semibold text-primary-500 transition-colors group-hover:text-primary-0'}>{'Distribute'}</span>
+				<span className={'font-semibold text-primary-500 transition-colors group-hover:text-primary-0'}>
+					{'Distribute'}
+				</span>
 				{' ether or tokens to multiple addresses.'}
 			</span>
 		),
@@ -40,30 +44,40 @@ const	apps = [
 		description: (
 			<span>
 				{'The easiest way to '}
-				<span className={'font-semibold text-primary-500 transition-colors group-hover:text-primary-0'}>{'donate'}</span>
+				<span className={'font-semibold text-primary-500 transition-colors group-hover:text-primary-0'}>
+					{'donate'}
+				</span>
 				{' to the crypto projects you love.'}
 			</span>
 		),
-		icon: <Image
-			src={'https://gib.to/favicons/favicon.svg'}
-			width={80}
-			height={80}
-			alt={'gib'} />
+		icon: (
+			<Image
+				src={'https://gib.to/favicons/favicon.svg'}
+				width={80}
+				height={80}
+				alt={'gib'}
+			/>
+		)
 	},
 	{
 		href: 'https://dump.services',
 		title: 'Dump Services',
 		description: (
 			<span>
-				<span className={'font-semibold text-primary-500 transition-colors group-hover:text-primary-0'}>{'Dump'}</span>
+				<span className={'font-semibold text-primary-500 transition-colors group-hover:text-primary-0'}>
+					{'Dump'}
+				</span>
 				{' your tokens like a pro'}
 			</span>
 		),
-		icon: <Image
-			src={'/dumpservices.svg'}
-			width={80}
-			height={80}
-			alt={'dump.services'} />
+		icon: (
+			<Image
+				src={'/dumpservices.svg'}
+				width={80}
+				height={80}
+				alt={'dump.services'}
+			/>
+		)
 	},
 	{
 		href: '/migratooor',
@@ -71,7 +85,9 @@ const	apps = [
 		description: (
 			<span>
 				{'The hassle-free solution to '}
-				<span className={'font-semibold text-primary-500 transition-colors group-hover:text-primary-0'}>{'migrate'}</span>
+				<span className={'font-semibold text-primary-500 transition-colors group-hover:text-primary-0'}>
+					{'migrate'}
+				</span>
 				{' your tokens.'}
 			</span>
 		),
@@ -83,18 +99,23 @@ const	apps = [
 		description: (
 			<span>
 				{'Easily '}
-				<span className={'font-semibold text-primary-500 transition-colors group-hover:text-primary-0'}>{'migrate your NFTs'}</span>
+				<span className={'font-semibold text-primary-500 transition-colors group-hover:text-primary-0'}>
+					{'migrate your NFTs'}
+				</span>
 				{' to your new wallet.'}
 			</span>
 		),
 		icon: <LogoNFTMigratooor className={'h-[80px] w-[80px]'} />
-	}, {
+	},
+	{
 		href: '/tokenlistooor',
 		title: 'Tokenlistooor',
 		description: (
 			<span>
 				{'An up to date automatic '}
-				<span className={'font-semibold text-primary-500 transition-colors group-hover:text-primary-0'}>{'tokenList'}</span>
+				<span className={'font-semibold text-primary-500 transition-colors group-hover:text-primary-0'}>
+					{'tokenList'}
+				</span>
 				{' for your dApp.'}
 			</span>
 		),
@@ -102,17 +123,17 @@ const	apps = [
 	}
 ];
 
-function	AppBox({app}: {app: typeof apps[0]}): ReactElement {
+function AppBox({app}: {app: (typeof apps)[0]}): ReactElement {
 	return (
 		<Link
 			prefetch={false}
 			key={app.href}
 			href={app.href}
 			className={'relative'}>
-			<div id={app.href} className={'appBox group'}>
-				<div className={'box-0 !rounded-full'}>
-					{app.icon}
-				</div>
+			<div
+				id={app.href}
+				className={'appBox group'}>
+				<div className={'box-0 !rounded-full'}>{app.icon}</div>
 				<div className={'pt-6 text-left'}>
 					<b className={'text-lg'}>{app.title}</b>
 					<p>{app.description}</p>
@@ -122,7 +143,7 @@ function	AppBox({app}: {app: typeof apps[0]}): ReactElement {
 	);
 }
 
-function	Index(): ReactElement {
+function Index(): ReactElement {
 	return (
 		<Fragment>
 			<div className={'mx-auto grid w-full max-w-4xl'}>
@@ -131,30 +152,43 @@ function	Index(): ReactElement {
 						<h1 className={'flex text-5xl font-bold lowercase text-neutral-900 md:text-8xl'}>{'Smol'}</h1>
 						<div className={'mb-2 mt-4'}>
 							<p className={'w-10/12 text-lg'}>
-								{'Simple, smart and elegant dapps, designed to make your crypto journey a little bit easier.'}
+								{
+									'Simple, smart and elegant dapps, designed to make your crypto journey a little bit easier.'
+								}
 							</p>
 						</div>
 						<div className={'mb-12 mt-8 flex flex-row items-center space-x-6'}>
-							<Link tabIndex={-1} href={'https://twitter.com/smoldapp'} target={'_blank'}>
-								<Button className={'w-[140px]'}>
-									{'Twitter'}
-								</Button>
+							<Link
+								tabIndex={-1}
+								href={'https://twitter.com/smoldapp'}
+								target={'_blank'}>
+								<Button className={'w-[140px]'}>{'Twitter'}</Button>
 							</Link>
-							<Link tabIndex={-1} href={'https://github.com/smoldapp'} target={'_blank'}>
-								<Button className={'w-[140px]'}>
-									{'Github'}
-								</Button>
+							<Link
+								tabIndex={-1}
+								href={'https://github.com/smoldapp'}
+								target={'_blank'}>
+								<Button className={'w-[140px]'}>{'Github'}</Button>
 							</Link>
 						</div>
 					</div>
-					<div id={'container'} className={'col-span-6 hidden items-center justify-center md:flex'}>
+					<div
+						id={'container'}
+						className={'col-span-6 hidden items-center justify-center md:flex'}>
 						<p className={'text-neutral-400'}>{'Oh no so much empty space'}</p>
 					</div>
 				</div>
 			</div>
 			<div className={'mx-auto grid w-full max-w-4xl'}>
 				<section className={'mb-20 grid grid-cols-1 gap-6 md:grid-cols-3'}>
-					{apps.map((app): ReactElement => <AppBox key={app.href} app={app} />)}
+					{apps.map(
+						(app): ReactElement => (
+							<AppBox
+								key={app.href}
+								app={app}
+							/>
+						)
+					)}
 				</section>
 			</div>
 		</Fragment>

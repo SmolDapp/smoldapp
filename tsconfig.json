@@ -8,7 +8,7 @@
 			"@migratooor/*": ["components/apps/migratooor/*"],
 			"@nftmigratooor/*": ["components/apps/nftmigratooor/*"],
 			"@tokenlistooor/*": ["components/apps/tokenlistooor/*"],
-			"@safeCreatooor/*": ["components/apps/safeCreator/*"],
+			"@safeCreatooor/*": ["components/apps/safeCreator/*"]
 		},
 		/* Basic Options */
 		"target": "esnext",
@@ -41,10 +41,7 @@
 		"isolatedModules": true,
 		"plugins": [{"name": "next"}]
 	},
-	"exclude": [
-		"node_modules",
-		"_app"
-	],
+	"exclude": ["node_modules", "_app"],
 	"include": [
 		"**/*.css",
 		"**/*.ts",
@@ -59,6 +56,7 @@
 		".next/types/**/*.ts",
 		"jest.config.js",
 		"vitest.config.ts",
-		"worker/index.js"
+		"worker/index.js",
+		"stylelint.config.js"
 	]
 }

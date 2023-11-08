@@ -7,52 +7,56 @@ import type {TNFT} from './nftMigratooor';
 
 export type TRawOpenSeaAsset = {
 	id: string | number;
-	image_url: string,
-	image_preview_url: string,
-	image_type?: string
-	name: string,
-	token_id: bigint,
-	permalink: string,
+	image_url: string;
+	image_preview_url: string;
+	image_type?: string;
+	name: string;
+	token_id: bigint;
+	permalink: string;
 	collection: {
-		name: string,
-	},
-	asset_contract: {
-		address: string,
-		name: string,
-		schema_name: string,
+		name: string;
 	};
-	image_raw?: string,
-}
+	asset_contract: {
+		address: string;
+		name: string;
+		schema_name: string;
+	};
+	image_raw?: string;
+};
 
 export type TAlchemyAssets = {
 	contract: {
-		address: string,
-	}
+		address: string;
+	};
 	id: {
-		tokenId: bigint,
-	},
-	title: string,
-	media: [{
-		gateway: string,
-		thumbnails: string,
-		raw: string,
-		format: string,
-	}],
+		tokenId: bigint;
+	};
+	title: string;
+	media: [
+		{
+			gateway: string;
+			thumbnails: string;
+			raw: string;
+			format: string;
+		}
+	];
 	metadata: {
-		edition: number,
-	}
+		edition: number;
+	};
 	contractMetadata: {
-		name: string
-		tokenType: string
-	}
+		name: string;
+		tokenType: string;
+	};
 	tokenUri: {
-		gateway: string,
-		raw: string,
-	}
-}
+		gateway: string;
+		raw: string;
+	};
+};
 
 export async function fetchAllAssetsFromOpenSea(owner: string, next?: string): Promise<TRawOpenSeaAsset[]> {
-	const requestURL = `https://api.opensea.io/api/v1/assets?format=json&owner=${owner}&limit=200${next ? `&cursor=${next}` : ''}`;
+	const requestURL = `https://api.opensea.io/api/v1/assets?format=json&owner=${owner}&limit=200${
+		next ? `&cursor=${next}` : ''
+	}`;
 	const requestHeaders = {
 		'X-API-KEY': '9d50e8ae4346485da78f695399369bc9'
 	};
@@ -66,7 +70,10 @@ export async function fetchAllAssetsFromOpenSea(owner: string, next?: string): P
 }
 
 export async function fetchAllAssetsFromAlchemy(chainID: number, owner: string): Promise<TAlchemyAssets[]> {
-	const res: AxiosResponse<TAlchemyAssets[]> = await axios.post('/api/proxyFetchNFTFromAlchemy', {chainID, address: owner});
+	const res: AxiosResponse<TAlchemyAssets[]> = await axios.post('/api/proxyFetchNFTFromAlchemy', {
+		chainID,
+		address: owner
+	});
 	return res.data;
 }
 

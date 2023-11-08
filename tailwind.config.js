@@ -28,10 +28,10 @@ module.exports = {
 	],
 	theme: {
 		colors: {
-			'black': 'hsl(0, 0%, 0%)',
-			'white': 'rgb(255, 255, 255)',
-			'transparent': 'transparent',
-			'inherit': 'inherit',
+			black: 'hsl(0, 0%, 0%)',
+			white: 'rgb(255, 255, 255)',
+			transparent: 'transparent',
+			inherit: 'inherit',
 			primary: {
 				0: '#FFFFFF',
 				50: '#ebf4f3',
@@ -83,22 +83,22 @@ module.exports = {
 				mono: ['Source Code Pro', ...defaultTheme.fontFamily.mono]
 			},
 			width: {
-				'inherit': 'inherit'
+				inherit: 'inherit'
 			},
 			fontSize: {
-				'xxs': ['10px', '16px'],
-				'xs': ['12px', '16px'],
-				'sm': ['14px', '20px'],
-				'base': ['16px', '24px'],
-				'intermediate': ['18px', '24px'],
-				'lg': ['20px', '32px'],
-				'xl': ['24px', '32px'],
+				xxs: ['10px', '16px'],
+				xs: ['12px', '16px'],
+				sm: ['14px', '20px'],
+				base: ['16px', '24px'],
+				intermediate: ['18px', '24px'],
+				lg: ['20px', '32px'],
+				xl: ['24px', '32px'],
 				'3xl': ['32px', '40px'],
 				'4xl': ['40px', '56px'],
 				'7xl': ['80px', '96px']
 			},
 			maxWidth: {
-				'xl': '552px',
+				xl: '552px',
 				'4xl': '904px',
 				'6xl': '1200px'
 			}

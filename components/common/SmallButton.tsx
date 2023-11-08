@@ -5,19 +5,26 @@ import type {ReactElement, ReactNode} from 'react';
 
 export type TButtonVariant = 'filled' | 'outlined' | 'light' | 'inherit' | string;
 
-export type	TButton = {
-	children: ReactNode,
-	variant?: TButtonVariant,
-	shouldStopPropagation?: boolean,
-	isBusy?: boolean,
-	isDisabled?: boolean,
-} & React.ComponentPropsWithoutRef<'button'>
+export type TButton = {
+	children: ReactNode;
+	variant?: TButtonVariant;
+	shouldStopPropagation?: boolean;
+	isBusy?: boolean;
+	isDisabled?: boolean;
+} & React.ComponentPropsWithoutRef<'button'>;
 
 export type TMouseEvent = React.MouseEvent<HTMLButtonElement> & React.MouseEvent<HTMLAnchorElement>;
 
 // eslint-disable-next-line react/display-name
 const SmallButton = forwardRef((props: TButton): ReactElement => {
-	const	{children, variant = 'filled', shouldStopPropagation = false, isBusy = false, isDisabled = false, ...rest} = props;
+	const {
+		children,
+		variant = 'filled',
+		shouldStopPropagation = false,
+		isBusy = false,
+		isDisabled = false,
+		...rest
+	} = props;
 
 	return (
 		<button

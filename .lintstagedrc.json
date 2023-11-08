@@ -1,0 +1,4 @@
+{
+	"*.ts|*.tsx": ["yarn prettier-format", "eslint"],
+	"*.scss|*.css": "yarn prettier-format"
+}

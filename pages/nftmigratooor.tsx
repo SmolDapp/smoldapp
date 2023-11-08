@@ -33,19 +33,31 @@ function NFTMigratooor(): ReactElement {
 
 			<div
 				id={'destination'}
-				className={`pt-10 transition-opacity ${[Step.SELECTOR, Step.CONFIRMATION, Step.DESTINATION].includes(currentStep) ? 'opacity-100' : 'pointer-events-none h-0 overflow-hidden opacity-0'}`}>
+				className={`pt-10 transition-opacity ${
+					[Step.SELECTOR, Step.CONFIRMATION, Step.DESTINATION].includes(currentStep)
+						? 'opacity-100'
+						: 'pointer-events-none h-0 overflow-hidden opacity-0'
+				}`}>
 				<ViewDestination onProceed={onProceedDestination} />
 			</div>
 
 			<div
 				id={'selector'}
-				className={`pt-10 transition-opacity ${[Step.SELECTOR, Step.CONFIRMATION].includes(currentStep) ? 'opacity-100' : 'pointer-events-none h-0 overflow-hidden opacity-0'}`}>
+				className={`pt-10 transition-opacity ${
+					[Step.SELECTOR, Step.CONFIRMATION].includes(currentStep)
+						? 'opacity-100'
+						: 'pointer-events-none h-0 overflow-hidden opacity-0'
+				}`}>
 				<ViewTable onProceed={onProceedSelector} />
 			</div>
 
 			<div
 				id={'approvals'}
-				className={`pt-10 transition-opacity ${[Step.CONFIRMATION].includes(currentStep) ? 'opacity-100' : 'pointer-events-none h-0 overflow-hidden opacity-0'}`}>
+				className={`pt-10 transition-opacity ${
+					[Step.CONFIRMATION].includes(currentStep)
+						? 'opacity-100'
+						: 'pointer-events-none h-0 overflow-hidden opacity-0'
+				}`}>
 				<ViewApprovalWizard />
 			</div>
 		</div>
@@ -80,10 +92,10 @@ export default function WrapperNFTMigratooor(): ReactElement {
 						handle: '@smoldapp',
 						site: '@smoldapp',
 						cardType: 'summary_large_image'
-					}} />
+					}}
+				/>
 				<NFTMigratooor />
 			</>
 		</NFTMigratooorContextApp>
 	);
 }
-

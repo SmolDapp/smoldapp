@@ -25,13 +25,15 @@ function Disperse(): ReactElement {
 			return document.getElementById('DISPERSE_TOKENS')?.click();
 		}
 		return document.getElementById('APPROVE_TOKEN_TO_DISPERSE')?.click();
-
 	}, [isWalletSafe, set_currentStep, tokenToDisperse]);
 
 	return (
 		<div className={'mx-auto grid w-full max-w-4xl'}>
 			<div className={'mt-6 flex flex-col justify-center md:mt-20'}>
-				<h1 className={'-ml-1 mt-4 w-full text-3xl tracking-tight text-neutral-900 md:mt-6 md:w-1/2 md:text-5xl'}>
+				<h1
+					className={
+						'-ml-1 mt-4 w-full text-3xl tracking-tight text-neutral-900 md:mt-6 md:w-1/2 md:text-5xl'
+					}>
 					{'Disperse tokens in a single click.'}
 				</h1>
 				<b className={'mt-4 w-full text-base leading-normal text-neutral-500 md:w-2/3 md:text-lg md:leading-8'}>
@@ -43,28 +45,42 @@ function Disperse(): ReactElement {
 				onSelect={(): void => {
 					set_currentStep(Step.TOSEND);
 					document?.getElementById('destination')?.scrollIntoView({behavior: 'smooth', block: 'center'});
-				}} />
+				}}
+			/>
 
 			<div
 				id={'tokenToSend'}
-				className={`pt-10 transition-opacity ${[Step.SELECTOR, Step.CONFIRMATION, Step.TOSEND].includes(currentStep) ? 'opacity-100' : 'pointer-events-none h-0 overflow-hidden opacity-0'}`}>
+				className={`pt-10 transition-opacity ${
+					[Step.SELECTOR, Step.CONFIRMATION, Step.TOSEND].includes(currentStep)
+						? 'opacity-100'
+						: 'pointer-events-none h-0 overflow-hidden opacity-0'
+				}`}>
 				<ViewTokenToSend
 					onProceed={(): void => {
 						if (currentStep === Step.TOSEND) {
 							set_currentStep(Step.SELECTOR);
 						}
-					}} />
+					}}
+				/>
 			</div>
 
 			<div
 				id={'selector'}
-				className={`pt-10 transition-opacity ${[Step.SELECTOR, Step.CONFIRMATION].includes(currentStep) ? 'opacity-100' : 'pointer-events-none h-0 overflow-hidden opacity-0'}`}>
+				className={`pt-10 transition-opacity ${
+					[Step.SELECTOR, Step.CONFIRMATION].includes(currentStep)
+						? 'opacity-100'
+						: 'pointer-events-none h-0 overflow-hidden opacity-0'
+				}`}>
 				<ViewTable onProceed={onStartDisperse} />
 			</div>
 
 			<div
 				id={'tldr'}
-				className={`pt-10 transition-opacity ${[Step.CONFIRMATION].includes(currentStep) ? 'opacity-100' : 'pointer-events-none h-0 overflow-hidden opacity-0'}`}>
+				className={`pt-10 transition-opacity ${
+					[Step.CONFIRMATION].includes(currentStep)
+						? 'opacity-100'
+						: 'pointer-events-none h-0 overflow-hidden opacity-0'
+				}`}>
 				<ViewApprovalWizard />
 			</div>
 		</div>
@@ -99,10 +115,10 @@ export default function DisperseWrapper(): ReactElement {
 						handle: '@smoldapp',
 						site: '@smoldapp',
 						cardType: 'summary_large_image'
-					}} />
+					}}
+				/>
 				<Disperse />
 			</>
 		</DisperseContextApp>
 	);
 }
-

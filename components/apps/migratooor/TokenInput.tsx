@@ -26,7 +26,7 @@ type TViewFromToken = {
 	isDisabled?: boolean;
 	index?: number;
 	placeholder?: string;
-}
+};
 function TokenInput({
 	token,
 	value,
@@ -46,17 +46,20 @@ function TokenInput({
 		return getBalance(toAddress(token?.address));
 	}, [getBalance, token?.address]);
 
-	const onChangeAmount = useCallback((e: ChangeEvent<HTMLInputElement>): void => {
-		const element = document.getElementById('amountToSend') as HTMLInputElement;
-		const newAmount = handleInputChangeEventValue(e, token?.decimals || 18);
-		if (newAmount.raw > balanceOf?.raw) {
-			if (element?.value) {
-				element.value = formatAmount(balanceOf?.normalized, 0, 18);
+	const onChangeAmount = useCallback(
+		(e: ChangeEvent<HTMLInputElement>): void => {
+			const element = document.getElementById('amountToSend') as HTMLInputElement;
+			const newAmount = handleInputChangeEventValue(e, token?.decimals || 18);
+			if (newAmount.raw > balanceOf?.raw) {
+				if (element?.value) {
+					element.value = formatAmount(balanceOf?.normalized, 0, 18);
+				}
+				return onChange(toNormalizedBN(balanceOf?.raw || 0, token?.decimals || 18));
 			}
-			return onChange(toNormalizedBN((balanceOf?.raw || 0), token?.decimals || 18));
-		}
-		onChange(newAmount);
-	}, [balanceOf, onChange, token?.decimals]);
+			onChange(newAmount);
+		},
+		[balanceOf, onChange, token?.decimals]
+	);
 
 	useEffect((): void => {
 		animate('button', {opacity: 0, x: 112, pointerEvents: 'none'}, {duration: 0.3});
@@ -85,13 +88,17 @@ function TokenInput({
 						className={'h-6 w-6 md:h-10 md:w-10 md:min-w-[40px]'}
 						unoptimized
 						src={`https://assets.smold.app/api/token/${token.chainId}/${token.address}/logo-128.png`}
-						altSrc={token.logoURI || ''} />
+						altSrc={token.logoURI || ''}
+					/>
 					<div>
 						<p className={'text-sm'}>
 							<span className={'font-medium'}>{token.name}</span>
 							<span className={'text-xs text-neutral-600'}>{` - (${token.symbol})`}</span>
 						</p>
-						<span className={'font-number mt-2 block !font-mono text-xxs text-neutral-600 transition-colors md:text-xs'}>
+						<span
+							className={
+								'font-number mt-2 block !font-mono text-xxs text-neutral-600 transition-colors md:text-xs'
+							}>
 							<a
 								href={`${getNetwork(token.chainId).blockExplorers}/token/${token.address}`}
 								target={'_blank'}
@@ -106,9 +113,15 @@ function TokenInput({
 				<div className={'col-span-12 flex flex-row items-center space-x-6 md:col-span-4'}>
 					<div className={'w-full'}>
 						<label>
-							<div ref={inputRef} className={'relative flex w-full cursor-text items-center justify-between rounded-md bg-primary-50/50'}>
+							<div
+								ref={inputRef}
+								className={
+									'relative flex w-full cursor-text items-center justify-between rounded-md bg-primary-50/50'
+								}>
 								<input
-									className={'w-full overflow-x-scroll border-none bg-transparent p-2 font-mono text-sm font-medium outline-none scrollbar-none'}
+									className={
+										'w-full overflow-x-scroll border-none bg-transparent p-2 font-mono text-sm font-medium outline-none scrollbar-none'
+									}
 									type={'number'}
 									min={0}
 									maxLength={20}
@@ -120,20 +133,37 @@ function TokenInput({
 									pattern={'^((?:0|[1-9]+)(?:.(?:d+?[1-9]|[1-9]))?)$'}
 									value={value?.normalized || ''}
 									onChange={onChangeAmount}
-									onFocus={onFocus} />
-								<div ref={scope} className={'absolute right-0 mx-2 flex flex-row items-center space-x-2'}>
-									<span className={'relative block h-4 w-4'} style={{zIndex: index}}>
+									onFocus={onFocus}
+								/>
+								<div
+									ref={scope}
+									className={'absolute right-0 mx-2 flex flex-row items-center space-x-2'}>
+									<span
+										className={'relative block h-4 w-4'}
+										style={{zIndex: index}}>
 										{shouldCheckAllowance && (
 											<div className={'absolute inset-0'}>
 												<span className={'tooltip'}>
 													<IconInfo
-														style={{opacity: (value.raw > allowance.raw) && (value.raw <= balanceOf.raw) ? 1 : 0}}
-														className={'h-4 w-4 text-neutral-400 transition-opacity'} />
+														style={{
+															opacity:
+																value.raw > allowance.raw && value.raw <= balanceOf.raw
+																	? 1
+																	: 0
+														}}
+														className={'h-4 w-4 text-neutral-400 transition-opacity'}
+													/>
 													<span className={'tooltipLight !-inset-x-24 top-full mt-2 !w-auto'}>
 														<div
 															suppressHydrationWarning
-															className={'w-fit rounded-md border border-neutral-700 bg-neutral-900 p-1 px-2 text-center text-xs font-medium text-neutral-0'}>
-															{`You will be prompted to approve spending of ${formatAmount(value.normalized, 6, 6)} ${token.symbol}`}
+															className={
+																'w-fit rounded-md border border-neutral-700 bg-neutral-900 p-1 px-2 text-center text-xs font-medium text-neutral-0'
+															}>
+															{`You will be prompted to approve spending of ${formatAmount(
+																value.normalized,
+																6,
+																6
+															)} ${token.symbol}`}
 														</div>
 													</span>
 												</span>
@@ -141,15 +171,22 @@ function TokenInput({
 										)}
 										{shouldCheckBalance && (
 											<IconCircleCross
-												style={{opacity: value.raw > balanceOf.raw ? 1 : 0, pointerEvents: value.raw > balanceOf.raw ? 'auto' : 'none'}}
-												className={'absolute inset-0 h-4 w-4 text-red-900 transition-opacity'} />
+												style={{
+													opacity: value.raw > balanceOf.raw ? 1 : 0,
+													pointerEvents: value.raw > balanceOf.raw ? 'auto' : 'none'
+												}}
+												className={'absolute inset-0 h-4 w-4 text-red-900 transition-opacity'}
+											/>
 										)}
 									</span>
 									<button
 										type={'button'}
 										tabIndex={-1}
 										onClick={(): void => onChange(balanceOf)}
-										className={cl('px-1 py-0 text-xxs rounded-sm transition-colors bg-primary-800 text-primary-0', 'opacity-0 pointer-events-none')}>
+										className={cl(
+											'px-1 py-0 text-xxs rounded-sm transition-colors bg-primary-800 text-primary-0',
+											'opacity-0 pointer-events-none'
+										)}>
 										{'Max'}
 									</button>
 								</div>
@@ -157,7 +194,9 @@ function TokenInput({
 						</label>
 						<span
 							onClick={(): void => onChange(balanceOf)}
-							className={'mt-1 block w-fit cursor-pointer pl-1 text-xxs text-neutral-500 transition-colors hover:text-neutral-900 hover:underline'}>
+							className={
+								'mt-1 block w-fit cursor-pointer pl-1 text-xxs text-neutral-500 transition-colors hover:text-neutral-900 hover:underline'
+							}>
 							{`Available ${formatAmount(balanceOf.normalized, 6, 6)} ${token.symbol}`}
 						</span>
 					</div>
@@ -166,6 +205,5 @@ function TokenInput({
 		</div>
 	);
 }
-
 
 export default TokenInput;

@@ -1,50 +1,50 @@
 const ERC721_ABI = [
 	{
-		'inputs': [
+		inputs: [
 			{
-				'internalType': 'address',
-				'name': 'owner',
-				'type': 'address'
+				internalType: 'address',
+				name: 'owner',
+				type: 'address'
 			},
 			{
-				'internalType': 'address',
-				'name': 'operator',
-				'type': 'address'
+				internalType: 'address',
+				name: 'operator',
+				type: 'address'
 			}
 		],
-		'name': 'isApprovedForAll',
-		'outputs': [
+		name: 'isApprovedForAll',
+		outputs: [
 			{
-				'internalType': 'bool',
-				'name': '',
-				'type': 'bool'
+				internalType: 'bool',
+				name: '',
+				type: 'bool'
 			}
 		],
-		'stateMutability': 'view',
-		'type': 'function'
+		stateMutability: 'view',
+		type: 'function'
 	},
 	{
-		'inputs': [
+		inputs: [
 			{
-				'internalType': 'address',
-				'name': 'from',
-				'type': 'address'
+				internalType: 'address',
+				name: 'from',
+				type: 'address'
 			},
 			{
-				'internalType': 'address',
-				'name': 'to',
-				'type': 'address'
+				internalType: 'address',
+				name: 'to',
+				type: 'address'
 			},
 			{
-				'internalType': 'uint256',
-				'name': 'tokenId',
-				'type': 'uint256'
+				internalType: 'uint256',
+				name: 'tokenId',
+				type: 'uint256'
 			}
 		],
-		'name': 'safeTransferFrom',
-		'outputs': [],
-		'stateMutability': 'nonpayable',
-		'type': 'function'
+		name: 'safeTransferFrom',
+		outputs: [],
+		stateMutability: 'nonpayable',
+		type: 'function'
 	}
 ] as const;
 

@@ -9,7 +9,7 @@ import type {Dispatch, SetStateAction} from 'react';
 import type {TAddress, TDict} from '@yearn-finance/web-lib/types';
 import type {TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 
-export enum	Step {
+export enum Step {
 	WALLET = 'wallet',
 	DESTINATION = 'destination',
 	SELECTOR = 'selector',
@@ -18,22 +18,22 @@ export enum	Step {
 
 export type TSelectedStatus = 'pending' | 'success' | 'error' | 'none';
 export type TSelectedElement = {
-	address: TAddress,
-	symbol: string,
-	decimals: number,
-	amount: TNormalizedBN,
-	status: TSelectedStatus,
-	isSelected: boolean
+	address: TAddress;
+	symbol: string;
+	decimals: number;
+	amount: TNormalizedBN;
+	status: TSelectedStatus;
+	isSelected: boolean;
 };
 
 export type TSelected = {
-	selected: TDict<TSelectedElement>,
-	destinationAddress: TAddress,
-	currentStep: Step,
-	set_selected: Dispatch<SetStateAction<TDict<TSelectedElement>>>,
-	set_destinationAddress: Dispatch<SetStateAction<TAddress>>,
-	set_currentStep: Dispatch<SetStateAction<Step>>
-}
+	selected: TDict<TSelectedElement>;
+	destinationAddress: TAddress;
+	currentStep: Step;
+	set_selected: Dispatch<SetStateAction<TDict<TSelectedElement>>>;
+	set_destinationAddress: Dispatch<SetStateAction<TAddress>>;
+	set_currentStep: Dispatch<SetStateAction<Step>>;
+};
 const defaultProps: TSelected = {
 	selected: {},
 	destinationAddress: toAddress(),
@@ -58,10 +58,10 @@ export const MigratooorContextApp = ({children}: {children: React.ReactElement})
 	}, [isActive]);
 
 	/**********************************************************************************************
-	** This effect is used to directly jump the UI to the DESTINATION section if the wallet is
-	** already connected or if the wallet is a special wallet type (e.g. EMBED_LEDGER).
-	** If the wallet is not connected, jump to the WALLET section to connect.
-	**********************************************************************************************/
+	 ** This effect is used to directly jump the UI to the DESTINATION section if the wallet is
+	 ** already connected or if the wallet is a special wallet type (e.g. EMBED_LEDGER).
+	 ** If the wallet is not connected, jump to the WALLET section to connect.
+	 **********************************************************************************************/
 	useEffect((): void => {
 		const isEmbedWallet = isWalletLedger || isWalletSafe;
 		if ((isActive && address) || isEmbedWallet) {
@@ -72,10 +72,10 @@ export const MigratooorContextApp = ({children}: {children: React.ReactElement})
 	}, [address, isActive, isWalletLedger, isWalletSafe]);
 
 	/**********************************************************************************************
-	** This effect is used to handle some UI transitions and sections jumps. Once the current step
-	** changes, we need to scroll to the correct section.
-	** This effect is triggered only on mount to set the initial scroll position.
-	**********************************************************************************************/
+	 ** This effect is used to handle some UI transitions and sections jumps. Once the current step
+	 ** changes, we need to scroll to the correct section.
+	 ** This effect is triggered only on mount to set the initial scroll position.
+	 **********************************************************************************************/
 	useMountEffect((): void => {
 		setTimeout((): void => {
 			const isEmbedWallet = isWalletLedger || isWalletSafe;
@@ -92,11 +92,11 @@ export const MigratooorContextApp = ({children}: {children: React.ReactElement})
 	});
 
 	/**********************************************************************************************
-	** This effect is used to handle some UI transitions and sections jumps. Once the current step
-	** changes, we need to scroll to the correct section.
-	** This effect is ignored on mount but will be triggered on every update to set the correct
-	** scroll position.
-	**********************************************************************************************/
+	 ** This effect is used to handle some UI transitions and sections jumps. Once the current step
+	 ** changes, we need to scroll to the correct section.
+	 ** This effect is ignored on mount but will be triggered on every update to set the correct
+	 ** scroll position.
+	 **********************************************************************************************/
 	useUpdateEffect((): void => {
 		setTimeout((): void => {
 			let currentStepContainer;
@@ -122,24 +122,28 @@ export const MigratooorContextApp = ({children}: {children: React.ReactElement})
 		}, 0);
 	}, [currentStep, isWalletLedger, isWalletSafe]);
 
-	const contextValue = useMemo((): TSelected => ({
-		selected,
-		set_selected,
-		destinationAddress,
-		set_destinationAddress,
-		currentStep,
-		set_currentStep
-	}), [selected, destinationAddress, currentStep]);
+	const contextValue = useMemo(
+		(): TSelected => ({
+			selected,
+			set_selected,
+			destinationAddress,
+			set_destinationAddress,
+			currentStep,
+			set_currentStep
+		}),
+		[selected, destinationAddress, currentStep]
+	);
 
 	return (
 		<MigratooorContext.Provider value={contextValue}>
-			<div id={'MiratooorView'} className={'mx-auto w-full'}>
+			<div
+				id={'MiratooorView'}
+				className={'mx-auto w-full'}>
 				{children}
 				<div id={'scalooor'} />
 			</div>
 		</MigratooorContext.Provider>
 	);
 };
-
 
 export const useMigratooor = (): TSelected => useContext(MigratooorContext);

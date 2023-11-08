@@ -13,7 +13,7 @@ import type {TNFT} from 'utils/types/nftMigratooor';
 import type {TAlchemyAssets} from 'utils/types/opensea';
 import type {TAddress} from '@yearn-finance/web-lib/types';
 
-export enum	Step {
+export enum Step {
 	WALLET = 'wallet',
 	DESTINATION = 'destination',
 	SELECTOR = 'selector',
@@ -21,16 +21,16 @@ export enum	Step {
 }
 
 export type TSelected = {
-	nfts: TNFT[],
-	selected: TNFT[],
-	destinationAddress: TAddress,
-	currentStep: Step,
-	isFetchingNFTs: boolean,
-	set_nfts: Dispatch<SetStateAction<TNFT[]>>,
-	set_selected: Dispatch<SetStateAction<TNFT[]>>,
-	set_destinationAddress: Dispatch<SetStateAction<TAddress>>,
-	set_currentStep: Dispatch<SetStateAction<Step>>
-}
+	nfts: TNFT[];
+	selected: TNFT[];
+	destinationAddress: TAddress;
+	currentStep: Step;
+	isFetchingNFTs: boolean;
+	set_nfts: Dispatch<SetStateAction<TNFT[]>>;
+	set_selected: Dispatch<SetStateAction<TNFT[]>>;
+	set_destinationAddress: Dispatch<SetStateAction<TAddress>>;
+	set_currentStep: Dispatch<SetStateAction<Step>>;
+};
 const defaultProps: TSelected = {
 	nfts: [],
 	selected: [],
@@ -43,7 +43,6 @@ const defaultProps: TSelected = {
 	set_currentStep: (): void => undefined
 };
 
-
 const NFTMigratooorContext = createContext<TSelected>(defaultProps);
 export const NFTMigratooorContextApp = ({children}: {children: React.ReactElement}): React.ReactElement => {
 	const filterNFTs = useNFTs();
@@ -55,43 +54,44 @@ export const NFTMigratooorContextApp = ({children}: {children: React.ReactElemen
 	const [selected, set_selected] = useState<TNFT[]>([]);
 	const [currentStep, set_currentStep] = useState<Step>(Step.WALLET);
 
-	const handleAlchemyAssets = useCallback(async (
-		userAddress: TAddress,
-		chainID: number
-	): Promise<TNFT[]> => {
+	const handleAlchemyAssets = useCallback(async (userAddress: TAddress, chainID: number): Promise<TNFT[]> => {
 		const rawAssets = await fetchAllAssetsFromAlchemy(chainID, userAddress);
 		const assets = (rawAssets || [])
-			.filter((asset: TAlchemyAssets): boolean => (
-				asset?.title !== ''
-				&& asset?.contractMetadata?.name !== ''
-				&& asset?.media !== null
-				&& asset?.tokenUri !== null
-			))
+			.filter(
+				(asset: TAlchemyAssets): boolean =>
+					asset?.title !== '' &&
+					asset?.contractMetadata?.name !== '' &&
+					asset?.media !== null &&
+					asset?.tokenUri !== null
+			)
 			.map(alchemyToNFT);
-		return (assets);
+		return assets;
 	}, []);
 
-	const fetchNFTs = useCallback(async (userAddress: TAddress, chainID: number): Promise<void> => {
-		set_nfts([]);
-		set_selected([]);
-		set_isFetchingNFTs(true);
+	const fetchNFTs = useCallback(
+		async (userAddress: TAddress, chainID: number): Promise<void> => {
+			set_nfts([]);
+			set_selected([]);
+			set_isFetchingNFTs(true);
 
-		let assets: TNFT[] = [];
-		if ([1, 10, 137, 42161].includes(chainID)) {
-			assets = await handleAlchemyAssets(toAddress(userAddress), chainID);
-		} else {
-			assets = await filterNFTs(toAddress(userAddress), chainID);
-		}
+			let assets: TNFT[] = [];
+			if ([1, 10, 137, 42161].includes(chainID)) {
+				assets = await handleAlchemyAssets(toAddress(userAddress), chainID);
+			} else {
+				assets = await filterNFTs(toAddress(userAddress), chainID);
+			}
 
-		set_nfts(assets);
-		set_isFetchingNFTs(false);
-	}, [filterNFTs, handleAlchemyAssets]);
+			set_nfts(assets);
+			set_isFetchingNFTs(false);
+		},
+		[filterNFTs, handleAlchemyAssets]
+	);
 
 	/**********************************************************************************************
-	** Fetch all NFTs from OpenSea. The OpenSea API only returns 200 NFTs at a time, so we need to
-	** recursively fetch all NFTs from OpenSea if a cursor for next page is returned.
-	** If no address is available, set NFTs to empty array.
-	**********************************************************************************************/
+	 ** Fetch all NFTs from OpenSea. The OpenSea API only returns 200 NFTs at a time, so we need to
+	 ** recursively fetch all NFTs from OpenSea if a cursor for next page is returned.
+	 ** If no address is available, set NFTs to empty array.
+	 **********************************************************************************************/
 	useEffect((): void => {
 		if (isZeroAddress(toAddress(address))) {
 			return set_nfts([]);
@@ -101,8 +101,8 @@ export const NFTMigratooorContextApp = ({children}: {children: React.ReactElemen
 	}, [address, fetchNFTs, safeChainID]);
 
 	/**********************************************************************************************
-	** On disconnect, reset all state.
-	**********************************************************************************************/
+	 ** On disconnect, reset all state.
+	 **********************************************************************************************/
 	useUpdateEffect((): void => {
 		if (!isActive) {
 			set_selected([]);
@@ -112,10 +112,10 @@ export const NFTMigratooorContextApp = ({children}: {children: React.ReactElemen
 	}, [isActive]);
 
 	/**********************************************************************************************
-	** This effect is used to directly jump the UI to the DESTINATION section if the wallet is
-	** already connected or if the wallet is a special wallet type (e.g. EMBED_LEDGER).
-	** If the wallet is not connected, jump to the WALLET section to connect.
-	**********************************************************************************************/
+	 ** This effect is used to directly jump the UI to the DESTINATION section if the wallet is
+	 ** already connected or if the wallet is a special wallet type (e.g. EMBED_LEDGER).
+	 ** If the wallet is not connected, jump to the WALLET section to connect.
+	 **********************************************************************************************/
 	useEffect((): void => {
 		const isEmbedWallet = isWalletLedger || isWalletSafe;
 		if ((isActive && address) || isEmbedWallet) {
@@ -126,10 +126,10 @@ export const NFTMigratooorContextApp = ({children}: {children: React.ReactElemen
 	}, [address, isActive, isWalletLedger, isWalletSafe]);
 
 	/**********************************************************************************************
-	** This effect is used to handle some UI transitions and sections jumps. Once the current step
-	** changes, we need to scroll to the correct section.
-	** This effect is triggered only on mount to set the initial scroll position.
-	**********************************************************************************************/
+	 ** This effect is used to handle some UI transitions and sections jumps. Once the current step
+	 ** changes, we need to scroll to the correct section.
+	 ** This effect is triggered only on mount to set the initial scroll position.
+	 **********************************************************************************************/
 	useMountEffect((): void => {
 		setTimeout((): void => {
 			const isEmbedWallet = isWalletLedger || isWalletSafe;
@@ -146,11 +146,11 @@ export const NFTMigratooorContextApp = ({children}: {children: React.ReactElemen
 	});
 
 	/**********************************************************************************************
-	** This effect is used to handle some UI transitions and sections jumps. Once the current step
-	** changes, we need to scroll to the correct section.
-	** This effect is ignored on mount but will be triggered on every update to set the correct
-	** scroll position.
-	**********************************************************************************************/
+	 ** This effect is used to handle some UI transitions and sections jumps. Once the current step
+	 ** changes, we need to scroll to the correct section.
+	 ** This effect is ignored on mount but will be triggered on every update to set the correct
+	 ** scroll position.
+	 **********************************************************************************************/
 	useUpdateEffect((): void => {
 		setTimeout((): void => {
 			let currentStepContainer;
@@ -177,29 +177,33 @@ export const NFTMigratooorContextApp = ({children}: {children: React.ReactElemen
 	}, [currentStep, isWalletLedger, isWalletSafe]);
 
 	/**********************************************************************************************
-	** For some small performance improvements, we memoize the context value.
-	**********************************************************************************************/
-	const contextValue = useMemo((): TSelected => ({
-		isFetchingNFTs,
-		selected,
-		set_selected,
-		nfts,
-		set_nfts,
-		destinationAddress,
-		set_destinationAddress,
-		currentStep,
-		set_currentStep
-	}), [isFetchingNFTs, selected, nfts, destinationAddress, currentStep]);
+	 ** For some small performance improvements, we memoize the context value.
+	 **********************************************************************************************/
+	const contextValue = useMemo(
+		(): TSelected => ({
+			isFetchingNFTs,
+			selected,
+			set_selected,
+			nfts,
+			set_nfts,
+			destinationAddress,
+			set_destinationAddress,
+			currentStep,
+			set_currentStep
+		}),
+		[isFetchingNFTs, selected, nfts, destinationAddress, currentStep]
+	);
 
 	return (
 		<NFTMigratooorContext.Provider value={contextValue}>
-			<div id={'NFTMiratooorView'} className={'mx-auto w-full'}>
+			<div
+				id={'NFTMiratooorView'}
+				className={'mx-auto w-full'}>
 				{children}
 				<div id={'scalooor'} />
 			</div>
 		</NFTMigratooorContext.Provider>
 	);
 };
-
 
 export const useNFTMigratooor = (): TSelected => useContext(NFTMigratooorContext);

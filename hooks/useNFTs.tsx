@@ -15,45 +15,42 @@ import type {ContractFunctionConfig, Hex} from 'viem';
 import type {TAddress, TDict} from '@yearn-finance/web-lib/types';
 
 export type TIncentives = {
-	protocol: TAddress,
-	protocolName: string,
-	incentive: TAddress,
-	depositor: TAddress,
-	amount: bigint,
-	value: number,
-	estimatedAPR: number,
-	blockNumber: bigint,
-	txHash: Hex,
-	incentiveToken?: TTokenInfo
-}
+	protocol: TAddress;
+	protocolName: string;
+	incentive: TAddress;
+	depositor: TAddress;
+	amount: bigint;
+	value: number;
+	estimatedAPR: number;
+	blockNumber: bigint;
+	txHash: Hex;
+	incentiveToken?: TTokenInfo;
+};
 export type TGroupedIncentives = {
-	protocol: TAddress,
-	protocolName: string,
-	normalizedSum: number,
-	estimatedAPR: number,
-	usdPerStETH: number,
-	incentives: TIncentives[]
-}
+	protocol: TAddress;
+	protocolName: string;
+	normalizedSum: number;
+	estimatedAPR: number;
+	usdPerStETH: number;
+	incentives: TIncentives[];
+};
 
 export type TIncentivesFor = {
-	protocols: TDict<TGroupedIncentives>,
-	user: TDict<TGroupedIncentives>
-}
+	protocols: TDict<TGroupedIncentives>;
+	user: TDict<TGroupedIncentives>;
+};
 
 type TNFTLogged = {
 	id: string;
-	tokenID: bigint,
-	address: TAddress,
-	type: 'ERC721' | 'ERC1155',
-}
+	tokenID: bigint;
+	address: TAddress;
+	type: 'ERC721' | 'ERC1155';
+};
 
 type TMulticallContract = Parameters<typeof multicall>[0]['contracts'][0];
 
 function useNFTs(): (userAddress: TAddress, chainID: number) => Promise<TNFT[]> {
-	const filterEvents = useCallback(async (
-		userAddress: TAddress,
-		chainID: number
-	): Promise<TNFT[]> => {
+	const filterEvents = useCallback(async (userAddress: TAddress, chainID: number): Promise<TNFT[]> => {
 		const publicClient = getClient(chainID);
 		const rangeLimit = 10_000_000n;
 		const initialBlockNumber = toBigInt(0);
@@ -102,7 +99,7 @@ function useNFTs(): (userAddress: TAddress, chainID: number) => Promise<TNFT[]> 
 		}
 
 		const calls = detectedNFTs.map((detected): TMulticallContract[] => {
-			const basicCalls: TMulticallContract[] = ([
+			const basicCalls: TMulticallContract[] = [
 				{
 					abi: erc721ABI,
 					functionName: 'tokenURI',
@@ -119,10 +116,12 @@ function useNFTs(): (userAddress: TAddress, chainID: number) => Promise<TNFT[]> 
 					functionName: 'symbol',
 					address: detected.address
 				} satisfies ContractFunctionConfig<typeof erc721ABI>
-			]);
+			];
 
 			if (toAddress(detected.address) === POLYGON_LENS_ADDRESS) {
-				const lensABI = parseAbi(['function getHandle(uint256 profileId) external view returns (string memory)']);
+				const lensABI = parseAbi([
+					'function getHandle(uint256 profileId) external view returns (string memory)'
+				]);
 				basicCalls.push({
 					abi: lensABI,
 					functionName: 'getHandle',
@@ -165,7 +164,7 @@ function useNFTs(): (userAddress: TAddress, chainID: number) => Promise<TNFT[]> 
 			});
 		}
 
-		return (allDetectedNFTs);
+		return allDetectedNFTs;
 	}, []);
 
 	return filterEvents;

@@ -11,19 +11,22 @@ import type {ReactElement} from 'react';
 import type {TAddress} from '@yearn-finance/web-lib/types';
 
 export type TInputAddressLike = {
-	address: TAddress | undefined,
-	label: string,
-	isValid: boolean | 'undetermined',
-}
+	address: TAddress | undefined;
+	label: string;
+	isValid: boolean | 'undetermined';
+};
 export const defaultInputAddressLike: TInputAddressLike = {
 	address: undefined,
 	label: '',
 	isValid: false
 };
 
-function AddressInput({value, onChangeValue}: {
-	value: TInputAddressLike,
-	onChangeValue: (value: TInputAddressLike) => void,
+function AddressInput({
+	value,
+	onChangeValue
+}: {
+	value: TInputAddressLike;
+	onChangeValue: (value: TInputAddressLike) => void;
 }): ReactElement {
 	const [isLoadingValidish, set_isLoadingValidish] = useState<boolean>(false);
 	const currentLabel = useRef<string>(value.label);
@@ -44,31 +47,34 @@ function AddressInput({value, onChangeValue}: {
 		return 'none';
 	}, [value, isLoadingValidish, isFocused]);
 
-	const onChange = useCallback(async (label: string): Promise<void> => {
-		currentLabel.current = label;
+	const onChange = useCallback(
+		async (label: string): Promise<void> => {
+			currentLabel.current = label;
 
-		if (label.endsWith('.eth') && label.length > 4) {
-			onChangeValue({address: undefined, label, isValid: 'undetermined'});
-			set_isLoadingValidish(true);
-			const [address, isValid] = await checkENSValidity(label);
-			if (currentLabel.current === label) {
-				onChangeValue({address, label, isValid});
+			if (label.endsWith('.eth') && label.length > 4) {
+				onChangeValue({address: undefined, label, isValid: 'undetermined'});
+				set_isLoadingValidish(true);
+				const [address, isValid] = await checkENSValidity(label);
+				if (currentLabel.current === label) {
+					onChangeValue({address, label, isValid});
+				}
+				set_isLoadingValidish(false);
+			} else if (label.endsWith('.lens') && label.length > 5) {
+				onChangeValue({address: undefined, label, isValid: 'undetermined'});
+				set_isLoadingValidish(true);
+				const [address, isValid] = await checkLensValidity(label);
+				if (currentLabel.current === label) {
+					onChangeValue({address, label, isValid});
+				}
+				set_isLoadingValidish(false);
+			} else if (!isZeroAddress(toAddress(label))) {
+				onChangeValue({address: toAddress(label), label, isValid: true});
+			} else {
+				onChangeValue({address: undefined, label, isValid: false});
 			}
-			set_isLoadingValidish(false);
-		} else if (label.endsWith('.lens') && label.length > 5) {
-			onChangeValue({address: undefined, label, isValid: 'undetermined'});
-			set_isLoadingValidish(true);
-			const [address, isValid] = await checkLensValidity(label);
-			if (currentLabel.current === label) {
-				onChangeValue({address, label, isValid});
-			}
-			set_isLoadingValidish(false);
-		} else if (!isZeroAddress(toAddress(label))) {
-			onChangeValue({address: toAddress(label), label, isValid: true});
-		} else {
-			onChangeValue({address: undefined, label, isValid: false});
-		}
-	}, [onChangeValue, currentLabel]);
+		},
+		[onChangeValue, currentLabel]
+	);
 
 	return (
 		<div className={'smol--input-wrapper'}>
@@ -88,17 +94,30 @@ function AddressInput({value, onChangeValue}: {
 				placeholder={'0x...'}
 				type={'text'}
 				value={value.label}
-				className={'smol--input font-mono font-bold'} />
+				className={'smol--input font-mono font-bold'}
+			/>
 			<label
-				className={status === 'invalid' || status === 'warning' ? 'relative' : 'pointer-events-none relative h-4 w-4'}>
+				className={
+					status === 'invalid' || status === 'warning' ? 'relative' : 'pointer-events-none relative h-4 w-4'
+				}>
 				<span className={status === 'invalid' || status === 'warning' ? 'tooltip' : 'pointer-events-none'}>
 					<div className={'pointer-events-none relative h-4 w-4'}>
 						<IconCheck
-							className={`absolute h-4 w-4 text-[#16a34a] transition-opacity ${status === 'valid' ? 'opacity-100' : 'opacity-0'}`} />
+							className={`absolute h-4 w-4 text-[#16a34a] transition-opacity ${
+								status === 'valid' ? 'opacity-100' : 'opacity-0'
+							}`}
+						/>
 						<IconCircleCross
-							className={`absolute h-4 w-4 text-[#e11d48] transition-opacity ${status === 'invalid' ? 'opacity-100' : 'opacity-0'}`} />
+							className={`absolute h-4 w-4 text-[#e11d48] transition-opacity ${
+								status === 'invalid' ? 'opacity-100' : 'opacity-0'
+							}`}
+						/>
 						<div className={'absolute inset-0 flex items-center justify-center'}>
-							<IconLoader className={`h-4 w-4 animate-spin text-neutral-900 transition-opacity ${status === 'pending' ? 'opacity-100' : 'opacity-0'}`} />
+							<IconLoader
+								className={`h-4 w-4 animate-spin text-neutral-900 transition-opacity ${
+									status === 'pending' ? 'opacity-100' : 'opacity-0'
+								}`}
+							/>
 						</div>
 					</div>
 					<span className={'tooltiptextsmall'}>

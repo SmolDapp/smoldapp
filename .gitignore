@@ -31,5 +31,6 @@ tsconfig.tsbuildinfo
 
 # Auto Generated PWA files
 **/sw.js.map
+**/workbox-*.js
 **/workbox-*.js.map
 **/worker-*.js.map

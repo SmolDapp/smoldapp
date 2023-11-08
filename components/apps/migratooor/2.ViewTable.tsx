@@ -17,11 +17,14 @@ import type {TAddress, TDict} from '@yearn-finance/web-lib/types';
 import type {TBalanceData} from '@yearn-finance/web-lib/types/hooks';
 import type {TSelectedElement} from '@migratooor/useMigratooor';
 
-
-function TableLine({tokenAddress, balance, index}: {
-	tokenAddress: TAddress,
-	balance: TBalanceData,
-	index: number
+function TableLine({
+	tokenAddress,
+	balance,
+	index
+}: {
+	tokenAddress: TAddress;
+	balance: TBalanceData;
+	index: number;
 }): ReactElement {
 	const {tokenList} = useTokenList();
 	const {selected, set_selected} = useMigratooor();
@@ -30,42 +33,51 @@ function TableLine({tokenAddress, balance, index}: {
 	const tokenSymbol = useMemo((): string => balance.symbol || 'unknown', [balance.symbol]);
 	const tokenDecimals = useMemo((): number => balance.decimals || 18, [balance.decimals]);
 
-	const onSelect = useCallback(async (rawAmount: bigint): Promise<void> => {
-		if (rawAmount === 0n) {
-			set_selected((prev): TDict<TSelectedElement> => ({
-				...prev,
-				[toAddress(tokenAddress)]: {
-					...prev[toAddress(tokenAddress)],
-					amount: toNormalizedBN(0),
-					isSelected: false
-				}
-			}));
-		} else {
-			set_selected((prev): TDict<TSelectedElement> => ({
-				...prev,
-				[toAddress(tokenAddress)]: {
-					...prev[toAddress(tokenAddress)],
-					amount: toNormalizedBN(rawAmount, tokenDecimals),
-					status: 'none',
-					isSelected: true
-				}
-			}));
-		}
-	}, [set_selected, tokenAddress, tokenDecimals]);
+	const onSelect = useCallback(
+		async (rawAmount: bigint): Promise<void> => {
+			if (rawAmount === 0n) {
+				set_selected(
+					(prev): TDict<TSelectedElement> => ({
+						...prev,
+						[toAddress(tokenAddress)]: {
+							...prev[toAddress(tokenAddress)],
+							amount: toNormalizedBN(0),
+							isSelected: false
+						}
+					})
+				);
+			} else {
+				set_selected(
+					(prev): TDict<TSelectedElement> => ({
+						...prev,
+						[toAddress(tokenAddress)]: {
+							...prev[toAddress(tokenAddress)],
+							amount: toNormalizedBN(rawAmount, tokenDecimals),
+							status: 'none',
+							isSelected: true
+						}
+					})
+				);
+			}
+		},
+		[set_selected, tokenAddress, tokenDecimals]
+	);
 
 	useMountEffect((): void => {
 		if (selected[toAddress(tokenAddress)] === undefined) {
-			set_selected((prev): TDict<TSelectedElement> => ({
-				...prev,
-				[toAddress(tokenAddress)]: {
-					address: tokenAddress,
-					symbol: tokenSymbol,
-					decimals: tokenDecimals,
-					amount: {raw: -1n, normalized: 0},
-					status: 'none',
-					isSelected: false
-				}
-			}));
+			set_selected(
+				(prev): TDict<TSelectedElement> => ({
+					...prev,
+					[toAddress(tokenAddress)]: {
+						address: tokenAddress,
+						symbol: tokenSymbol,
+						decimals: tokenDecimals,
+						amount: {raw: -1n, normalized: 0},
+						status: 'none',
+						isSelected: false
+					}
+				})
+			);
 		}
 	});
 
@@ -89,7 +101,8 @@ function TableLine({tokenAddress, balance, index}: {
 							} else {
 								onSelect(balance.raw);
 							}
-						}} />
+						}}
+					/>
 				</div>
 				<TokenInput
 					index={index}
@@ -100,7 +113,8 @@ function TableLine({tokenAddress, balance, index}: {
 					placeholder={String(balance.normalized)}
 					onChange={(v): void => {
 						onSelect(v.raw);
-					}} />
+					}}
+				/>
 			</div>
 		</Fragment>
 	);
@@ -114,51 +128,55 @@ const ViewTable = memo(function ViewTable({onProceed}: {onProceed: VoidFunction}
 	const [search, set_search] = useState<string>('');
 
 	const isValid = useMemo((): boolean => {
-		return Object.values(selected).every((row): boolean => {
-			if (row.isSelected && toBigInt(row.amount?.raw) === 0n) {
-				return false;
-			}
-			return true;
-		}) && Object.values(selected).some((row): boolean => row.isSelected);
+		return (
+			Object.values(selected).every((row): boolean => {
+				if (row.isSelected && toBigInt(row.amount?.raw) === 0n) {
+					return false;
+				}
+				return true;
+			}) && Object.values(selected).some((row): boolean => row.isSelected)
+		);
 	}, [selected]);
 
 	const balancesToDisplay = useMemo((): [string, TBalanceData][] => {
 		balancesNonce;
-		return (
-			Object.entries(balances || [])
-				.filter(([tokenAddress, tokenData]: [string, TBalanceData]): boolean => {
-					if (search) {
-						const searchArray = search.split(/[\s,]+/);
-						return searchArray.some((searchTerm: string): boolean => {
-							if (searchTerm === '') {
-								return false;
-							}
-							return (
-								tokenData.symbol.toLowerCase().startsWith(searchTerm.toLowerCase())
-								|| tokenData.name.toLowerCase().startsWith(searchTerm.toLowerCase())
-								|| tokenAddress.toLowerCase().startsWith(searchTerm.toLowerCase())
-							);
-						});
-					}
-					return true;
-				})
-				.filter(([, balance]: [string, TBalanceData]): boolean => (
-					toBigInt(balance.raw) > 0n || (balance?.force || false)
-				))
-		);
+		return Object.entries(balances || [])
+			.filter(([tokenAddress, tokenData]: [string, TBalanceData]): boolean => {
+				if (search) {
+					const searchArray = search.split(/[\s,]+/);
+					return searchArray.some((searchTerm: string): boolean => {
+						if (searchTerm === '') {
+							return false;
+						}
+						return (
+							tokenData.symbol.toLowerCase().startsWith(searchTerm.toLowerCase()) ||
+							tokenData.name.toLowerCase().startsWith(searchTerm.toLowerCase()) ||
+							tokenAddress.toLowerCase().startsWith(searchTerm.toLowerCase())
+						);
+					});
+				}
+				return true;
+			})
+			.filter(
+				([, balance]: [string, TBalanceData]): boolean => toBigInt(balance.raw) > 0n || balance?.force || false
+			);
 	}, [balances, balancesNonce, search]);
 
 	return (
 		<section className={'box-0'}>
 			<div className={'relative w-full'}>
 				<div className={'relative col-span-12 flex flex-col p-4 text-neutral-900 md:p-6 md:pb-2'}>
-					<div className={'absolute right-4 top-4 cursor-pointer'} onClick={openTokenListModal}>
+					<div
+						className={'absolute right-4 top-4 cursor-pointer'}
+						onClick={openTokenListModal}>
 						<IconSettings className={'transition-color h-4 w-4 text-neutral-400 hover:text-neutral-900'} />
 					</div>
 					<div className={'w-full md:w-3/4'}>
 						<b>{'Which tokens do you want to dump?'}</b>
 						<p className={'text-sm text-neutral-500'}>
-							{'Select the token(s) that you’d like to dump. In exchange you’ll receive whatever token you selected in the first step.'}
+							{
+								'Select the token(s) that you’d like to dump. In exchange you’ll receive whatever token you selected in the first step.'
+							}
 						</p>
 					</div>
 					<div className={'mt-4 w-full'}>
@@ -168,7 +186,8 @@ const ViewTable = memo(function ViewTable({onProceed}: {onProceed: VoidFunction}
 								value={search}
 								className={'smol--input'}
 								type={'text'}
-								placeholder={'Filter tokens...'} />
+								placeholder={'Filter tokens...'}
+							/>
 						</div>
 					</div>
 				</div>
@@ -184,30 +203,38 @@ const ViewTable = memo(function ViewTable({onProceed}: {onProceed: VoidFunction}
 							<svg
 								className={'h-4 w-4 text-neutral-400'}
 								xmlns={'http://www.w3.org/2000/svg'}
-								viewBox={'0 0 512 512'}><path d={'M505 41c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0L396.5 81.5C358.1 50.6 309.2 32 256 32C132.3 32 32 132.3 32 256c0 53.2 18.6 102.1 49.5 140.5L7 471c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l74.5-74.5c38.4 31 87.3 49.5 140.5 49.5c123.7 0 224-100.3 224-224c0-53.2-18.6-102.1-49.5-140.5L505 41zM362.3 115.7L115.7 362.3C93.3 332.8 80 295.9 80 256c0-97.2 78.8-176 176-176c39.9 0 76.8 13.3 106.3 35.7zM149.7 396.3L396.3 149.7C418.7 179.2 432 216.1 432 256c0 97.2-78.8 176-176 176c-39.9 0-76.8-13.3-106.3-35.7z'} fill={'currentcolor'} />
+								viewBox={'0 0 512 512'}>
+								<path
+									d={
+										'M505 41c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0L396.5 81.5C358.1 50.6 309.2 32 256 32C132.3 32 32 132.3 32 256c0 53.2 18.6 102.1 49.5 140.5L7 471c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l74.5-74.5c38.4 31 87.3 49.5 140.5 49.5c123.7 0 224-100.3 224-224c0-53.2-18.6-102.1-49.5-140.5L505 41zM362.3 115.7L115.7 362.3C93.3 332.8 80 295.9 80 256c0-97.2 78.8-176 176-176c39.9 0 76.8 13.3 106.3 35.7zM149.7 396.3L396.3 149.7C418.7 179.2 432 216.1 432 256c0 97.2-78.8 176-176 176c-39.9 0-76.8-13.3-106.3-35.7z'
+									}
+									fill={'currentcolor'}
+								/>
 							</svg>
-							<p className={'mt-6 text-sm text-neutral-500'}>{'Oh no, we couldn\'t find any token!'}</p>
+							<p className={'mt-6 text-sm text-neutral-500'}>{"Oh no, we couldn't find any token!"}</p>
 						</div>
 					) : (
 						<div className={'grid grid-cols-1 divide-y divide-primary-50 rounded-md md:grid-cols-1'}>
-							{
-								balancesToDisplay
-									.map(([address, balance]: [string, TBalanceData], index): ReactElement => (
-										<div
-											key={`${address}-${chainID}-${balance.symbol}-${index}`}>
-											<TableLine
-												index={10_000 - index}
-												balance={balance}
-												tokenAddress={toAddress(address)} />
-										</div>
-									))
-							}
+							{balancesToDisplay.map(
+								([address, balance]: [string, TBalanceData], index): ReactElement => (
+									<div key={`${address}-${chainID}-${balance.symbol}-${index}`}>
+										<TableLine
+											index={10_000 - index}
+											balance={balance}
+											tokenAddress={toAddress(address)}
+										/>
+									</div>
+								)
+							)}
 						</div>
 					)}
 				</div>
 			</div>
 
-			<div className={'sticky inset-x-0 bottom-0 z-20 flex w-full max-w-5xl flex-row items-center justify-between rounded-b-md bg-primary-600 p-4 text-primary-0 md:relative md:px-6 md:py-4'}>
+			<div
+				className={
+					'sticky inset-x-0 bottom-0 z-20 flex w-full max-w-5xl flex-row items-center justify-between rounded-b-md bg-primary-600 p-4 text-primary-0 md:relative md:px-6 md:py-4'
+				}>
 				<div />
 				<div>
 					<Button

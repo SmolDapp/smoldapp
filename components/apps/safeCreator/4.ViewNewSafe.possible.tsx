@@ -12,21 +12,32 @@ import type {ReactElement} from 'react';
 import type {TNewSafe} from './4.ViewNewSafe';
 
 type TPossibleSafe = {
-	possibleSafe: TNewSafe,
-	prefix: string,
-	suffix: string,
-	currentSeed: bigint,
-	factory: 'ssf' | 'ddp',
-	shouldUseTestnets: boolean,
-	onGenerate: VoidFunction
-}
-function PossibleSafe({possibleSafe, prefix, suffix, currentSeed, factory, shouldUseTestnets, onGenerate}: TPossibleSafe): ReactElement {
+	possibleSafe: TNewSafe;
+	prefix: string;
+	suffix: string;
+	currentSeed: bigint;
+	factory: 'ssf' | 'ddp';
+	shouldUseTestnets: boolean;
+	onGenerate: VoidFunction;
+};
+function PossibleSafe({
+	possibleSafe,
+	prefix,
+	suffix,
+	currentSeed,
+	factory,
+	shouldUseTestnets,
+	onGenerate
+}: TPossibleSafe): ReactElement {
 	const {address, owners, threshold, salt} = possibleSafe as TNewSafe;
 
 	return (
 		<div className={'p-4 pt-0 md:p-6 md:pt-0'}>
 			<div className={'box-100 relative p-4 md:px-6'}>
-				{possibleSafe?.prefix !== prefix || possibleSafe?.suffix !== suffix || possibleSafe.singleton !== (factory == 'ssf' ? SINGLETON_L2 : SINGLETON_L2_DDP) || possibleSafe.salt !== currentSeed ? (
+				{possibleSafe?.prefix !== prefix ||
+				possibleSafe?.suffix !== suffix ||
+				possibleSafe.singleton !== (factory == 'ssf' ? SINGLETON_L2 : SINGLETON_L2_DDP) ||
+				possibleSafe.salt !== currentSeed ? (
 					<>
 						<div className={'box-0 absolute right-2 top-2 hidden w-52 flex-row p-2 text-xs md:flex'}>
 							<button
@@ -37,7 +48,10 @@ function PossibleSafe({possibleSafe, prefix, suffix, currentSeed, factory, shoul
 									onGenerate();
 								}}>
 								<IconRefresh
-									className={'h-3 w-3 min-w-[16px] cursor-pointer text-neutral-500 transition-colors hover:text-neutral-900'} />
+									className={
+										'h-3 w-3 min-w-[16px] cursor-pointer text-neutral-500 transition-colors hover:text-neutral-900'
+									}
+								/>
 							</button>
 							{'Looks like you changed the Safe configuration, please hit generate again.'}
 						</div>
@@ -50,7 +64,10 @@ function PossibleSafe({possibleSafe, prefix, suffix, currentSeed, factory, shoul
 									onGenerate();
 								}}>
 								<IconRefresh
-									className={'h-3 w-3 min-w-[16px] cursor-pointer text-neutral-500 transition-colors hover:text-neutral-900'} />
+									className={
+										'h-3 w-3 min-w-[16px] cursor-pointer text-neutral-500 transition-colors hover:text-neutral-900'
+									}
+								/>
 							</button>
 						</div>
 					</>
@@ -71,18 +88,22 @@ function PossibleSafe({possibleSafe, prefix, suffix, currentSeed, factory, shoul
 							<small>{'Owners '}</small>
 							<Renderable
 								shouldRender={!!owners && owners.length > 0}
-								fallback={(
+								fallback={
 									<div>
 										<b className={'font-number block text-neutral-400'}>{'-'}</b>
 										<b className={'font-number block text-neutral-400'}>{'-'}</b>
 									</div>
-								)}>
+								}>
 								<div>
-									{(owners || []).map((owner): ReactElement => (
-										<b key={owner} className={'font-number addr block text-sm md:text-base'}>
-											<AddressLike address={owner} />
-										</b>
-									))}
+									{(owners || []).map(
+										(owner): ReactElement => (
+											<b
+												key={owner}
+												className={'font-number addr block text-sm md:text-base'}>
+												<AddressLike address={owner} />
+											</b>
+										)
+									)}
 								</div>
 							</Renderable>
 						</div>
@@ -102,9 +123,10 @@ function PossibleSafe({possibleSafe, prefix, suffix, currentSeed, factory, shoul
 								shouldRender={!!address}
 								fallback={<span className={'text-neutral-400'}>{'-'}</span>}>
 								<div className={'mt-1 grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-4'}>
-									{SUPPORTED_CHAINS
-										.filter((chain): boolean => ![5, 324, 1337, 84531].includes(chain.id))
-										.map((chain): ReactElement => (
+									{SUPPORTED_CHAINS.filter(
+										(chain): boolean => ![5, 324, 1337, 84531].includes(chain.id)
+									).map(
+										(chain): ReactElement => (
 											<ChainStatus
 												key={chain.id}
 												chain={chain}
@@ -112,24 +134,31 @@ function PossibleSafe({possibleSafe, prefix, suffix, currentSeed, factory, shoul
 												owners={owners || []}
 												threshold={threshold || 0}
 												singleton={possibleSafe?.singleton}
-												salt={salt || 0n} />
-										))}
+												salt={salt || 0n}
+											/>
+										)
+									)}
 								</div>
 								{shouldUseTestnets && (
-									<div className={'mt-6 grid grid-cols-2 gap-2 border-t border-primary-100 pt-6 md:grid-cols-3 md:gap-4'}>
-										{SUPPORTED_CHAINS
-											.filter((chain): boolean => ![324].includes(chain.id))
+									<div
+										className={
+											'mt-6 grid grid-cols-2 gap-2 border-t border-primary-100 pt-6 md:grid-cols-3 md:gap-4'
+										}>
+										{SUPPORTED_CHAINS.filter((chain): boolean => ![324].includes(chain.id))
 											.filter((chain): boolean => [5, 1337, 84531].includes(chain.id))
-											.map((chain): ReactElement => (
-												<ChainStatus
-													key={chain.id}
-													chain={chain}
-													safeAddress={toAddress(address)}
-													owners={owners || []}
-													threshold={threshold || 0}
-													singleton={possibleSafe?.singleton}
-													salt={salt || 0n} />
-											))}
+											.map(
+												(chain): ReactElement => (
+													<ChainStatus
+														key={chain.id}
+														chain={chain}
+														safeAddress={toAddress(address)}
+														owners={owners || []}
+														threshold={threshold || 0}
+														singleton={possibleSafe?.singleton}
+														salt={salt || 0n}
+													/>
+												)
+											)}
 									</div>
 								)}
 							</Renderable>

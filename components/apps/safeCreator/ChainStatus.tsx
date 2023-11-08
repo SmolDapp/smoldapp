@@ -5,7 +5,13 @@ import DISPERSE_ABI from 'utils/abi/disperse.abi';
 import GNOSIS_SAFE_PROXY_FACTORY from 'utils/abi/gnosisSafeProxyFactory.abi';
 import {multicall} from 'utils/actions';
 import {encodeFunctionData, parseEther} from 'viem';
-import {getNetwork as getWagmiNetwork, prepareSendTransaction, sendTransaction, switchNetwork, waitForTransaction} from '@wagmi/core';
+import {
+	getNetwork as getWagmiNetwork,
+	prepareSendTransaction,
+	sendTransaction,
+	switchNetwork,
+	waitForTransaction
+} from '@wagmi/core';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import {toast} from '@yearn-finance/web-lib/components/yToast';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
@@ -14,7 +20,15 @@ import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {getClient, getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 import {defaultTxStatus} from '@yearn-finance/web-lib/utils/web3/transaction';
 
-import {DEFAULT_FEES_USD, PROXY_FACTORY_L1, PROXY_FACTORY_L2, PROXY_FACTORY_L2_DDP, SINGLETON_L1, SINGLETON_L2, SINGLETON_L2_DDP} from './constants';
+import {
+	DEFAULT_FEES_USD,
+	PROXY_FACTORY_L1,
+	PROXY_FACTORY_L2,
+	PROXY_FACTORY_L2_DDP,
+	SINGLETON_L1,
+	SINGLETON_L2,
+	SINGLETON_L2_DDP
+} from './constants';
 import {useSafeCreator} from './useSafeCreator';
 import {generateArgInitializers} from './utils';
 
@@ -37,14 +51,14 @@ function getProxyFromSingleton(singleton: TAddress): TAddress {
 }
 
 type TChainStatusArgs = {
-	chain: Chain,
-	safeAddress: TAddress,
-	originalTx?: FetchTransactionResult,
-	owners: TAddress[],
-	threshold: number,
-	salt: bigint,
-	singleton?: TAddress
-}
+	chain: Chain;
+	safeAddress: TAddress;
+	originalTx?: FetchTransactionResult;
+	owners: TAddress[];
+	threshold: number;
+	salt: bigint;
+	singleton?: TAddress;
+};
 
 function ChainStatus({
 	chain,
@@ -68,8 +82,8 @@ function ChainStatus({
 	});
 
 	/* 🔵 - Smold App **************************************************************************
-	** If the safe is already deployed on that chain, we don't need to do anything.
-	******************************************************************************************/
+	 ** If the safe is already deployed on that chain, we don't need to do anything.
+	 ******************************************************************************************/
 	const checkIfDeployedOnThatChain = useCallback(async (): Promise<void> => {
 		const publicClient = getClient(chain.id);
 		const byteCode = await publicClient.getBytecode({address: safeAddress});
@@ -81,12 +95,12 @@ function ChainStatus({
 	}, [chain.id, safeAddress]);
 
 	/* 🔵 - Smold App **************************************************************************
-	** As we want to be sure to deploy the safe on the same address as the original transaction,
-	** we need to check if the address we expect is the same as the one we get from the proxy
-	** factory.
-	** We do this by simulating the creation of a new safe with the same arguments as the
-	** original transaction.
-	******************************************************************************************/
+	 ** As we want to be sure to deploy the safe on the same address as the original transaction,
+	 ** we need to check if the address we expect is the same as the one we get from the proxy
+	 ** factory.
+	 ** We do this by simulating the creation of a new safe with the same arguments as the
+	 ** original transaction.
+	 ******************************************************************************************/
 	const checkDeploymentExpectedAddress = useCallback(async (): Promise<void> => {
 		if (owners.length === 0) {
 			return;
@@ -133,20 +147,19 @@ function ChainStatus({
 		return set_canDeployOnThatChain({canDeploy: false, isLoading: false, method: 'none'});
 	}, [address, chain.id, originalTx?.input, originalTx?.to, owners, safeAddress, salt, singleton, threshold]);
 
-
 	useEffect((): void => {
 		checkIfDeployedOnThatChain();
 		checkDeploymentExpectedAddress();
 	}, [checkDeploymentExpectedAddress, checkIfDeployedOnThatChain]);
 
 	/* 🔵 - Smold App **************************************************************************
-	** When the user clicks on the deploy button, we will try to deploy the safe on the chain
-	** the user selected.
-	** This can be done in two ways:
-	** - Directly, by cloning the original transaction and sending it to the chain.
-	** - By using the proxy factory to deploy a new safe with the same arguments as the original
-	**   transaction.
-	******************************************************************************************/
+	 ** When the user clicks on the deploy button, we will try to deploy the safe on the chain
+	 ** the user selected.
+	 ** This can be done in two ways:
+	 ** - Directly, by cloning the original transaction and sending it to the chain.
+	 ** - By using the proxy factory to deploy a new safe with the same arguments as the original
+	 **   transaction.
+	 ******************************************************************************************/
 	const onDeploySafe = useCallback(async (): Promise<void> => {
 		if (!canDeployOnThatChain.canDeploy) {
 			console.error('Cannot deploy on that chain');
@@ -154,18 +167,18 @@ function ChainStatus({
 		}
 
 		/* 🔵 - Smold App **************************************************************************
-		** First, make sure we are using the correct chainID to deploy this safe.
-		******************************************************************************************/
+		 ** First, make sure we are using the correct chainID to deploy this safe.
+		 ******************************************************************************************/
 		const currentNetwork = getWagmiNetwork();
 		if (currentNetwork.chain?.id !== chain.id) {
 			await switchNetwork({chainId: chain.id});
 		}
 
 		/* 🔵 - Smold App **************************************************************************
-		** If the method is direct, we will just clone the original transaction.
-		** As this is not a standard contract call, we kinda clone the handleTX function from the
-		** weblib.
-		******************************************************************************************/
+		 ** If the method is direct, we will just clone the original transaction.
+		 ** As this is not a standard contract call, we kinda clone the handleTX function from the
+		 ** weblib.
+		 ******************************************************************************************/
 		if (canDeployOnThatChain.method === 'direct') {
 			try {
 				set_cloneStatus({...defaultTxStatus, pending: true});
@@ -187,7 +200,10 @@ function ChainStatus({
 					toast({type: 'error', content: 'Transaction failed!'});
 				}
 			} catch (error) {
-				toast({type: 'error', content: (error as {shortMessage: string})?.shortMessage || 'Transaction failed!'});
+				toast({
+					type: 'error',
+					content: (error as {shortMessage: string})?.shortMessage || 'Transaction failed!'
+				});
 				set_cloneStatus({...defaultTxStatus, error: true});
 			} finally {
 				setTimeout((): void => {
@@ -197,9 +213,9 @@ function ChainStatus({
 		}
 
 		/* 🔵 - Smold App **************************************************************************
-		** If the method is contract, we can clone the safe using the proxy factory with the same
-		** arguments as the original transaction.
-		******************************************************************************************/
+		 ** If the method is contract, we can clone the safe using the proxy factory with the same
+		 ** arguments as the original transaction.
+		 ******************************************************************************************/
 		if (canDeployOnThatChain.method === 'contract') {
 			const fee = parseEther((DEFAULT_FEES_USD / coinPrice).toString());
 			const signletonToUse = singleton || SINGLETON_L2;
@@ -211,10 +227,7 @@ function ChainStatus({
 				callData: encodeFunctionData({
 					abi: DISPERSE_ABI,
 					functionName: 'disperseEther',
-					args: [
-						[toAddress(process.env.RECEIVER_ADDRESS)],
-						[fee]
-					]
+					args: [[toAddress(process.env.RECEIVER_ADDRESS)], [fee]]
 				})
 			};
 
@@ -246,16 +259,34 @@ function ChainStatus({
 				checkDeploymentExpectedAddress();
 			}
 		}
-
-	}, [address, canDeployOnThatChain.canDeploy, canDeployOnThatChain.method, chain.id, checkDeploymentExpectedAddress, checkIfDeployedOnThatChain, coinPrice, originalTx?.input, originalTx?.to, owners, provider, salt, singleton, threshold]);
+	}, [
+		address,
+		canDeployOnThatChain.canDeploy,
+		canDeployOnThatChain.method,
+		chain.id,
+		checkDeploymentExpectedAddress,
+		checkIfDeployedOnThatChain,
+		coinPrice,
+		originalTx?.input,
+		originalTx?.to,
+		owners,
+		provider,
+		salt,
+		singleton,
+		threshold
+	]);
 
 	const currentView = {
 		Deployed: (
 			<div className={'flex flex-col items-center gap-2 md:flex-row'}>
-				<Button className={'!h-8'} isDisabled>
+				<Button
+					className={'!h-8'}
+					isDisabled>
 					{'Deployed'}
 				</Button>
-				<Link href={`${getNetwork(chain.id).defaultBlockExplorer}/address/${safeAddress}`} target={'_blank'}>
+				<Link
+					href={`${getNetwork(chain.id).defaultBlockExplorer}/address/${safeAddress}`}
+					target={'_blank'}>
 					<Button className={'hidden !h-8 md:block'}>
 						<IconLinkOut className={'h-4 w-4 !text-white'} />
 					</Button>
@@ -277,13 +308,18 @@ function ChainStatus({
 		CannotDeploy: (
 			<div>
 				<span className={'tooltip flex flex-col items-center justify-center gap-2 md:flex-row'}>
-					<Button className={'white !h-8'} isDisabled>
+					<Button
+						className={'white !h-8'}
+						isDisabled>
 						{'Impossible'}
 					</Button>
 					<p className={'block text-center text-xs text-neutral-600 md:hidden'}>&nbsp;</p>
 
 					<span className={'tooltipLight top-full mt-1'}>
-						<div className={'font-number w-40 border border-neutral-300 bg-neutral-100 p-1 px-2 text-center text-xxs text-neutral-900'}>
+						<div
+							className={
+								'font-number w-40 border border-neutral-300 bg-neutral-100 p-1 px-2 text-center text-xxs text-neutral-900'
+							}>
 							<p>{'The Safe was deployed using an un-cloneable legacy method. Soz 😕'}</p>
 						</div>
 					</span>
@@ -292,32 +328,37 @@ function ChainStatus({
 		),
 		Loading: (
 			<div>
-				<Button className={'!h-8'} isBusy>
+				<Button
+					className={'!h-8'}
+					isBusy>
 					{'Loading'}
 				</Button>
 			</div>
 		)
 	}[
-		canDeployOnThatChain.isLoading ? 'Loading' :
-			isDeployedOnThatChain ? 'Deployed' :
-				canDeployOnThatChain.canDeploy ? 'CanDeploy' : 'CannotDeploy'
+		canDeployOnThatChain.isLoading
+			? 'Loading'
+			: isDeployedOnThatChain
+			? 'Deployed'
+			: canDeployOnThatChain.canDeploy
+			? 'CanDeploy'
+			: 'CannotDeploy'
 	];
 
 	return (
-		<div key={chain.id} className={'box-0 flex w-full flex-col items-center justify-center p-4 pb-2 md:pb-4'}>
+		<div
+			key={chain.id}
+			className={'box-0 flex w-full flex-col items-center justify-center p-4 pb-2 md:pb-4'}>
 			<div className={'h-8 w-8'}>
 				<Image
 					src={`https://assets.smold.app/api/chain/${chain.id}/logo-128.png`}
 					width={32}
 					height={32}
-					alt={chain.name} />
+					alt={chain.name}
+				/>
 			</div>
-			<p className={'mt-1 text-center text-sm text-neutral-700'}>
-				{getNetwork(chain.id).name}
-			</p>
-			<div className={'mt-4'}>
-				{currentView}
-			</div>
+			<p className={'mt-1 text-center text-sm text-neutral-700'}>{getNetwork(chain.id).name}</p>
+			<div className={'mt-4'}>{currentView}</div>
 		</div>
 	);
 }

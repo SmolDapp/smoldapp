@@ -8,7 +8,13 @@ import ViewSectionHeading from '@common/ViewSectionHeading';
 
 import {NewSafeExpertForm, NewSafeStandardForm} from './4.ViewNewSafe.form';
 import {PossibleSafe} from './4.ViewNewSafe.possible';
-import {GNOSIS_SAFE_PROXY_CREATION_CODE, PROXY_FACTORY_L2, PROXY_FACTORY_L2_DDP, SINGLETON_L2, SINGLETON_L2_DDP} from './constants';
+import {
+	GNOSIS_SAFE_PROXY_CREATION_CODE,
+	PROXY_FACTORY_L2,
+	PROXY_FACTORY_L2_DDP,
+	SINGLETON_L2,
+	SINGLETON_L2_DDP
+} from './constants';
 import {generateArgInitializers} from './utils';
 
 import type {ReactElement} from 'react';
@@ -16,32 +22,32 @@ import type {Hex} from 'viem';
 import type {TAddress} from '@yearn-finance/web-lib/types';
 
 export type TNewSafe = {
-	address: TAddress,
-	owners: TAddress[],
-	salt: bigint,
-	threshold: number,
-	prefix: string,
-	suffix: string,
-	singleton: `0x${string}`,
-}
+	address: TAddress;
+	owners: TAddress[];
+	salt: bigint;
+	threshold: number;
+	prefix: string;
+	suffix: string;
+	singleton: `0x${string}`;
+};
 type TOwners = {
-	address: TAddress | undefined,
-	label: string,
-	UUID: string
+	address: TAddress | undefined;
+	label: string;
+	UUID: string;
 };
 
 export function newVoidOwner(): TOwners {
-	return ({
+	return {
 		address: undefined,
 		label: '',
 		UUID: crypto.randomUUID()
-	});
+	};
 }
 
 type TViewNewSafe = {
-	owners: TAddress[],
-	threshold: number,
-}
+	owners: TAddress[];
+	threshold: number;
+};
 function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 	const shouldCancel = useRef(false);
 	const [isLoadingSafes, set_isLoadingSafes] = useState(false);
@@ -62,34 +68,40 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 		set_possibleSafe(undefined);
 	}, [owners, threshold]);
 
-	const compute = useCallback(async ({argInitializers, bytecode, prefix, suffix, saltNonce}: {
-		argInitializers: string,
-		bytecode: Hex,
-		prefix: string,
-		suffix: string,
-		saltNonce: bigint
-	}): Promise<{address: TAddress, salt: bigint}> => {
-		if (shouldCancel.current) {
-			return ({address: '' as TAddress, salt: 0n});
-		}
-		const salt = keccak256(encodePacked(
-			['bytes', 'uint256'],
-			[keccak256(`0x${argInitializers}`), saltNonce]
-		));
-		const addrCreate2 = getContractAddress({
+	const compute = useCallback(
+		async ({
+			argInitializers,
 			bytecode,
-			from: factory == 'ssf' ? PROXY_FACTORY_L2 : PROXY_FACTORY_L2_DDP,
-			opcode: 'CREATE2',
-			salt
-		});
-		if (addrCreate2.startsWith(prefix) && addrCreate2.endsWith(suffix)) {
-			return ({address: addrCreate2, salt: saltNonce});
-		}
-		const newSalt = hexToBigInt(keccak256(concat([toHex('smol'), toHex(Math.random().toString())])));
-		set_currentSeed(newSalt);
-		await new Promise((resolve): NodeJS.Timeout => setTimeout(resolve, 0));
-		return compute({argInitializers, bytecode, prefix, suffix, saltNonce: newSalt});
-	}, [shouldCancel, factory]);
+			prefix,
+			suffix,
+			saltNonce
+		}: {
+			argInitializers: string;
+			bytecode: Hex;
+			prefix: string;
+			suffix: string;
+			saltNonce: bigint;
+		}): Promise<{address: TAddress; salt: bigint}> => {
+			if (shouldCancel.current) {
+				return {address: '' as TAddress, salt: 0n};
+			}
+			const salt = keccak256(encodePacked(['bytes', 'uint256'], [keccak256(`0x${argInitializers}`), saltNonce]));
+			const addrCreate2 = getContractAddress({
+				bytecode,
+				from: factory == 'ssf' ? PROXY_FACTORY_L2 : PROXY_FACTORY_L2_DDP,
+				opcode: 'CREATE2',
+				salt
+			});
+			if (addrCreate2.startsWith(prefix) && addrCreate2.endsWith(suffix)) {
+				return {address: addrCreate2, salt: saltNonce};
+			}
+			const newSalt = hexToBigInt(keccak256(concat([toHex('smol'), toHex(Math.random().toString())])));
+			set_currentSeed(newSalt);
+			await new Promise((resolve): NodeJS.Timeout => setTimeout(resolve, 0));
+			return compute({argInitializers, bytecode, prefix, suffix, saltNonce: newSalt});
+		},
+		[shouldCancel, factory]
+	);
 
 	const generateCreate2Addresses = useCallback(async (): Promise<void> => {
 		set_possibleSafe(undefined);
@@ -121,7 +133,6 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 		set_currentSeed(result.salt);
 		set_isLoadingSafes(false);
 	}, [currentSeed, owners, threshold, compute, prefix, suffix, factory]);
-
 
 	function renderForm(): ReactElement {
 		switch (shouldUseExpertMode) {
@@ -162,7 +173,6 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 		}
 	}
 
-
 	return (
 		<section>
 			<div className={'box-0 relative grid w-full grid-cols-12'}>
@@ -170,7 +180,9 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 					title={'Feeling fancy?'}
 					content={
 						<span>
-							{'Customize your Safe’s address if you want. A smol perk for using Smol.\nSmol charges a smol '}
+							{
+								'Customize your Safe’s address if you want. A smol perk for using Smol.\nSmol charges a smol '
+							}
 							<span className={'font-medium text-neutral-600'}>{'fee of $4.20'}</span>
 							{' per deployment.'}
 						</span>
@@ -179,16 +191,17 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 						<PopoverSettings>
 							<PopoverSettingsItemExpert
 								isSelected={shouldUseExpertMode}
-								set_isSelected={set_shouldUseExpertMode} />
+								set_isSelected={set_shouldUseExpertMode}
+							/>
 							<PopoverSettingsItemTestnets
 								isSelected={shouldUseTestnets}
-								set_isSelected={set_shouldUseTestnets} />
+								set_isSelected={set_shouldUseTestnets}
+							/>
 						</PopoverSettings>
-					} />
+					}
+				/>
 
-				<div className={'col-span-12 p-4 pt-0 md:p-6 md:pt-0'}>
-					{renderForm()}
-				</div>
+				<div className={'col-span-12 p-4 pt-0 md:p-6 md:pt-0'}>{renderForm()}</div>
 
 				<div className={'col-span-12 flex flex-col text-neutral-900'}>
 					<div className={'grid gap-4'}>

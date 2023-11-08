@@ -14,7 +14,7 @@ import type {ReactElement} from 'react';
 
 type TRequestType = 'bug' | 'feature';
 
-export const getPosition = (element: HTMLElement): {x: number, y: number} => {
+export const getPosition = (element: HTMLElement): {x: number; y: number} => {
 	const currentTop = window.pageXOffset;
 	const currentLeft = window.pageYOffset;
 
@@ -35,7 +35,6 @@ export const getPosition = (element: HTMLElement): {x: number, y: number} => {
 			}
 		}
 		return {x: xPosition, y: yPosition};
-
 	}
 
 	return {x: 0, y: 0};
@@ -84,18 +83,21 @@ export function FeebackPopover(): ReactElement {
 		if (blob) {
 			formData.append('screenshot', blob);
 		}
-		formData.append('messages', [
-			`*🔵 New ${type} submitted*`,
-			`\n*Telegram:* ${telegramHandle}`,
-			description,
-			'\n*👀 - Info:*',
-			reporter ?
-				`\t\t\t\tFrom: [${reporter}](https://etherscan.io/address/${address})` :
-				'\t\t\t\tFrom: [wallet-not-connected]',
-			`\t\t\t\tChain: ${chainID}`,
-			`\t\t\t\tWallet: ${isWalletLedger ? 'ledger' : isWalletSafe ? 'safe' : connector?.id || 'Unknown'}`,
-			`\t\t\t\tOrigin: [${router.asPath}](https://smold.app/${router.asPath})`
-		].join('\n'));
+		formData.append(
+			'messages',
+			[
+				`*🔵 New ${type} submitted*`,
+				`\n*Telegram:* ${telegramHandle}`,
+				description,
+				'\n*👀 - Info:*',
+				reporter
+					? `\t\t\t\tFrom: [${reporter}](https://etherscan.io/address/${address})`
+					: '\t\t\t\tFrom: [wallet-not-connected]',
+				`\t\t\t\tChain: ${chainID}`,
+				`\t\t\t\tWallet: ${isWalletLedger ? 'ledger' : isWalletSafe ? 'safe' : connector?.id || 'Unknown'}`,
+				`\t\t\t\tOrigin: [${router.asPath}](https://smold.app/${router.asPath})`
+			].join('\n')
+		);
 		try {
 			await axios.post('/api/report', formData, {
 				headers: {'Content-Type': 'multipart/form-data'}
@@ -112,7 +114,9 @@ export function FeebackPopover(): ReactElement {
 		<Portal>
 			<PopoverHeadlessUI className={'relative z-50'}>
 				<PopoverHeadlessUI.Button
-					className={'fixed bottom-5 right-5 flex h-10 w-10 items-center justify-center rounded-full bg-primary-500'}
+					className={
+						'fixed bottom-5 right-5 flex h-10 w-10 items-center justify-center rounded-full bg-primary-500'
+					}
 					ref={set_referenceElement}>
 					<IconBug className={'h-4 w-4 text-neutral-0'} />
 				</PopoverHeadlessUI.Button>
@@ -130,12 +134,17 @@ export function FeebackPopover(): ReactElement {
 						style={styles.popper}
 						{...attributes.popper}>
 						{({close}): ReactElement => (
-							<div className={'flex flex-col space-y-2 overflow-hidden rounded-md border border-neutral-300/50 bg-neutral-0 p-6 pb-3 shadow shadow-transparent'}>
+							<div
+								className={
+									'flex flex-col space-y-2 overflow-hidden rounded-md border border-neutral-300/50 bg-neutral-0 p-6 pb-3 shadow shadow-transparent'
+								}>
 								<select
 									name={'type'}
 									id={'type'}
-									className={'cursor-pointer border border-neutral-300/50 bg-transparent text-xs transition-colors hover:bg-neutral-100/40 focus:border-neutral-300/50'}
-									onChange={({target:{value}}): void => {
+									className={
+										'cursor-pointer border border-neutral-300/50 bg-transparent text-xs transition-colors hover:bg-neutral-100/40 focus:border-neutral-300/50'
+									}
+									onChange={({target: {value}}): void => {
 										if (isRequestTypeKnown(value)) {
 											set_type(value);
 										}
@@ -147,19 +156,25 @@ export function FeebackPopover(): ReactElement {
 									id={'description'}
 									cols={30}
 									rows={4}
-									className={'resize-none border border-neutral-300/50 bg-transparent p-2 text-xs transition-colors hover:bg-neutral-100/40 focus:border-neutral-300/50'}
-									onChange={({target:{value}}): void => set_description(value)}
+									className={
+										'resize-none border border-neutral-300/50 bg-transparent p-2 text-xs transition-colors hover:bg-neutral-100/40 focus:border-neutral-300/50'
+									}
+									onChange={({target: {value}}): void => set_description(value)}
 									placeholder={`Describe the ${type} in detail`}
 								/>
 								<input
 									id={'telegramHandle'}
-									className={'resize-none border border-neutral-300/50 bg-transparent p-2 text-xs transition-colors hover:bg-neutral-100/40 focus:border-neutral-300/50'}
-									onChange={({target:{value}}): void => set_telegramHandle(value)}
+									className={
+										'resize-none border border-neutral-300/50 bg-transparent p-2 text-xs transition-colors hover:bg-neutral-100/40 focus:border-neutral-300/50'
+									}
+									onChange={({target: {value}}): void => set_telegramHandle(value)}
 									placeholder={'Your telegram handle'}
 								/>
 								<button
 									disabled={!description || description.length < 10 || isSubmitDisabled}
-									className={'relative h-8 cursor-pointer items-center justify-center border border-transparent bg-neutral-900 px-2 text-xs text-neutral-0 transition-all hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-40'}
+									className={
+										'relative h-8 cursor-pointer items-center justify-center border border-transparent bg-neutral-900 px-2 text-xs text-neutral-0 transition-all hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-40'
+									}
 									onClick={async (): Promise<void> => onSubmit(close)}>
 									{'Submit'}
 								</button>
@@ -173,7 +188,9 @@ export function FeebackPopover(): ReactElement {
 								</label>
 								<label className={'flex cursor-pointer items-center justify-end'}>
 									<button
-										className={'text-right text-xs text-neutral-300 underline transition-colors hover:text-neutral-400'}
+										className={
+											'text-right text-xs text-neutral-300 underline transition-colors hover:text-neutral-400'
+										}
 										onClick={(): void => set_hasPopover(!hasPopover)}>
 										{'Hide me forever'}
 									</button>

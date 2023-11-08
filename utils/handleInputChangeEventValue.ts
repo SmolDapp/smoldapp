@@ -6,12 +6,12 @@ export function handleInputChangeEventValue(e: React.ChangeEvent<HTMLInputElemen
 	const {valueAsNumber, value} = e.target;
 	const amount = valueAsNumber;
 	if (isNaN(amount)) {
-		return ({raw: 0n, normalized: ''});
+		return {raw: 0n, normalized: ''};
 	}
 	if (amount === 0) {
-		let	amountStr = value.replace(/,/g, '.').replace(/[^0-9.]/g, '');
+		let amountStr = value.replace(/,/g, '.').replace(/[^0-9.]/g, '');
 		const amountParts = amountStr.split('.');
-		if ((amountParts[0])?.length > 1 && Number(amountParts[0]) === 0) {
+		if (amountParts[0]?.length > 1 && Number(amountParts[0]) === 0) {
 			//
 		} else {
 			//check if we have 0 everywhere
@@ -20,13 +20,13 @@ export function handleInputChangeEventValue(e: React.ChangeEvent<HTMLInputElemen
 					amountStr = amountParts[0] + '.' + amountParts[1].slice(0, decimals);
 				}
 				const raw = parseUnits((amountStr || '0') as `${number}`, decimals || 18);
-				return ({raw: raw, normalized: amountStr || '0'});
+				return {raw: raw, normalized: amountStr || '0'};
 			}
 		}
 	}
 
 	const raw = parseUnits(amount.toFixed(decimals) || '0', decimals || 18);
-	return ({raw: raw, normalized: amount.toString() || '0'});
+	return {raw: raw, normalized: amount.toString() || '0'};
 }
 
 export default handleInputChangeEventValue;

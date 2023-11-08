@@ -1,13 +1,15 @@
-const	TOKEN_LISTS = [
+const TOKEN_LISTS = [
 	{
 		name: 'CoinGecko',
 		uri: 'https://tokens.coingecko.com/uniswap/all.json',
-		imageSrc: 'https://www.coingecko.com/assets/thumbnail-007177f3eca19695592f0b8b0eabbdae282b54154e1be912285c9034ea6cbaf2.png'
+		imageSrc:
+			'https://www.coingecko.com/assets/thumbnail-007177f3eca19695592f0b8b0eabbdae282b54154e1be912285c9034ea6cbaf2.png'
 	},
 	{
 		name: 'Yearn',
 		uri: 'https://ydaemon.yearn.fi/tokenlist',
-		imageSrc: 'https://raw.githubusercontent.com/yearn/yearn-assets/master/icons/multichain-tokens/1/0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e/logo.svg'
+		imageSrc:
+			'https://raw.githubusercontent.com/yearn/yearn-assets/master/icons/multichain-tokens/1/0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e/logo.svg'
 	},
 	{
 		name: 'Zerion',

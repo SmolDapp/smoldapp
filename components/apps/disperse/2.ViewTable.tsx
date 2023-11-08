@@ -29,8 +29,15 @@ type TAddressLikeInput = {
 	onChange: (address: string | undefined) => void;
 	onPaste: (UUID: string, pasted: string) => void;
 	isDuplicate?: boolean;
-}
-function AddressLikeInput({uuid, label, onChangeLabel, onChange, onPaste, isDuplicate}: TAddressLikeInput): ReactElement {
+};
+function AddressLikeInput({
+	uuid,
+	label,
+	onChangeLabel,
+	onChange,
+	onPaste,
+	isDuplicate
+}: TAddressLikeInput): ReactElement {
 	const [isValidDestination, set_isValidDestination] = useState<boolean | 'undetermined'>('undetermined');
 	const [isValidish, set_isValidish] = useState<boolean | 'undetermined'>('undetermined');
 	const [isLoadingValidish, set_isLoadingValidish] = useState<boolean>(false);
@@ -53,9 +60,11 @@ function AddressLikeInput({uuid, label, onChangeLabel, onChange, onPaste, isDupl
 	const looksValidAddress = useCallback((value: string): boolean => {
 		if (value.endsWith('.eth')) {
 			return true;
-		} if (value.endsWith('.lens')) {
+		}
+		if (value.endsWith('.lens')) {
 			return true;
-		} if (!isZeroAddress(toAddress(value))) {
+		}
+		if (!isZeroAddress(toAddress(value))) {
 			return true;
 		}
 		return false;
@@ -113,21 +122,37 @@ function AddressLikeInput({uuid, label, onChangeLabel, onChange, onPaste, isDupl
 						onChangeLabel(e.target.value);
 					}}
 					className={'smol--input font-mono font-bold'}
-					type={'text'} />
+					type={'text'}
+				/>
 			</div>
 			<label
 				htmlFor={`address_input_${uuid}`}
-				className={status === 'invalid' || status === 'warning' ? 'relative' : 'pointer-events-none relative h-4 w-4'}>
+				className={
+					status === 'invalid' || status === 'warning' ? 'relative' : 'pointer-events-none relative h-4 w-4'
+				}>
 				<span className={status === 'invalid' || status === 'warning' ? 'tooltip' : 'pointer-events-none'}>
 					<div className={'pointer-events-none relative h-4 w-4'}>
 						<IconCheck
-							className={`absolute h-4 w-4 text-[#16a34a] transition-opacity ${status === 'valid' ? 'opacity-100' : 'opacity-0'}`} />
+							className={`absolute h-4 w-4 text-[#16a34a] transition-opacity ${
+								status === 'valid' ? 'opacity-100' : 'opacity-0'
+							}`}
+						/>
 						<IconCircleCross
-							className={`absolute h-4 w-4 text-[#e11d48] transition-opacity ${status === 'invalid' ? 'opacity-100' : 'opacity-0'}`} />
+							className={`absolute h-4 w-4 text-[#e11d48] transition-opacity ${
+								status === 'invalid' ? 'opacity-100' : 'opacity-0'
+							}`}
+						/>
 						<IconWarning
-							className={`absolute h-4 w-4 text-[#e1891d] transition-opacity ${status === 'warning' ? 'opacity-100' : 'opacity-0'}`} />
+							className={`absolute h-4 w-4 text-[#e1891d] transition-opacity ${
+								status === 'warning' ? 'opacity-100' : 'opacity-0'
+							}`}
+						/>
 						<div className={'absolute inset-0 flex items-center justify-center'}>
-							<IconLoader className={`h-4 w-4 animate-spin text-neutral-900 transition-opacity ${status === 'pending' ? 'opacity-100' : 'opacity-0'}`} />
+							<IconLoader
+								className={`h-4 w-4 animate-spin text-neutral-900 transition-opacity ${
+									status === 'pending' ? 'opacity-100' : 'opacity-0'
+								}`}
+							/>
 						</div>
 					</div>
 					<span className={'tooltiptextsmall'}>
@@ -140,22 +165,31 @@ function AddressLikeInput({uuid, label, onChangeLabel, onChange, onPaste, isDupl
 	);
 }
 
-function AmountToSendInput({token, amount, onChange}: {
-	token: TTokenInfo | undefined,
-	amount: TNormalizedBN | undefined,
-	onChange: (amount: TNormalizedBN) => void
+function AmountToSendInput({
+	token,
+	amount,
+	onChange
+}: {
+	token: TTokenInfo | undefined;
+	amount: TNormalizedBN | undefined;
+	onChange: (amount: TNormalizedBN) => void;
 }): ReactElement {
 	/**********************************************************************************************
-	** onInputChange is triggered when the user is typing in the input field. It updates the
-	** amount in the state and triggers the debounced retrieval of the quote from the Cowswap API.
-	** It is set as callback to avoid unnecessary re-renders.
-	**********************************************************************************************/
-	const onInputChange = useCallback((e: ChangeEvent<HTMLInputElement>): void => {
-		onChange(handleInputChangeEventValue(e, token?.decimals || 18));
-	}, [onChange, token?.decimals]);
+	 ** onInputChange is triggered when the user is typing in the input field. It updates the
+	 ** amount in the state and triggers the debounced retrieval of the quote from the Cowswap API.
+	 ** It is set as callback to avoid unnecessary re-renders.
+	 **********************************************************************************************/
+	const onInputChange = useCallback(
+		(e: ChangeEvent<HTMLInputElement>): void => {
+			onChange(handleInputChangeEventValue(e, token?.decimals || 18));
+		},
+		[onChange, token?.decimals]
+	);
 
 	return (
-		<div key={token?.address} className={'box-0 flex h-10 w-full items-center p-2'}>
+		<div
+			key={token?.address}
+			className={'box-0 flex h-10 w-full items-center p-2'}>
 			<div className={'flex h-10 w-full flex-row items-center justify-between px-0 py-4'}>
 				<input
 					className={'smol--input font-mono font-bold'}
@@ -167,7 +201,8 @@ function AmountToSendInput({token, amount, onChange}: {
 					placeholder={'0'}
 					pattern={'^((?:0|[1-9]+)(?:.(?:d+?[1-9]|[1-9]))?)$'}
 					onChange={onInputChange}
-					value={amount?.normalized} />
+					value={amount?.normalized}
+				/>
 			</div>
 		</div>
 	);
@@ -181,12 +216,15 @@ const ViewTable = memo(function ViewTable({onProceed}: {onProceed: VoidFunction}
 		set_disperseArray([newVoidRow(), newVoidRow()]);
 	});
 
-	const checkAlreadyExists = useCallback((UUID: string, address: TAddress): boolean => {
-		if (isZeroAddress(address)) {
-			return false;
-		}
-		return disperseArray.some((row): boolean => row.UUID !== UUID && row.address === address);
-	}, [disperseArray]);
+	const checkAlreadyExists = useCallback(
+		(UUID: string, address: TAddress): boolean => {
+			if (isZeroAddress(address)) {
+				return false;
+			}
+			return disperseArray.some((row): boolean => row.UUID !== UUID && row.address === address);
+		},
+		[disperseArray]
+	);
 
 	function onAddNewRowAsSibling(UUID: string): void {
 		set_disperseArray(
@@ -195,7 +233,8 @@ const ViewTable = memo(function ViewTable({onProceed}: {onProceed: VoidFunction}
 					return [...acc, row, newVoidRow()];
 				}
 				return [...acc, row];
-			}, [] as TDisperseElement[]));
+			}, [] as TDisperseElement[])
+		);
 	}
 	function onRemoveRowByUUID(UUID: string): void {
 		if (disperseArray.length === 1) {
@@ -204,44 +243,62 @@ const ViewTable = memo(function ViewTable({onProceed}: {onProceed: VoidFunction}
 		set_disperseArray(disperseArray.filter((row): boolean => row.UUID !== UUID));
 	}
 	function onUpdateAddressByUUID(UUID: string, address: string | undefined): void {
-		set_disperseArray(disperseArray.map((row): TDisperseElement => {
-			if (row.UUID !== UUID) {
-				return row;
-			}
-			if (!address || isZeroAddress(address)) {
-				return {...row, address: undefined};
-			}
-			return {...row, address: toAddress(address)};
-		}));
+		set_disperseArray(
+			disperseArray.map((row): TDisperseElement => {
+				if (row.UUID !== UUID) {
+					return row;
+				}
+				if (!address || isZeroAddress(address)) {
+					return {...row, address: undefined};
+				}
+				return {...row, address: toAddress(address)};
+			})
+		);
 	}
 	function onUpdateLabelByUUID(UUID: string, label: string): void {
-		set_disperseArray(disperseArray.map((row): TDisperseElement => {
-			if (row.UUID !== UUID) {
-				return row;
-			}
-			return {...row, label};
-		}));
+		set_disperseArray(
+			disperseArray.map((row): TDisperseElement => {
+				if (row.UUID !== UUID) {
+					return row;
+				}
+				return {...row, label};
+			})
+		);
 	}
 	function onUpdateAmountByUUID(UUID: string, amount: TNormalizedBN): void {
-		set_disperseArray(disperseArray.map((row): TDisperseElement => {
-			if (row.UUID !== UUID) {
-				return row;
-			}
-			return {...row, amount};
-		}));
+		set_disperseArray(
+			disperseArray.map((row): TDisperseElement => {
+				if (row.UUID !== UUID) {
+					return row;
+				}
+				return {...row, amount};
+			})
+		);
 	}
 	function onHandleMultiplePaste(UUID: string, pasted: string): void {
 		const separators = [' ', '-', ';', ',', '.'];
-		const addressAmounts = pasted.replaceAll(' ', '').replaceAll('\t', '').split('\n').map((line): [string, string] => {
-			//remove all separators that are next to each other
-			let cleanedLine = separators.reduce((acc, separator): string => acc.replaceAll(separator + separator, separator), line);
-			for (let i = 0; i < 3; i++) {
-				cleanedLine = separators.reduce((acc, separator): string => acc.replaceAll(separator + separator, separator), cleanedLine);
-			}
+		const addressAmounts = pasted
+			.replaceAll(' ', '')
+			.replaceAll('\t', '')
+			.split('\n')
+			.map((line): [string, string] => {
+				//remove all separators that are next to each other
+				let cleanedLine = separators.reduce(
+					(acc, separator): string => acc.replaceAll(separator + separator, separator),
+					line
+				);
+				for (let i = 0; i < 3; i++) {
+					cleanedLine = separators.reduce(
+						(acc, separator): string => acc.replaceAll(separator + separator, separator),
+						cleanedLine
+					);
+				}
 
-			const addressAmount = cleanedLine.split(separators.find((separator): boolean => cleanedLine.includes(separator)) ?? ' ');
-			return [addressAmount[0], addressAmount[1]];
-		});
+				const addressAmount = cleanedLine.split(
+					separators.find((separator): boolean => cleanedLine.includes(separator)) ?? ' '
+				);
+				return [addressAmount[0], addressAmount[1]];
+			});
 		const newRows = addressAmounts.map((addressAmount): TDisperseElement => {
 			const row = newVoidRow();
 			row.address = toAddress(addressAmount[0]);
@@ -261,12 +318,9 @@ const ViewTable = memo(function ViewTable({onProceed}: {onProceed: VoidFunction}
 			}
 			return row;
 		});
-		const excludingEmptyRows = newRows.filter((row): boolean => Boolean(
-			row.address &&
-			row.amount &&
-			!isZeroAddress(row.address) &&
-			toBigInt(row.amount?.raw) !== 0n
-		));
+		const excludingEmptyRows = newRows.filter((row): boolean =>
+			Boolean(row.address && row.amount && !isZeroAddress(row.address) && toBigInt(row.amount?.raw) !== 0n)
+		);
 		set_disperseArray(
 			disperseArray.reduce((acc, row): TDisperseElement[] => {
 				if (row.UUID === UUID) {
@@ -276,7 +330,8 @@ const ViewTable = memo(function ViewTable({onProceed}: {onProceed: VoidFunction}
 					return [...acc, ...excludingEmptyRows];
 				}
 				return [...acc, row];
-			}, [] as TDisperseElement[]));
+			}, [] as TDisperseElement[])
+		);
 	}
 	const isValid = useMemo((): boolean => {
 		return disperseArray.every((row): boolean => {
@@ -316,7 +371,9 @@ const ViewTable = memo(function ViewTable({onProceed}: {onProceed: VoidFunction}
 					<div className={'w-full md:w-3/4'}>
 						<b>{'Who gets what?'}</b>
 						<p className={'text-sm text-neutral-500'}>
-							{'Drop the wallet, ENS, or Lens handle of who you want to receive the tokens, and enter the amount each address should receive. Add more receivers by clicking the +. Clicking is fun.'}
+							{
+								'Drop the wallet, ENS, or Lens handle of who you want to receive the tokens, and enter the amount each address should receive. Add more receivers by clicking the +. Clicking is fun.'
+							}
 						</p>
 					</div>
 				</div>
@@ -336,38 +393,55 @@ const ViewTable = memo(function ViewTable({onProceed}: {onProceed: VoidFunction}
 										label={disperseArray[i].label}
 										onChangeLabel={(label): void => onUpdateLabelByUUID(UUID, label)}
 										onChange={(address): void => onUpdateAddressByUUID(UUID, address)}
-										onPaste={onHandleMultiplePaste} />
+										onPaste={onHandleMultiplePaste}
+									/>
 									<div className={'flex flex-row items-center justify-center space-x-4'}>
 										<AmountToSendInput
 											token={tokenToDisperse}
 											amount={disperseArray[i].amount}
-											onChange={(amount): void => onUpdateAmountByUUID(UUID, amount)} />
+											onChange={(amount): void => onUpdateAmountByUUID(UUID, amount)}
+										/>
 										<IconSquareMinus
 											onClick={(): void => onRemoveRowByUUID(UUID)}
-											className={'h-4 w-4 cursor-pointer text-neutral-400 transition-colors hover:text-neutral-900'} />
+											className={
+												'h-4 w-4 cursor-pointer text-neutral-400 transition-colors hover:text-neutral-900'
+											}
+										/>
 										<IconSquarePlus
 											onClick={(): void => onAddNewRowAsSibling(UUID)}
-											className={'h-4 w-4 cursor-pointer text-neutral-400 transition-colors hover:text-neutral-900'} />
+											className={
+												'h-4 w-4 cursor-pointer text-neutral-400 transition-colors hover:text-neutral-900'
+											}
+										/>
 									</div>
 								</Fragment>
 							);
 						})}
 					</div>
 				</div>
-				<div className={'sticky inset-x-0 bottom-0 z-20 flex w-full max-w-5xl flex-row items-center justify-between rounded-b-[5px] bg-primary-600 p-4 text-primary-0 md:relative md:px-6 md:py-4'}>
+				<div
+					className={
+						'sticky inset-x-0 bottom-0 z-20 flex w-full max-w-5xl flex-row items-center justify-between rounded-b-[5px] bg-primary-600 p-4 text-primary-0 md:relative md:px-6 md:py-4'
+					}>
 					<div className={'flex w-3/4 flex-col'}>
 						<dl className={'container whitespace-nowrap text-xs'}>
 							<dt>{'You have'}</dt>
 							<span className={'filler'} />
 							<dd suppressHydrationWarning>
-								{`${formatAmount(balanceOf, tokenToDisperse?.decimals || 18)} ${tokenToDisperse?.symbol || ''}`}
+								{`${formatAmount(balanceOf, tokenToDisperse?.decimals || 18)} ${
+									tokenToDisperse?.symbol || ''
+								}`}
 							</dd>
 						</dl>
 						<dl className={'container whitespace-nowrap text-xs'}>
 							<dt>{'You are sending'}</dt>
 							<span className={'filler'} />
-							<dd suppressHydrationWarning className={isAboveBalance ? 'text-[#FE0000]' : ''}>
-								{`${formatAmount(totalToDisperse, tokenToDisperse?.decimals || 18)} ${tokenToDisperse?.symbol || ''}`}
+							<dd
+								suppressHydrationWarning
+								className={isAboveBalance ? 'text-[#FE0000]' : ''}>
+								{`${formatAmount(totalToDisperse, tokenToDisperse?.decimals || 18)} ${
+									tokenToDisperse?.symbol || ''
+								}`}
 							</dd>
 						</dl>
 					</div>

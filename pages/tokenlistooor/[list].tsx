@@ -47,11 +47,19 @@ function TokenListHero({list}: {list: TTokenListItem}): ReactElement {
 				<div className={'relative w-full'}>
 					<div className={'absolute -top-10 left-0'}>
 						<Link href={'/tokenlistooor'}>
-							<p className={'text-xs text-neutral-400 transition-all hover:text-neutral-900 hover:underline disabled:text-neutral-400/40'}>{'◁ Back'}</p>
+							<p
+								className={
+									'text-xs text-neutral-400 transition-all hover:text-neutral-900 hover:underline disabled:text-neutral-400/40'
+								}>
+								{'◁ Back'}
+							</p>
 						</Link>
 					</div>
 					<div className={'absolute -top-10 right-0'}>
-						<div className={'w-full rounded-md border border-dashed border-neutral-300 bg-neutral-0 px-3 py-1 text-xs leading-6 text-neutral-500 md:text-sm'}>
+						<div
+							className={
+								'w-full rounded-md border border-dashed border-neutral-300 bg-neutral-0 px-3 py-1 text-xs leading-6 text-neutral-500 md:text-sm'
+							}>
 							{'Last update: '}
 							<span className={'inline-flex items-center pl-2 font-bold text-neutral-900'}>
 								<span>{list.timestamp}</span>
@@ -61,10 +69,15 @@ function TokenListHero({list}: {list: TTokenListItem}): ReactElement {
 					<div>
 						<ImageWithFallback
 							unoptimized
-							src={list.logoURI?.startsWith('ipfs://') ? `https://ipfs.io/ipfs/${list.logoURI.replace('ipfs://', '')}` : list.logoURI}
+							src={
+								list.logoURI?.startsWith('ipfs://')
+									? `https://ipfs.io/ipfs/${list.logoURI.replace('ipfs://', '')}`
+									: list.logoURI
+							}
 							width={64}
 							height={64}
-							alt={''} />
+							alt={''}
+						/>
 					</div>
 					<h1 className={'mt-1 text-3xl font-bold tracking-tight text-neutral-900 md:mt-1 md:text-4xl'}>
 						{list.name}
@@ -72,20 +85,27 @@ function TokenListHero({list}: {list: TTokenListItem}): ReactElement {
 					<div className={'mt-4 text-base leading-normal text-neutral-500 md:mt-6 md:text-lg md:leading-8'}>
 						{list.description || `A list of token for ${list.name}`}
 						<p className={'text-sm'}>
-							{'Version: '}{list.version.major}{'.'}{list.version.minor}{'.'}{list.version.patch}
+							{'Version: '}
+							{list.version.major}
+							{'.'}
+							{list.version.minor}
+							{'.'}
+							{list.version.patch}
 						</p>
 					</div>
 					<div className={'mt-6 flex items-center gap-x-6 md:mt-10'}>
-						<Link href={`https://github.com/SmolDapp/tokenLists/blob/main/lists/${fileName}`} target={'_blank'}>
+						<Link
+							href={`https://github.com/SmolDapp/tokenLists/blob/main/lists/${fileName}`}
+							target={'_blank'}>
 							<Button>
 								<IconSocialGithub className={'mr-4 h-6 w-6'} />
 								{'Github'}
 							</Button>
 						</Link>
-						<Link href={list.URI} target={'_blank'}>
-							<Button>
-								{'Open JSON'}
-							</Button>
+						<Link
+							href={list.URI}
+							target={'_blank'}>
+							<Button>{'Open JSON'}</Button>
 						</Link>
 					</div>
 				</div>
@@ -99,7 +119,6 @@ function TokenListItem({item}: {item: TTokenListItem['tokens'][0]}): ReactElemen
 		try {
 			return getNetwork(item.chainId);
 		} catch (error) {
-			// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
 			return {} as TExtendedChain;
 		}
 	}, [item.chainId]);
@@ -113,15 +132,21 @@ function TokenListItem({item}: {item: TTokenListItem['tokens'][0]}): ReactElemen
 					height={40}
 					quality={90}
 					unoptimized
-					src={item.logoURI} />
+					src={item.logoURI}
+				/>
 				<div>
 					<p className={'text-sm'}>
 						{item.name}
 						<span className={'text-xs text-neutral-600'}>{` - (${item.symbol})`}</span>
 					</p>
-					<span className={'font-number mt-2 block !font-mono text-xxs text-neutral-600 transition-colors md:text-xs'}>
+					<span
+						className={
+							'font-number mt-2 block !font-mono text-xxs text-neutral-600 transition-colors md:text-xs'
+						}>
 						<a
-							href={`${currentNetwork?.blockExplorers?.etherscan?.url || 'https://etherscan.io'}/token/${item.address}`}
+							href={`${currentNetwork?.blockExplorers?.etherscan?.url || 'https://etherscan.io'}/token/${
+								item.address
+							}`}
 							target={'_blank'}
 							rel={'noreferrer'}
 							className={'font-mono hover:text-neutral-900 hover:underline'}>
@@ -134,9 +159,7 @@ function TokenListItem({item}: {item: TTokenListItem['tokens'][0]}): ReactElemen
 
 			<div className={'col-span-12 flex justify-end text-right md:col-span-4'}>
 				<div>
-					<p className={'block text-xxs text-neutral-700 md:text-xs'}>
-						{'Chain'}
-					</p>
+					<p className={'block text-xxs text-neutral-700 md:text-xs'}>{'Chain'}</p>
 					<b>{currentNetwork?.name || `Chain ${item.chainId}`}</b>
 				</div>
 			</div>
@@ -161,13 +184,13 @@ function TokenListContent({list}: {list: TTokenListItem}): ReactElement {
 		}
 	});
 
-	const availableNetworks = useMemo((): {value: number, label: string}[] => {
-		const networks: {value: number, label: string}[] = [];
+	const availableNetworks = useMemo((): {value: number; label: string}[] => {
+		const networks: {value: number; label: string}[] = [];
 		([...list.tokens] || []).forEach((item): void => {
 			if (!networks.find((network): boolean => network.value === item.chainId)) {
 				networks.push({
 					value: item.chainId,
-					label: SUPPORTED_CHAIN_IDS[item.chainId] as any || `Chain #${item.chainId}`
+					label: (SUPPORTED_CHAIN_IDS[item.chainId] as any) || `Chain #${item.chainId}`
 				});
 			}
 		});
@@ -175,21 +198,23 @@ function TokenListContent({list}: {list: TTokenListItem}): ReactElement {
 	}, [list.tokens]);
 
 	const searchResult = useMemo((): TTokenListItem['tokens'] => {
-		return (
-			([...list.tokens] || [])
-				.filter((item): boolean => {
-					if (network === -1) {
-						return true;
-					}
-					return item.chainId === network;
-				})
-				.filter((item): boolean => {
-					if (!search) {
-						return true;
-					}
-					return item.name.toLowerCase().startsWith(search.toLowerCase()) || item.symbol.toLowerCase().startsWith(search.toLowerCase()) || item.address.toLowerCase().startsWith(search.toLowerCase());
-				})
-		);
+		return ([...list.tokens] || [])
+			.filter((item): boolean => {
+				if (network === -1) {
+					return true;
+				}
+				return item.chainId === network;
+			})
+			.filter((item): boolean => {
+				if (!search) {
+					return true;
+				}
+				return (
+					item.name.toLowerCase().startsWith(search.toLowerCase()) ||
+					item.symbol.toLowerCase().startsWith(search.toLowerCase()) ||
+					item.address.toLowerCase().startsWith(search.toLowerCase())
+				);
+			});
 	}, [list.tokens, search, network]);
 
 	return (
@@ -197,7 +222,9 @@ function TokenListContent({list}: {list: TTokenListItem}): ReactElement {
 			<div className={'flex items-center space-x-4 py-4 md:pt-0'}>
 				<div>
 					<input
-						className={'rounded-md border border-neutral-200 bg-neutral-0 px-3 py-1 text-xs leading-6 text-neutral-500 md:text-sm'}
+						className={
+							'rounded-md border border-neutral-200 bg-neutral-0 px-3 py-1 text-xs leading-6 text-neutral-500 md:text-sm'
+						}
 						type={'text'}
 						placeholder={'Search'}
 						onChange={(e): void => {
@@ -215,11 +242,14 @@ function TokenListContent({list}: {list: TTokenListItem}): ReactElement {
 									}
 								});
 							}
-						}} />
+						}}
+					/>
 				</div>
 				<div>
 					<select
-						className={'rounded-md border border-neutral-200 bg-neutral-0 px-3 py-1 pr-10 text-xs leading-6 text-neutral-500 md:text-sm'}
+						className={
+							'rounded-md border border-neutral-200 bg-neutral-0 px-3 py-1 pr-10 text-xs leading-6 text-neutral-500 md:text-sm'
+						}
 						value={network}
 						onChange={(e): void => {
 							set_network(Number(e.target.value));
@@ -238,16 +268,24 @@ function TokenListContent({list}: {list: TTokenListItem}): ReactElement {
 							}
 						}}>
 						<option value={-1}>{'All Networks'}</option>
-						{availableNetworks.map((network): ReactElement => (
-							<option key={network.value} value={network.value}>{network.label}</option>
-						))}
+						{availableNetworks.map(
+							(network): ReactElement => (
+								<option
+									key={network.value}
+									value={network.value}>
+									{network.label}
+								</option>
+							)
+						)}
 					</select>
 				</div>
 			</div>
-			<div className={'grid grid-cols-1 divide-y divide-neutral-100 rounded-md border border-neutral-200 bg-neutral-0 md:grid-cols-1'}>
-				{searchResult
-					.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-					.map((item): ReactElement => (
+			<div
+				className={
+					'grid grid-cols-1 divide-y divide-neutral-100 rounded-md border border-neutral-200 bg-neutral-0 md:grid-cols-1'
+				}>
+				{searchResult.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(
+					(item): ReactElement => (
 						<motion.div
 							key={`${item.address}_${item.chainId}`}
 							custom={0}
@@ -257,13 +295,16 @@ function TokenListContent({list}: {list: TTokenListItem}): ReactElement {
 							className={'relative flex w-full p-4 transition-colors hover:bg-neutral-50/40 md:p-6'}>
 							<TokenListItem item={item} />
 						</motion.div>
-					))}
+					)
+				)}
 			</div>
 			<div className={'flex items-center justify-between pt-4'}>
 				<div className={'flex flex-row space-x-6'}>
 					<div>
 						<button
-							className={'cursor-pointer text-xs text-neutral-600 transition-all hover:text-neutral-900 hover:underline disabled:text-neutral-400/40'}
+							className={
+								'cursor-pointer text-xs text-neutral-600 transition-all hover:text-neutral-900 hover:underline disabled:text-neutral-400/40'
+							}
 							type={'button'}
 							disabled={currentPage === 1}
 							onClick={(): void => {
@@ -282,7 +323,9 @@ function TokenListContent({list}: {list: TTokenListItem}): ReactElement {
 					<div>
 						<div>
 							<button
-								className={'cursor-pointer text-xs text-neutral-600 transition-all hover:text-neutral-900 hover:underline disabled:text-neutral-400/40'}
+								className={
+									'cursor-pointer text-xs text-neutral-600 transition-all hover:text-neutral-900 hover:underline disabled:text-neutral-400/40'
+								}
 								type={'button'}
 								disabled={currentPage === 1}
 								onClick={(): void => {
@@ -309,7 +352,9 @@ function TokenListContent({list}: {list: TTokenListItem}): ReactElement {
 					<div>
 						<div>
 							<button
-								className={'text-xs text-neutral-600 transition-all hover:text-neutral-900 hover:underline disabled:text-neutral-400/40'}
+								className={
+									'text-xs text-neutral-600 transition-all hover:text-neutral-900 hover:underline disabled:text-neutral-400/40'
+								}
 								type={'button'}
 								disabled={currentPage === Math.ceil(searchResult.length / itemsPerPage)}
 								onClick={(): void => {
@@ -328,7 +373,9 @@ function TokenListContent({list}: {list: TTokenListItem}): ReactElement {
 					</div>
 					<div>
 						<button
-							className={'cursor-pointer text-xs text-neutral-600 transition-all hover:text-neutral-900 hover:underline disabled:text-neutral-400/40'}
+							className={
+								'cursor-pointer text-xs text-neutral-600 transition-all hover:text-neutral-900 hover:underline disabled:text-neutral-400/40'
+							}
 							type={'button'}
 							disabled={currentPage === Math.ceil(searchResult.length / itemsPerPage)}
 							onClick={(): void => {
@@ -350,7 +397,7 @@ function TokenListContent({list}: {list: TTokenListItem}): ReactElement {
 	);
 }
 
-function	List({list}: {list: TTokenListItem}): ReactElement {
+function List({list}: {list: TTokenListItem}): ReactElement {
 	return (
 		<>
 			<TokenListHero list={list} />
@@ -387,15 +434,17 @@ export default function Wrapper({list}: {list: TTokenListItem}): ReactElement {
 						handle: '@smoldapp',
 						site: '@smoldapp',
 						cardType: 'summary_large_image'
-					}} />
+					}}
+				/>
 				<List list={list} />
 			</>
 		</MigratooorContextApp>
 	);
 }
 
-
-export const getServerSideProps = async (context: NextPageContext): Promise<GetServerSidePropsResult<{list: TTokenListItem}>> => {
+export const getServerSideProps = async (
+	context: NextPageContext
+): Promise<GetServerSidePropsResult<{list: TTokenListItem}>> => {
 	const listID = context?.query?.list;
 	if (!listID) {
 		return {
@@ -408,7 +457,14 @@ export const getServerSideProps = async (context: NextPageContext): Promise<GetS
 	try {
 		const listRes = await fetch(`https://raw.githubusercontent.com/SmolDapp/tokenLists/main/lists/${listID}.json`);
 		const tokenListResponse = await listRes.json();
-		return {props: {list: {...tokenListResponse, URI: `https://raw.githubusercontent.com/SmolDapp/tokenLists/main/lists/${listID}.json`}}};
+		return {
+			props: {
+				list: {
+					...tokenListResponse,
+					URI: `https://raw.githubusercontent.com/SmolDapp/tokenLists/main/lists/${listID}.json`
+				}
+			}
+		};
 	} catch (e) {
 		console.error(e);
 		return {

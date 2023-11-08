@@ -11,25 +11,30 @@ import type {TAddress} from '@yearn-finance/web-lib/types';
 import type {TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import type {TTokenInfo} from '../../../contexts/useTokenList';
 
-export enum	Step {
+export enum Step {
 	WALLET = 'wallet',
 	TOSEND = 'destination',
 	SELECTOR = 'selector',
 	CONFIRMATION = 'confirmation'
 }
 
-export type TDisperseElement = {address: TAddress | undefined, label: string, amount: TNormalizedBN | undefined, UUID: string};
+export type TDisperseElement = {
+	address: TAddress | undefined;
+	label: string;
+	amount: TNormalizedBN | undefined;
+	UUID: string;
+};
 
 export type TSelected = {
-	tokenToDisperse: TTokenInfo,
-	currentStep: Step,
-	disperseArray: TDisperseElement[],
-	isDispersed: boolean,
-	set_currentStep: Dispatch<SetStateAction<Step>>,
-	set_tokenToDisperse: Dispatch<SetStateAction<TTokenInfo>>,
-	set_disperseArray: Dispatch<SetStateAction<TDisperseElement[]>>,
-	onResetDisperse: () => void
-}
+	tokenToDisperse: TTokenInfo;
+	currentStep: Step;
+	disperseArray: TDisperseElement[];
+	isDispersed: boolean;
+	set_currentStep: Dispatch<SetStateAction<Step>>;
+	set_tokenToDisperse: Dispatch<SetStateAction<TTokenInfo>>;
+	set_disperseArray: Dispatch<SetStateAction<TDisperseElement[]>>;
+	onResetDisperse: () => void;
+};
 const {wrappedToken: mainnetToken} = getNetwork(1).contracts;
 const defaultProps: TSelected = {
 	tokenToDisperse: {
@@ -50,12 +55,12 @@ const defaultProps: TSelected = {
 };
 
 export function newVoidRow(): TDisperseElement {
-	return ({
+	return {
 		address: undefined,
 		label: '',
 		amount: undefined,
 		UUID: crypto.randomUUID()
-	});
+	};
 }
 
 const DisperseContext = createContext<TSelected>(defaultProps);
@@ -78,10 +83,10 @@ export const DisperseContextApp = ({children}: {children: React.ReactElement}): 
 	};
 
 	/**********************************************************************************************
-	** This effect is used to directly jump the UI to the TOSEND section if the wallet is
-	** already connected or if the wallet is a special wallet type (e.g. EMBED_LEDGER).
-	** If the wallet is not connected, jump to the WALLET section to connect.
-	**********************************************************************************************/
+	 ** This effect is used to directly jump the UI to the TOSEND section if the wallet is
+	 ** already connected or if the wallet is a special wallet type (e.g. EMBED_LEDGER).
+	 ** If the wallet is not connected, jump to the WALLET section to connect.
+	 **********************************************************************************************/
 	useEffect((): void => {
 		const isEmbedWallet = isWalletSafe || isWalletLedger;
 		if ((isActive && address) || isEmbedWallet) {
@@ -92,10 +97,10 @@ export const DisperseContextApp = ({children}: {children: React.ReactElement}): 
 	}, [address, isActive, isWalletSafe, isWalletLedger]);
 
 	/**********************************************************************************************
-	** This effect is used to handle some UI transitions and sections jumps. Once the current step
-	** changes, we need to scroll to the correct section.
-	** This effect is triggered only on mount to set the initial scroll position.
-	**********************************************************************************************/
+	 ** This effect is used to handle some UI transitions and sections jumps. Once the current step
+	 ** changes, we need to scroll to the correct section.
+	 ** This effect is triggered only on mount to set the initial scroll position.
+	 **********************************************************************************************/
 	useMountEffect((): void => {
 		setTimeout((): void => {
 			const isEmbedWallet = isWalletSafe || isWalletLedger;
@@ -112,11 +117,11 @@ export const DisperseContextApp = ({children}: {children: React.ReactElement}): 
 	});
 
 	/**********************************************************************************************
-	** This effect is used to handle some UI transitions and sections jumps. Once the current step
-	** changes, we need to scroll to the correct section.
-	** This effect is ignored on mount but will be triggered on every update to set the correct
-	** scroll position.
-	**********************************************************************************************/
+	 ** This effect is used to handle some UI transitions and sections jumps. Once the current step
+	 ** changes, we need to scroll to the correct section.
+	 ** This effect is ignored on mount but will be triggered on every update to set the correct
+	 ** scroll position.
+	 **********************************************************************************************/
 	useUpdateEffect((): void => {
 		setTimeout((): void => {
 			let currentStepContainer;
@@ -142,16 +147,19 @@ export const DisperseContextApp = ({children}: {children: React.ReactElement}): 
 		}, 0);
 	}, [currentStep, isWalletLedger, isWalletSafe]);
 
-	const contextValue = useMemo((): TSelected => ({
-		currentStep,
-		set_currentStep,
-		tokenToDisperse,
-		set_tokenToDisperse,
-		disperseArray,
-		set_disperseArray,
-		isDispersed,
-		onResetDisperse
-	}), [currentStep, disperseArray, isDispersed, tokenToDisperse]);
+	const contextValue = useMemo(
+		(): TSelected => ({
+			currentStep,
+			set_currentStep,
+			tokenToDisperse,
+			set_tokenToDisperse,
+			disperseArray,
+			set_disperseArray,
+			isDispersed,
+			onResetDisperse
+		}),
+		[currentStep, disperseArray, isDispersed, tokenToDisperse]
+	);
 
 	return (
 		<DisperseContext.Provider value={contextValue}>
@@ -162,6 +170,5 @@ export const DisperseContextApp = ({children}: {children: React.ReactElement}): 
 		</DisperseContext.Provider>
 	);
 };
-
 
 export const useDisperse = (): TSelected => useContext(DisperseContext);

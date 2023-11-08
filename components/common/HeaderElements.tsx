@@ -14,29 +14,33 @@ import {truncateHex} from '@yearn-finance/web-lib/utils/address';
 import type {ReactElement} from 'react';
 import type {Chain} from 'wagmi';
 
-function NetworkButton({label, isDisabled, onClick}: {
-	label: string,
-	isDisabled?: boolean,
-	onClick?: () => void,
+function NetworkButton({
+	label,
+	isDisabled,
+	onClick
+}: {
+	label: string;
+	isDisabled?: boolean;
+	onClick?: () => void;
 }): ReactElement {
 	return (
 		<button
 			disabled={isDisabled}
 			onClick={onClick}
 			suppressHydrationWarning
-			className={'yearn--header-nav-item mr-4 hidden !cursor-default flex-row items-center border-0 p-0 text-sm hover:!text-neutral-500 md:flex'}>
-			<div suppressHydrationWarning className={'relative flex flex-row items-center'}>
+			className={
+				'yearn--header-nav-item mr-4 hidden !cursor-default flex-row items-center border-0 p-0 text-sm hover:!text-neutral-500 md:flex'
+			}>
+			<div
+				suppressHydrationWarning
+				className={'relative flex flex-row items-center'}>
 				{label}
 			</div>
 		</button>
 	);
 }
 
-function CurrentNetworkButton({label, value, isOpen}: {
-	label: string,
-	value: number,
-	isOpen: boolean
-}): ReactElement {
+function CurrentNetworkButton({label, value, isOpen}: {label: string; value: number; isOpen: boolean}): ReactElement {
 	const [src, set_src] = useState<string | undefined>(undefined);
 
 	useEffect((): void => {
@@ -60,22 +64,23 @@ function CurrentNetworkButton({label, value, isOpen}: {
 						src={src}
 						width={20}
 						height={20}
-						alt={label} />
+						alt={label}
+					/>
 				) : (
-					<div
-						className={'mr-2 min-h-[20px] min-w-[20px] animate-pulse rounded-full bg-neutral-200'} />
+					<div className={'mr-2 min-h-[20px] min-w-[20px] animate-pulse rounded-full bg-neutral-200'} />
 				)}
 				{label}
 			</div>
 			<div className={'ml-1 md:ml-2'}>
 				<IconChevronBottom
-					className={`h-3 w-3 transition-transform md:h-5 md:w-4 ${isOpen ? '-rotate-180' : 'rotate-0'}`} />
+					className={`h-3 w-3 transition-transform md:h-5 md:w-4 ${isOpen ? '-rotate-180' : 'rotate-0'}`}
+				/>
 			</div>
 		</Listbox.Button>
 	);
 }
 
-type TNetwork = {value: number, label: string};
+type TNetwork = {value: number; label: string};
 export function NetworkSelector({networks}: {networks: number[]}): ReactElement {
 	const {onSwitchChain} = useWeb3();
 	const publicClient = usePublicClient();
@@ -84,36 +89,45 @@ export function NetworkSelector({networks}: {networks: number[]}): ReactElement 
 	const isMounted = useIsMounted();
 
 	const supportedNetworks = useMemo((): TNetwork[] => {
-		const injectedConnector = connectors.find((e): boolean => (e.id).toLocaleLowerCase() === 'injected');
+		const injectedConnector = connectors.find((e): boolean => e.id.toLocaleLowerCase() === 'injected');
 		assert(injectedConnector, 'No injected connector found');
 		const chainsForInjected = injectedConnector.chains;
 
-		return (
-			chainsForInjected
-				.filter(({id}): boolean => (
+		return chainsForInjected
+			.filter(
+				({id}): boolean =>
 					![5, 1337, 84531].includes(id) && ((networks.length > 0 && networks.includes(id)) || true)
-				))
-				.map((network: Chain): TNetwork => (
-					{value: network.id, label: network.name}
-				))
-		);
+			)
+			.map((network: Chain): TNetwork => ({value: network.id, label: network.name}));
 	}, [connectors, networks]);
 
-	const	currentNetwork = useMemo((): TNetwork | undefined => (
-		supportedNetworks.find((network): boolean => network.value === safeChainID)
-	), [safeChainID, supportedNetworks]);
+	const currentNetwork = useMemo(
+		(): TNetwork | undefined => supportedNetworks.find((network): boolean => network.value === safeChainID),
+		[safeChainID, supportedNetworks]
+	);
 
 	if (supportedNetworks.length === 1) {
 		if (publicClient?.chain.id === 1337) {
-			return <NetworkButton label={'Localhost'} isDisabled />;
+			return (
+				<NetworkButton
+					label={'Localhost'}
+					isDisabled
+				/>
+			);
 		}
 		if (currentNetwork?.value === supportedNetworks[0]?.value) {
-			return <NetworkButton label={supportedNetworks[0]?.label || 'Ethereum'} isDisabled />;
+			return (
+				<NetworkButton
+					label={supportedNetworks[0]?.label || 'Ethereum'}
+					isDisabled
+				/>
+			);
 		}
 		return (
 			<NetworkButton
 				label={'Invalid Network'}
-				onClick={(): void => onSwitchChain(supportedNetworks[0].value)} />
+				onClick={(): void => onSwitchChain(supportedNetworks[0].value)}
+			/>
 		);
 	}
 
@@ -133,7 +147,8 @@ export function NetworkSelector({networks}: {networks: number[]}): ReactElement 
 						<CurrentNetworkButton
 							label={currentNetwork?.label || 'Ethereum'}
 							value={currentNetwork?.value || 1}
-							isOpen={open} />
+							isOpen={open}
+						/>
 						<Transition
 							appear
 							show={open}
@@ -157,19 +172,29 @@ export function NetworkSelector({networks}: {networks: number[]}): ReactElement 
 									leave={'transition duration-75 ease-out'}
 									leaveFrom={'transform scale-100 opacity-100'}
 									leaveTo={'transform scale-95 opacity-0'}>
-									<Listbox.Options className={'absolute -inset-x-24 z-50 flex items-center justify-center pt-2 opacity-0 transition-opacity'}>
-										<div className={'w-fit border border-neutral-300 bg-neutral-100 p-1 px-2 text-center text-xxs text-neutral-900'}>
-											{supportedNetworks.map((network): ReactElement => (
-												<Listbox.Option key={network.value} value={network}>
-													{({active}): ReactElement => (
-														<div
-															data-active={active}
-															className={'yearn--listbox-menu-item text-sm'}>
-															{network?.label || 'Ethereum'}
-														</div>
-													)}
-												</Listbox.Option>
-											))}
+									<Listbox.Options
+										className={
+											'absolute -inset-x-24 z-50 flex items-center justify-center pt-2 opacity-0 transition-opacity'
+										}>
+										<div
+											className={
+												'w-fit border border-neutral-300 bg-neutral-100 p-1 px-2 text-center text-xxs text-neutral-900'
+											}>
+											{supportedNetworks.map(
+												(network): ReactElement => (
+													<Listbox.Option
+														key={network.value}
+														value={network}>
+														{({active}): ReactElement => (
+															<div
+																data-active={active}
+																className={'yearn--listbox-menu-item text-sm'}>
+																{network?.label || 'Ethereum'}
+															</div>
+														)}
+													</Listbox.Option>
+												)
+											)}
 										</div>
 									</Listbox.Options>
 								</Transition.Child>
@@ -218,11 +243,18 @@ export function WalletSelector(): ReactElement {
 					openLoginModal();
 				}
 			}}>
-			<div suppressHydrationWarning className={'font-inter cursor-pointer text-sm font-medium'}>
-				{walletIdentity ? (walletIdentity) : (
+			<div
+				suppressHydrationWarning
+				className={'font-inter cursor-pointer text-sm font-medium'}>
+				{walletIdentity ? (
+					walletIdentity
+				) : (
 					<span>
 						<IconWallet className={'yearn--header-nav-item mt-0.5 block h-4 w-4 md:hidden'} />
-						<span className={'relative hidden h-8 cursor-pointer items-center justify-center !rounded-md border border-transparent bg-neutral-900 px-2 text-xs font-normal text-neutral-0 transition-all hover:bg-neutral-800 md:flex'}>
+						<span
+							className={
+								'relative hidden h-8 cursor-pointer items-center justify-center !rounded-md border border-transparent bg-neutral-900 px-2 text-xs font-normal text-neutral-0 transition-all hover:bg-neutral-800 md:flex'
+							}>
 							{'Connect wallet'}
 						</span>
 					</span>

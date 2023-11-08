@@ -8,7 +8,7 @@ import {MigratooorContextApp, Step, useMigratooor} from '@migratooor/useMigratoo
 
 import type {ReactElement} from 'react';
 
-function	Migrate(): ReactElement {
+function Migrate(): ReactElement {
 	const {currentStep, set_currentStep} = useMigratooor();
 
 	const onProceedWallet = useCallback((): void => {
@@ -30,7 +30,10 @@ function	Migrate(): ReactElement {
 	return (
 		<div className={'mx-auto grid w-full max-w-5xl'}>
 			<div className={'mt-6 flex flex-col justify-center md:mt-20'}>
-				<h1 className={'-ml-1 mt-4 w-full text-3xl tracking-tight text-neutral-900 md:mt-6 md:w-1/2 md:text-5xl'}>
+				<h1
+					className={
+						'-ml-1 mt-4 w-full text-3xl tracking-tight text-neutral-900 md:mt-6 md:w-1/2 md:text-5xl'
+					}>
 					{'Migrate like a fancy bird.'}
 				</h1>
 				<b className={'mt-4 w-full text-base leading-normal text-neutral-500 md:w-2/3 md:text-lg md:leading-8'}>
@@ -42,19 +45,31 @@ function	Migrate(): ReactElement {
 
 			<div
 				id={'destination'}
-				className={`pt-10 transition-opacity ${[Step.SELECTOR, Step.CONFIRMATION, Step.DESTINATION].includes(currentStep) ? 'opacity-100' : 'pointer-events-none h-0 overflow-hidden opacity-0'}`}>
+				className={`pt-10 transition-opacity ${
+					[Step.SELECTOR, Step.CONFIRMATION, Step.DESTINATION].includes(currentStep)
+						? 'opacity-100'
+						: 'pointer-events-none h-0 overflow-hidden opacity-0'
+				}`}>
 				<ViewDestination onProceed={onProceedDestination} />
 			</div>
 
 			<div
 				id={'selector'}
-				className={`pt-10 transition-opacity ${[Step.SELECTOR, Step.CONFIRMATION].includes(currentStep) ? 'opacity-100' : 'pointer-events-none h-0 overflow-hidden opacity-0'}`}>
+				className={`pt-10 transition-opacity ${
+					[Step.SELECTOR, Step.CONFIRMATION].includes(currentStep)
+						? 'opacity-100'
+						: 'pointer-events-none h-0 overflow-hidden opacity-0'
+				}`}>
 				<ViewTable onProceed={onProceedSelector} />
 			</div>
 
 			<div
 				id={'tldr'}
-				className={`pt-10 transition-opacity ${[Step.CONFIRMATION].includes(currentStep) ? 'opacity-100' : 'pointer-events-none h-0 overflow-hidden opacity-0'}`}>
+				className={`pt-10 transition-opacity ${
+					[Step.CONFIRMATION].includes(currentStep)
+						? 'opacity-100'
+						: 'pointer-events-none h-0 overflow-hidden opacity-0'
+				}`}>
 				<ViewApprovalWizard />
 			</div>
 		</div>
@@ -89,10 +104,10 @@ export default function WrapperMigrate(): ReactElement {
 						handle: '@smoldapp',
 						site: '@smoldapp',
 						cardType: 'summary_large_image'
-					}} />
+					}}
+				/>
 				<Migrate />
 			</>
 		</MigratooorContextApp>
 	);
 }
-

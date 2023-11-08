@@ -15,7 +15,7 @@ export async function retrieveENSNameFromNode(tokenId: bigint): Promise<string> 
 		}
 	}`;
 
-	const name = await request(url, GET_LABEL_NAME) as {domains: {labelName: string}[]};
+	const name = (await request(url, GET_LABEL_NAME)) as {domains: {labelName: string}[]};
 	return name.domains[0].labelName;
 }
 

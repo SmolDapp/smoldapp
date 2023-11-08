@@ -21,33 +21,33 @@ import type {TInputAddressLike} from '@common/AddressInput';
 
 export type TTokenInfo = {
 	extra?: boolean;
-	chainId: number,
-	address: TAddress,
-	name: string,
-	symbol: string,
-	decimals: number,
-	logoURI: string,
+	chainId: number;
+	address: TAddress;
+	name: string;
+	symbol: string;
+	decimals: number;
+	logoURI: string;
 };
 export type TTokenList = {
 	name: string;
-	description: string,
-	timestamp: string,
-	logoURI: string,
-	uri: string,
-	keywords: string[],
+	description: string;
+	timestamp: string;
+	logoURI: string;
+	uri: string;
+	keywords: string[];
 	version: {
-		major: number,
-		minor: number,
-		patch: number,
-	},
+		major: number;
+		minor: number;
+		patch: number;
+	};
 	tokens: TTokenInfo[];
-}
+};
 
 export type TTokenListProps = {
-	tokenList: TDict<TTokenInfo>,
-	set_tokenList: Dispatch<SetStateAction<TDict<TTokenInfo>>>,
-	openTokenListModal: () => void,
-}
+	tokenList: TDict<TTokenInfo>;
+	set_tokenList: Dispatch<SetStateAction<TDict<TTokenInfo>>>;
+	openTokenListModal: () => void;
+};
 const defaultProps: TTokenListProps = {
 	tokenList: {},
 	set_tokenList: (): void => undefined,
@@ -55,14 +55,14 @@ const defaultProps: TTokenListProps = {
 };
 
 type TValue = {
-	label: string,
-	isValid: boolean | 'undetermined',
-	list: TTokenList | undefined,
-}
+	label: string;
+	isValid: boolean | 'undetermined';
+	list: TTokenList | undefined;
+};
 type TTokenListAddBox = {
-	onAddTokenList: (list: TTokenList) => void
-	onAddToken: (token: TTokenInfo) => void
-}
+	onAddTokenList: (list: TTokenList) => void;
+	onAddToken: (token: TTokenInfo) => void;
+};
 function TokenListAddBox({onAddTokenList, onAddToken}: TTokenListAddBox): React.ReactElement {
 	const {safeChainID} = useChainID();
 	const [value, set_value] = useState<TValue>({label: '', isValid: 'undetermined', list: undefined});
@@ -83,79 +83,101 @@ function TokenListAddBox({onAddTokenList, onAddToken}: TTokenListAddBox): React.
 		return 'none';
 	}, [value, isLoadingTokenList]);
 
-	const onChangeURI = useCallback(async (label: string): Promise<void> => {
-		currentLabel.current = label;
+	const onChangeURI = useCallback(
+		async (label: string): Promise<void> => {
+			currentLabel.current = label;
 
-		if (!label.endsWith('.json')) {
-			return set_value({label, isValid: false, list: undefined});
-		}
+			if (!label.endsWith('.json')) {
+				return set_value({label, isValid: false, list: undefined});
+			}
 
-		set_value({label, isValid: 'undetermined', list: undefined});
-		set_isLoadingTokenList(true);
+			set_value({label, isValid: 'undetermined', list: undefined});
+			set_isLoadingTokenList(true);
 
-		const [fromLabel] = await Promise.allSettled([axios.get(label)]);
-		if (fromLabel.status === 'fulfilled') {
-			//Check if we got name, logoURI and tokens array
-			const {name, logoURI, tokens} = fromLabel.value.data;
-			if (name && logoURI && Array.isArray(tokens) && tokens.length > 0) {
-				//Check if the tokens contains address, name, symbol, logoURI, chainId and decimals
-				const areTokensValid = tokens.every((eachToken: TTokenInfo): boolean => {
-					const {address, name, symbol, logoURI, chainId, decimals} = eachToken;
-					return (Boolean(address && name !== undefined && symbol !== undefined && logoURI !== undefined && chainId && decimals));
-				});
-				if (currentLabel.current === label) {
-					set_value({
-						label,
-						isValid: areTokensValid,
-						list: {...fromLabel.value.data as TTokenList, uri: label}
+			const [fromLabel] = await Promise.allSettled([axios.get(label)]);
+			if (fromLabel.status === 'fulfilled') {
+				//Check if we got name, logoURI and tokens array
+				const {name, logoURI, tokens} = fromLabel.value.data;
+				if (name && logoURI && Array.isArray(tokens) && tokens.length > 0) {
+					//Check if the tokens contains address, name, symbol, logoURI, chainId and decimals
+					const areTokensValid = tokens.every((eachToken: TTokenInfo): boolean => {
+						const {address, name, symbol, logoURI, chainId, decimals} = eachToken;
+						return Boolean(
+							address &&
+								name !== undefined &&
+								symbol !== undefined &&
+								logoURI !== undefined &&
+								chainId &&
+								decimals
+						);
 					});
+					if (currentLabel.current === label) {
+						set_value({
+							label,
+							isValid: areTokensValid,
+							list: {...(fromLabel.value.data as TTokenList), uri: label}
+						});
+					}
+					set_isLoadingTokenList(false);
+				}
+			} else {
+				if (currentLabel.current === label) {
+					set_value({label, isValid: false, list: undefined});
 				}
 				set_isLoadingTokenList(false);
 			}
-		} else {
-			if (currentLabel.current === label) {
-				set_value({label, isValid: false, list: undefined});
+		},
+		[currentLabel]
+	);
+
+	const onSubmitURI = useCallback(
+		async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
+			e.preventDefault();
+			if (value.isValid === true && value.list) {
+				onAddTokenList(value.list);
+				set_value({label: '', isValid: 'undetermined', list: undefined});
 			}
-			set_isLoadingTokenList(false);
-		}
-	}, [currentLabel]);
+		},
+		[value, onAddTokenList]
+	);
 
-	const onSubmitURI = useCallback(async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
-		e.preventDefault();
-		if (value.isValid === true && value.list) {
-			onAddTokenList(value.list);
-			set_value({label: '', isValid: 'undetermined', list: undefined});
-		}
-	}, [value, onAddTokenList]);
-
-	const onSubmitAddress = useCallback(async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
-		e.preventDefault();
-		if (extraToken.isValid === true && extraToken.address) {
-			const [name, symbol, decimals] = await readContracts({
-				contracts: [
-					{abi: erc20ABI, address: extraToken.address, functionName: 'name'},
-					{abi: erc20ABI, address: extraToken.address, functionName: 'symbol'},
-					{abi: erc20ABI, address: extraToken.address, functionName: 'decimals'}
-				]
-			});
-			onAddToken({
-				address: extraToken.address,
-				chainId: safeChainID,
-				name: decodeAsString(name),
-				symbol: decodeAsString(symbol),
-				decimals: Number(decodeAsBigInt(decimals)),
-				logoURI: `https://assets.smold.app/api/token/${safeChainID}/${extraToken.address}/logo-128.png`
-			});
-			set_extraToken(defaultInputAddressLike);
-		}
-	}, [extraToken.isValid, extraToken.address, onAddToken, safeChainID]);
+	const onSubmitAddress = useCallback(
+		async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
+			e.preventDefault();
+			if (extraToken.isValid === true && extraToken.address) {
+				const [name, symbol, decimals] = await readContracts({
+					contracts: [
+						{abi: erc20ABI, address: extraToken.address, functionName: 'name'},
+						{abi: erc20ABI, address: extraToken.address, functionName: 'symbol'},
+						{abi: erc20ABI, address: extraToken.address, functionName: 'decimals'}
+					]
+				});
+				onAddToken({
+					address: extraToken.address,
+					chainId: safeChainID,
+					name: decodeAsString(name),
+					symbol: decodeAsString(symbol),
+					decimals: Number(decodeAsBigInt(decimals)),
+					logoURI: `https://assets.smold.app/api/token/${safeChainID}/${extraToken.address}/logo-128.png`
+				});
+				set_extraToken(defaultInputAddressLike);
+			}
+		},
+		[extraToken.isValid, extraToken.address, onAddToken, safeChainID]
+	);
 
 	return (
 		<div className={'mt-4 px-4 md:mt-6 md:px-6'}>
 			<div className={'rounded-md bg-primary-50 p-2 md:p-4'}>
 				<p className={'text-sm text-neutral-700'}>
-					{'The list of tokens displayed on smol is defined by the tokenlists. You can add a custom list to add any extra token. Existing list can be found '}
-					<a href={'https://smold.app/tokenlistooor'} target={'_blank'} rel={'noreferrer'} className={'font-medium text-primary-900 hover:underline'}>
+					{
+						'The list of tokens displayed on smol is defined by the tokenlists. You can add a custom list to add any extra token. Existing list can be found '
+					}
+					<a
+						href={'https://smold.app/tokenlistooor'}
+						target={'_blank'}
+						rel={'noreferrer'}
+						className={'font-medium text-primary-900 hover:underline'}>
 						{'here'}
 					</a>
 					{'.'}
@@ -174,17 +196,37 @@ function TokenListAddBox({onAddTokenList, onAddToken}: TTokenListAddBox): React.
 							spellCheck={false}
 							className={'smol--input pr-6'}
 							type={'text'}
-							placeholder={'https://...'} />
+							placeholder={'https://...'}
+						/>
 						<label
-							className={statusURI === 'invalid' || statusURI === 'warning' ? 'relative' : 'pointer-events-none relative h-4 w-4'}>
-							<span className={statusURI === 'invalid' || statusURI === 'warning' ? 'tooltip' : 'pointer-events-none'}>
+							className={
+								statusURI === 'invalid' || statusURI === 'warning'
+									? 'relative'
+									: 'pointer-events-none relative h-4 w-4'
+							}>
+							<span
+								className={
+									statusURI === 'invalid' || statusURI === 'warning'
+										? 'tooltip'
+										: 'pointer-events-none'
+								}>
 								<div className={'pointer-events-none relative h-4 w-4'}>
 									<IconCheck
-										className={`absolute h-4 w-4 text-[#16a34a] transition-opacity ${statusURI === 'valid' ? 'opacity-100' : 'opacity-0'}`} />
+										className={`absolute h-4 w-4 text-[#16a34a] transition-opacity ${
+											statusURI === 'valid' ? 'opacity-100' : 'opacity-0'
+										}`}
+									/>
 									<IconCircleCross
-										className={`absolute h-4 w-4 text-[#e11d48] transition-opacity ${statusURI === 'invalid' ? 'opacity-100' : 'opacity-0'}`} />
+										className={`absolute h-4 w-4 text-[#e11d48] transition-opacity ${
+											statusURI === 'invalid' ? 'opacity-100' : 'opacity-0'
+										}`}
+									/>
 									<div className={'absolute inset-0 flex items-center justify-center'}>
-										<IconLoader className={`h-4 w-4 animate-spin text-neutral-900 transition-opacity ${statusURI === 'pending' ? 'opacity-100' : 'opacity-0'}`} />
+										<IconLoader
+											className={`h-4 w-4 animate-spin text-neutral-900 transition-opacity ${
+												statusURI === 'pending' ? 'opacity-100' : 'opacity-0'
+											}`}
+										/>
 									</div>
 								</div>
 								<span className={'tooltiptextsmall'}>
@@ -210,7 +252,8 @@ function TokenListAddBox({onAddTokenList, onAddToken}: TTokenListAddBox): React.
 					className={'mt-2 flex flex-row gap-4'}>
 					<AddressInput
 						value={extraToken}
-						onChangeValue={(e): void => set_extraToken(e)} />
+						onChangeValue={(e): void => set_extraToken(e)}
+					/>
 					<div>
 						<Button
 							isDisabled={extraToken.isValid !== true}
@@ -225,12 +268,12 @@ function TokenListAddBox({onAddTokenList, onAddToken}: TTokenListAddBox): React.
 }
 
 type TTokenListHandlerPopover = {
-	lists: TTokenList[],
-	onAddTokenList: (list: TTokenList) => void,
-	onAddToken: (token: TTokenInfo) => void
-	isOpen: boolean,
-	set_isOpen: Dispatch<SetStateAction<boolean>>,
-}
+	lists: TTokenList[];
+	onAddTokenList: (list: TTokenList) => void;
+	onAddToken: (token: TTokenInfo) => void;
+	isOpen: boolean;
+	set_isOpen: Dispatch<SetStateAction<boolean>>;
+};
 function TokenListHandlerPopover({
 	lists,
 	onAddTokenList,
@@ -241,8 +284,14 @@ function TokenListHandlerPopover({
 	const cancelButtonRef = useRef(null);
 
 	return (
-		<Transition.Root show={isOpen} as={Fragment}>
-			<Dialog as={'div'} className={'relative z-50'} initialFocus={cancelButtonRef} onClose={set_isOpen}>
+		<Transition.Root
+			show={isOpen}
+			as={Fragment}>
+			<Dialog
+				as={'div'}
+				className={'relative z-50'}
+				initialFocus={cancelButtonRef}
+				onClose={set_isOpen}>
 				<Transition.Child
 					as={Fragment}
 					enter={'ease-out duration-300'}
@@ -264,63 +313,105 @@ function TokenListHandlerPopover({
 							leave={'ease-in duration-200'}
 							leaveFrom={'opacity-100 translate-y-0 sm:scale-100'}
 							leaveTo={'opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95'}>
-							<Dialog.Panel className={'relative rounded-lg bg-white pb-4 pt-5 text-left shadow-xl transition-all sm:my-24 sm:w-full sm:max-w-2xl'}>
+							<Dialog.Panel
+								className={
+									'relative rounded-lg bg-white pb-4 pt-5 text-left shadow-xl transition-all sm:my-24 sm:w-full sm:max-w-2xl'
+								}>
 								<div
 									onClick={(): void => set_isOpen(false)}
 									className={'absolute -right-2 -top-2'}>
 									<div className={'group cursor-pointer rounded-full bg-white'}>
-										<IconCircleCross className={'h-6 w-6 text-neutral-600 transition-colors hover:text-neutral-900'} aria-hidden={'true'} />
+										<IconCircleCross
+											className={
+												'h-6 w-6 text-neutral-600 transition-colors hover:text-neutral-900'
+											}
+											aria-hidden={'true'}
+										/>
 									</div>
 								</div>
 
 								<div className={'sm:flex sm:items-start'}>
 									<div className={'mt-3 text-center sm:mt-0 sm:text-left'}>
-										<Dialog.Title as={'h3'} className={'px-4 text-base font-semibold leading-6 text-neutral-900 md:px-6'}>
+										<Dialog.Title
+											as={'h3'}
+											className={
+												'px-4 text-base font-semibold leading-6 text-neutral-900 md:px-6'
+											}>
 											{'Manage your list of tokens'}
 										</Dialog.Title>
 
 										<TokenListAddBox
 											onAddTokenList={onAddTokenList}
-											onAddToken={onAddToken} />
+											onAddToken={onAddToken}
+										/>
 
-										<div className={'scrollbar-show mt-2 max-h-[280px] overflow-y-scroll md:max-h-[420px]'}>
+										<div
+											className={
+												'scrollbar-show mt-2 max-h-[280px] overflow-y-scroll md:max-h-[420px]'
+											}>
 											{lists
 												.filter((eachList: TTokenList): boolean => eachList.tokens.length > 0)
-												.map((eachList: TTokenList): ReactElement => (
-													<div
-														key={eachList.name}
-														className={'relative flex w-full p-4 transition-colors hover:bg-neutral-50 md:px-6'}>
-														<div className={'grid w-full grid-cols-12 items-center gap-4'}>
-															<div className={'col-span-12 flex flex-row items-center space-x-6 md:col-span-8'}>
-																<div className={'rounded-full border border-neutral-100'}>
-																	<ImageWithFallback
-																		alt={eachList.name}
-																		width={40}
-																		height={40}
-																		quality={90}
-																		className={'w-10 min-w-[40px]'}
-																		unoptimized
-																		src={eachList.logoURI || ''} />
-																</div>
-																<div className={'text-left'}>
-																	<p className={'text-sm'}>
-																		<span className={'font-medium'}>{eachList.name}</span>
-																	</p>
-																	<span className={'font-number mt-2 block !font-mono text-xxs text-neutral-600 transition-colors md:text-xs'}>
-																		<a
-																			href={eachList.uri}
-																			target={'_blank'}
-																			rel={'noreferrer'}
-																			className={'cursor-alias font-mono hover:text-neutral-900 hover:underline'}>
-																			{eachList.uri.split('/').pop() || 'Your list'}
-																		</a>
-																		{` • ${eachList.tokens.length} ${eachList.tokens.length > 1 ? 'tokens' : 'token'}`}
-																	</span>
+												.map(
+													(eachList: TTokenList): ReactElement => (
+														<div
+															key={eachList.name}
+															className={
+																'relative flex w-full p-4 transition-colors hover:bg-neutral-50 md:px-6'
+															}>
+															<div
+																className={
+																	'grid w-full grid-cols-12 items-center gap-4'
+																}>
+																<div
+																	className={
+																		'col-span-12 flex flex-row items-center space-x-6 md:col-span-8'
+																	}>
+																	<div
+																		className={
+																			'rounded-full border border-neutral-100'
+																		}>
+																		<ImageWithFallback
+																			alt={eachList.name}
+																			width={40}
+																			height={40}
+																			quality={90}
+																			className={'w-10 min-w-[40px]'}
+																			unoptimized
+																			src={eachList.logoURI || ''}
+																		/>
+																	</div>
+																	<div className={'text-left'}>
+																		<p className={'text-sm'}>
+																			<span className={'font-medium'}>
+																				{eachList.name}
+																			</span>
+																		</p>
+																		<span
+																			className={
+																				'font-number mt-2 block !font-mono text-xxs text-neutral-600 transition-colors md:text-xs'
+																			}>
+																			<a
+																				href={eachList.uri}
+																				target={'_blank'}
+																				rel={'noreferrer'}
+																				className={
+																					'cursor-alias font-mono hover:text-neutral-900 hover:underline'
+																				}>
+																				{eachList.uri.split('/').pop() ||
+																					'Your list'}
+																			</a>
+																			{` • ${eachList.tokens.length} ${
+																				eachList.tokens.length > 1
+																					? 'tokens'
+																					: 'token'
+																			}`}
+																		</span>
+																	</div>
 																</div>
 															</div>
 														</div>
-													</div>
-												))}
+													)
+												)}
 										</div>
 									</div>
 								</div>
@@ -368,20 +459,22 @@ export const TokenListContextApp = ({children}: {children: React.ReactElement}):
 			`https://raw.githubusercontent.com/SmolDapp/tokenLists/main/lists/${safeChainID}/yearn.json`,
 			`https://raw.githubusercontent.com/SmolDapp/tokenLists/main/lists/${safeChainID}/tokenlistooor.json`
 		];
-		const [fromEtherscan, fromYearn, fromSmol] = await Promise.allSettled(tokenListURIs.map(async (eachURI: string): Promise<AxiosResponse> => axios.get(eachURI)));
+		const [fromEtherscan, fromYearn, fromSmol] = await Promise.allSettled(
+			tokenListURIs.map(async (eachURI: string): Promise<AxiosResponse> => axios.get(eachURI))
+		);
 		const tokens: TTokenInfo[] = [];
 		const fromList: TTokenList[] = [];
 		if (fromEtherscan.status === 'fulfilled' && fromEtherscan.value.data?.tokens) {
 			tokens.push(...(fromEtherscan.value.data as TTokenList).tokens);
-			fromList.push({...fromEtherscan.value.data as TTokenList, uri: tokenListURIs[0]});
+			fromList.push({...(fromEtherscan.value.data as TTokenList), uri: tokenListURIs[0]});
 		}
 		if (fromYearn.status === 'fulfilled' && fromYearn.value.data?.tokens) {
 			tokens.push(...(fromYearn.value.data as TTokenList).tokens);
-			fromList.push({...fromYearn.value.data as TTokenList, uri: tokenListURIs[1]});
+			fromList.push({...(fromYearn.value.data as TTokenList), uri: tokenListURIs[1]});
 		}
 		if (fromSmol.status === 'fulfilled' && fromSmol.value.data?.tokens) {
 			tokens.push(...(fromSmol.value.data as TTokenList).tokens);
-			fromList.push({...fromSmol.value.data as TTokenList, uri: tokenListURIs[2]});
+			fromList.push({...(fromSmol.value.data as TTokenList), uri: tokenListURIs[2]});
 		}
 
 		const tokenListTokens: TDict<TTokenInfo> = {};
@@ -410,7 +503,7 @@ export const TokenListContextApp = ({children}: {children: React.ReactElement}):
 		for (const eachURI of extraTokenlist || []) {
 			const [fromUserList] = await Promise.allSettled([axios.get(eachURI)]);
 			if (fromUserList.status === 'fulfilled') {
-				fromList.push({...fromUserList.value.data as TTokenList, uri: eachURI});
+				fromList.push({...(fromUserList.value.data as TTokenList), uri: eachURI});
 				const {tokens} = fromUserList.value.data;
 				for (const eachToken of tokens) {
 					if (!tokenListTokens[toAddress(eachToken.address)]) {
@@ -446,11 +539,14 @@ export const TokenListContextApp = ({children}: {children: React.ReactElement}):
 		addExtraTokens();
 	}, [addExtraTokens]);
 
-	const contextValue = useMemo((): TTokenListProps => ({
-		tokenList: {...tokenList, ...tokenListExtra, ...tokenListCustom},
-		set_tokenList,
-		openTokenListModal: (): void => set_isTokenListModalOpen(true)
-	}), [tokenList, tokenListCustom, tokenListExtra]);
+	const contextValue = useMemo(
+		(): TTokenListProps => ({
+			tokenList: {...tokenList, ...tokenListExtra, ...tokenListCustom},
+			set_tokenList,
+			openTokenListModal: (): void => set_isTokenListModalOpen(true)
+		}),
+		[tokenList, tokenListCustom, tokenListExtra]
+	);
 
 	return (
 		<TokenList.Provider value={contextValue}>
@@ -466,20 +562,27 @@ export const TokenListContextApp = ({children}: {children: React.ReactElement}):
 							tokenListTokens[toAddress(eachToken.address)] = eachToken;
 						}
 					}
-					set_tokenList((prevTokenList: TDict<TTokenInfo>): TDict<TTokenInfo> => ({...prevTokenList, ...tokenListTokens}));
-					set_lists((prevLists: TTokenList[]): TTokenList[] => ([...prevLists, list]));
+					set_tokenList(
+						(prevTokenList: TDict<TTokenInfo>): TDict<TTokenInfo> => ({
+							...prevTokenList,
+							...tokenListTokens
+						})
+					);
+					set_lists((prevLists: TTokenList[]): TTokenList[] => [...prevLists, list]);
 					set_extraTokenlist([...(extraTokenlist || []), list.uri]);
 				}}
 				onAddToken={(newToken: TTokenInfo): void => {
-					set_tokenList((prevTokenList: TDict<TTokenInfo>): TDict<TTokenInfo> => ({
-						...prevTokenList,
-						newToken
-					}));
+					set_tokenList(
+						(prevTokenList: TDict<TTokenInfo>): TDict<TTokenInfo> => ({
+							...prevTokenList,
+							newToken
+						})
+					);
 					set_extraTokens([...(extraTokens || []), newToken]);
-				}} />
+				}}
+			/>
 		</TokenList.Provider>
 	);
 };
-
 
 export const useTokenList = (): TTokenListProps => useContext(TokenList);

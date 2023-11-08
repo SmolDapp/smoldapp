@@ -7,15 +7,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 	try {
 		const {messages} = req.body as {messages: string[]};
 
-		await telegram.sendMessage(
-			process.env.TELEGRAM_CHAT as string,
-			messages.join('\n'), {
-				parse_mode: 'Markdown',
-				disable_notification: true,
-				message_thread_id: Number(process.env.TELEGRAM_NOTIF_CHAT_THREAD),
-				disable_web_page_preview: true
-			}
-		);
+		await telegram.sendMessage(process.env.TELEGRAM_CHAT as string, messages.join('\n'), {
+			parse_mode: 'Markdown',
+			disable_notification: true,
+			message_thread_id: Number(process.env.TELEGRAM_NOTIF_CHAT_THREAD),
+			disable_web_page_preview: true
+		});
 		return res.status(200).json(true);
 	} catch (error) {
 		console.error(error);

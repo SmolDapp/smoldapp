@@ -1,4 +1,4 @@
-const	LEGACY_TOKEN_LISTS = [
+const LEGACY_TOKEN_LISTS = [
 	{
 		name: 'Aave',
 		URI: 'https://tokenlist.aave.eth.link',
@@ -104,7 +104,8 @@ const	LEGACY_TOKEN_LISTS = [
 	{
 		name: 'UMA',
 		URI: 'https://umaproject.org/uma.tokenlist.json',
-		logoURI: 'https://www.gitbook.com/cdn-cgi/image/width=256,height=40,fit=contain,dpr=1,format=auto/https%3A%2F%2F1381247954-files.gitbook.io%2F~%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Fspaces%252FKdaoNjf9AzgWFNHyPo5b%252Flogo%252FmLXfeMg8Rtcxyzp20uhg%252FUMA_square_red_logo.png%3Falt%3Dmedia%26token%3Dc9574716-4c7a-4647-8bde-9b54866a0b46',
+		logoURI:
+			'https://www.gitbook.com/cdn-cgi/image/width=256,height=40,fit=contain,dpr=1,format=auto/https%3A%2F%2F1381247954-files.gitbook.io%2F~%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Fspaces%252FKdaoNjf9AzgWFNHyPo5b%252Flogo%252FmLXfeMg8Rtcxyzp20uhg%252FUMA_square_red_logo.png%3Falt%3Dmedia%26token%3Dc9574716-4c7a-4647-8bde-9b54866a0b46',
 		timestamp: '2020-11-23T01:40:34.305Z'
 	},
 	{

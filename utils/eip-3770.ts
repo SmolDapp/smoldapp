@@ -1,9 +1,9 @@
 // https://github.com/safe-global/safe-core-sdk/blob/main/packages/protocol-kit/src/utils/eip-3770/config.ts
 
 export type TNetworkShortName = {
-	shortName: string
-	chainId: number
-}
+	shortName: string;
+	chainId: number;
+};
 
 // https://github.com/ethereum-lists/chains/tree/master/_data/chains
 export const EIP3770_PREFIX: TNetworkShortName[] = [

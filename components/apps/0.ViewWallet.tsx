@@ -23,7 +23,8 @@ function SectionWalletSelection({onSelect}: TViewWalletProps): ReactElement {
 					onClick={async (): Promise<void> => {
 						await onConnect();
 						onSelect();
-					}} />
+					}}
+				/>
 			</div>
 		</Fragment>
 	);
@@ -31,11 +32,14 @@ function SectionWalletSelection({onSelect}: TViewWalletProps): ReactElement {
 
 function ViewWallet({onSelect}: TViewWalletProps): ReactElement {
 	return (
-		<section id={'wallet'} className={'pt-10'}>
+		<section
+			id={'wallet'}
+			className={'pt-10'}>
 			<div className={'box-0 grid w-full grid-cols-12 overflow-hidden'}>
 				<ViewSectionHeading
 					title={'Connect your Wallet'}
-					content={'Connect your wallet to start using this app.'} />
+					content={'Connect your wallet to start using this app.'}
+				/>
 				<div className={'col-span-12 grid grid-cols-12 gap-4 p-4 pt-0 md:gap-6 md:p-6 md:pt-0'}>
 					<SectionWalletSelection onSelect={onSelect} />
 				</div>

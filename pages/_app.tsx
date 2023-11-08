@@ -15,7 +15,7 @@ import {FeebackPopover} from '@common/FeebackPopover';
 import type {AppProps} from 'next/app';
 import type {ReactElement} from 'react';
 
-import	'../style.css';
+import '../style.css';
 
 const inter = Inter({
 	weight: ['400', '500', '600', '700'],
@@ -24,12 +24,18 @@ const inter = Inter({
 	variable: '--inter-font'
 });
 
-function	MyApp(props: AppProps): ReactElement {
+function MyApp(props: AppProps): ReactElement {
 	const {value: shouldHidePopover} = useLocalStorageValue<boolean>('smoldapp/feedback-popover');
 
 	return (
 		<>
-			<style jsx global>{`html {font-family: ${inter.style.fontFamily};}`}</style>
+			<style
+				jsx
+				global>{`
+				html {
+					font-family: ${inter.style.fontFamily};
+				}
+			`}</style>
 			<WithYearn supportedChains={[...SUPPORTED_CHAINS, localhost]}>
 				<TokenListContextApp>
 					<WalletContextApp>

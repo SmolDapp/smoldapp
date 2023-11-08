@@ -1,6 +1,6 @@
 import React, {createContext, useContext, useEffect, useMemo, useState} from 'react';
 import {scrollToTargetAdjusted} from 'utils/animations';
-import {coingeckoGasCoinIDs,HEADER_HEIGHT} from 'utils/constants';
+import {coingeckoGasCoinIDs, HEADER_HEIGHT} from 'utils/constants';
 import useSWR from 'swr';
 import {useMountEffect, useUpdateEffect} from '@react-hookz/web';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
@@ -10,23 +10,28 @@ import type {Dispatch, SetStateAction} from 'react';
 import type {TAddress, TDict} from '@yearn-finance/web-lib/types';
 import type {TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 
-export enum	Step {
+export enum Step {
 	WALLET = 'wallet',
 	FLOW = 'flow',
 	FLOW_DATA = 'flowData',
 	NEW_DEPLOY = 'newDeploy'
 }
 
-export type TDisperseElement = {address: TAddress | undefined, label: string, amount: TNormalizedBN | undefined, UUID: string};
+export type TDisperseElement = {
+	address: TAddress | undefined;
+	label: string;
+	amount: TNormalizedBN | undefined;
+	UUID: string;
+};
 export type TPriceFromGecko = TDict<{usd: number}>;
 
 export type TSelected = {
-	currentStep: Step,
-	selectedFlow: 'NONE' | 'EXISTING' | 'NEW',
-	set_currentStep: Dispatch<SetStateAction<Step>>
-	set_selectedFlow: Dispatch<SetStateAction<'NONE' | 'EXISTING' | 'NEW'>>
-	chainCoinPrices: TPriceFromGecko
-}
+	currentStep: Step;
+	selectedFlow: 'NONE' | 'EXISTING' | 'NEW';
+	set_currentStep: Dispatch<SetStateAction<Step>>;
+	set_selectedFlow: Dispatch<SetStateAction<'NONE' | 'EXISTING' | 'NEW'>>;
+	chainCoinPrices: TPriceFromGecko;
+};
 const defaultProps: TSelected = {
 	currentStep: Step.WALLET,
 	selectedFlow: 'NONE',
@@ -47,10 +52,10 @@ export const SafeCreatorContextApp = ({children}: {children: React.ReactElement}
 	);
 
 	/**********************************************************************************************
-	** This effect is used to directly jump the UI to the FLOW section if the wallet is
-	** already connected or if the wallet is a special wallet type (e.g. EMBED_LEDGER).
-	** If the wallet is not connected, jump to the WALLET section to connect.
-	**********************************************************************************************/
+	 ** This effect is used to directly jump the UI to the FLOW section if the wallet is
+	 ** already connected or if the wallet is a special wallet type (e.g. EMBED_LEDGER).
+	 ** If the wallet is not connected, jump to the WALLET section to connect.
+	 **********************************************************************************************/
 	useEffect((): void => {
 		const isEmbedWallet = isWalletLedger || isWalletSafe;
 		if ((isActive && address) || isEmbedWallet) {
@@ -61,10 +66,10 @@ export const SafeCreatorContextApp = ({children}: {children: React.ReactElement}
 	}, [address, isActive, isWalletLedger, isWalletSafe]);
 
 	/**********************************************************************************************
-	** This effect is used to handle some UI transitions and sections jumps. Once the current step
-	** changes, we need to scroll to the correct section.
-	** This effect is triggered only on mount to set the initial scroll position.
-	**********************************************************************************************/
+	 ** This effect is used to handle some UI transitions and sections jumps. Once the current step
+	 ** changes, we need to scroll to the correct section.
+	 ** This effect is triggered only on mount to set the initial scroll position.
+	 **********************************************************************************************/
 	useMountEffect((): void => {
 		setTimeout((): void => {
 			const isEmbedWallet = isWalletLedger || isWalletSafe;
@@ -81,11 +86,11 @@ export const SafeCreatorContextApp = ({children}: {children: React.ReactElement}
 	});
 
 	/**********************************************************************************************
-	** This effect is used to handle some UI transitions and sections jumps. Once the current step
-	** changes, we need to scroll to the correct section.
-	** This effect is ignored on mount but will be triggered on every update to set the correct
-	** scroll position.
-	**********************************************************************************************/
+	 ** This effect is used to handle some UI transitions and sections jumps. Once the current step
+	 ** changes, we need to scroll to the correct section.
+	 ** This effect is ignored on mount but will be triggered on every update to set the correct
+	 ** scroll position.
+	 **********************************************************************************************/
 	useUpdateEffect((): void => {
 		setTimeout((): void => {
 			let currentStepContainer;
@@ -111,13 +116,16 @@ export const SafeCreatorContextApp = ({children}: {children: React.ReactElement}
 		}, 0);
 	}, [currentStep, isWalletLedger, isWalletSafe]);
 
-	const contextValue = useMemo((): TSelected => ({
-		currentStep,
-		selectedFlow,
-		set_selectedFlow,
-		set_currentStep,
-		chainCoinPrices: chainCoinPrices || {}
-	}), [currentStep, selectedFlow, chainCoinPrices]);
+	const contextValue = useMemo(
+		(): TSelected => ({
+			currentStep,
+			selectedFlow,
+			set_selectedFlow,
+			set_currentStep,
+			chainCoinPrices: chainCoinPrices || {}
+		}),
+		[currentStep, selectedFlow, chainCoinPrices]
+	);
 
 	return (
 		<SafeCreatorContext.Provider value={contextValue}>
@@ -128,6 +136,5 @@ export const SafeCreatorContextApp = ({children}: {children: React.ReactElement}
 		</SafeCreatorContext.Provider>
 	);
 };
-
 
 export const useSafeCreator = (): TSelected => useContext(SafeCreatorContext);

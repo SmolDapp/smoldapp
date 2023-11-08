@@ -5,16 +5,16 @@ import type {TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber'
 export type Maybe<T> = T | null | undefined;
 
 export type TToken = {
-	address: TAddress,
-	name: string,
-	symbol: string,
-	decimals: number,
-	chainId: number,
-	logoURI?: string,
+	address: TAddress;
+	name: string;
+	symbol: string;
+	decimals: number;
+	chainId: number;
+	logoURI?: string;
 	extra?: boolean;
 };
 
 export type TTokenWithAmount = TToken & {
-	amount: TNormalizedBN,
-	amountWithSlippage?: string,
-}
+	amount: TNormalizedBN;
+	amountWithSlippage?: string;
+};

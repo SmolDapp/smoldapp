@@ -13,7 +13,10 @@ const ERC20ABI_TRANSFER: AbiItem = {
 	name: 'transfer',
 	type: 'function',
 	stateMutability: 'nonpayable',
-	inputs: [{name: '_to', type: 'address'}, {name: '_value', type: 'uint256'}],
+	inputs: [
+		{name: '_to', type: 'address'},
+		{name: '_value', type: 'uint256'}
+	],
 	outputs: [{name: '', type: 'bool'}]
 };
 const ERC1155_TRANSFERBATCH: AbiItem = {
@@ -46,11 +49,7 @@ const ERC721_TRANSFER: AbiItem = {
 	outputs: []
 };
 
-export function getTransferTransaction(
-	amount: string,
-	token: TAddress,
-	recipient: string
-): BaseTransaction {
+export function getTransferTransaction(amount: string, token: TAddress, recipient: string): BaseTransaction {
 	if (token === toAddress(ETH_TOKEN_ADDRESS)) {
 		return {to: recipient, value: amount, data: '0x'};
 	}
@@ -75,15 +74,7 @@ export function getSafeBatchTransferFrom1155(
 	return {
 		to: collection,
 		value: '0',
-		data: coder.encodeFunctionCall(
-			ERC1155_TRANSFERBATCH, [
-				from,
-				to,
-				tokenIDs as never,
-				amounts as never,
-				'0x'
-			]
-		)
+		data: coder.encodeFunctionCall(ERC1155_TRANSFERBATCH, [from, to, tokenIDs as never, amounts as never, '0x'])
 	};
 }
 
@@ -97,13 +88,6 @@ export function getSafeTransferFrom721(
 	return {
 		to: collection,
 		value: '0',
-		data: coder.encodeFunctionCall(
-			ERC721_TRANSFER, [
-				from,
-				to,
-				tokenID.toString(),
-				'0x'
-			]
-		)
+		data: coder.encodeFunctionCall(ERC721_TRANSFER, [from, to, tokenID.toString(), '0x'])
 	};
 }
