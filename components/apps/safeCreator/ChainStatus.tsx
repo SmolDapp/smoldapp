@@ -250,6 +250,7 @@ function ChainStatus({
 
 			const result = await multicall({
 				connector: provider,
+				chainID: chain.id,
 				contractAddress: getNetwork(chain.id).contracts.multicall3?.address,
 				multicallData: multicallData,
 				statusHandler: set_cloneStatus

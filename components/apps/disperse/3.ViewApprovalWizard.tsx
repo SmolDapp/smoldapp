@@ -11,6 +11,7 @@ import {useDisperse} from '@disperse/useDisperse';
 import {useSafeAppsSDK} from '@gnosis.pm/safe-apps-react-sdk';
 import {toast} from '@yearn-finance/web-lib/components/yToast';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
+import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {isZeroAddress, toAddress} from '@yearn-finance/web-lib/utils/address';
 import {ETH_TOKEN_ADDRESS, ZERO_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
 import {formatBigNumberAsAmount, toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
@@ -29,6 +30,7 @@ type TApprovalWizardProps = {
 };
 function ApprovalWizard({refetch, allowance}: TApprovalWizardProps): ReactElement {
 	const {provider} = useWeb3();
+	const {safeChainID} = useChainID();
 	const {tokenToDisperse, disperseArray} = useDisperse();
 	const [approvalStatus, set_approvalStatus] = useState(defaultTxStatus);
 
@@ -48,6 +50,7 @@ function ApprovalWizard({refetch, allowance}: TApprovalWizardProps): ReactElemen
 		}
 		const result = await approveERC20({
 			connector: provider,
+			chainID: safeChainID,
 			contractAddress: toAddress(tokenToDisperse?.address),
 			spenderAddress: toAddress(process.env.DISPERSE_ADDRESS),
 			amount: totalToDisperse,
@@ -57,7 +60,7 @@ function ApprovalWizard({refetch, allowance}: TApprovalWizardProps): ReactElemen
 			await refetch();
 			return document.getElementById('DISPERSE_TOKENS')?.click();
 		}
-	}, [provider, tokenToDisperse, totalToDisperse, refetch]);
+	}, [provider, tokenToDisperse, totalToDisperse, refetch, safeChainID]);
 
 	function renderStatusIndicator(): ReactElement {
 		if (allowance >= totalToDisperse) {
@@ -133,7 +136,8 @@ function DisperseWizardItem({row}: {row: TDisperseElement}): ReactElement {
 }
 
 function ViewApprovalWizard(): ReactElement {
-	const {address, provider, isWalletSafe, chainID} = useWeb3();
+	const {address, provider, isWalletSafe} = useWeb3();
+	const {safeChainID} = useChainID();
 	const {onResetDisperse, tokenToDisperse, disperseArray, isDispersed} = useDisperse();
 	const {refresh} = useWallet();
 	const {sdk} = useSafeAppsSDK();
@@ -179,7 +183,7 @@ function ViewApprovalWizard(): ReactElement {
 			console.log({hash: safeTxHash});
 			toast({type: 'success', content: 'Your transaction has been created! You can now sign and execute it!'});
 			notifyDisperse({
-				chainID: chainID,
+				chainID: safeChainID,
 				tokenToDisperse: tokenToDisperse,
 				receivers: disperseAddresses,
 				amounts: disperseAmount,
@@ -193,7 +197,7 @@ function ViewApprovalWizard(): ReactElement {
 				content: (error as BaseError)?.message || 'An error occured while creating your transaction!'
 			});
 		}
-	}, [address, chainID, disperseArray, sdk.txs, tokenToDisperse]);
+	}, [address, safeChainID, disperseArray, sdk.txs, tokenToDisperse]);
 
 	const onDisperseTokens = useCallback(async (): Promise<void> => {
 		if (isWalletSafe) {
@@ -216,6 +220,7 @@ function ViewApprovalWizard(): ReactElement {
 		if (tokenToDisperse.address === ETH_TOKEN_ADDRESS) {
 			const result = await disperseETH({
 				connector: provider,
+				chainID: safeChainID,
 				contractAddress: toAddress(process.env.DISPERSE_ADDRESS),
 				receivers: disperseAddresses,
 				amounts: disperseAmount,
@@ -233,7 +238,7 @@ function ViewApprovalWizard(): ReactElement {
 				]);
 				if (result.receipt) {
 					notifyDisperse({
-						chainID: chainID,
+						chainID: safeChainID,
 						tokenToDisperse: tokenToDisperse,
 						receivers: disperseAddresses,
 						amounts: disperseAmount,
@@ -246,6 +251,7 @@ function ViewApprovalWizard(): ReactElement {
 		} else {
 			const result = await disperseERC20({
 				connector: provider,
+				chainID: safeChainID,
 				contractAddress: toAddress(process.env.DISPERSE_ADDRESS),
 				tokenToDisperse: toAddress(tokenToDisperse.address),
 				receivers: disperseAddresses,
@@ -264,7 +270,7 @@ function ViewApprovalWizard(): ReactElement {
 				]);
 				if (result.receipt) {
 					notifyDisperse({
-						chainID: chainID,
+						chainID: safeChainID,
 						tokenToDisperse,
 						receivers: disperseAddresses,
 						amounts: disperseAmount,
@@ -283,7 +289,7 @@ function ViewApprovalWizard(): ReactElement {
 		provider,
 		onResetDisperse,
 		refresh,
-		chainID
+		safeChainID
 	]);
 
 	function renderStatusIndicator(): ReactElement {

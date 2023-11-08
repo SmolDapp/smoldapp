@@ -168,8 +168,8 @@ function ViewApprovalWizard(): ReactElement {
 				return newNFTs;
 			});
 		},
-		[]
-	); // eslint-disable-line react-hooks/exhaustive-deps
+		[set_nfts]
+	);
 
 	/**********************************************************************************************
 	 ** onMigrateError is called when the migration is not successful. We need to update the
@@ -206,6 +206,7 @@ function ViewApprovalWizard(): ReactElement {
 
 			const result = await approveAllERC721({
 				connector: provider,
+				chainID: safeChainID,
 				contractAddress: toAddress(collectionAddress),
 				spenderAddress: toAddress(NFTMIGRATOOOR_CONTRACT_PER_CHAIN[safeChainID]),
 				shouldAllow: true,
@@ -251,6 +252,7 @@ function ViewApprovalWizard(): ReactElement {
 
 			const result = await transferERC721({
 				connector: provider,
+				chainID: safeChainID,
 				contractAddress: toAddress(asset.collection.address),
 				receiverAddress: toAddress(destinationAddress),
 				tokenID: toBigInt(asset.tokenID),
@@ -264,7 +266,7 @@ function ViewApprovalWizard(): ReactElement {
 			}
 			return false;
 		},
-		[destinationAddress, onMigrateError, onMigrateSuccess, provider]
+		[destinationAddress, onMigrateError, onMigrateSuccess, provider, safeChainID]
 	);
 
 	/**********************************************************************************************
@@ -294,6 +296,7 @@ function ViewApprovalWizard(): ReactElement {
 
 			const result = await batchTransferERC721({
 				connector: provider,
+				chainID: safeChainID,
 				contractAddress: toAddress(NFTMIGRATOOOR_CONTRACT_PER_CHAIN[safeChainID]),
 				collectionAddress: toAddress(collectionAddress),
 				receiverAddress: toAddress(destinationAddress),
@@ -335,6 +338,7 @@ function ViewApprovalWizard(): ReactElement {
 
 				const result = await transferERC1155({
 					connector: provider,
+					chainID: safeChainID,
 					contractAddress: toAddress(collectionAddress),
 					receiverAddress: destinationAddress,
 					tokenIDs,
@@ -352,7 +356,7 @@ function ViewApprovalWizard(): ReactElement {
 			}
 			return false;
 		},
-		[destinationAddress, onMigrateError, onMigrateSuccess, provider]
+		[destinationAddress, onMigrateError, onMigrateSuccess, provider, safeChainID]
 	);
 
 	/**********************************************************************************************
@@ -368,6 +372,7 @@ function ViewApprovalWizard(): ReactElement {
 			}
 			const [filteredTokenIDs, filteredAmounts] = await listERC1155({
 				connector: provider,
+				chainID: safeChainID,
 				contractAddress: toAddress(collectionAddress),
 				tokenIDs: tokenIDs
 			});
@@ -379,7 +384,7 @@ function ViewApprovalWizard(): ReactElement {
 				filteredAmounts
 			);
 		},
-		[address, destinationAddress, provider]
+		[address, destinationAddress, provider, safeChainID]
 	);
 
 	const onMigrateSomeERC721TokensFromGnosis = useCallback(

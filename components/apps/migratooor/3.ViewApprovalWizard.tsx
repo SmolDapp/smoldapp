@@ -8,6 +8,7 @@ import ApprovalWizardItem from '@migratooor/ApprovalWizardItem';
 import {useMigratooor} from '@migratooor/useMigratooor';
 import {toast} from '@yearn-finance/web-lib/components/yToast';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
+import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {isZeroAddress, toAddress} from '@yearn-finance/web-lib/utils/address';
 import {ETH_TOKEN_ADDRESS, ZERO_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
 import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
@@ -22,7 +23,8 @@ import type {BaseTransaction} from '@gnosis.pm/safe-apps-sdk';
 import type {TSelectedElement, TSelectedStatus} from '@migratooor/useMigratooor';
 
 function ViewApprovalWizard(): ReactElement {
-	const {address, chainID} = useWeb3();
+	const {address} = useWeb3();
+	const {safeChainID} = useChainID();
 	const {selected, set_selected, destinationAddress} = useMigratooor();
 	const {balances, refresh, balancesNonce} = useWallet();
 	const {isWalletSafe, provider} = useWeb3();
@@ -51,7 +53,7 @@ function ViewApprovalWizard(): ReactElement {
 	 **********************************************************************************************/
 	const handleSuccessCallback = useCallback(
 		async (tokenAddress: TAddress): Promise<TDict<TBalanceData>> => {
-			const chainCoin = getNetwork(chainID).nativeCurrency;
+			const chainCoin = getNetwork(safeChainID).nativeCurrency;
 			const tokensToRefresh = [
 				{
 					token: ETH_TOKEN_ADDRESS,
@@ -73,7 +75,7 @@ function ViewApprovalWizard(): ReactElement {
 			balancesNonce; // Disable eslint warning
 			return updatedBalances;
 		},
-		[balances, balancesNonce, chainID, refresh]
+		[balances, balancesNonce, safeChainID, refresh]
 	);
 
 	/**********************************************************************************************
@@ -85,6 +87,7 @@ function ViewApprovalWizard(): ReactElement {
 			onUpdateStatus(token.address, 'pending');
 			const result = await transferERC20({
 				connector: provider,
+				chainID: safeChainID,
 				contractAddress: token.address,
 				receiverAddress: destinationAddress,
 				amount: toBigInt(token.amount?.raw)
@@ -112,6 +115,7 @@ function ViewApprovalWizard(): ReactElement {
 			toBigInt(selected[ETH_TOKEN_ADDRESS]?.amount?.raw) >= toBigInt(balances[ETH_TOKEN_ADDRESS]?.raw);
 		const result = await transferEther({
 			connector: provider,
+			chainID: safeChainID,
 			receiverAddress: destinationAddress,
 			amount: toBigInt(selected[ETH_TOKEN_ADDRESS]?.amount?.raw),
 			shouldAdjustForGas: isSendingBalance
@@ -156,7 +160,7 @@ function ViewApprovalWizard(): ReactElement {
 					content: 'Your transaction has been created! You can now sign and execute it!'
 				});
 				notifyMigrate({
-					chainID: chainID,
+					chainID: safeChainID,
 					to: destinationAddress,
 					tokensMigrated: migratedTokens,
 					hashes: migratedTokens.map((): Hex => safeTxHash as Hex),
@@ -170,7 +174,7 @@ function ViewApprovalWizard(): ReactElement {
 				});
 			}
 		},
-		[destinationAddress, sdk.txs, chainID, address]
+		[destinationAddress, sdk.txs, safeChainID, address]
 	);
 
 	/**********************************************************************************************
@@ -213,7 +217,7 @@ function ViewApprovalWizard(): ReactElement {
 
 		if (migratedTokens.length > 0) {
 			notifyMigrate({
-				chainID: chainID,
+				chainID: safeChainID,
 				to: destinationAddress,
 				tokensMigrated: migratedTokens,
 				hashes: hashMessage,
@@ -223,7 +227,7 @@ function ViewApprovalWizard(): ReactElement {
 		}
 	}, [
 		address,
-		chainID,
+		safeChainID,
 		destinationAddress,
 		isWalletSafe,
 		onMigrateERC20,
@@ -270,7 +274,7 @@ function ViewApprovalWizard(): ReactElement {
 							token={{
 								address: ETH_TOKEN_ADDRESS,
 								destination: toAddress(destinationAddress),
-								symbol: getNetwork(chainID).nativeCurrency.symbol,
+								symbol: getNetwork(safeChainID).nativeCurrency.symbol,
 								amount: `~ ${Number(selected?.[ETH_TOKEN_ADDRESS]?.amount?.normalized || 0)}`
 							}}
 						/>
