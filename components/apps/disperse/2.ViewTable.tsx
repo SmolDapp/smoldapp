@@ -236,7 +236,6 @@ const ViewTable = memo(function ViewTable({onProceed}: {onProceed: VoidFunction}
 		}));
 	}
 	function onHandleMultiplePaste(UUID: string, pasted: string): void {
-		console.log(UUID, pasted);
 		const separators = [' ', '-', ';', ',', '.'];
 		const addressAmounts = pasted.replaceAll(' ', '').replaceAll('\t', '').split('\n').map((line): [string, string] => {
 			//remove all separators that are next to each other
