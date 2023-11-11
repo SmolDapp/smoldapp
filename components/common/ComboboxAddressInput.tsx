@@ -154,9 +154,9 @@ function ComboboxAddressInput({possibleValues, value, onChangeValue, onAddValue}
 						)}/logo-128.png`
 					}
 				};
-				onChangeValue(_selected);
-				set_isOpen(false);
 			});
+			onChangeValue(_selected);
+			set_isOpen(false);
 		},
 		[possibleValues, fetchToken, safeChainID, onAddValue, onChangeValue, set_isOpen]
 	);
