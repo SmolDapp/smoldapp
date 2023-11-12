@@ -299,6 +299,7 @@ const ViewTable = memo(function ViewTable({onProceed}: {onProceed: VoidFunction}
 				);
 				return [addressAmount[0], addressAmount[1]];
 			});
+
 		const newRows = addressAmounts.map((addressAmount): TDisperseElement => {
 			const row = newVoidRow();
 			row.address = toAddress(addressAmount[0]);
@@ -318,16 +319,13 @@ const ViewTable = memo(function ViewTable({onProceed}: {onProceed: VoidFunction}
 			}
 			return row;
 		});
-		const excludingEmptyRows = newRows.filter((row): boolean =>
-			Boolean(row.address && row.amount && !isZeroAddress(row.address) && toBigInt(row.amount?.raw) !== 0n)
-		);
 		set_disperseArray(
 			disperseArray.reduce((acc, row): TDisperseElement[] => {
 				if (row.UUID === UUID) {
 					if (row.address && row.amount && !isZeroAddress(row.address) && row.amount.raw !== 0n) {
-						return [...acc, row, ...excludingEmptyRows];
+						return [...acc, row, ...newRows];
 					}
-					return [...acc, ...excludingEmptyRows];
+					return [...acc, ...newRows];
 				}
 				return [...acc, row];
 			}, [] as TDisperseElement[])
