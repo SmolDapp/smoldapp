@@ -14,7 +14,7 @@ import {ImageWithFallback} from '@common/ImageWithFallback';
 
 import type {ChangeEvent, ReactElement} from 'react';
 import type {TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
-import type {TToken} from '@utils/types';
+import type {TToken} from '@utils/types/types';
 
 type TViewFromToken = {
 	token: TToken;

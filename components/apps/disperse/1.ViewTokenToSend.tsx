@@ -12,7 +12,7 @@ import ViewSectionHeading from '@common/ViewSectionHeading';
 
 import type {ReactElement} from 'react';
 import type {TDict} from '@yearn-finance/web-lib/types';
-import type {TToken} from '@utils/types';
+import type {TToken} from '@utils/types/types';
 
 function ViewTokenToSend({onProceed}: {onProceed: VoidFunction}): ReactElement {
 	const {safeChainID} = useChainID();

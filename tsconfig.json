@@ -10,8 +10,7 @@
 			"@nftmigratooor/*": ["components/apps/nftmigratooor/*"],
 			"@tokenlistooor/*": ["components/apps/tokenlistooor/*"],
 			"@safeCreatooor/*": ["components/apps/safeCreator/*"],
-			"@utils/*": ["utils/*"],
-			"@types": ["utils/types"]
+			"@utils/*": ["utils/*"]
 		},
 		"types": ["bun-types"],
 		"target": "esnext",

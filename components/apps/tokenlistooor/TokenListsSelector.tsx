@@ -10,7 +10,7 @@ import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import type {TTokenListItem, TTokenListSummary} from 'pages/tokenlistooor';
 import type {ReactElement} from 'react';
 import type {TDict} from '@yearn-finance/web-lib/types';
-import type {TToken} from '@utils/types';
+import type {TToken} from '@utils/types/types';
 
 type TTokenList = {
 	name: string;

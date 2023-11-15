@@ -9,7 +9,7 @@ import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 import type {Dispatch, SetStateAction} from 'react';
 import type {TAddress} from '@yearn-finance/web-lib/types';
 import type {TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
-import type {TToken} from '../../../utils/types';
+import type {TToken} from '@utils/types/types';
 
 export enum Step {
 	WALLET = 'wallet',

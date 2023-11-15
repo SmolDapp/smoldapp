@@ -10,7 +10,7 @@ import {TokenListHandlerPopover} from '@common/TokenList/TokenListHandlerPopover
 import type {AxiosResponse} from 'axios';
 import type {Dispatch, SetStateAction} from 'react';
 import type {TAddress, TDict} from '@yearn-finance/web-lib/types';
-import type {TToken, TTokenList} from '@utils/types';
+import type {TToken, TTokenList} from '@utils/types/types';
 
 export type TTokenListProps = {
 	tokenList: TDict<TToken>;

@@ -14,7 +14,7 @@ import type {TUseBalancesTokens} from '@yearn-finance/web-lib/hooks/useBalances'
 import type {TAddress, TDict} from '@yearn-finance/web-lib/types';
 import type {TBalanceData} from '@yearn-finance/web-lib/types/hooks';
 import type {TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
-import type {TToken} from '@utils/types';
+import type {TToken} from '@utils/types/types';
 
 export type TWalletContext = {
 	balances: TDict<TBalanceData>;

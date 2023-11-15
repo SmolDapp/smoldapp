@@ -17,7 +17,7 @@ import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
 
 import type {Dispatch, ReactElement, SetStateAction} from 'react';
 import type {TAddress, TDict} from '@yearn-finance/web-lib/types';
-import type {TToken} from '@utils/types';
+import type {TToken} from '@utils/types/types';
 
 type TComboboxAddressInput = {
 	value: string;

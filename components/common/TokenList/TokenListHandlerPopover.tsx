@@ -5,7 +5,7 @@ import {ImageWithFallback} from '@common/ImageWithFallback';
 import {TokenListAddBox} from '@common/TokenList/TokenListAddBox';
 
 import type {Dispatch, ReactElement, SetStateAction} from 'react';
-import type {TToken, TTokenList} from '@utils/types';
+import type {TToken, TTokenList} from '@utils/types/types';
 
 type TTokenListHandlerPopover = {
 	lists: TTokenList[];

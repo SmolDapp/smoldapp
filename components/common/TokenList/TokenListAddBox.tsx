@@ -11,7 +11,7 @@ import {toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import AddressInput, {defaultInputAddressLike} from '@common/AddressInput';
 
 import type {TInputAddressLike} from '@common/AddressInput';
-import type {TToken, TTokenList} from '@utils/types';
+import type {TToken, TTokenList} from '@utils/types/types';
 
 type TValue = {
 	label: string;
