@@ -42,7 +42,6 @@ function AppWrapper(props: AppProps): ReactElement {
 			<Meta />
 			<Header />
 			<div className={'relative mx-auto mb-0 flex min-h-screen w-full flex-row pt-0'}>
-				{/* <SideBar /> */}
 				<AnimatePresence mode={'wait'}>
 					<motion.div
 						key={router.pathname}

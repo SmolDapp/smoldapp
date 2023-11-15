@@ -2,7 +2,7 @@ import React from 'react';
 
 import type {ReactElement} from 'react';
 
-function IconCheck(props: React.SVGProps<SVGSVGElement>): ReactElement {
+export function IconCircleCheck(props: React.SVGProps<SVGSVGElement>): ReactElement {
 	return (
 		<svg
 			{...props}
@@ -18,5 +18,3 @@ function IconCheck(props: React.SVGProps<SVGSVGElement>): ReactElement {
 		</svg>
 	);
 }
-
-export default IconCheck;

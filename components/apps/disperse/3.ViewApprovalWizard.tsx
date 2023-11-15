@@ -1,6 +1,6 @@
 import React, {useCallback, useMemo, useState} from 'react';
-import IconCheck from 'components/icons/IconCheck';
-import IconCircleCross from 'components/icons/IconCircleCross';
+import {IconCircleCheck} from 'components/icons/IconCircleCheck';
+import {IconCircleCross} from 'components/icons/IconCircleCross';
 import IconSpinner from 'components/icons/IconSpinner';
 import useWallet from 'contexts/useWallet';
 import {approveERC20, disperseERC20, disperseETH, isApprovedERC20} from 'utils/actions';
@@ -64,13 +64,13 @@ function ApprovalWizard({refetch, allowance}: TApprovalWizardProps): ReactElemen
 
 	function renderStatusIndicator(): ReactElement {
 		if (allowance >= totalToDisperse) {
-			return <IconCheck className={'h-3 w-3 text-[#16a34a]'} />;
+			return <IconCircleCheck className={'h-3 w-3 text-[#16a34a]'} />;
 		}
 		if (approvalStatus.pending) {
 			return <IconSpinner className={'h-3 w-3'} />;
 		}
 		if (approvalStatus.success) {
-			return <IconCheck className={'h-3 w-3 text-[#16a34a]'} />;
+			return <IconCircleCheck className={'h-3 w-3 text-[#16a34a]'} />;
 		}
 		if (approvalStatus.error) {
 			return <IconCircleCross className={'h-3 w-3 text-[#e11d48]'} />;
@@ -294,13 +294,13 @@ function ViewApprovalWizard(): ReactElement {
 
 	function renderStatusIndicator(): ReactElement {
 		if (isDispersed) {
-			return <IconCheck className={'h-3 w-3 text-[#16a34a]'} />;
+			return <IconCircleCheck className={'h-3 w-3 text-[#16a34a]'} />;
 		}
 		if (disperseStatus.pending) {
 			return <IconSpinner className={'h-3 w-3'} />;
 		}
 		if (disperseStatus.success) {
-			return <IconCheck className={'h-3 w-3 text-[#16a34a]'} />;
+			return <IconCircleCheck className={'h-3 w-3 text-[#16a34a]'} />;
 		}
 		if (disperseStatus.error) {
 			return <IconCircleCross className={'h-3 w-3 text-[#e11d48]'} />;

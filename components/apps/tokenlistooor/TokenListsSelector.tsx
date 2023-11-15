@@ -1,7 +1,7 @@
 import {useEffect, useRef, useState} from 'react';
 import {ImageWithFallback} from 'components/common/ImageWithFallback';
 import SmallButton from 'components/common/SmallButton';
-import IconCheck from 'components/icons/IconCheck';
+import {IconCircleCheck} from 'components/icons/IconCircleCheck';
 import {useWallet} from 'contexts/useWallet';
 import axios from 'axios';
 import {useMountEffect, useThrottledCallback} from '@react-hookz/web';
@@ -9,20 +9,12 @@ import {toAddress} from '@yearn-finance/web-lib/utils/address';
 
 import type {TTokenListItem, TTokenListSummary} from 'pages/tokenlistooor';
 import type {ReactElement} from 'react';
-import type {TAddress, TDict} from '@yearn-finance/web-lib/types';
+import type {TDict} from '@yearn-finance/web-lib/types';
+import type {TToken} from '@utils/types';
 
 type TTokenList = {
 	name: string;
-	tokens: TTokenInfo[];
-};
-
-type TTokenInfo = {
-	chainId: number;
-	address: TAddress;
-	name: string;
-	symbol: string;
-	decimals: number;
-	logoURI: string;
+	tokens: TToken[];
 };
 
 async function fetchTokenListSummary(): Promise<TTokenListSummary> {
@@ -39,7 +31,7 @@ function TokenListsSelector(): ReactElement {
 	const {refreshWithList} = useWallet();
 	const tokenListRef = useRef<TDict<TTokenList>>({});
 	const tokenListFetchedRef = useRef<TDict<boolean>>({});
-	const tokenListTokensRef = useRef<TDict<TTokenInfo>>({});
+	const tokenListTokensRef = useRef<TDict<TToken>>({});
 	const [selected, set_selected] = useState<TTokenListItem[]>([]);
 	const [isRefreshing, set_isRefreshing] = useState<TDict<boolean>>({});
 	const [tokenlists, set_tokenlists] = useState<TTokenListSummary | undefined>(undefined);
@@ -115,7 +107,7 @@ function TokenListsSelector(): ReactElement {
 									<b>{list.name}</b>
 									{selected.find((selectedList): boolean => selectedList.name === list.name) ? (
 										<div className={'flex h-6 items-center justify-end p-2 text-xs'}>
-											<IconCheck className={'h-4 w-4 text-[#16a34a]'} />
+											<IconCircleCheck className={'h-4 w-4 text-[#16a34a]'} />
 										</div>
 									) : (
 										<SmallButton

@@ -101,7 +101,7 @@ function ViewApprovalWizard(): ReactElement {
 			}
 			return result;
 		},
-		[destinationAddress, handleSuccessCallback, onUpdateStatus, provider]
+		[destinationAddress, handleSuccessCallback, onUpdateStatus, provider, safeChainID]
 	);
 
 	/**********************************************************************************************
@@ -128,7 +128,7 @@ function ViewApprovalWizard(): ReactElement {
 			onUpdateStatus(ETH_TOKEN_ADDRESS, 'error');
 		}
 		return result;
-	}, [balances, destinationAddress, handleSuccessCallback, onUpdateStatus, provider, selected]);
+	}, [balances, destinationAddress, handleSuccessCallback, onUpdateStatus, provider, safeChainID, selected]);
 
 	/**********************************************************************************************
 	 ** The onMigrateSelectedForGnosis function is called when the user clicks the 'Migrate' button

@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useRef} from 'react';
-import IconCircleCross from 'components/icons/IconCircleCross';
+import {IconCircleCross} from 'components/icons/IconCircleCross';
 import IconInfo from 'components/icons/IconInfo';
 import useWallet from 'contexts/useWallet';
 import handleInputChangeEventValue from 'utils/handleInputChangeEventValue';
@@ -13,8 +13,8 @@ import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 import {ImageWithFallback} from '@common/ImageWithFallback';
 
 import type {ChangeEvent, ReactElement} from 'react';
-import type {TToken} from 'utils/types';
 import type {TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
+import type {TToken} from '@utils/types';
 
 type TViewFromToken = {
 	token: TToken;
@@ -87,7 +87,7 @@ function TokenInput({
 						quality={90}
 						className={'h-6 w-6 md:h-10 md:w-10 md:min-w-[40px]'}
 						unoptimized
-						src={`https://assets.smold.app/api/token/${token.chainId}/${token.address}/logo-128.png`}
+						src={`https://assets.smold.app/api/token/${token.chainID}/${token.address}/logo-128.png`}
 						altSrc={token.logoURI || ''}
 					/>
 					<div>
@@ -100,7 +100,7 @@ function TokenInput({
 								'font-number mt-2 block !font-mono text-xxs text-neutral-600 transition-colors md:text-xs'
 							}>
 							<a
-								href={`${getNetwork(token.chainId).blockExplorers}/token/${token.address}`}
+								href={`${getNetwork(token.chainID).blockExplorers}/token/${token.address}`}
 								target={'_blank'}
 								rel={'noreferrer'}
 								className={'cursor-alias font-mono hover:text-neutral-900 hover:underline'}>

@@ -1,15 +1,21 @@
 import React, {useCallback, useMemo, useRef, useState} from 'react';
-import IconCheck from 'components/icons/IconCheck';
-import IconCircleCross from 'components/icons/IconCircleCross';
 import {checkENSValidity} from 'utils/tools.ens';
 import {checkLensValidity} from 'utils/tools.lens';
+import {IconCircleCheck} from '@icons/IconCircleCheck';
+import {IconCircleCross} from '@icons/IconCircleCross';
 import {IconLoader} from '@yearn-finance/web-lib/icons/IconLoader';
 import {isZeroAddress, toAddress} from '@yearn-finance/web-lib/utils/address';
+import {cl} from '@yearn-finance/web-lib/utils/cl';
 import {ZERO_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
 
 import type {ReactElement} from 'react';
 import type {TAddress} from '@yearn-finance/web-lib/types';
 
+export type TAddressInput = {
+	value: TInputAddressLike;
+	onChangeValue: (value: TInputAddressLike) => void;
+	inputClassName?: string;
+};
 export type TInputAddressLike = {
 	address: TAddress | undefined;
 	label: string;
@@ -21,13 +27,7 @@ export const defaultInputAddressLike: TInputAddressLike = {
 	isValid: false
 };
 
-function AddressInput({
-	value,
-	onChangeValue
-}: {
-	value: TInputAddressLike;
-	onChangeValue: (value: TInputAddressLike) => void;
-}): ReactElement {
+function AddressInput({value, onChangeValue, ...props}: TAddressInput): ReactElement {
 	const [isLoadingValidish, set_isLoadingValidish] = useState<boolean>(false);
 	const currentLabel = useRef<string>(value.label);
 	const isFocused = useRef<boolean>(false);
@@ -80,6 +80,7 @@ function AddressInput({
 		<div className={'smol--input-wrapper'}>
 			<input
 				aria-invalid={status === 'invalid'}
+				autoFocus
 				onFocus={async (): Promise<void> => {
 					isFocused.current = true;
 					onChange(value.label);
@@ -94,7 +95,7 @@ function AddressInput({
 				placeholder={'0x...'}
 				type={'text'}
 				value={value.label}
-				className={'smol--input font-mono font-bold'}
+				className={cl(props.inputClassName, 'smol--input font-mono font-bold')}
 			/>
 			<label
 				className={
@@ -102,7 +103,7 @@ function AddressInput({
 				}>
 				<span className={status === 'invalid' || status === 'warning' ? 'tooltip' : 'pointer-events-none'}>
 					<div className={'pointer-events-none relative h-4 w-4'}>
-						<IconCheck
+						<IconCircleCheck
 							className={`absolute h-4 w-4 text-[#16a34a] transition-opacity ${
 								status === 'valid' ? 'opacity-100' : 'opacity-0'
 							}`}

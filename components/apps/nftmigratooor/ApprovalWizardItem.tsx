@@ -1,7 +1,7 @@
 import React, {Fragment} from 'react';
-import IconCheck from 'components/icons/IconCheck';
 import IconChevronBoth from 'components/icons/IconChevronBoth';
-import IconCircleCross from 'components/icons/IconCircleCross';
+import {IconCircleCheck} from 'components/icons/IconCircleCheck';
+import {IconCircleCross} from 'components/icons/IconCircleCross';
 import IconSpinner from 'components/icons/IconSpinner';
 import {ETHEREUM_ENS_ADDRESS} from 'utils/constants';
 import {useNetwork} from 'wagmi';
@@ -30,7 +30,7 @@ function ApprovalWizardItem({
 
 	function renderApprovalIndication(): ReactElement {
 		if (collectionStatus?.approval === 'Approved' || collectionApprovalStatus === 'Approved') {
-			return <IconCheck className={'h-4 w-4 text-[#16a34a]'} />;
+			return <IconCircleCheck className={'h-4 w-4 text-[#16a34a]'} />;
 		}
 		if (collectionStatus?.approval === 'Approving') {
 			return <IconSpinner />;
@@ -43,7 +43,7 @@ function ApprovalWizardItem({
 
 	function renderExecuteIndication(): ReactElement {
 		if (collectionStatus?.execute === 'Executed') {
-			return <IconCheck className={'h-4 w-4 text-[#16a34a]'} />;
+			return <IconCircleCheck className={'h-4 w-4 text-[#16a34a]'} />;
 		}
 		if (collectionStatus?.execute === 'Executing') {
 			return <IconSpinner />;

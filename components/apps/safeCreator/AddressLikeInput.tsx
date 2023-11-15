@@ -1,6 +1,6 @@
 import React, {useCallback, useMemo, useState} from 'react';
-import IconCheck from 'components/icons/IconCheck';
-import IconCircleCross from 'components/icons/IconCircleCross';
+import {IconCircleCheck} from 'components/icons/IconCircleCheck';
+import {IconCircleCross} from 'components/icons/IconCircleCross';
 import IconWarning from 'components/icons/IconWarning';
 import {checkENSValidity} from 'utils/tools.ens';
 import {checkLensValidity} from 'utils/tools.lens';
@@ -123,7 +123,7 @@ function AddressLikeInput({
 				}>
 				<span className={status === 'invalid' || status === 'warning' ? 'tooltip' : 'pointer-events-none'}>
 					<div className={'pointer-events-none relative h-4 w-4'}>
-						<IconCheck
+						<IconCircleCheck
 							className={`absolute h-4 w-4 text-[#16a34a] transition-opacity ${
 								status === 'valid' ? 'opacity-100' : 'opacity-0'
 							}`}

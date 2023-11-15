@@ -1,5 +1,5 @@
 import {cloneElement} from 'react';
-import IconCheck from 'components/icons/IconCheck';
+import {IconCircleCheck} from 'components/icons/IconCircleCheck';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
 
 import type {ReactElement} from 'react';
@@ -32,7 +32,7 @@ export default function CardWithIcon({isSelected, onClick, label, icon}: TCardWi
 					{label}
 				</b>
 			</div>
-			<IconCheck
+			<IconCircleCheck
 				className={`absolute right-4 top-4 h-4 w-4 text-[#16a34a] transition-opacity ${
 					isSelected ? 'opacity-100' : 'opacity-0'
 				}`}
@@ -63,7 +63,7 @@ export function SmallCardWithIcon({isSelected, onClick, label, icon}: TCardWithI
 					{label}
 				</b>
 			</div>
-			<IconCheck
+			<IconCircleCheck
 				className={`absolute right-4 top-4 h-4 w-4 text-[#16a34a] transition-opacity ${
 					isSelected ? 'opacity-100' : 'opacity-0'
 				}`}

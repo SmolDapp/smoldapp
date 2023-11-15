@@ -19,8 +19,15 @@ function ImageWithFallback(props: ImageProps & {altSrc?: string}): ReactElement 
 		<Image
 			alt={alt}
 			src={imageSrc}
-			style={imageStyle}
 			loading={'eager'}
+			className={'animate-fadeIn'}
+			style={{
+				minWidth: props.width,
+				minHeight: props.height,
+				maxWidth: props.width,
+				maxHeight: props.height,
+				...imageStyle
+			}}
 			onError={(): void => {
 				if (altSrc && imageSrc !== `${altSrc}?fallback=true`) {
 					set_imageSrc(`${altSrc}?fallback=true`);

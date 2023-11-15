@@ -10,9 +10,9 @@ import {ETH_TOKEN_ADDRESS, ZERO_ADDRESS} from '@yearn-finance/web-lib/utils/cons
 import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 import ViewSectionHeading from '@common/ViewSectionHeading';
 
-import type {TTokenInfo} from 'contexts/useTokenList';
 import type {ReactElement} from 'react';
 import type {TDict} from '@yearn-finance/web-lib/types';
+import type {TToken} from '@utils/types';
 
 function ViewTokenToSend({onProceed}: {onProceed: VoidFunction}): ReactElement {
 	const {safeChainID} = useChainID();
@@ -20,7 +20,7 @@ function ViewTokenToSend({onProceed}: {onProceed: VoidFunction}): ReactElement {
 	const {tokenList} = useTokenList();
 	const [tokenToSend, set_tokenToSend] = useState<string>(ETH_TOKEN_ADDRESS);
 	const [isValidTokenToReceive, set_isValidTokenToReceive] = useState<boolean | 'undetermined'>(true);
-	const [possibleTokenToReceive, set_possibleTokenToReceive] = useState<TDict<TTokenInfo>>({});
+	const [possibleTokenToReceive, set_possibleTokenToReceive] = useState<TDict<TToken>>({});
 
 	/* 🔵 - Yearn Finance **************************************************************************
 	 ** On mount, fetch the token list from the tokenlistooor repo for the cowswap token list, which
@@ -28,12 +28,12 @@ function ViewTokenToSend({onProceed}: {onProceed: VoidFunction}): ReactElement {
 	 ** Only the tokens in that list will be displayed as possible destinations.
 	 **********************************************************************************************/
 	useDeepCompareEffect((): void => {
-		const possibleDestinationsTokens: TDict<TTokenInfo> = {};
+		const possibleDestinationsTokens: TDict<TToken> = {};
 		const {wrappedToken} = getNetwork(safeChainID).contracts;
 		if (wrappedToken) {
 			possibleDestinationsTokens[ETH_TOKEN_ADDRESS] = {
 				address: ETH_TOKEN_ADDRESS,
-				chainId: safeChainID,
+				chainID: safeChainID,
 				name: wrappedToken.coinName,
 				symbol: wrappedToken.coinSymbol,
 				decimals: wrappedToken.decimals,
@@ -41,7 +41,7 @@ function ViewTokenToSend({onProceed}: {onProceed: VoidFunction}): ReactElement {
 			};
 		}
 		for (const eachToken of Object.values(tokenList)) {
-			if (eachToken.chainId === safeChainID) {
+			if (eachToken.chainID === safeChainID) {
 				possibleDestinationsTokens[toAddress(eachToken.address)] = eachToken;
 			}
 		}
@@ -85,7 +85,7 @@ function ViewTokenToSend({onProceed}: {onProceed: VoidFunction}): ReactElement {
 										set_tokenToSend(newToken);
 										set_tokenToDisperse({
 											address: toAddress(newToken as string),
-											chainId: 1,
+											chainID: 1,
 											name: possibleTokenToReceive[toAddress(newToken as string)]?.name || '',
 											symbol: possibleTokenToReceive[toAddress(newToken as string)]?.symbol || '',
 											decimals:
@@ -97,7 +97,7 @@ function ViewTokenToSend({onProceed}: {onProceed: VoidFunction}): ReactElement {
 										set_tokenToSend(newToken);
 										set_tokenToDisperse({
 											address: toAddress(newToken as string),
-											chainId: 1,
+											chainID: 1,
 											name: possibleTokenToReceive[toAddress(newToken as string)]?.name || '',
 											symbol: possibleTokenToReceive[toAddress(newToken as string)]?.symbol || '',
 											decimals:
@@ -117,7 +117,7 @@ function ViewTokenToSend({onProceed}: {onProceed: VoidFunction}): ReactElement {
 									if (toAddress(tokenToSend) !== ZERO_ADDRESS) {
 										set_tokenToDisperse({
 											address: toAddress(tokenToSend),
-											chainId: 1,
+											chainID: 1,
 											name: possibleTokenToReceive[tokenToSend]?.name || '',
 											symbol: possibleTokenToReceive[tokenToSend]?.symbol || '',
 											decimals: possibleTokenToReceive[tokenToSend]?.decimals || 0,
@@ -126,7 +126,7 @@ function ViewTokenToSend({onProceed}: {onProceed: VoidFunction}): ReactElement {
 									}
 									onProceed();
 								}}
-								isDisabled={!isValidTokenToReceive || (tokenToDisperse?.chainId || 0) === 0}>
+								isDisabled={!isValidTokenToReceive || (tokenToDisperse?.chainID || 0) === 0}>
 								{'Next'}
 							</Button>
 						</div>

@@ -1,10 +1,10 @@
 import React, {useMemo, useState} from 'react';
 import {DefaultSeo} from 'next-seo';
-import TokenListCard, {LegacyTokenListCard} from 'components/common/TokenListCard';
-import TokenListHero from 'components/common/TokenListHero';
 import LEGACY_TOKEN_LISTS from 'utils/legacyTokenLists';
 import {motion} from 'framer-motion';
 import {MigratooorContextApp} from '@migratooor/useMigratooor';
+import TokenListCard, {LegacyTokenListCard} from '@tokenlistooor/TokenListCard';
+import TokenListHero from '@tokenlistooor/TokenListHero';
 
 import type {Variants} from 'framer-motion';
 import type {ReactElement} from 'react';

@@ -4,16 +4,21 @@
 		"baseUrl": ".",
 		"paths": {
 			"@common/*": ["components/common/*"],
+			"@icons/*": ["components/icons/*"],
 			"@disperse/*": ["components/apps/disperse/*"],
 			"@migratooor/*": ["components/apps/migratooor/*"],
 			"@nftmigratooor/*": ["components/apps/nftmigratooor/*"],
 			"@tokenlistooor/*": ["components/apps/tokenlistooor/*"],
-			"@safeCreatooor/*": ["components/apps/safeCreator/*"]
+			"@safeCreatooor/*": ["components/apps/safeCreator/*"],
+			"@utils/*": ["utils/*"],
+			"@types": ["utils/types"]
 		},
-		/* Basic Options */
+		"types": ["bun-types"],
 		"target": "esnext",
 		"module": "esnext",
 		"lib": ["es6", "es7", "esnext", "dom"],
+		"allowImportingTsExtensions": true,
+		"moduleDetection": "force",
 		"allowJs": true,
 		"jsx": "preserve",
 		"removeComments": false,
@@ -39,6 +44,8 @@
 		"noEmit": true,
 		"incremental": true,
 		"isolatedModules": true,
+		"composite": true,
+		"downlevelIteration": true,
 		"plugins": [{"name": "next"}]
 	},
 	"exclude": ["node_modules", "_app"],
@@ -48,6 +55,9 @@
 		"**/*.tsx",
 		"**/*.d.tsx",
 		"public",
+		"public/manifest.json",
+		"stylelint.config",
+		"commitlint.config",
 		"postcss.config.js",
 		"tailwind.config.js",
 		"next.config.js",

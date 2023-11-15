@@ -9,36 +9,9 @@ import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import {getClient} from '@yearn-finance/web-lib/utils/wagmi/utils';
 
-import type {TTokenInfo} from 'contexts/useTokenList';
 import type {TNFT} from 'utils/types/nftMigratooor';
-import type {ContractFunctionConfig, Hex} from 'viem';
-import type {TAddress, TDict} from '@yearn-finance/web-lib/types';
-
-export type TIncentives = {
-	protocol: TAddress;
-	protocolName: string;
-	incentive: TAddress;
-	depositor: TAddress;
-	amount: bigint;
-	value: number;
-	estimatedAPR: number;
-	blockNumber: bigint;
-	txHash: Hex;
-	incentiveToken?: TTokenInfo;
-};
-export type TGroupedIncentives = {
-	protocol: TAddress;
-	protocolName: string;
-	normalizedSum: number;
-	estimatedAPR: number;
-	usdPerStETH: number;
-	incentives: TIncentives[];
-};
-
-export type TIncentivesFor = {
-	protocols: TDict<TGroupedIncentives>;
-	user: TDict<TGroupedIncentives>;
-};
+import type {ContractFunctionConfig} from 'viem';
+import type {TAddress} from '@yearn-finance/web-lib/types';
 
 type TNFTLogged = {
 	id: string;
@@ -119,15 +92,13 @@ function useNFTs(): (userAddress: TAddress, chainID: number) => Promise<TNFT[]> 
 			];
 
 			if (toAddress(detected.address) === POLYGON_LENS_ADDRESS) {
-				const lensABI = parseAbi([
-					'function getHandle(uint256 profileId) external view returns (string memory)'
-				]);
+				const abi = parseAbi(['function getHandle(uint256 profileId) external view returns (string memory)']);
 				basicCalls.push({
-					abi: lensABI,
+					abi: abi,
 					functionName: 'getHandle',
 					args: [detected.tokenID],
 					address: detected.address
-				} satisfies ContractFunctionConfig<typeof lensABI>);
+				} satisfies ContractFunctionConfig<typeof abi>);
 			}
 			return basicCalls;
 		});

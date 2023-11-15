@@ -9,14 +9,14 @@ function decodeENS(ensName: string): string {
 }
 
 function decodeBase64(base64: string): string {
-	const json = JSON.parse(atob(base64.split(',')[1]));
+	const json = JSON.parse(atob(base64.split(',')[1])) as {image?: string; image_data?: string};
 	return json?.image || json?.image_data || '';
 }
 
 async function fetchAndDecodeJSON(url: string): Promise<string> {
 	try {
 		const response = await fetch(url);
-		const json = await response.json();
+		const json = (await response.json()) as {image?: string; image_data?: string};
 		return json?.image || json?.image_data || '';
 	} catch (e) {
 		console.warn(`Failed to fetch ${url}`);
@@ -29,7 +29,7 @@ async function fetchAndDecodeMaybeJSON(url: string): Promise<TMaybeJson> {
 	try {
 		const response = await fetch(url);
 		if (response.headers.get('content-type')?.includes('application/json')) {
-			const json = await response.json();
+			const json = (await response.json()) as {image?: string; image_data?: string};
 			return {
 				value: json?.image || json?.image_data || '',
 				isJSON: true,

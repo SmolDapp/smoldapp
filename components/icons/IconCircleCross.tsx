@@ -2,7 +2,7 @@ import React from 'react';
 
 import type {ReactElement} from 'react';
 
-function IconCircleCross(props: React.SVGProps<SVGSVGElement>): ReactElement {
+export function IconCircleCross(props: React.SVGProps<SVGSVGElement>): ReactElement {
 	return (
 		<svg
 			{...props}
@@ -18,5 +18,3 @@ function IconCircleCross(props: React.SVGProps<SVGSVGElement>): ReactElement {
 		</svg>
 	);
 }
-
-export default IconCircleCross;

@@ -1,6 +1,6 @@
 import React, {Fragment, memo, useCallback, useMemo, useState} from 'react';
-import IconCheck from 'components/icons/IconCheck';
-import IconCircleCross from 'components/icons/IconCircleCross';
+import {IconCircleCheck} from 'components/icons/IconCircleCheck';
+import {IconCircleCross} from 'components/icons/IconCircleCross';
 import IconSquareMinus from 'components/icons/IconSquareMinus';
 import IconSquarePlus from 'components/icons/IconSquarePlus';
 import IconWarning from 'components/icons/IconWarning';
@@ -16,11 +16,11 @@ import {isZeroAddress, toAddress} from '@yearn-finance/web-lib/utils/address';
 import {parseUnits, toBigInt, toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
 
-import type {TTokenInfo} from 'contexts/useTokenList';
 import type {ChangeEvent, ReactElement} from 'react';
 import type {TAddress} from '@yearn-finance/web-lib/types';
 import type {TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import type {TDisperseElement} from '@disperse/useDisperse';
+import type {TToken} from '../../../utils/types';
 
 type TAddressLikeInput = {
 	uuid: string;
@@ -132,7 +132,7 @@ function AddressLikeInput({
 				}>
 				<span className={status === 'invalid' || status === 'warning' ? 'tooltip' : 'pointer-events-none'}>
 					<div className={'pointer-events-none relative h-4 w-4'}>
-						<IconCheck
+						<IconCircleCheck
 							className={`absolute h-4 w-4 text-[#16a34a] transition-opacity ${
 								status === 'valid' ? 'opacity-100' : 'opacity-0'
 							}`}
@@ -170,7 +170,7 @@ function AmountToSendInput({
 	amount,
 	onChange
 }: {
-	token: TTokenInfo | undefined;
+	token: TToken | undefined;
 	amount: TNormalizedBN | undefined;
 	onChange: (amount: TNormalizedBN) => void;
 }): ReactElement {

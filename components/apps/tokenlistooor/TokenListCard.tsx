@@ -7,7 +7,7 @@ import relativeTime from 'dayjs/plugin/relativeTime.js';
 import weekday from 'dayjs/plugin/weekday.js';
 import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
 
-import {ImageWithFallback} from './ImageWithFallback';
+import {ImageWithFallback} from '../../common/ImageWithFallback';
 
 import type {TTokenListItem} from 'pages/tokenlistooor';
 import type {ReactElement} from 'react';
