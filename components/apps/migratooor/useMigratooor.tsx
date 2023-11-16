@@ -21,7 +21,7 @@ export type TSelectedElement = {
 	address: TAddress;
 	symbol: string;
 	decimals: number;
-	amount: TNormalizedBN;
+	amount: TNormalizedBN | undefined;
 	status: TSelectedStatus;
 	isSelected: boolean;
 };

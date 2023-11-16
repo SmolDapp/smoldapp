@@ -26,6 +26,7 @@ function TableLine({
 	balance: TBalanceData;
 	index: number;
 }): ReactElement {
+	const {getBalance} = useWallet();
 	const {tokenList} = useTokenList();
 	const {selected, set_selected} = useMigratooor();
 	const inputRef = useRef<HTMLInputElement>(null);
@@ -72,7 +73,7 @@ function TableLine({
 						address: tokenAddress,
 						symbol: tokenSymbol,
 						decimals: tokenDecimals,
-						amount: {raw: -1n, normalized: 0},
+						amount: undefined,
 						status: 'none',
 						isSelected: false
 					}
@@ -87,33 +88,27 @@ function TableLine({
 
 	return (
 		<Fragment>
-			<div className={'relative col-span-12 flex w-full flex-row items-center gap-3'}>
-				<div className={'absolute right-4 top-2 z-20 md:relative md:right-auto md:top-auto'}>
-					<input
-						ref={inputRef}
-						type={'checkbox'}
-						className={'checkbox cursor-pointer'}
-						tabIndex={-1}
-						checked={isSelected}
-						onChange={(event: React.ChangeEvent<HTMLInputElement>): void => {
-							if (!event.target.checked) {
-								onSelect(0n);
-							} else {
-								onSelect(balance.raw);
-							}
-						}}
-					/>
-				</div>
+			<div className={'col-span-12 ml-1 flex w-full flex-row items-center gap-3'}>
+				<input
+					ref={inputRef}
+					type={'checkbox'}
+					className={'checkbox cursor-pointer'}
+					tabIndex={-1}
+					checked={isSelected}
+					onChange={(event: React.ChangeEvent<HTMLInputElement>): void => {
+						if (!event.target.checked || (inputRef as any)?.ariaInvalid === 'true') {
+							onSelect(0n);
+						} else {
+							onSelect(balance.raw);
+						}
+					}}
+				/>
 				<TokenInput
 					index={index}
-					allowance={toNormalizedBN(0)}
 					token={tokenList[toAddress(tokenAddress)]}
-					shouldCheckAllowance={false}
-					value={selected[toAddress(tokenAddress)]?.amount || toNormalizedBN(0)}
-					placeholder={String(balance.normalized)}
-					onChange={(v): void => {
-						onSelect(v.raw);
-					}}
+					placeholder={`${getBalance(tokenAddress).normalized}`}
+					value={selected[toAddress(tokenAddress)]?.amount}
+					onChange={async v => onSelect(v.raw)}
 				/>
 			</div>
 		</Fragment>
@@ -172,11 +167,9 @@ const ViewTable = memo(function ViewTable({onProceed}: {onProceed: VoidFunction}
 						<IconSettings className={'transition-color h-4 w-4 text-neutral-400 hover:text-neutral-900'} />
 					</div>
 					<div className={'w-full md:w-3/4'}>
-						<b>{'Which tokens do you want to dump?'}</b>
+						<b>{'Which tokens do you want to migrate?'}</b>
 						<p className={'text-sm text-neutral-500'}>
-							{
-								'Select the token(s) that you’d like to dump. In exchange you’ll receive whatever token you selected in the first step.'
-							}
+							{'Select the token(s) that you’d like to migrate.'}
 						</p>
 					</div>
 					<div className={'mt-4 w-full'}>
@@ -214,10 +207,12 @@ const ViewTable = memo(function ViewTable({onProceed}: {onProceed: VoidFunction}
 							<p className={'mt-6 text-sm text-neutral-500'}>{"Oh no, we couldn't find any token!"}</p>
 						</div>
 					) : (
-						<div className={'grid grid-cols-1 divide-y divide-primary-50 rounded-md md:grid-cols-1'}>
+						<div className={'grid grid-cols-1'}>
 							{balancesToDisplay.map(
 								([address, balance]: [string, TBalanceData], index): ReactElement => (
-									<div key={`${address}-${chainID}-${balance.symbol}-${index}`}>
+									<div
+										key={`${address}-${chainID}-${balance.symbol}-${index}`}
+										className={'col-span-12 grid w-full grid-cols-12 gap-4 py-2'}>
 										<TableLine
 											index={10_000 - index}
 											balance={balance}

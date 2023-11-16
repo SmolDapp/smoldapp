@@ -109,7 +109,7 @@ export function notifyMigrate(props: {
 						? `${explorerBaseURI}/tx/${props.hashes[index]}`
 						: `${safeBaseURI}${chainPrefix}:${props.from}/transactions/tx?safe=eth:${props.from}&id=multisig_${props.from}_${props.hashes[index]}`;
 				return `\t\t\t\t\t\t\t- ${formatAmount(
-					amount.normalized,
+					(amount || toNormalizedBN(0)).normalized,
 					6,
 					decimals
 				)} [${symbol}](${explorerBaseURI}/address/${address}) | [tx](${txHashLink})`;

@@ -16,6 +16,7 @@ function ComboboxInput(props: TToken & {onChange: (event: ChangeEvent<HTMLInputE
 					unoptimized
 					src={props.logoURI || ''}
 					altSrc={`${process.env.SMOL_ASSETS_URL}/token/${props.chainID}/${props.address}/logo-32.png`}
+					quality={90}
 					width={24}
 					height={24}
 				/>

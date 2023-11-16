@@ -1,5 +1,6 @@
 import React, {useCallback, useState} from 'react';
 import {useTokenList} from 'contexts/useTokenList';
+import useWallet from 'contexts/useWallet';
 import {zeroAddress} from 'viem';
 import {Step, useDisperse} from '@disperse/useDisperse';
 import {useDeepCompareEffect, useUpdateEffect} from '@react-hookz/web';
@@ -9,6 +10,7 @@ import {IconSettings} from '@yearn-finance/web-lib/icons/IconSettings';
 import {isZeroAddress, toAddress} from '@yearn-finance/web-lib/utils/address';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
 import {ETH_TOKEN_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
+import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
 import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 import ComboboxAddressInput from '@common/ComboboxAddressInput';
 
@@ -18,6 +20,7 @@ import type {TToken} from '@utils/types/types';
 
 function ViewTokenToSend({onProceed}: {onProceed: VoidFunction}): ReactElement {
 	const {safeChainID} = useChainID();
+	const {getBalance} = useWallet();
 	const {currentStep, set_tokenToDisperse} = useDisperse();
 	const [tokenToSend, set_tokenToSend] = useState<TToken | null>(null);
 	const [isValidTokenToReceive, set_isValidTokenToReceive] = useState<boolean | 'undetermined'>(true);
@@ -125,16 +128,28 @@ function ViewTokenToSend({onProceed}: {onProceed: VoidFunction}): ReactElement {
 						suppressHydrationWarning
 						onSubmit={async (e): Promise<void> => e.preventDefault()}
 						className={cl(
-							'mt-6 grid h-10 w-full grid-cols-12 flex-row items-center justify-between gap-4 md:w-3/4 md:gap-6'
+							'mt-6 grid w-full grid-cols-12 flex-row items-start justify-between gap-4 md:w-3/4 md:gap-6'
 						)}>
-						<div className={'grow-1 col-span-12 flex h-10 w-full items-center md:col-span-9'}>
+						<div className={'grow-1 col-span-12 flex w-full flex-col md:col-span-9'}>
 							<ComboboxAddressInput
-								shouldSort={false}
+								shouldSort={true}
 								value={tokenToSend}
 								possibleValues={possibleTokenToReceive}
 								onAddValue={set_possibleTokenToReceive}
 								onChangeValue={(newToken): void => onUpdateToken(newToken)}
 							/>
+							<small
+								suppressHydrationWarning
+								className={cl(
+									'pl-1 pt-1 text-xxs',
+									isZeroAddress(tokenToSend?.address) ? 'invisible pointer-events-none' : ''
+								)}>
+								{`You have ${formatAmount(
+									getBalance(toAddress(tokenToSend?.address)).normalized,
+									6,
+									6
+								)} ${tokenToSend?.symbol || 'tokens'}`}
+							</small>
 						</div>
 						<div className={'col-span-12 md:col-span-3'}>
 							<Button
