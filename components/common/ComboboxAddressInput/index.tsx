@@ -223,5 +223,3 @@ function ComboboxAddressInput({
 		</div>
 	);
 }
-
-export default ComboboxAddressInput;
