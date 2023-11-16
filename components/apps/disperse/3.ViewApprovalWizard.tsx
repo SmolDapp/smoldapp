@@ -1,7 +1,7 @@
 import React, {useCallback, useMemo, useState} from 'react';
 import {IconCircleCheck} from 'components/icons/IconCircleCheck';
 import {IconCircleCross} from 'components/icons/IconCircleCross';
-import IconSpinner from 'components/icons/IconSpinner';
+import {IconSpinner} from 'components/icons/IconSpinner';
 import useWallet from 'contexts/useWallet';
 import {approveERC20, disperseERC20, disperseETH, isApprovedERC20} from 'utils/actions';
 import {notifyDisperse} from 'utils/notifier';

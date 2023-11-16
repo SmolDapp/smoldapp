@@ -1,5 +1,5 @@
 import React, {memo, useMemo} from 'react';
-import IconChevronBoth from 'components/icons/IconChevronBoth';
+import {IconChevronBoth} from 'components/icons/IconChevronBoth';
 import {isLensNFT} from 'utils/tools.lens';
 import OpenSeaAsset from '@nftmigratooor/NFTAssetRow';
 

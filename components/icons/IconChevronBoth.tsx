@@ -2,7 +2,7 @@ import React from 'react';
 
 import type {ReactElement} from 'react';
 
-function IconChevronBoth(props: React.SVGProps<SVGSVGElement>): ReactElement {
+export function IconChevronBoth(props: React.SVGProps<SVGSVGElement>): ReactElement {
 	return (
 		<svg
 			{...props}
@@ -22,5 +22,3 @@ function IconChevronBoth(props: React.SVGProps<SVGSVGElement>): ReactElement {
 		</svg>
 	);
 }
-
-export default IconChevronBoth;

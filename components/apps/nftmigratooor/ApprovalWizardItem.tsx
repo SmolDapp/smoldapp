@@ -1,8 +1,8 @@
 import React, {Fragment} from 'react';
-import IconChevronBoth from 'components/icons/IconChevronBoth';
+import {IconChevronBoth} from 'components/icons/IconChevronBoth';
 import {IconCircleCheck} from 'components/icons/IconCircleCheck';
 import {IconCircleCross} from 'components/icons/IconCircleCross';
-import IconSpinner from 'components/icons/IconSpinner';
+import {IconSpinner} from 'components/icons/IconSpinner';
 import {ETHEREUM_ENS_ADDRESS} from 'utils/constants';
 import {useNetwork} from 'wagmi';
 import {useNFTMigratooor} from '@nftmigratooor/useNFTMigratooor';
