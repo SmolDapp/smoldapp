@@ -99,8 +99,8 @@ function AddressLikeInput({
 	}, [label]);
 
 	return (
-		<div className={'box-0 flex h-10 w-full items-center p-2'}>
-			<div className={'flex h-10 w-full flex-row items-center justify-between px-0 py-4'}>
+		<div className={'box-0 flex h-[46px] w-full items-center p-2'}>
+			<div className={'flex h-[46px] w-full flex-row items-center justify-between px-0 py-4'}>
 				<input
 					id={`address_input_${uuid}`}
 					aria-invalid={!isValidDestination}
@@ -189,8 +189,8 @@ function AmountToSendInput({
 	return (
 		<div
 			key={token?.address}
-			className={'box-0 flex h-10 w-full items-center p-2'}>
-			<div className={'flex h-10 w-full flex-row items-center justify-between px-0 py-4'}>
+			className={'box-0 flex h-[46px] w-full items-center p-2'}>
+			<div className={'flex h-[46px] w-full flex-row items-center justify-between px-0 py-4'}>
 				<input
 					className={'smol--input font-mono font-bold'}
 					type={'number'}

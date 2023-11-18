@@ -7,11 +7,8 @@ import * as SelectPrimitive from '@radix-ui/react-select';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
 
 export const Select = SelectPrimitive.Root;
-
 export const SelectGroup = SelectPrimitive.Group;
-
 export const SelectValue = SelectPrimitive.Value;
-
 export const SelectTrigger = forwardRef<
 	React.ElementRef<typeof SelectPrimitive.Trigger>,
 	React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger>

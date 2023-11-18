@@ -10,7 +10,7 @@ import {IconSettings} from '@yearn-finance/web-lib/icons/IconSettings';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {toBigInt, toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 
-import TokenInput from './TokenInput';
+import TokenInput from '../../common/TokenInput';
 
 import type {ReactElement} from 'react';
 import type {TAddress, TDict} from '@yearn-finance/web-lib/types';

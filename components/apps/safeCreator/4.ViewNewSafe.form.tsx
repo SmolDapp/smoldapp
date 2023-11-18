@@ -50,8 +50,8 @@ function NewSafeExpertForm(props: TNewSafeForm): ReactElement {
 								</span>
 							</div>
 						</div>
-						<div className={'box-0 flex h-10 w-full items-center p-2'}>
-							<div className={'flex h-10 w-full flex-row items-center justify-between px-0 py-4'}>
+						<div className={'box-0 flex h-[46px] w-full items-center p-2'}>
+							<div className={'flex h-[46px] w-full flex-row items-center justify-between px-0 py-4'}>
 								<input
 									autoFocus
 									onChange={(e): void => {
@@ -93,8 +93,8 @@ function NewSafeExpertForm(props: TNewSafeForm): ReactElement {
 								</span>
 							</div>
 						</div>
-						<div className={'box-0 flex h-10 w-full items-center p-2'}>
-							<div className={'flex h-10 w-full flex-row items-center justify-between px-0 py-4'}>
+						<div className={'box-0 flex h-[46px] w-full items-center p-2'}>
+							<div className={'flex h-[46px] w-full flex-row items-center justify-between px-0 py-4'}>
 								<input
 									onChange={(e): void => {
 										const {value} = e.target;
@@ -131,8 +131,8 @@ function NewSafeExpertForm(props: TNewSafeForm): ReactElement {
 								</span>
 							</div>
 						</div>
-						<div className={'box-0 flex h-10 w-full items-center p-2'}>
-							<div className={'flex h-10 w-full flex-row items-center justify-between px-0 py-4'}>
+						<div className={'box-0 flex h-[46px] w-full items-center p-2'}>
+							<div className={'flex h-[46px] w-full flex-row items-center justify-between px-0 py-4'}>
 								<select
 									className={'smol--input font-mono font-bold'}
 									value={props.factory}
@@ -179,8 +179,8 @@ function NewSafeExpertForm(props: TNewSafeForm): ReactElement {
 								</span>
 							</div>
 						</div>
-						<div className={'box-0 flex h-10 w-full items-center p-2'}>
-							<div className={'flex h-10 w-full flex-row items-center justify-between px-0 py-4'}>
+						<div className={'box-0 flex h-[46px] w-full items-center p-2'}>
+							<div className={'flex h-[46px] w-full flex-row items-center justify-between px-0 py-4'}>
 								<input
 									onChange={(e): void => {
 										const {value} = e.target;
@@ -253,8 +253,8 @@ function NewSafeStandardForm(props: TNewSafeForm): ReactElement {
 								</span>
 							</div>
 						</div>
-						<div className={'box-0 flex h-10 w-full items-center p-2'}>
-							<div className={'flex h-10 w-full flex-row items-center justify-between px-0 py-4'}>
+						<div className={'box-0 flex h-[46px] w-full items-center p-2'}>
+							<div className={'flex h-[46px] w-full flex-row items-center justify-between px-0 py-4'}>
 								<input
 									autoFocus
 									onChange={(e): void => {
@@ -296,8 +296,8 @@ function NewSafeStandardForm(props: TNewSafeForm): ReactElement {
 								</span>
 							</div>
 						</div>
-						<div className={'box-0 flex h-10 w-full items-center p-2'}>
-							<div className={'flex h-10 w-full flex-row items-center justify-between px-0 py-4'}>
+						<div className={'box-0 flex h-[46px] w-full items-center p-2'}>
+							<div className={'flex h-[46px] w-full flex-row items-center justify-between px-0 py-4'}>
 								<input
 									onChange={(e): void => {
 										const {value} = e.target;

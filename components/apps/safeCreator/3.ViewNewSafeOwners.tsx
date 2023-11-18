@@ -163,7 +163,7 @@ function ViewNewSafeOwners(props: TViewNewSafeOwnersProps): ReactElement {
 												type={'button'}
 												tabIndex={-1}
 												className={
-													'flex h-10 w-10 items-center justify-center rounded-md border border-neutral-200 bg-neutral-0 text-center text-xl text-neutral-400 transition-colors hover:bg-neutral-900 hover:text-neutral-0'
+													'flex h-[46px] w-10 items-center justify-center rounded-md border border-neutral-200 bg-neutral-0 text-center text-xl text-neutral-400 transition-colors hover:bg-neutral-900 hover:text-neutral-0'
 												}
 												onClick={(): void => onRemoveOwnerByUUID(UUID)}>
 												<p className={'font-number pr-[1px]'}>{'-'}</p>
@@ -188,7 +188,7 @@ function ViewNewSafeOwners(props: TViewNewSafeOwnersProps): ReactElement {
 								</button>
 								<div className={'mt-0 flex w-full justify-end px-4 md:mt-[-10px] md:w-auto md:px-0'}>
 									<div className={'mb-2 flex flex-row items-center space-x-2'}>
-										<div className={'box-0 relative flex h-10 w-full items-center'}>
+										<div className={'box-0 relative flex h-[46px] w-full items-center'}>
 											<div className={'absolute right-[110%] text-xs text-neutral-600'}>
 												<div className={'flex w-fit flex-row items-center space-x-1'}>
 													<p className={'font-inter font-semibold opacity-50'}>
@@ -213,7 +213,7 @@ function ViewNewSafeOwners(props: TViewNewSafeOwnersProps): ReactElement {
 											</div>
 											<div
 												className={
-													'flex h-10 w-full flex-row items-center justify-between space-x-2 px-2 py-4'
+													'flex h-[46px] w-full flex-row items-center justify-between space-x-2 px-2 py-4'
 												}>
 												<button
 													type={'button'}

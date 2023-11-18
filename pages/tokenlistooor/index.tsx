@@ -2,7 +2,6 @@ import React, {useMemo, useState} from 'react';
 import {DefaultSeo} from 'next-seo';
 import LEGACY_TOKEN_LISTS from 'utils/legacyTokenLists';
 import {motion} from 'framer-motion';
-import {MigratooorContextApp} from '@migratooor/useMigratooor';
 import TokenListCard, {LegacyTokenListCard} from '@tokenlistooor/TokenListCard';
 import TokenListHero from '@tokenlistooor/TokenListHero';
 
@@ -145,40 +144,38 @@ function Home({summary}: {summary: TTokenListSummary}): ReactElement {
 
 export default function Wrapper({summary}: {summary: TTokenListSummary}): ReactElement {
 	return (
-		<MigratooorContextApp>
-			<>
-				<DefaultSeo
-					title={'Tokenlistooor - SmolDapp'}
-					defaultTitle={'Tokenlistooor - SmolDapp'}
-					description={
-						'Up to date token lists that fulfill your needs! Tokenlistooor is a fork of Uniswap Tokenlists, with focus on adding more automation and extra features.'
-					}
-					openGraph={{
-						type: 'website',
-						locale: 'en-US',
-						url: 'https://smold.app/tokenlistooor',
-						site_name: 'Tokenlistooor - SmolDapp',
-						title: 'Tokenlistooor - SmolDapp',
-						description:
-							'Up to date token lists that fulfill your needs! Tokenlistooor is a fork of Uniswap Tokenlists, with focus on adding more automation and extra features.',
-						images: [
-							{
-								url: 'https://smold.app/og_tokenlistooor.png',
-								width: 800,
-								height: 400,
-								alt: 'tokenListooor'
-							}
-						]
-					}}
-					twitter={{
-						handle: '@smoldapp',
-						site: '@smoldapp',
-						cardType: 'summary_large_image'
-					}}
-				/>
-				<Home summary={summary} />
-			</>
-		</MigratooorContextApp>
+		<>
+			<DefaultSeo
+				title={'Tokenlistooor - SmolDapp'}
+				defaultTitle={'Tokenlistooor - SmolDapp'}
+				description={
+					'Up to date token lists that fulfill your needs! Tokenlistooor is a fork of Uniswap Tokenlists, with focus on adding more automation and extra features.'
+				}
+				openGraph={{
+					type: 'website',
+					locale: 'en-US',
+					url: 'https://smold.app/tokenlistooor',
+					site_name: 'Tokenlistooor - SmolDapp',
+					title: 'Tokenlistooor - SmolDapp',
+					description:
+						'Up to date token lists that fulfill your needs! Tokenlistooor is a fork of Uniswap Tokenlists, with focus on adding more automation and extra features.',
+					images: [
+						{
+							url: 'https://smold.app/og_tokenlistooor.png',
+							width: 800,
+							height: 400,
+							alt: 'tokenListooor'
+						}
+					]
+				}}
+				twitter={{
+					handle: '@smoldapp',
+					site: '@smoldapp',
+					cardType: 'summary_large_image'
+				}}
+			/>
+			<Home summary={summary} />
+		</>
 	);
 }
 

@@ -14,14 +14,14 @@ export default function CardWithIcon({isSelected, onClick, label, icon}: TCardWi
 	return (
 		<button
 			className={cl(
-				'hover box-0 group relative flex w-full items-center justify-center p-4 md:p-6',
+				'hover box-0 group relative flex w-full h-full items-center justify-center p-4 md:p-6',
 				isSelected ? '!bg-primary-50' : ''
 			)}
 			onClick={onClick}>
 			<div className={'relative flex w-full flex-col items-center justify-center'}>
 				<div
 					suppressHydrationWarning
-					className={`mb-4 flex h-10 w-10 items-center justify-center rounded-full border border-neutral-200 transition-colors group-hover:bg-neutral-0 md:h-12 md:w-12 ${
+					className={`mb-4 flex h-[46px] w-10 items-center justify-center rounded-full border border-neutral-200 transition-colors group-hover:bg-neutral-0 md:h-12 md:w-12 ${
 						isSelected ? 'bg-neutral-0' : ''
 					}`}>
 					{cloneElement(icon, {className: 'h-5 md:h-6 w-5 md:w-6 text-neutral-900'})}
@@ -68,6 +68,36 @@ export function SmallCardWithIcon({isSelected, onClick, label, icon}: TCardWithI
 					isSelected ? 'opacity-100' : 'opacity-0'
 				}`}
 			/>
+		</button>
+	);
+}
+
+type TRowCardWithIcon = {
+	onClick?: () => void;
+	title: string;
+	description: string;
+	icon: ReactElement;
+};
+export function RowCardWithIcon({onClick, title, description, icon}: TRowCardWithIcon): ReactElement {
+	return (
+		<button
+			className={'hover box-0 group relative flex w-full p-4'}
+			onClick={onClick}>
+			<div className={'relative flex h-full flex-col items-center md:flex-row'}>
+				<div
+					suppressHydrationWarning
+					className={cl(
+						'flex items-center justify-center rounded-full border border-neutral-200 transition-colors group-hover:bg-neutral-0',
+						'mb-2 mr-0 md:mb-0 md:mr-6',
+						'h-10 w-10 min-h-[40px] min-w-[40px]'
+					)}>
+					{cloneElement(icon)}
+				</div>
+				<div className={'w-full text-left'}>
+					<b className={'text-xs md:text-base'}>{title}</b>
+					<p className={'mt-0.5 text-sm text-neutral-600'}>{description}</p>
+				</div>
+			</div>
 		</button>
 	);
 }

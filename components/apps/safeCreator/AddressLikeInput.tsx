@@ -89,8 +89,8 @@ function AddressLikeInput({
 	}, [label]);
 
 	return (
-		<div className={'box-0 flex h-10 w-full items-center p-2'}>
-			<div className={'flex h-10 w-full flex-row items-center justify-between px-0 py-4'}>
+		<div className={'box-0 flex h-[46px] w-full items-center p-2'}>
+			<div className={'flex h-[46px] w-full flex-row items-center justify-between px-0 py-4'}>
 				<input
 					id={`add_r_input_${uuid}`}
 					aria-invalid={!isValidDestination}
