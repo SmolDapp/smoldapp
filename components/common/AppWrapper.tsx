@@ -48,7 +48,7 @@ function AppWrapper(props: AppProps): ReactElement {
 						initial={'initial'}
 						animate={'enter'}
 						exit={'exit'}
-						className={'w-full justify-center pt-6'}
+						className={'w-full justify-center'}
 						variants={thumbnailVariants}>
 						<Component
 							key={router.route}

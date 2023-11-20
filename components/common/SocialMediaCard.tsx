@@ -18,6 +18,7 @@ export default function SocialMediaCard(props: TSocialMediaCard): ReactElement {
 			<Link
 				href={props.href || ''}
 				target={'_blank'}
+				suppressHydrationWarning
 				className={cl('!cursor-pointer', props.className)}
 				rel={'noopener noreferrer'}>
 				<div className={'group relative flex w-full flex-row items-center justify-start'}>
@@ -42,6 +43,7 @@ export default function SocialMediaCard(props: TSocialMediaCard): ReactElement {
 					<Link
 						href={props.href || ''}
 						target={'_blank'}
+						suppressHydrationWarning
 						className={cl('!cursor-pointer', props.className)}
 						rel={'noopener noreferrer'}>
 						<div className={'group relative flex w-full flex-row items-center justify-start'}>

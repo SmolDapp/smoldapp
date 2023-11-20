@@ -2,9 +2,9 @@ import React, {useCallback, useState} from 'react';
 import IconInfo from 'components/icons/IconInfo';
 import IconWarning from 'components/icons/IconWarning';
 import {useMountEffect} from '@react-hookz/web';
-import AddressLikeInput from '@safeCreatooor/AddressLikeInput';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import {isZeroAddress, toAddress} from '@yearn-finance/web-lib/utils/address';
+import {AddressLikeInput} from '@common/AddressLikeInput';
 import ViewSectionHeading from '@common/ViewSectionHeading';
 
 import type {ReactElement} from 'react';

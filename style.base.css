@@ -215,7 +215,7 @@ label[aria-invalid='true'] {
 	}
 }
 .smol--input {
-	@apply w-full overflow-x-scroll border-none bg-transparent px-0 py-4 text-sm outline-none scrollbar-none;
+	@apply w-full overflow-x-scroll border-none bg-transparent p-0 text-sm outline-none scrollbar-none;
 }
 
 select.smol--input {

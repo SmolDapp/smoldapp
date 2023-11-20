@@ -1,4 +1,5 @@
 import {useCallback, useState} from 'react';
+import Link from 'next/link';
 import {useTokenList} from 'contexts/useTokenList';
 import {useWallet} from 'contexts/useWallet';
 import {useAsyncTrigger} from 'hooks/useAsyncTrigger';
@@ -292,11 +293,13 @@ function DonateBox(): ReactElement {
 				</div>
 			</div>
 			<div className={'relative grid grid-cols-4 gap-2 md:grid-cols-1'}>
-				<RowCardWithIcon
-					icon={<LogoDisperse className={'h-5 w-5 text-neutral-900 md:h-6 md:w-6'} />}
-					title={'Disperse'}
-					description={'Distribute tokens to multiple addresses.'}
-				/>
+				<Link href={'/disperseee'}>
+					<RowCardWithIcon
+						icon={<LogoDisperse className={'h-5 w-5 text-neutral-900 md:h-6 md:w-6'} />}
+						title={'Disperse'}
+						description={'Distribute tokens to multiple addresses.'}
+					/>
+				</Link>
 				<RowCardWithIcon
 					icon={
 						<svg
@@ -355,7 +358,9 @@ function SectionDonate(): ReactElement {
 	return (
 		<div className={'mb-20'}>
 			<div className={'flex flex-row items-center justify-between'}>
-				<h2 className={'scroll-m-20 pb-4 text-xl text-neutral-500'}>{'Send tokens'}</h2>
+				<h2 className={'scroll-m-20 pb-4 text-sm'}>
+					<span className={'font-medium text-neutral-900'}>{'Smol'}</span>
+				</h2>
 			</div>
 
 			<DonateBox />

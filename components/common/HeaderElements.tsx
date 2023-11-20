@@ -212,25 +212,18 @@ export function WalletSelector(): ReactElement {
 	const {openChainModal} = useChainModal();
 	const {isActive, address, ens, lensProtocolHandle, openLoginModal} = useWeb3();
 
-	const [walletIdentity, set_walletIdentity] = useState<string | undefined>(undefined);
-	const isMounted = useIsMounted();
-
-	useEffect((): void => {
-		if (!isMounted()) {
-			return;
+	const walletIdentity = useMemo((): string | undefined => {
+		if (ens) {
+			return ens;
 		}
-		if (!isActive && address) {
-			set_walletIdentity('Invalid Network');
-		} else if (ens) {
-			set_walletIdentity(ens);
-		} else if (lensProtocolHandle) {
-			set_walletIdentity(lensProtocolHandle);
-		} else if (address) {
-			set_walletIdentity(truncateHex(address, 6));
-		} else {
-			set_walletIdentity(undefined);
+		if (lensProtocolHandle) {
+			return lensProtocolHandle;
 		}
-	}, [ens, lensProtocolHandle, address, isActive, isMounted]);
+		if (address) {
+			return truncateHex(address, 6);
+		}
+		return undefined;
+	}, [ens, lensProtocolHandle, address]);
 
 	return (
 		<div

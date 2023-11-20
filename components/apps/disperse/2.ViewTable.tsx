@@ -1,194 +1,32 @@
-import React, {Fragment, memo, useCallback, useMemo, useState} from 'react';
-import {IconCircleCheck} from 'components/icons/IconCircleCheck';
-import {IconCircleCross} from 'components/icons/IconCircleCross';
+import React, {Fragment, memo, useCallback, useMemo} from 'react';
 import IconSquareMinus from 'components/icons/IconSquareMinus';
 import IconSquarePlus from 'components/icons/IconSquarePlus';
-import IconWarning from 'components/icons/IconWarning';
 import {useWallet} from 'contexts/useWallet';
+import {useTokensWithBalance} from 'hooks/useTokensWithBalance';
 import {handleInputChangeEventValue} from 'utils/handleInputChangeEventValue';
-import {checkENSValidity} from 'utils/tools.ens';
-import {checkLensValidity} from 'utils/tools.lens';
-import {newVoidRow, useDisperse} from '@disperse/useDisperse';
-import {useMountEffect, useUpdateEffect} from '@react-hookz/web';
+import {newVoidRow, useDisperseee} from '@disperse/useDisperseee';
 import {Button} from '@yearn-finance/web-lib/components/Button';
-import {IconLoader} from '@yearn-finance/web-lib/icons/IconLoader';
+import {IconSettings} from '@yearn-finance/web-lib/icons/IconSettings';
 import {isZeroAddress, toAddress} from '@yearn-finance/web-lib/utils/address';
 import {parseUnits, toBigInt, toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
+import {AddressLikeInput} from '@common/AddressLikeInput';
+import {MultipleTokenSelector} from '@common/TokenInput/TokenSelector';
 
-import type {ChangeEvent, ReactElement} from 'react';
+import type {ReactElement} from 'react';
 import type {TAddress} from '@yearn-finance/web-lib/types';
 import type {TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
-import type {TDisperseElement} from '@disperse/useDisperse';
+import type {TDisperseConfiguration} from '@disperse/useDisperseee';
 import type {TToken} from '@utils/types/types';
 
-type TAddressLikeInput = {
-	uuid: string;
-	label: string;
-	onChangeLabel: (label: string) => void;
-	onChange: (address: string | undefined) => void;
-	onPaste: (UUID: string, pasted: string) => void;
-	isDuplicate?: boolean;
-};
-function AddressLikeInput({
-	uuid,
-	label,
-	onChangeLabel,
-	onChange,
-	onPaste,
-	isDuplicate
-}: TAddressLikeInput): ReactElement {
-	const [isValidDestination, set_isValidDestination] = useState<boolean | 'undetermined'>('undetermined');
-	const [isValidish, set_isValidish] = useState<boolean | 'undetermined'>('undetermined');
-	const [isLoadingValidish, set_isLoadingValidish] = useState<boolean>(false);
-	const status = useMemo((): 'valid' | 'invalid' | 'warning' | 'pending' | 'none' => {
-		if ((isValidDestination === true || isValidish === true) && !isDuplicate) {
-			return 'valid';
-		}
-		if (isValidDestination === false && label !== '' && !isLoadingValidish) {
-			return 'invalid';
-		}
-		if (isDuplicate) {
-			return 'warning';
-		}
-		if (isLoadingValidish) {
-			return 'pending';
-		}
-		return 'none';
-	}, [isValidDestination, isValidish, isDuplicate, label, isLoadingValidish]);
-
-	const looksValidAddress = useCallback((value: string): boolean => {
-		if (value.endsWith('.eth')) {
-			return true;
-		}
-		if (value.endsWith('.lens')) {
-			return true;
-		}
-		if (!isZeroAddress(toAddress(value))) {
-			return true;
-		}
-		return false;
-	}, []);
-
-	useUpdateEffect((): void => {
-		set_isValidDestination('undetermined');
-		set_isValidish('undetermined');
-		if (label.endsWith('.eth')) {
-			set_isLoadingValidish(true);
-			checkENSValidity(label).then(([validishDest, isValid]): void => {
-				set_isLoadingValidish(false);
-				set_isValidish(isValid);
-				set_isValidDestination(isValid);
-				onChange(validishDest);
-			});
-		} else if (label.endsWith('.lens')) {
-			set_isLoadingValidish(true);
-			checkLensValidity(label).then(([validishDest, isValid]): void => {
-				set_isLoadingValidish(false);
-				set_isValidish(isValid);
-				set_isValidDestination(isValid);
-				onChange(validishDest);
-			});
-		} else if (!isZeroAddress(toAddress(label))) {
-			set_isValidDestination(true);
-			onChange(label);
-		} else {
-			set_isValidish(false);
-			onChange(undefined);
-		}
-	}, [label]);
-
-	return (
-		<div className={'box-0 flex h-[46px] w-full items-center p-2'}>
-			<div className={'flex h-[46px] w-full flex-row items-center justify-between px-0 py-4'}>
-				<input
-					id={`address_input_${uuid}`}
-					aria-invalid={!isValidDestination}
-					required
-					spellCheck={false}
-					placeholder={'0x...'}
-					value={label}
-					onPaste={(e): void => {
-						const value = e.clipboardData.getData('text/plain');
-						const isValidValue = looksValidAddress(value);
-						if (isValidValue) {
-							set_isValidDestination('undetermined');
-							return;
-						}
-						onPaste(uuid, value);
-					}}
-					onChange={(e): void => {
-						set_isValidDestination('undetermined');
-						onChangeLabel(e.target.value);
-					}}
-					className={'smol--input font-mono font-bold'}
-					type={'text'}
-				/>
-			</div>
-			<label
-				htmlFor={`address_input_${uuid}`}
-				className={
-					status === 'invalid' || status === 'warning' ? 'relative' : 'pointer-events-none relative h-4 w-4'
-				}>
-				<span className={status === 'invalid' || status === 'warning' ? 'tooltip' : 'pointer-events-none'}>
-					<div className={'pointer-events-none relative h-4 w-4'}>
-						<IconCircleCheck
-							className={`absolute h-4 w-4 text-[#16a34a] transition-opacity ${
-								status === 'valid' ? 'opacity-100' : 'opacity-0'
-							}`}
-						/>
-						<IconCircleCross
-							className={`absolute h-4 w-4 text-[#e11d48] transition-opacity ${
-								status === 'invalid' ? 'opacity-100' : 'opacity-0'
-							}`}
-						/>
-						<IconWarning
-							className={`absolute h-4 w-4 text-[#e1891d] transition-opacity ${
-								status === 'warning' ? 'opacity-100' : 'opacity-0'
-							}`}
-						/>
-						<div className={'absolute inset-0 flex items-center justify-center'}>
-							<IconLoader
-								className={`h-4 w-4 animate-spin text-neutral-900 transition-opacity ${
-									status === 'pending' ? 'opacity-100' : 'opacity-0'
-								}`}
-							/>
-						</div>
-					</div>
-					<span className={'tooltiptextsmall'}>
-						{status === 'invalid' && 'This address is invalid'}
-						{status === 'warning' && 'This address is already in use'}
-					</span>
-				</span>
-			</label>
-		</div>
-	);
-}
-
-function AmountToSendInput({
-	token,
-	amount,
-	onChange
-}: {
+function AmountToSendInput(props: {
 	token: TToken | undefined;
 	amount: TNormalizedBN | undefined;
 	onChange: (amount: TNormalizedBN) => void;
 }): ReactElement {
-	/**********************************************************************************************
-	 ** onInputChange is triggered when the user is typing in the input field. It updates the
-	 ** amount in the state and triggers the debounced retrieval of the quote from the Cowswap API.
-	 ** It is set as callback to avoid unnecessary re-renders.
-	 **********************************************************************************************/
-	const onInputChange = useCallback(
-		(e: ChangeEvent<HTMLInputElement>): void => {
-			onChange(handleInputChangeEventValue(e, token?.decimals || 18));
-		},
-		[onChange, token?.decimals]
-	);
-
 	return (
 		<div
-			key={token?.address}
+			key={props.token?.address}
 			className={'box-0 flex h-[46px] w-full items-center p-2'}>
 			<div className={'flex h-[46px] w-full flex-row items-center justify-between px-0 py-4'}>
 				<input
@@ -196,12 +34,12 @@ function AmountToSendInput({
 					type={'number'}
 					onWheel={(e): void => e.preventDefault()}
 					min={0}
-					step={1 / 10 ** (token?.decimals || 18)}
+					step={1 / 10 ** (props.token?.decimals || 18)}
 					inputMode={'numeric'}
 					placeholder={'0'}
 					pattern={'^((?:0|[1-9]+)(?:.(?:d+?[1-9]|[1-9]))?)$'}
-					onChange={onInputChange}
-					value={amount?.normalized}
+					onChange={e => props.onChange(handleInputChangeEventValue(e, props.token?.decimals || 18))}
+					value={props.amount?.normalized}
 				/>
 			</div>
 		</div>
@@ -210,72 +48,20 @@ function AmountToSendInput({
 
 const ViewTable = memo(function ViewTable({onProceed}: {onProceed: VoidFunction}): ReactElement {
 	const {balances} = useWallet();
-	const {tokenToDisperse, disperseArray, set_disperseArray} = useDisperse();
-
-	useMountEffect((): void => {
-		set_disperseArray([newVoidRow(), newVoidRow()]);
-	});
+	const {configuration, dispatchConfiguration} = useDisperseee();
+	const tokensWithBalance = useTokensWithBalance();
 
 	const checkAlreadyExists = useCallback(
 		(UUID: string, address: TAddress): boolean => {
 			if (isZeroAddress(address)) {
 				return false;
 			}
-			return disperseArray.some((row): boolean => row.UUID !== UUID && row.address === address);
+			return configuration.receivers.some((row): boolean => row.UUID !== UUID && row.address === address);
 		},
-		[disperseArray]
+		[configuration.receivers]
 	);
 
-	function onAddNewRowAsSibling(UUID: string): void {
-		set_disperseArray(
-			disperseArray.reduce((acc, row): TDisperseElement[] => {
-				if (row.UUID === UUID) {
-					return [...acc, row, newVoidRow()];
-				}
-				return [...acc, row];
-			}, [] as TDisperseElement[])
-		);
-	}
-	function onRemoveRowByUUID(UUID: string): void {
-		if (disperseArray.length === 1) {
-			return set_disperseArray([newVoidRow()]);
-		}
-		set_disperseArray(disperseArray.filter((row): boolean => row.UUID !== UUID));
-	}
-	function onUpdateAddressByUUID(UUID: string, address: string | undefined): void {
-		set_disperseArray(
-			disperseArray.map((row): TDisperseElement => {
-				if (row.UUID !== UUID) {
-					return row;
-				}
-				if (!address || isZeroAddress(address)) {
-					return {...row, address: undefined};
-				}
-				return {...row, address: toAddress(address)};
-			})
-		);
-	}
-	function onUpdateLabelByUUID(UUID: string, label: string): void {
-		set_disperseArray(
-			disperseArray.map((row): TDisperseElement => {
-				if (row.UUID !== UUID) {
-					return row;
-				}
-				return {...row, label};
-			})
-		);
-	}
-	function onUpdateAmountByUUID(UUID: string, amount: TNormalizedBN): void {
-		set_disperseArray(
-			disperseArray.map((row): TDisperseElement => {
-				if (row.UUID !== UUID) {
-					return row;
-				}
-				return {...row, amount};
-			})
-		);
-	}
-	function onHandleMultiplePaste(UUID: string, pasted: string): void {
+	function onHandleMultiplePaste(pasted: string): void {
 		const separators = [' ', '-', ';', ',', '.'];
 		const addressAmounts = pasted
 			.replaceAll(' ', '')
@@ -300,39 +86,45 @@ const ViewTable = memo(function ViewTable({onProceed}: {onProceed: VoidFunction}
 				return [addressAmount[0], addressAmount[1]];
 			});
 
-		const newRows = addressAmounts.map((addressAmount): TDisperseElement => {
+		const newRows = addressAmounts.map((addressAmount): TDisperseConfiguration['receivers'][0] => {
 			const row = newVoidRow();
 			row.address = toAddress(addressAmount[0]);
 			row.label = String(addressAmount[0]);
 			try {
 				if (addressAmount[1].includes('.') || addressAmount[1].includes(',')) {
 					const normalizedAmount = Number(addressAmount[1]);
-					const raw = parseUnits(normalizedAmount, tokenToDisperse?.decimals || 18);
-					const amount = toNormalizedBN(raw, tokenToDisperse?.decimals || 18);
+					const raw = parseUnits(normalizedAmount, configuration.tokenToSend?.decimals || 18);
+					const amount = toNormalizedBN(raw, configuration.tokenToSend?.decimals || 18);
 					row.amount = amount;
 				} else {
-					const amount = toNormalizedBN(addressAmount[1], tokenToDisperse?.decimals || 18);
+					const amount = toNormalizedBN(addressAmount[1], configuration.tokenToSend?.decimals || 18);
 					row.amount = amount;
 				}
 			} catch (e) {
-				row.amount = toNormalizedBN(0n, tokenToDisperse?.decimals || 18);
+				row.amount = toNormalizedBN(0n, configuration.tokenToSend?.decimals || 18);
 			}
 			return row;
 		});
-		set_disperseArray(
-			disperseArray.reduce((acc, row): TDisperseElement[] => {
-				if (row.UUID === UUID) {
-					if (row.address && row.amount && !isZeroAddress(row.address) && row.amount.raw !== 0n) {
-						return [...acc, row, ...newRows];
-					}
-					return [...acc, ...newRows];
+
+		dispatchConfiguration({
+			type: 'ADD_RECEIVERS',
+			payload: newRows.filter((row): boolean => {
+				if (!row.address || isZeroAddress(row.address)) {
+					return false;
 				}
-				return [...acc, row];
-			}, [] as TDisperseElement[])
-		);
+				if (checkAlreadyExists(row.UUID, row.address)) {
+					return false;
+				}
+				if (!row.amount || row.amount.raw === 0n) {
+					return false;
+				}
+				return true;
+			})
+		});
 	}
+
 	const isValid = useMemo((): boolean => {
-		return disperseArray.every((row): boolean => {
+		return configuration.receivers.every((row): boolean => {
 			if (!row.label && !row.address && toBigInt(row.amount?.raw) === 0n) {
 				return false;
 			}
@@ -347,25 +139,28 @@ const ViewTable = memo(function ViewTable({onProceed}: {onProceed: VoidFunction}
 			}
 			return true;
 		});
-	}, [disperseArray, checkAlreadyExists]);
+	}, [configuration.receivers, checkAlreadyExists]);
 
 	const balanceOf = useMemo((): number => {
-		if (isZeroAddress(tokenToDisperse?.address)) {
+		if (isZeroAddress(configuration.tokenToSend?.address)) {
 			return 0;
 		}
-		const balance = balances?.[toAddress(tokenToDisperse?.address)]?.normalized;
+		const balance = balances?.[toAddress(configuration.tokenToSend?.address)]?.normalized;
 		return balance || 0;
-	}, [balances, tokenToDisperse]);
+	}, [balances, configuration.tokenToSend]);
 
 	const totalToDisperse = useMemo((): number => {
-		return disperseArray.reduce((acc, row): number => acc + Number(row.amount?.normalized || 0), 0);
-	}, [disperseArray]);
+		return configuration.receivers.reduce((acc, row): number => acc + Number(row.amount?.normalized || 0), 0);
+	}, [configuration.receivers]);
 	const isAboveBalance = totalToDisperse > balanceOf;
 
 	return (
-		<section className={'box-0'}>
-			<div className={'relative w-full'}>
-				<div className={'flex flex-col p-4 text-neutral-900 md:p-6 md:pb-4'}>
+		<section>
+			<div className={'box-0 grid w-full grid-cols-12'}>
+				<div className={'relative col-span-12 flex flex-col p-4 text-neutral-900 md:p-6'}>
+					<div className={'absolute right-4 top-4 cursor-pointer'}>
+						<IconSettings className={'transition-color h-4 w-4 text-neutral-400 hover:text-neutral-900'} />
+					</div>
 					<div className={'w-full md:w-3/4'}>
 						<b>{'Who gets what?'}</b>
 						<p className={'text-sm text-neutral-500'}>
@@ -374,84 +169,129 @@ const ViewTable = memo(function ViewTable({onProceed}: {onProceed: VoidFunction}
 							}
 						</p>
 					</div>
-				</div>
 
-				<div className={'border-t border-neutral-200 p-6'}>
-					<div className={'mb-2 grid grid-cols-2 gap-4'}>
-						<p className={'text-xs text-neutral-500'}>{'Receivers'}</p>
-						<p className={'text-xs text-neutral-500'}>{'Amount'}</p>
-					</div>
-					<div className={'grid grid-cols-2 gap-x-4 gap-y-2'}>
-						{disperseArray.map(({UUID}, i): ReactElement => {
-							return (
-								<Fragment key={UUID}>
-									<AddressLikeInput
-										uuid={UUID}
-										isDuplicate={checkAlreadyExists(UUID, toAddress(disperseArray[i].address))}
-										label={disperseArray[i].label}
-										onChangeLabel={(label): void => onUpdateLabelByUUID(UUID, label)}
-										onChange={(address): void => onUpdateAddressByUUID(UUID, address)}
-										onPaste={onHandleMultiplePaste}
-									/>
-									<div className={'flex flex-row items-center justify-center space-x-4'}>
-										<AmountToSendInput
-											token={tokenToDisperse}
-											amount={disperseArray[i].amount}
-											onChange={(amount): void => onUpdateAmountByUUID(UUID, amount)}
-										/>
-										<IconSquareMinus
-											onClick={(): void => onRemoveRowByUUID(UUID)}
-											className={
-												'h-4 w-4 cursor-pointer text-neutral-400 transition-colors hover:text-neutral-900'
-											}
-										/>
-										<IconSquarePlus
-											onClick={(): void => onAddNewRowAsSibling(UUID)}
-											className={
-												'h-4 w-4 cursor-pointer text-neutral-400 transition-colors hover:text-neutral-900'
-											}
-										/>
-									</div>
-								</Fragment>
-							);
-						})}
-					</div>
-				</div>
-				<div
-					className={
-						'sticky inset-x-0 bottom-0 z-20 flex w-full max-w-5xl flex-row items-center justify-between rounded-b-[5px] bg-primary-600 p-4 text-primary-0 md:relative md:px-6 md:py-4'
-					}>
-					<div className={'flex w-3/4 flex-col'}>
-						<dl className={'container whitespace-nowrap text-xs'}>
-							<dt>{'You have'}</dt>
-							<span className={'filler'} />
-							<dd suppressHydrationWarning>
-								{`${formatAmount(balanceOf, tokenToDisperse?.decimals || 18)} ${
-									tokenToDisperse?.symbol || ''
-								}`}
-							</dd>
-						</dl>
-						<dl className={'container whitespace-nowrap text-xs'}>
-							<dt>{'You are sending'}</dt>
-							<span className={'filler'} />
-							<dd
-								suppressHydrationWarning
-								className={isAboveBalance ? 'text-[#FE0000]' : ''}>
-								{`${formatAmount(totalToDisperse, tokenToDisperse?.decimals || 18)} ${
-									tokenToDisperse?.symbol || ''
-								}`}
-							</dd>
-						</dl>
-					</div>
-					<div className={'flex flex-col'}>
-						<Button
-							className={'yearn--button !w-fit !px-6 !text-sm'}
-							variant={'reverted'}
-							isDisabled={isAboveBalance || disperseArray.length === 0 || !isValid}
-							onClick={onProceed}>
-							{'Confirm'}
-						</Button>
-					</div>
+					<form
+						suppressHydrationWarning
+						onSubmit={async (e): Promise<void> => e.preventDefault()}
+						className={'mt-6 grid w-full grid-cols-12 flex-row items-start justify-between gap-4'}>
+						<div className={'col-span-12 flex w-full flex-col'}>
+							<small className={'pb-1 pl-1'}>{'Token to send'}</small>
+							<MultipleTokenSelector
+								token={configuration.tokenToSend}
+								tokens={tokensWithBalance}
+								onChangeToken={(newToken): void =>
+									dispatchConfiguration({type: 'SET_TOKEN_TO_SEND', payload: newToken})
+								}
+							/>
+						</div>
+
+						<div className={'col-span-12 flex w-full flex-col'}>
+							<div className={'mb-2 grid grid-cols-2 gap-4'}>
+								<p className={'text-xs text-neutral-500'}>{'Receivers'}</p>
+								<p className={'text-xs text-neutral-500'}>{'Amount'}</p>
+							</div>
+							<div className={'grid grid-cols-2 gap-x-4 gap-y-2'}>
+								{configuration.receivers.map((receiver): ReactElement => {
+									return (
+										<Fragment key={receiver.UUID}>
+											<AddressLikeInput
+												uuid={receiver.UUID}
+												isDuplicate={checkAlreadyExists(
+													receiver.UUID,
+													toAddress(receiver.address)
+												)}
+												label={receiver.label}
+												onChangeLabel={(label): void =>
+													dispatchConfiguration({
+														type: 'UPD_RECEIVER_BY_UUID',
+														payload: {...receiver, label}
+													})
+												}
+												onChange={(address): void => {
+													dispatchConfiguration({
+														type: 'UPD_RECEIVER_BY_UUID',
+														payload: {...receiver, address: toAddress(address)}
+													});
+												}}
+												onPaste={onHandleMultiplePaste}
+											/>
+											<div className={'flex flex-row items-center justify-center space-x-4'}>
+												<AmountToSendInput
+													token={configuration.tokenToSend}
+													amount={receiver.amount}
+													onChange={(amount): void => {
+														dispatchConfiguration({
+															type: 'UPD_RECEIVER_BY_UUID',
+															payload: {...receiver, amount}
+														});
+													}}
+												/>
+												<IconSquareMinus
+													onClick={(): void =>
+														dispatchConfiguration({
+															type: 'DEL_RECEIVER_BY_UUID',
+															payload: receiver.UUID
+														})
+													}
+													className={
+														'h-4 w-4 cursor-pointer text-neutral-400 transition-colors hover:text-neutral-900'
+													}
+												/>
+												<IconSquarePlus
+													onClick={(): void =>
+														dispatchConfiguration({
+															type: 'ADD_SIBLING_RECEIVER_FROM_UUID',
+															payload: receiver.UUID
+														})
+													}
+													className={
+														'h-4 w-4 cursor-pointer text-neutral-400 transition-colors hover:text-neutral-900'
+													}
+												/>
+											</div>
+										</Fragment>
+									);
+								})}
+							</div>
+						</div>
+
+						<div
+							className={
+								'col-span-12 mt-6 flex w-full flex-row items-center justify-between rounded-md bg-primary-600 p-4 text-primary-0 md:relative md:px-6 md:py-4'
+							}>
+							<div className={'flex w-3/4 flex-col'}>
+								<dl className={'container whitespace-nowrap text-xs'}>
+									<dt>{'You have'}</dt>
+									<span className={'filler'} />
+									<dd suppressHydrationWarning>
+										{`${formatAmount(balanceOf, configuration.tokenToSend?.decimals || 18)} ${
+											configuration.tokenToSend?.symbol || ''
+										}`}
+									</dd>
+								</dl>
+								<dl className={'container whitespace-nowrap text-xs'}>
+									<dt>{'You are sending'}</dt>
+									<span className={'filler'} />
+									<dd
+										suppressHydrationWarning
+										className={isAboveBalance ? 'text-[#FE0000]' : ''}>
+										{`${formatAmount(totalToDisperse, configuration.tokenToSend?.decimals || 18)} ${
+											configuration.tokenToSend?.symbol || ''
+										}`}
+									</dd>
+								</dl>
+							</div>
+							<div className={'flex flex-col'}>
+								<Button
+									className={'yearn--button !w-fit !px-6 !text-sm'}
+									variant={'reverted'}
+									isDisabled={isAboveBalance || configuration.receivers.length === 0 || !isValid}
+									onClick={onProceed}>
+									{'Confirm'}
+								</Button>
+							</div>
+						</div>
+					</form>
 				</div>
 			</div>
 		</section>

@@ -6,10 +6,11 @@ import {useMountEffect, useUpdateEffect} from '@react-hookz/web';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {defaultInputAddressLike, type TInputAddressLike} from '@common/AddressInput';
 
+import {useUserVesting} from './useUserVestings';
+
 import type {Dispatch, SetStateAction} from 'react';
 import type {TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import type {TToken} from '@utils/types/types';
-import {useUserVesting} from './useUserVestings';
 
 export enum Step {
 	WALLET = 'wallet',
