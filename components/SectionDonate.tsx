@@ -293,7 +293,7 @@ function DonateBox(): ReactElement {
 				</div>
 			</div>
 			<div className={'relative grid grid-cols-4 gap-2 md:grid-cols-1'}>
-				<Link href={'/disperseee'}>
+				<Link href={'/disperse'}>
 					<RowCardWithIcon
 						icon={<LogoDisperse className={'h-5 w-5 text-neutral-900 md:h-6 md:w-6'} />}
 						title={'Disperse'}
