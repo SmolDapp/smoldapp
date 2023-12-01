@@ -19,7 +19,7 @@ export function useUserVesting(props: TUseUserVestingProps): number {
 		for (let i = deploymentBlockNumber; i < currentBlockNumber; i += rangeLimit) {
 			console.log(i);
 			const logs = await publicClient.getLogs({
-				address: '0xB93427b83573C8F27a08A909045c3e809610411a',
+				address: '0x200C92Dd85730872Ab6A1e7d5E40A067066257cF',
 				event: YVESTING_FACTORY_ABI[0],
 				fromBlock: i,
 				toBlock: i + rangeLimit,
