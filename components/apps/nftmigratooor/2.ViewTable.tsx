@@ -1,6 +1,6 @@
 import React, {memo, useCallback, useMemo} from 'react';
 import IconHeartBroken from 'components/icons/IconHeartBroken';
-import IconSpinner from 'components/icons/IconSpinner';
+import {IconSpinner} from 'components/icons/IconSpinner';
 import {isLensNFT} from 'utils/tools.lens';
 import NFTCollection from '@nftmigratooor/NFTCollection';
 import {useNFTMigratooor} from '@nftmigratooor/useNFTMigratooor';

@@ -16,14 +16,15 @@ import {ImageWithFallback} from '@common/ImageWithFallback';
 import type {ReactElement} from 'react';
 
 const OneVesting = {
-	amount: 1000000000000000000n,
+	amount: 100000000000000000n,
 	cliff_length: 0n,
-	escrow: '0x6Aa622fA8826D12AcC87d6dCA9251d9FE75aF90B',
-	funder: '0x9c5083dd4838E120Dbeac44C052179692Aa5dAC5',
-	recipient: '0x0688547A2b5f07327a7A2644FB649CAA29C730eb',
-	token: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
-	vesting_duration: 24192000n,
-	vesting_start: 1698537600n
+	escrow: '0xCD9bDE4E3AeF598B2d50D2064F5A28028759bB41',
+	funder: '0x9E63B020ae098E73cF201EE1357EDc72DFEaA518',
+	open_claim: true,
+	recipient: '0x334CE923420ff1aA4f272e92BF68013D092aE7B4',
+	token: '0x5A98FcBEA516Cf06857215779Fd812CA3beF1B32',
+	vesting_duration: 2678400n,
+	vesting_start: 1701454198n
 };
 
 function OneVestionRendering(): ReactElement {
@@ -90,7 +91,10 @@ function OneVestionRendering(): ReactElement {
 			<div>
 				<p className={'font-number text-sm text-neutral-900'}>
 					<b suppressHydrationWarning>
-						<Counter value={alreadyVested} />
+						<Counter
+							value={alreadyVested}
+							decimals={Number(token?.[1] || 18)}
+						/>
 
 						{` / ${totalToVest} ${token?.[0].result || ''}`}
 					</b>
@@ -133,7 +137,7 @@ function Vesting(): ReactElement {
 
 			<div
 				id={'configuration'}
-				className={`overflow-x-hidden pt-10 transition-opacity ${
+				className={`pt-10 transition-opacity ${
 					[Step.SUMMARY, Step.NEW_DEPLOY, Step.CONFIGURATION].includes(currentStep)
 						? 'opacity-100'
 						: 'pointer-events-none h-0 overflow-hidden opacity-0'

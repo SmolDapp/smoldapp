@@ -23,4 +23,4 @@ function IconChevronBoth(props: React.SVGProps<SVGSVGElement>): ReactElement {
 	);
 }
 
-export default IconChevronBoth;
+export {IconChevronBoth};

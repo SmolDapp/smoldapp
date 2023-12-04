@@ -20,6 +20,7 @@ import ERC1155_ABI from './abi/ERC1155.abi';
 import GNOSIS_SAFE_PROXY_FACTORY from './abi/gnosisSafeProxyFactory.abi';
 import {MULTICALL_ABI} from './abi/multicall3.abi';
 import NFT_MIGRATOOOR_ABI from './abi/NFTMigratooor.abi';
+import {YVESTING_FACTORY_ABI} from './abi/yVestingFactory.abi';
 
 import type {BaseError, Hex} from 'viem';
 import type {Connector} from 'wagmi';
@@ -428,5 +429,63 @@ export async function multicall(props: TMulticall): Promise<TTxResponse> {
 		functionName: 'aggregate3Value',
 		args: [props.multicallData],
 		value: value
+	});
+}
+
+/* 🔵 - Smold App **************************************************************
+ ** deployVestingContract is a _WRITE_ function that will deploy a new vesting
+ ** contract.
+ **
+ ** @param token ERC20 token being distributed
+ ** @param recipient Address to vest tokens for
+ ** @param amount Amount of tokens being vested for `recipient`
+ ** @param vesting_duration Time period (in seconds) over which tokens are released
+ ** @param vesting_start Epoch time when tokens begin to vest
+ ** @param cliff_length Time period (in seconds) before tokens begin to vest
+ ** @param open_claim Switch if anyone can claim for `recipient`
+ ** @param support_vyper Donation percentage in bps, 1% by default
+ ** @param owner Vesting contract owner
+ ******************************************************************************/
+type TNewVestingContract = TWriteTransaction & {
+	token: TAddress;
+	recipient: TAddress;
+	amount: bigint;
+	vesting_duration: bigint;
+	vesting_start: bigint;
+	cliff_length: bigint;
+	open_claim: boolean;
+	support_vyper: bigint;
+	owner: TAddress;
+};
+export async function deployVestingContract(props: TNewVestingContract): Promise<TTxResponse> {
+	assertAddress(props.contractAddress);
+
+	console.log({
+		token: props.token,
+		recipient: props.recipient,
+		amount: props.amount,
+		vesting_duration: props.vesting_duration,
+		vesting_start: props.vesting_start,
+		cliff_length: props.cliff_length,
+		open_claim: props.open_claim,
+		support_vyper: props.support_vyper,
+		owner: props.owner
+	});
+
+	return await handleTx(props, {
+		address: props.contractAddress,
+		abi: YVESTING_FACTORY_ABI,
+		functionName: 'deploy_vesting_contract',
+		args: [
+			props.token,
+			props.recipient,
+			props.amount,
+			props.vesting_duration,
+			props.vesting_start,
+			props.cliff_length,
+			props.open_claim,
+			props.support_vyper,
+			props.owner
+		]
 	});
 }

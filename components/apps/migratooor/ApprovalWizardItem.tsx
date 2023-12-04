@@ -1,7 +1,7 @@
 import React from 'react';
 import {IconCircleCheck} from 'components/icons/IconCircleCheck';
 import {IconCircleCross} from 'components/icons/IconCircleCross';
-import IconSpinner from 'components/icons/IconSpinner';
+import {IconSpinner} from 'components/icons/IconSpinner';
 
 import type {ReactElement} from 'react';
 import type {TAddress} from '@yearn-finance/web-lib/types';

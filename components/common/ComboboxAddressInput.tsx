@@ -1,8 +1,8 @@
 import React, {Fragment, useCallback, useEffect, useMemo, useState} from 'react';
 import {ImageWithFallback} from 'components/common/ImageWithFallback';
-import IconChevronBoth from 'components/icons/IconChevronBoth';
+import {IconChevronBoth} from 'components/icons/IconChevronBoth';
 import {IconCircleCheck} from 'components/icons/IconCircleCheck';
-import IconSpinner from 'components/icons/IconSpinner';
+import {IconSpinner} from 'components/icons/IconSpinner';
 import {useWallet} from 'contexts/useWallet';
 import {isAddress} from 'viem';
 import {erc20ABI} from 'wagmi';
