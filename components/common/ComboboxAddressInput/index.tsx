@@ -55,7 +55,7 @@ function Options(
 	props: TComboboxAddressInput & {
 		isOpen: boolean;
 		onToggle: Dispatch<SetStateAction<boolean>>;
-		activaValue: TToken | null;
+		activaValue: TToken | undefined;
 		isLoadingTokenData: boolean;
 	}
 ): ReactElement {
@@ -112,6 +112,16 @@ function Options(
 								/>
 							)
 						)
+						[...filteredBalances[0], ...(props.shouldHideZeroBalance ? [] : filteredBalances[1])]
+							.slice(0, 100)
+							.map(
+								(dest): ReactElement => (
+									<PossibleOption
+										key={`${dest.address}_${dest.chainID}`}
+										option={dest}
+									/>
+								)
+							)
 					)}
 				</Combobox.Options>
 			</WithTransition>
@@ -124,7 +134,8 @@ function ComboboxAddressInput({
 	value,
 	onChangeValue,
 	onAddValue,
-	shouldSort = true
+	shouldSort = true,
+	shouldHideZeroBalance = false
 }: TComboboxAddressInput): ReactElement {
 	const {safeChainID} = useChainID();
 	const {refresh} = useWallet();
@@ -191,19 +202,20 @@ function ComboboxAddressInput({
 				isOpen={isOpen}
 				onClose={(): void => set_isOpen(false)}
 			/>
-			<Combobox<TToken | null>
+			<Combobox<TToken | undefined>
 				value={value}
 				onChange={onChange}>
 				{(comboOptions): ReactElement => (
 					<Options
 						isOpen={isOpen}
 						onToggle={set_isOpen}
-						activaValue={comboOptions.activeOption}
+						activaValue={comboOptions.activeOption as TToken | undefined}
 						possibleValues={possibleValues}
 						value={value}
 						onChangeValue={onChangeValue}
 						onAddValue={onAddValue}
 						shouldSort={shouldSort}
+						shouldHideZeroBalance={shouldHideZeroBalance}
 						isLoadingTokenData={isLoadingTokenData}
 					/>
 				)}

@@ -25,6 +25,7 @@ type TVestingConfiguration = {
 	receiver: TInputAddressLike;
 	vestingStartDate: Date | undefined;
 	vestingEndDate: Date | undefined;
+	cliffEndDate: Date | undefined;
 };
 
 export type TVesting = {
@@ -37,6 +38,7 @@ export type TVesting = {
 		| {type: 'SET_RECEIVER'; payload: TInputAddressLike}
 		| {type: 'SET_VESTING_START_DATE'; payload: Date | undefined}
 		| {type: 'SET_VESTING_END_DATE'; payload: Date | undefined}
+		| {type: 'SET_CLIFF_END_DATE'; payload: Date | undefined}
 	>;
 };
 const defaultProps: TVesting = {
@@ -48,7 +50,8 @@ const defaultProps: TVesting = {
 		amountToSend: undefined,
 		receiver: defaultInputAddressLike,
 		vestingStartDate: new Date(),
-		vestingEndDate: new Date()
+		vestingEndDate: new Date(),
+		cliffEndDate: new Date()
 	}
 };
 
@@ -132,6 +135,7 @@ export const VestingContextApp = ({children}: {children: React.ReactElement}): R
 			| {type: 'SET_RECEIVER'; payload: TInputAddressLike}
 			| {type: 'SET_VESTING_START_DATE'; payload: Date | undefined}
 			| {type: 'SET_VESTING_END_DATE'; payload: Date | undefined}
+			| {type: 'SET_CLIFF_END_DATE'; payload: Date | undefined}
 	): TVestingConfiguration => {
 		switch (action.type) {
 			case 'SET_TOKEN_TO_SEND':
@@ -147,6 +151,11 @@ export const VestingContextApp = ({children}: {children: React.ReactElement}): R
 				return {...state, vestingStartDate: action.payload};
 			case 'SET_VESTING_END_DATE':
 				return {...state, vestingEndDate: action.payload};
+			case 'SET_CLIFF_END_DATE':
+				if (action.payload && state.vestingEndDate && isBefore(state.vestingEndDate, action.payload)) {
+					return {...state, cliffEndDate: action.payload, vestingEndDate: action.payload};
+				}
+				return {...state, cliffEndDate: action.payload};
 		}
 	};
 
@@ -155,7 +164,8 @@ export const VestingContextApp = ({children}: {children: React.ReactElement}): R
 		amountToSend: undefined,
 		receiver: defaultInputAddressLike,
 		vestingStartDate: undefined,
-		vestingEndDate: undefined
+		vestingEndDate: undefined,
+		cliffEndDate: undefined
 	});
 
 	const contextValue = useMemo(

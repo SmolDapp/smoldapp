@@ -44,8 +44,8 @@ function ComboboxInput(props: TToken & {onChange: (event: ChangeEvent<HTMLInputE
 }
 
 function SelectedOption(props: {
-	currentValue: TToken | null;
-	activeValue: TToken | null;
+	currentValue: TToken | undefined;
+	activeValue: TToken | undefined;
 	query: string;
 	isFetchingNewToken: boolean;
 	onChange: (event: ChangeEvent<HTMLInputElement>) => void;
