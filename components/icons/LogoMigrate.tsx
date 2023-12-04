@@ -2,7 +2,7 @@ import React from 'react';
 
 import type {ReactElement} from 'react';
 
-function LogoMigratooor(props: React.SVGProps<SVGSVGElement>): ReactElement {
+export function LogoMigrate(props: React.SVGProps<SVGSVGElement>): ReactElement {
 	return (
 		<svg
 			{...props}
@@ -1003,5 +1003,3 @@ function LogoMigratooor(props: React.SVGProps<SVGSVGElement>): ReactElement {
 		</svg>
 	);
 }
-
-export default LogoMigratooor;

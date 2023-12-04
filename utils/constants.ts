@@ -1,3 +1,5 @@
+'use client';
+
 import {arbitrum, base, baseGoerli, bsc, goerli, mainnet, optimism, polygon, polygonZkEvm, zkSync} from 'wagmi/chains';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {indexedWagmiChains} from '@yearn-finance/web-lib/utils/wagmi/utils';

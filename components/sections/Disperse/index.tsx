@@ -1,22 +1,20 @@
-import React, {Fragment, memo, useCallback, useMemo} from 'react';
+import React, {Fragment, memo, useCallback} from 'react';
 import IconSquareMinus from 'components/icons/IconSquareMinus';
 import IconSquarePlus from 'components/icons/IconSquarePlus';
-import {useWallet} from 'contexts/useWallet';
+import {newVoidRow, useDisperse} from 'components/sections/Disperse/useDisperse';
 import {useTokensWithBalance} from 'hooks/useTokensWithBalance';
 import {handleInputChangeEventValue} from 'utils/handleInputChangeEventValue';
-import {newVoidRow, useDisperseee} from '@disperse/useDisperseee';
-import {Button} from '@yearn-finance/web-lib/components/Button';
-import {IconSettings} from '@yearn-finance/web-lib/icons/IconSettings';
 import {isZeroAddress, toAddress} from '@yearn-finance/web-lib/utils/address';
-import {parseUnits, toBigInt, toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
-import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
+import {parseUnits, toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import {AddressLikeInput} from '@common/AddressLikeInput';
 import {MultipleTokenSelector} from '@common/TokenInput/TokenSelector';
 
+import {DisperseWizard} from './Wizard';
+
+import type {TDisperseConfiguration} from 'components/sections/Disperse/useDisperse';
 import type {ReactElement} from 'react';
 import type {TAddress} from '@yearn-finance/web-lib/types';
 import type {TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
-import type {TDisperseConfiguration} from '@disperse/useDisperseee';
 import type {TToken} from '@utils/types/types';
 
 function AmountToSendInput(props: {
@@ -27,8 +25,8 @@ function AmountToSendInput(props: {
 	return (
 		<div
 			key={props.token?.address}
-			className={'box-0 flex h-[46px] w-full items-center p-2'}>
-			<div className={'flex h-[46px] w-full flex-row items-center justify-between px-0 py-4'}>
+			className={'box-0 flex h-10 w-full items-center p-2'}>
+			<div className={'flex h-10 w-full flex-row items-center justify-between px-0 py-4'}>
 				<input
 					className={'smol--input font-mono font-bold'}
 					type={'number'}
@@ -46,9 +44,8 @@ function AmountToSendInput(props: {
 	);
 }
 
-const ViewTable = memo(function ViewTable({onProceed}: {onProceed: VoidFunction}): ReactElement {
-	const {balances} = useWallet();
-	const {configuration, dispatchConfiguration} = useDisperseee();
+const DisperseForm = memo(function DisperseForm(): ReactElement {
+	const {configuration, dispatchConfiguration} = useDisperse();
 	const tokensWithBalance = useTokensWithBalance();
 
 	const checkAlreadyExists = useCallback(
@@ -61,7 +58,7 @@ const ViewTable = memo(function ViewTable({onProceed}: {onProceed: VoidFunction}
 		[configuration.receivers]
 	);
 
-	function onHandleMultiplePaste(pasted: string): void {
+	function onHandleMultiplePaste(_: string, pasted: string): void {
 		const separators = [' ', '-', ';', ',', '.'];
 		const addressAmounts = pasted
 			.replaceAll(' ', '')
@@ -123,44 +120,10 @@ const ViewTable = memo(function ViewTable({onProceed}: {onProceed: VoidFunction}
 		});
 	}
 
-	const isValid = useMemo((): boolean => {
-		return configuration.receivers.every((row): boolean => {
-			if (!row.label && !row.address && toBigInt(row.amount?.raw) === 0n) {
-				return false;
-			}
-			if (!row.address || isZeroAddress(row.address)) {
-				return false;
-			}
-			if (checkAlreadyExists(row.UUID, row.address)) {
-				return false;
-			}
-			if (!row.amount || row.amount.raw === 0n) {
-				return false;
-			}
-			return true;
-		});
-	}, [configuration.receivers, checkAlreadyExists]);
-
-	const balanceOf = useMemo((): number => {
-		if (isZeroAddress(configuration.tokenToSend?.address)) {
-			return 0;
-		}
-		const balance = balances?.[toAddress(configuration.tokenToSend?.address)]?.normalized;
-		return balance || 0;
-	}, [balances, configuration.tokenToSend]);
-
-	const totalToDisperse = useMemo((): number => {
-		return configuration.receivers.reduce((acc, row): number => acc + Number(row.amount?.normalized || 0), 0);
-	}, [configuration.receivers]);
-	const isAboveBalance = totalToDisperse > balanceOf;
-
 	return (
 		<section>
 			<div className={'box-0 grid w-full grid-cols-12'}>
 				<div className={'relative col-span-12 flex flex-col p-4 text-neutral-900 md:p-6'}>
-					<div className={'absolute right-4 top-4 cursor-pointer'}>
-						<IconSettings className={'transition-color h-4 w-4 text-neutral-400 hover:text-neutral-900'} />
-					</div>
 					<div className={'w-full md:w-3/4'}>
 						<b>{'Who gets what?'}</b>
 						<p className={'text-sm text-neutral-500'}>
@@ -215,7 +178,7 @@ const ViewTable = memo(function ViewTable({onProceed}: {onProceed: VoidFunction}
 												}}
 												onPaste={onHandleMultiplePaste}
 											/>
-											<div className={'flex flex-row items-center justify-center space-x-4'}>
+											<div className={'flex flex-row items-center justify-center gap-4'}>
 												<AmountToSendInput
 													token={configuration.tokenToSend}
 													amount={receiver.amount}
@@ -255,42 +218,7 @@ const ViewTable = memo(function ViewTable({onProceed}: {onProceed: VoidFunction}
 							</div>
 						</div>
 
-						<div
-							className={
-								'col-span-12 mt-6 flex w-full flex-row items-center justify-between rounded-md bg-primary-600 p-4 text-primary-0 md:relative md:px-6 md:py-4'
-							}>
-							<div className={'flex w-3/4 flex-col'}>
-								<dl className={'container whitespace-nowrap text-xs'}>
-									<dt>{'You have'}</dt>
-									<span className={'filler'} />
-									<dd suppressHydrationWarning>
-										{`${formatAmount(balanceOf, configuration.tokenToSend?.decimals || 18)} ${
-											configuration.tokenToSend?.symbol || ''
-										}`}
-									</dd>
-								</dl>
-								<dl className={'container whitespace-nowrap text-xs'}>
-									<dt>{'You are sending'}</dt>
-									<span className={'filler'} />
-									<dd
-										suppressHydrationWarning
-										className={isAboveBalance ? 'text-[#FE0000]' : ''}>
-										{`${formatAmount(totalToDisperse, configuration.tokenToSend?.decimals || 18)} ${
-											configuration.tokenToSend?.symbol || ''
-										}`}
-									</dd>
-								</dl>
-							</div>
-							<div className={'flex flex-col'}>
-								<Button
-									className={'yearn--button !w-fit !px-6 !text-sm'}
-									variant={'reverted'}
-									isDisabled={isAboveBalance || configuration.receivers.length === 0 || !isValid}
-									onClick={onProceed}>
-									{'Confirm'}
-								</Button>
-							</div>
-						</div>
+						<DisperseWizard />
 					</form>
 				</div>
 			</div>
@@ -298,4 +226,4 @@ const ViewTable = memo(function ViewTable({onProceed}: {onProceed: VoidFunction}
 	);
 });
 
-export default ViewTable;
+export default DisperseForm;

@@ -1,3 +1,5 @@
+'use client';
+
 import React, {createContext, useCallback, useContext, useMemo, useState} from 'react';
 import {useAsyncTrigger} from 'hooks/useAsyncTrigger';
 import axios from 'axios';

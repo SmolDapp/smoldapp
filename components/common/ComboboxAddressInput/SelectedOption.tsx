@@ -65,7 +65,7 @@ function SelectedOption(props: {
 	return (
 		<Combobox.Button
 			onClick={(): void => props.onToggleOptions((o: boolean): boolean => !o)}
-			className={'box-0 grow-1 col-span-12 flex h-[46px] w-full items-center p-2 px-4 md:col-span-9'}>
+			className={'box-0 grow-1 col-span-12 flex h-10 w-full items-center p-2 px-4 md:col-span-9'}>
 			<ComboboxInput
 				{...(source as TToken)}
 				onChange={props.onChange}

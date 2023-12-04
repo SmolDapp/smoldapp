@@ -1,5 +1,4 @@
 @import './style.base.css';
-@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;700&display=swap');
 
 :root {
 	@apply bg-primary-50;
@@ -25,9 +24,6 @@
 
 	.yearn--listbox-menu-item {
 		@apply hover:!bg-neutral-100/80;
-	}
-	.yearn--button-smaller {
-		@apply !rounded-md;
 	}
 
 	/* 🔵 - Yearn Finance ******************************************************************************
@@ -65,7 +61,7 @@
 		@apply flex flex-row items-center space-x-4 md:space-x-6;
 	}
 	.yearn--table-token-section-item-image {
-		@apply h-8 min-h-[32px] w-8 min-w-[32px] md:flex md:h-[46px] md:w-10;
+		@apply h-8 min-h-[32px] w-8 min-w-[32px] md:flex md:h-10 md:w-10;
 	}
 	.yearn--table-data-section {
 		@apply col-span-6 grid grid-cols-1 gap-x-0 md:grid-cols-12 gap-y-2 md:gap-y-0 mb-4 md:mb-0;

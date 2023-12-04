@@ -21,7 +21,7 @@ export default function CardWithIcon({isSelected, onClick, label, icon}: TCardWi
 			<div className={'relative flex w-full flex-col items-center justify-center'}>
 				<div
 					suppressHydrationWarning
-					className={`mb-4 flex h-[46px] w-10 items-center justify-center rounded-full border border-neutral-200 transition-colors group-hover:bg-neutral-0 md:h-12 md:w-12 ${
+					className={`mb-4 flex h-10 w-10 items-center justify-center rounded-full border border-neutral-200 transition-colors group-hover:bg-neutral-0 md:h-12 md:w-12 ${
 						isSelected ? 'bg-neutral-0' : ''
 					}`}>
 					{cloneElement(icon, {className: 'h-5 md:h-6 w-5 md:w-6 text-neutral-900'})}
@@ -77,11 +77,12 @@ type TRowCardWithIcon = {
 	title: string;
 	description: string;
 	icon: ReactElement;
+	className?: string;
 };
-export function RowCardWithIcon({onClick, title, description, icon}: TRowCardWithIcon): ReactElement {
+export function RowCardWithIcon({onClick, title, description, icon, className}: TRowCardWithIcon): ReactElement {
 	return (
 		<button
-			className={'hover box-0 group relative flex w-full p-4'}
+			className={cl(className, 'hover box-0 group relative flex w-full p-4')}
 			onClick={onClick}>
 			<div className={'relative flex h-full flex-col items-center md:flex-row'}>
 				<div

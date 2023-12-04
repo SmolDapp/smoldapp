@@ -42,13 +42,16 @@ export function notifyGib({
 
 export function notifyDisperse(props: {
 	chainID: number;
-	tokenToDisperse: TToken;
+	tokenToDisperse: TToken | undefined;
 	receivers: TAddress[];
 	amounts: bigint[];
 	hash: Hex;
 	from: TAddress;
 	type: 'EOA' | 'SAFE';
 }): void {
+	if (!props.tokenToDisperse) {
+		return;
+	}
 	const {chains} = getNetwork();
 	const currentChain = chains.find((chain): boolean => chain.id === props.chainID);
 	const explorerBaseURI = currentChain?.blockExplorers?.default?.url || 'https://etherscan.io';
@@ -74,7 +77,7 @@ export function notifyDisperse(props: {
 						toNormalizedBN(props.amounts[index], decimals).normalized,
 						6,
 						decimals
-					)} ${props.tokenToDisperse.symbol}`
+					)} ${props.tokenToDisperse?.symbol}`
 			),
 			props.type === 'EOA'
 				? `\t\t\t\t\t\t[View on Explorer](${explorerBaseURI}/tx/${props.hash})`

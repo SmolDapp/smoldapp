@@ -72,7 +72,7 @@ const NFTAsset = memo(function NFTAsset(props: TNFTAssetProps): ReactElement {
 						value={''}
 						className={'checkbox cursor-pointer'}
 					/>
-					<div className={'flex h-8 min-h-[48px] w-8 min-w-[48px] md:h-[46px] md:w-10'}>
+					<div className={'flex h-8 min-h-[48px] w-8 min-w-[48px] md:h-10 md:w-10'}>
 						<AssetImage {...props} />
 						{/* {(nft.imageURL || '').endsWith('.mov') || ['mov', 'mp4'].includes(nft?.imageType || '') ? (
 							<video

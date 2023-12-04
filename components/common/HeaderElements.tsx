@@ -133,7 +133,7 @@ export function NetworkSelector({networks}: {networks: number[]}): ReactElement 
 
 	if (!isMounted() || !currentNetwork) {
 		<div className={'relative z-50 mr-4'}>
-			<div className={'h-[46px] w-full animate-pulse bg-neutral-100'} />
+			<div className={'h-10 w-full animate-pulse bg-neutral-100'} />
 		</div>;
 	}
 

@@ -1,10 +1,10 @@
 import React, {Fragment} from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import LogoDisperse from '@disperse/Logo';
-import LogoMigratooor from '@migratooor/Logo';
+import {LogoDisperse} from '@icons/LogoDisperse';
+import {LogoMigrate} from '@icons/LogoMigrate';
+import {LogoMultiSafe} from '@icons/LogoMultiSafe';
 import LogoNFTMigratooor from '@nftmigratooor/Logo';
-import LogoSafeCreator from '@safeCreatooor/Logo';
 import LogoTokenlistooor from '@tokenlistooor/Logo';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 
@@ -23,7 +23,7 @@ const apps = [
 				{'.'}
 			</span>
 		),
-		icon: <LogoSafeCreator className={'h-[80px] w-[80px]'} />
+		icon: <LogoMultiSafe className={'h-[80px] w-[80px]'} />
 	},
 	{
 		href: '/disperse',
@@ -91,7 +91,7 @@ const apps = [
 				{' your tokens.'}
 			</span>
 		),
-		icon: <LogoMigratooor className={'h-[80px] w-[80px]'} />
+		icon: <LogoMigrate className={'h-[80px] w-[80px]'} />
 	},
 	{
 		href: '/nftmigratooor',

@@ -60,10 +60,13 @@ function TokenListHandlerPopover({
 								<div
 									onClick={(): void => set_isOpen(false)}
 									className={'absolute -right-2 -top-2'}>
-									<div className={'group cursor-pointer rounded-full bg-white'}>
+									<div
+										className={
+											'group h-6 w-6 cursor-pointer overflow-hidden rounded-full bg-white'
+										}>
 										<IconCircleCross
 											className={
-												'h-6 w-6 text-neutral-600 transition-colors hover:text-neutral-900'
+												'h-6 w-6 overflow-hidden rounded-full p-[2px] text-neutral-400 transition-colors hover:text-neutral-900'
 											}
 											aria-hidden={'true'}
 										/>

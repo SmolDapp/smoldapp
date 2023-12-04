@@ -1,20 +1,22 @@
-import React, {useState} from 'react';
+import React, {Fragment} from 'react';
+import Link from 'next/link';
 import {DefaultSeo} from 'next-seo';
+<<<<<<< HEAD
 import ViewFlowSelection from '@safeCreatooor/1.ViewFlowSelection';
 import ViewClonableSafe from '@safeCreatooor/2.ViewClonableSafe';
 import ViewNewSafeOwners from '@safeCreatooor/3.ViewNewSafeOwners';
 import ViewNewSafe from '@safeCreatooor/4.ViewNewSafe';
 import {SafeCreatorContextApp, Step, useSafeCreator} from '@safeCreatooor/useSafeCreator';
+=======
+import MultiSafe from 'components/sections/Safe';
+import {MultiSafeContextApp} from 'components/sections/Safe/useSafe';
+>>>>>>> ffc67ef (feat: wip)
 
 import type {ReactElement} from 'react';
-import type {TAddress} from '@yearn-finance/web-lib/types';
 
-function Safe(): ReactElement {
-	const {currentStep, selectedFlow, set_currentStep} = useSafeCreator();
-	const [owners, set_owners] = useState<TAddress[]>([]);
-	const [threshold, set_threshold] = useState(1);
-
+function SafePage(): ReactElement {
 	return (
+<<<<<<< HEAD
 		<div className={'mx-auto grid w-full max-w-4xl'}>
 			<div className={'mb-10 mt-6 flex flex-col justify-center md:mt-20'}>
 				<h1 className={'-ml-1 mt-4 w-full text-3xl tracking-tight text-neutral-900 md:mt-6 md:text-5xl'}>
@@ -65,42 +67,66 @@ function Safe(): ReactElement {
 					/>
 				) : null}
 			</div>
+=======
+		<div>
+			<section className={'z-10 mx-auto mt-10 grid w-full max-w-5xl'}>
+				<div className={'mb-0'}>
+					<div className={'flex flex-row items-center justify-between'}>
+						<h2 className={'scroll-m-20 pb-4 text-sm'}>
+							<Link href={'/'}>
+								<span
+									className={
+										'text-neutral-400 transition-colors hover:text-neutral-900 hover:underline'
+									}>
+									{'Smol'}
+								</span>
+							</Link>
+							<span className={'text-neutral-400'}>{' / '}</span>
+							<span className={'font-medium text-neutral-900'}>{'Multisafe'}</span>
+						</h2>
+					</div>
+					<div>
+						<MultiSafe />
+					</div>
+				</div>
+			</section>
+>>>>>>> ffc67ef (feat: wip)
 		</div>
 	);
 }
 
-export default function SafeWrapper(): ReactElement {
+SafePage.getLayout = function getLayout(page: ReactElement): ReactElement {
 	return (
-		<SafeCreatorContextApp>
-			<>
-				<DefaultSeo
-					title={'MultiSafe - SmolDapp'}
-					defaultTitle={'MultiSafe - SmolDapp'}
-					description={'One address, all the chains. Deploy your Safe across multiple chains.'}
-					openGraph={{
-						type: 'website',
-						locale: 'en-US',
-						url: 'https://smold.app/safe',
-						site_name: 'MultiSafe - SmolDapp',
-						title: 'MultiSafe - SmolDapp',
-						description: 'One address, all the chains. Deploy your Safe across multiple chains.',
-						images: [
-							{
-								url: 'https://smold.app/og_multisafe.png',
-								width: 800,
-								height: 400,
-								alt: 'MultiSafe'
-							}
-						]
-					}}
-					twitter={{
-						handle: '@smoldapp',
-						site: '@smoldapp',
-						cardType: 'summary_large_image'
-					}}
-				/>
-				<Safe />
-			</>
-		</SafeCreatorContextApp>
+		<Fragment>
+			<DefaultSeo
+				title={'MultiSafe - SmolDapp'}
+				defaultTitle={'MultiSafe - SmolDapp'}
+				description={'One address, all the chains. Deploy your Safe across multiple chains.'}
+				openGraph={{
+					type: 'website',
+					locale: 'en-US',
+					url: 'https://smold.app/safe',
+					site_name: 'MultiSafe - SmolDapp',
+					title: 'MultiSafe - SmolDapp',
+					description: 'One address, all the chains. Deploy your Safe across multiple chains.',
+					images: [
+						{
+							url: 'https://smold.app/og_multisafe.png',
+							width: 800,
+							height: 400,
+							alt: 'MultiSafe'
+						}
+					]
+				}}
+				twitter={{
+					handle: '@smoldapp',
+					site: '@smoldapp',
+					cardType: 'summary_large_image'
+				}}
+			/>
+			<MultiSafeContextApp>{page}</MultiSafeContextApp>
+		</Fragment>
 	);
-}
+};
+
+export default SafePage;

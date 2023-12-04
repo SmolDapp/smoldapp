@@ -196,10 +196,10 @@ label[aria-invalid='true'] {
 	}
 	&:not([data-size='tight']),
 	&[data-size='normal'] {
-		@apply px-4 h-[46px] text-sm;
+		@apply px-4 h-10 text-sm;
 	}
 	&[data-size='loose'] {
-		@apply px-4 h-[46px] text-sm;
+		@apply px-4 h-10 text-sm;
 	}
 
 	&:disabled {
@@ -208,14 +208,14 @@ label[aria-invalid='true'] {
 }
 
 .smol--input-wrapper {
-	@apply flex h-[46px] w-full items-center rounded-md border border-neutral-200 bg-neutral-0 p-2 transition-colors;
+	@apply flex h-10 w-full items-center rounded-md border border-neutral-200 bg-neutral-0 transition-colors;
 
 	&:has(input:focus) {
 		@apply border-primary-500;
 	}
 }
 .smol--input {
-	@apply w-full overflow-x-scroll border-none bg-transparent p-0 text-sm outline-none scrollbar-none;
+	@apply w-full overflow-x-scroll border-none bg-transparent text-sm outline-none scrollbar-none p-2;
 }
 
 select.smol--input {

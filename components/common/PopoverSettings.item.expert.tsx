@@ -1,10 +1,10 @@
 import {SmallCardWithIcon} from './CardWithIcon';
 
-import type {Dispatch, ReactElement, SetStateAction} from 'react';
+import type {ReactElement} from 'react';
 
 type TPopoverSettingsItemExpert = {
 	isSelected: boolean;
-	set_isSelected: Dispatch<SetStateAction<boolean>>;
+	onChange: (isSelected: boolean) => void;
 };
 export function PopoverSettingsItemExpert(props: TPopoverSettingsItemExpert): ReactElement {
 	return (
@@ -35,7 +35,7 @@ export function PopoverSettingsItemExpert(props: TPopoverSettingsItemExpert): Re
 						</svg>
 					}
 					label={'Baby mode'}
-					onClick={(): void => props.set_isSelected(false)}
+					onClick={(): void => props.onChange(false)}
 				/>
 
 				<SmallCardWithIcon
@@ -54,7 +54,7 @@ export function PopoverSettingsItemExpert(props: TPopoverSettingsItemExpert): Re
 						</svg>
 					}
 					label={'Expert mode'}
-					onClick={(): void => props.set_isSelected(true)}
+					onClick={(): void => props.onChange(true)}
 				/>
 			</div>
 		</div>

@@ -19,7 +19,7 @@ export function Counter({value}: {value: number}): ReactElement {
 			const controls = animate(Number(node.textContent || 0), value, {
 				duration: 1,
 				onUpdate(value) {
-					node.textContent = value.toFixed(9);
+					node.textContent = formatAmount(value.toFixed(9), 2, 2);
 				}
 			});
 			return () => controls.stop();

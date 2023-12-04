@@ -24,10 +24,6 @@ class MyDocument extends Document {
 						href={'https://fonts.gstatic.com'}
 						crossOrigin={'anonymous'}
 					/>
-					<link
-						href={'https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;700&display=swap'}
-						rel={'stylesheet'}
-					/>
 				</Head>
 				<body className={'bg-primary-50 transition-colors duration-150'}>
 					<PatternBackground />

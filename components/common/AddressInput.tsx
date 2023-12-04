@@ -48,7 +48,9 @@ function AddressInput({value, onChangeValue, ...props}: TAddressInput): ReactEle
 	}, [value, isLoadingValidish, isFocused]);
 
 	const onChange = useCallback(
-		async (label: string): Promise<void> => {
+		async (labelfull: string): Promise<void> => {
+			//Remove everything before `:` in label
+			const label = labelfull.split(':')[1] || labelfull;
 			currentLabel.current = label;
 
 			if (label.endsWith('.eth') && label.length > 4) {
@@ -99,7 +101,9 @@ function AddressInput({value, onChangeValue, ...props}: TAddressInput): ReactEle
 			/>
 			<label
 				className={
-					status === 'invalid' || status === 'warning' ? 'relative' : 'pointer-events-none relative h-4 w-4'
+					status === 'invalid' || status === 'warning'
+						? 'relative'
+						: 'pointer-events-none relative mr-2 h-4 w-4'
 				}>
 				<span className={status === 'invalid' || status === 'warning' ? 'tooltip' : 'pointer-events-none'}>
 					<div className={'pointer-events-none relative h-4 w-4'}>

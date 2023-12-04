@@ -1,12 +1,12 @@
 import React, {Fragment} from 'react';
 import Link from 'next/link';
 import {DefaultSeo} from 'next-seo';
-import ViewTable from '@disperse/2.ViewTable';
-import {DisperseContextApp} from '@disperse/useDisperseee';
+import {Migrate} from 'components/sections/Migrate';
+import {MigrateContextApp} from 'components/sections/Migrate/useMigrate';
 
 import type {ReactElement} from 'react';
 
-function Disperse(): ReactElement {
+function MigratePage(): ReactElement {
 	return (
 		<div>
 			<section className={'z-10 mx-auto mt-10 grid w-full max-w-5xl'}>
@@ -22,11 +22,11 @@ function Disperse(): ReactElement {
 								</span>
 							</Link>
 							<span className={'text-neutral-400'}>{' / '}</span>
-							<span className={'font-medium text-neutral-900'}>{'Disperse'}</span>
+							<span className={'font-medium text-neutral-900'}>{'Migrate'}</span>
 						</h2>
 					</div>
 					<div>
-						<ViewTable onProceed={(): void => {}} />
+						<Migrate />
 					</div>
 				</div>
 			</section>
@@ -34,26 +34,26 @@ function Disperse(): ReactElement {
 	);
 }
 
-Disperse.getLayout = function getLayout(page: ReactElement): ReactElement {
+MigratePage.getLayout = function getLayout(page: ReactElement): ReactElement {
 	return (
 		<Fragment>
 			<DefaultSeo
-				title={'Disperse - SmolDapp'}
-				defaultTitle={'Disperse - SmolDapp'}
-				description={'Distribute ether or tokens to multiple addresses'}
+				title={'Migratooor - SmolDapp'}
+				defaultTitle={'Migratooor - SmolDapp'}
+				description={'The easiest way to migrate your tokens from one wallet to another.'}
 				openGraph={{
 					type: 'website',
 					locale: 'en-US',
-					url: 'https://disperse.smold.app',
-					site_name: 'Disperse - SmolDapp',
-					title: 'Disperse - SmolDapp',
-					description: 'Distribute ether or tokens to multiple addresses',
+					url: 'https://smold.app/migratooor',
+					site_name: 'Migratooor - SmolDapp',
+					title: 'Migratooor - SmolDapp',
+					description: 'The easiest way to migrate your tokens from one wallet to another.',
 					images: [
 						{
-							url: 'https://smold.app/og_disperse.png',
+							url: 'https://smold.app/og_migratooor.png',
 							width: 800,
 							height: 400,
-							alt: 'disperse'
+							alt: 'migratooor'
 						}
 					]
 				}}
@@ -63,9 +63,9 @@ Disperse.getLayout = function getLayout(page: ReactElement): ReactElement {
 					cardType: 'summary_large_image'
 				}}
 			/>
-			<DisperseContextApp>{page}</DisperseContextApp>
+			<MigrateContextApp>{page}</MigrateContextApp>
 		</Fragment>
 	);
 };
 
-export default Disperse;
+export default MigratePage;

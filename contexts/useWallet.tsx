@@ -1,3 +1,5 @@
+'use client';
+
 import React, {createContext, memo, useCallback, useContext, useMemo, useState} from 'react';
 import {useTokenList} from 'contexts/useTokenList';
 import {useLocalStorageValue, useMountEffect, useUpdateEffect} from '@react-hookz/web';

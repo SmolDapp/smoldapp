@@ -4,8 +4,9 @@ import {useTokenList} from 'contexts/useTokenList';
 import {useWallet} from 'contexts/useWallet';
 import {useAsyncTrigger} from 'hooks/useAsyncTrigger';
 import axios from 'axios';
-import LogoDisperse from '@disperse/Logo';
+import {LogoDisperse} from '@icons/LogoDisperse';
 import {useDeepCompareEffect, useDeepCompareMemo, useUpdateEffect} from '@react-hookz/web';
+import {transferERC20, transferEther} from '@utils/actions';
 import handleInputChangeEventValue from '@utils/handleInputChangeEventValue';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
@@ -32,6 +33,7 @@ const GECKO_CHAIN_NAMES: TNDict<string> = {
 	100: 'xdai',
 	137: 'polygon-pos',
 	250: 'fantom',
+	324: 'zkSync',
 	42161: 'arbitrum-one'
 };
 
@@ -149,7 +151,7 @@ function AmountToSend({
 			}
 			type={'number'}
 			min={0}
-			step={1 / 10 ** (token?.decimals || 18)}
+			step={1}
 			inputMode={'numeric'}
 			placeholder={'0'}
 			pattern={'^((?:0|[1-9]+)(?:.(?:d+?[1-9]|[1-9]))?)$'}
@@ -160,10 +162,10 @@ function AmountToSend({
 }
 
 function DonateBox(): ReactElement {
-	const {address, isActive} = useWeb3();
+	const {provider, address, isActive} = useWeb3();
 	const {safeChainID} = useChainID();
-	const {balances} = useWallet();
-	const [txStatus] = useState(defaultTxStatus);
+	const {balances, refresh} = useWallet();
+	const [txStatus, set_txStatus] = useState(defaultTxStatus);
 	const [price, set_price] = useState<TNDict<TDict<number>>>({});
 	const [amountToSend, set_amountToSend] = useState<TNormalizedBN | undefined>();
 	const [receiver, set_receiver] = useState<TInputAddressLike>(defaultInputAddressLike);
@@ -183,7 +185,52 @@ function DonateBox(): ReactElement {
 		}
 	}, [safeChainID]);
 
-	const onDonate = useCallback(async (): Promise<void> => {}, []);
+	const onSend = useCallback(async (): Promise<void> => {
+		if (!provider || !tokenToSend || !amountToSend || !receiver) {
+			return;
+		}
+		if (isZeroAddress(tokenToSend.address)) {
+			return;
+		}
+		if (tokenToSend.address === ETH_TOKEN_ADDRESS) {
+			const result = await transferEther({
+				connector: provider,
+				chainID: safeChainID,
+				receiverAddress: toAddress(receiver.address),
+				amount: amountToSend.raw,
+				statusHandler: set_txStatus
+			});
+			if (result.isSuccessful) {
+				await refresh([
+					{
+						decimals: tokenToSend.decimals,
+						name: tokenToSend.name,
+						symbol: tokenToSend.symbol,
+						token: ETH_TOKEN_ADDRESS
+					}
+				]);
+			}
+			return;
+		}
+		const result = await transferERC20({
+			connector: provider,
+			chainID: safeChainID,
+			contractAddress: toAddress(tokenToSend.address),
+			receiverAddress: toAddress(receiver.address),
+			amount: amountToSend.raw,
+			statusHandler: set_txStatus
+		});
+		if (result.isSuccessful) {
+			await refresh([
+				{
+					decimals: tokenToSend.decimals,
+					name: tokenToSend.name,
+					symbol: tokenToSend.symbol,
+					token: tokenToSend.address
+				}
+			]);
+		}
+	}, [amountToSend, provider, receiver, refresh, safeChainID, tokenToSend]);
 
 	const onComputeValueFromAmount = useCallback((amount: TNormalizedBN): void => {
 		set_amountToSend(amount);
@@ -270,7 +317,7 @@ function DonateBox(): ReactElement {
 								(amountToSend?.raw || 0n) > (balances?.[toAddress(tokenToSend?.address)]?.raw || 0n) ||
 								isZeroAddress(address)
 							}
-							onClick={onDonate}>
+							onClick={onSend}>
 							{'Send tokens'}
 						</Button>
 					</div>
@@ -300,55 +347,62 @@ function DonateBox(): ReactElement {
 						description={'Distribute tokens to multiple addresses.'}
 					/>
 				</Link>
-				<RowCardWithIcon
-					icon={
-						<svg
-							xmlns={'http://www.w3.org/2000/svg'}
-							className={'h-5 w-5 p-1 text-neutral-900 md:h-6 md:w-6'}
-							viewBox={'0 0 448 512'}>
-							<path
-								d={
-									'M297.4 9.4c12.5-12.5 32.8-12.5 45.3 0l96 96c12.5 12.5 12.5 32.8 0 45.3l-96 96c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L338.7 160H128c-35.3 0-64 28.7-64 64v32c0 17.7-14.3 32-32 32s-32-14.3-32-32V224C0 153.3 57.3 96 128 96H338.7L297.4 54.6c-12.5-12.5-12.5-32.8 0-45.3zm-96 256c12.5-12.5 32.8-12.5 45.3 0l96 96c12.5 12.5 12.5 32.8 0 45.3l-96 96c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 416H96c-17.7 0-32 14.3-32 32v32c0 17.7-14.3 32-32 32s-32-14.3-32-32V448c0-53 43-96 96-96H242.7l-41.4-41.4c-12.5-12.5-12.5-32.8 0-45.3z'
-								}
-							/>
-						</svg>
-					}
-					title={'Migrate'}
-					description={'Send your tokens to another address.'}
-				/>
-				<RowCardWithIcon
-					icon={
-						<svg
-							xmlns={'http://www.w3.org/2000/svg'}
-							viewBox={'0 0 384 512'}
-							className={'h-5 w-5 p-1 text-neutral-900 md:h-6 md:w-6'}>
-							<path
-								d={
-									'M32 480c-17.7 0-32-14.3-32-32s14.3-32 32-32H352c17.7 0 32 14.3 32 32s-14.3 32-32 32H32zM214.6 342.6c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 242.7V64c0-17.7 14.3-32 32-32s32 14.3 32 32V242.7l73.4-73.4c12.5-12.5 32.8-12.5 45.3 0s12.5 32.8 0 45.3l-128 128z'
-								}
-							/>
-						</svg>
-					}
-					title={'Dump'}
-					description={'Dump multiple tokens for a single token.'}
-				/>
-				<RowCardWithIcon
-					icon={
-						<svg
-							xmlns={'http://www.w3.org/2000/svg'}
-							viewBox={'0 0 448 512'}
-							className={'h-5 w-5 p-1 text-neutral-900 md:h-6 md:w-6'}>
-							<path
-								fill={'currentColor'}
-								d={
-									'M438.6 150.6c12.5-12.5 12.5-32.8 0-45.3l-96-96c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.7 96 32 96C14.3 96 0 110.3 0 128s14.3 32 32 32l306.7 0-41.4 41.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l96-96zm-333.3 352c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 416 416 416c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0 41.4-41.4c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-96 96c-12.5 12.5-12.5 32.8 0 45.3l96 96z'
-								}
-							/>
-						</svg>
-					}
-					title={'Swap'}
-					description={'Swap one token for another token.'}
-				/>
+				<Link href={'/migrate'}>
+					<RowCardWithIcon
+						icon={
+							<svg
+								xmlns={'http://www.w3.org/2000/svg'}
+								className={'h-5 w-5 p-1 text-neutral-900 md:h-6 md:w-6'}
+								viewBox={'0 0 448 512'}>
+								<path
+									d={
+										'M297.4 9.4c12.5-12.5 32.8-12.5 45.3 0l96 96c12.5 12.5 12.5 32.8 0 45.3l-96 96c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L338.7 160H128c-35.3 0-64 28.7-64 64v32c0 17.7-14.3 32-32 32s-32-14.3-32-32V224C0 153.3 57.3 96 128 96H338.7L297.4 54.6c-12.5-12.5-12.5-32.8 0-45.3zm-96 256c12.5-12.5 32.8-12.5 45.3 0l96 96c12.5 12.5 12.5 32.8 0 45.3l-96 96c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 416H96c-17.7 0-32 14.3-32 32v32c0 17.7-14.3 32-32 32s-32-14.3-32-32V448c0-53 43-96 96-96H242.7l-41.4-41.4c-12.5-12.5-12.5-32.8 0-45.3z'
+									}
+								/>
+							</svg>
+						}
+						title={'Migrate'}
+						description={'Send your tokens to another address.'}
+					/>
+				</Link>
+				<Link href={'https://dump.services'}>
+					<RowCardWithIcon
+						className={'!cursor-alias'}
+						icon={
+							<svg
+								xmlns={'http://www.w3.org/2000/svg'}
+								viewBox={'0 0 384 512'}
+								className={'h-5 w-5 p-1 text-neutral-900 md:h-6 md:w-6'}>
+								<path
+									d={
+										'M32 480c-17.7 0-32-14.3-32-32s14.3-32 32-32H352c17.7 0 32 14.3 32 32s-14.3 32-32 32H32zM214.6 342.6c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 242.7V64c0-17.7 14.3-32 32-32s32 14.3 32 32V242.7l73.4-73.4c12.5-12.5 32.8-12.5 45.3 0s12.5 32.8 0 45.3l-128 128z'
+									}
+								/>
+							</svg>
+						}
+						title={'Dump'}
+						description={'Dump multiple tokens for a single token.'}
+					/>
+				</Link>
+				<Link href={'https://dump.services'}>
+					<RowCardWithIcon
+						icon={
+							<svg
+								xmlns={'http://www.w3.org/2000/svg'}
+								viewBox={'0 0 448 512'}
+								className={'h-5 w-5 p-1 text-neutral-900 md:h-6 md:w-6'}>
+								<path
+									fill={'currentColor'}
+									d={
+										'M438.6 150.6c12.5-12.5 12.5-32.8 0-45.3l-96-96c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.7 96 32 96C14.3 96 0 110.3 0 128s14.3 32 32 32l306.7 0-41.4 41.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l96-96zm-333.3 352c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 416 416 416c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0 41.4-41.4c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-96 96c-12.5 12.5-12.5 32.8 0 45.3l96 96z'
+									}
+								/>
+							</svg>
+						}
+						title={'Swap'}
+						description={'Swap one token for another token.'}
+					/>
+				</Link>
 			</div>
 		</div>
 	);
@@ -368,3 +422,17 @@ function SectionDonate(): ReactElement {
 	);
 }
 export default SectionDonate;
+
+// Hey ser,
+
+// Just got off a team call re Bagel. The general sentiment is that we’re feeling fairly stretched thin and want to focus on the work and projects we have rather than take on new ones.
+
+// It doesn’t feel good to say yes to more work with an uneasy feeling of under delivering on it.
+
+// Transparently (I’m sure Major will message about this separately) but dev time is our main bottle neck currently, however we think it’s the right thing to make a team decision about this.
+
+// I’m sure it’s not the answer you were hoping for, but I hope our reasoning makes sense.
+
+// Hello sers
+// Draper already notified Pickle about this, but Mom will not take back Bagel and on the dev side we just don't have the capacity to do this without rugging our time on the rest of Yearn's projects.
+// I am also not comfortable to work on something I am not 100% sure or excited about, and even if I can see the benefits of such project, the current timeline and the way isn't the right one for me

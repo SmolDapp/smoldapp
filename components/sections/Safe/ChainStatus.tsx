@@ -1,10 +1,12 @@
 import {useCallback, useEffect, useState} from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import {useMultiSafe} from 'components/sections/Safe/useSafe';
 import DISPERSE_ABI from 'utils/abi/disperse.abi';
 import GNOSIS_SAFE_PROXY_FACTORY from 'utils/abi/gnosisSafeProxyFactory.abi';
 import {multicall} from 'utils/actions';
 import {encodeFunctionData, parseEther} from 'viem';
+import {EIP3770_PREFIX} from '@utils/eip-3770';
 import {
 	getNetwork as getWagmiNetwork,
 	prepareSendTransaction,
@@ -15,27 +17,25 @@ import {
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import {toast} from '@yearn-finance/web-lib/components/yToast';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
-import {IconLinkOut} from '@yearn-finance/web-lib/icons/IconLinkOut';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {getClient, getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 import {defaultTxStatus} from '@yearn-finance/web-lib/utils/web3/transaction';
 
 import {
 	DEFAULT_FEES_USD,
+	generateArgInitializers,
 	PROXY_FACTORY_L1,
 	PROXY_FACTORY_L2,
 	PROXY_FACTORY_L2_DDP,
 	SINGLETON_L1,
 	SINGLETON_L2,
 	SINGLETON_L2_DDP
-} from './constants';
-import {useSafeCreator} from './useSafeCreator';
-import {generateArgInitializers} from './utils';
+} from './utils';
 
 import type {ReactElement} from 'react';
 import type {TAppExtendedChain} from 'utils/constants';
 import type {TAddress} from '@yearn-finance/web-lib/types';
-import type {Chain, FetchTransactionResult} from '@wagmi/core';
+import type {Chain} from '@wagmi/core';
 
 function getProxyFromSingleton(singleton: TAddress): TAddress {
 	if (singleton === SINGLETON_L2) {
@@ -52,24 +52,11 @@ function getProxyFromSingleton(singleton: TAddress): TAddress {
 
 type TChainStatusArgs = {
 	chain: Chain;
-	safeAddress: TAddress;
-	originalTx?: FetchTransactionResult;
-	owners: TAddress[];
-	threshold: number;
-	salt: bigint;
 	singleton?: TAddress;
 };
 
-function ChainStatus({
-	chain,
-	safeAddress,
-	originalTx,
-	owners,
-	threshold,
-	salt,
-	singleton
-}: TChainStatusArgs): ReactElement {
-	const {chainCoinPrices} = useSafeCreator();
+function ChainStatus({chain, singleton}: TChainStatusArgs): ReactElement {
+	const {configuration, chainCoinPrices} = useMultiSafe();
 	const gasCoinID = (getNetwork(chain.id) as TAppExtendedChain).coingeckoGasCoinID;
 	const coinPrice = chainCoinPrices?.[gasCoinID].usd;
 	const {provider, address} = useWeb3();
@@ -86,13 +73,13 @@ function ChainStatus({
 	 ******************************************************************************************/
 	const checkIfDeployedOnThatChain = useCallback(async (): Promise<void> => {
 		const publicClient = getClient(chain.id);
-		const byteCode = await publicClient.getBytecode({address: safeAddress});
+		const byteCode = await publicClient.getBytecode({address: toAddress(configuration.expectedAddress)});
 		if (byteCode) {
 			set_isDeployedOnThatChain(true);
 		} else {
 			set_isDeployedOnThatChain(false);
 		}
-	}, [chain.id, safeAddress]);
+	}, [chain.id, configuration.expectedAddress]);
 
 	/* 🔵 - Smold App **************************************************************************
 	 ** As we want to be sure to deploy the safe on the same address as the original transaction,
@@ -102,7 +89,7 @@ function ChainStatus({
 	 ** original transaction.
 	 ******************************************************************************************/
 	const checkDeploymentExpectedAddress = useCallback(async (): Promise<void> => {
-		if (owners.length === 0) {
+		if (configuration.owners.length === 0) {
 			return;
 		}
 		const publicClient = getClient(chain.id);
@@ -113,16 +100,16 @@ function ChainStatus({
 			if (signletonToUse === SINGLETON_L1) {
 				return set_canDeployOnThatChain({canDeploy: false, isLoading: false, method: 'none'});
 			}
-			const argInitializers = generateArgInitializers(owners, threshold);
+			const argInitializers = generateArgInitializers(configuration.owners, configuration.threshold);
 			const prepareWriteResult = await publicClient.simulateContract({
 				account: address,
 				address: getProxyFromSingleton(signletonToUse),
 				abi: GNOSIS_SAFE_PROXY_FACTORY,
 				functionName: 'createProxyWithNonce',
-				args: [signletonToUse, `0x${argInitializers}`, salt]
+				args: [signletonToUse, `0x${argInitializers}`, configuration.seed]
 			});
 			prepareWriteAddress = toAddress(prepareWriteResult.result);
-			if (prepareWriteAddress === safeAddress) {
+			if (prepareWriteAddress === toAddress(configuration.expectedAddress)) {
 				return set_canDeployOnThatChain({canDeploy: true, isLoading: false, method: 'contract'});
 			}
 		} catch (err) {
@@ -131,13 +118,13 @@ function ChainStatus({
 
 		try {
 			const directCall = await publicClient.call({
-				to: toAddress(originalTx?.to),
+				to: toAddress(configuration.originalTx?.to),
 				account: address,
-				data: originalTx?.input
+				data: configuration.originalTx?.input
 			});
 			if (directCall?.data) {
 				prepareCallAddress = toAddress(`0x${directCall.data.substring(26)}`);
-				if (prepareCallAddress === safeAddress) {
+				if (prepareCallAddress === toAddress(configuration.expectedAddress)) {
 					return set_canDeployOnThatChain({canDeploy: true, isLoading: false, method: 'direct'});
 				}
 			}
@@ -145,7 +132,17 @@ function ChainStatus({
 			//
 		}
 		return set_canDeployOnThatChain({canDeploy: false, isLoading: false, method: 'none'});
-	}, [address, chain.id, originalTx?.input, originalTx?.to, owners, safeAddress, salt, singleton, threshold]);
+	}, [
+		address,
+		chain.id,
+		configuration.expectedAddress,
+		configuration.originalTx?.input,
+		configuration.originalTx?.to,
+		configuration.owners,
+		configuration.seed,
+		configuration.threshold,
+		singleton
+	]);
 
 	useEffect((): void => {
 		checkIfDeployedOnThatChain();
@@ -183,10 +180,10 @@ function ChainStatus({
 			try {
 				set_cloneStatus({...defaultTxStatus, pending: true});
 				const preparedTransaction = await prepareSendTransaction({
-					to: toAddress(originalTx?.to),
+					to: toAddress(configuration.originalTx?.to),
 					chainId: chain.id,
 					account: address,
-					data: originalTx?.input
+					data: configuration.originalTx?.input
 				});
 				const {hash} = await sendTransaction(preparedTransaction);
 				const receipt = await waitForTransaction({hash, confirmations: 2});
@@ -219,7 +216,7 @@ function ChainStatus({
 		if (canDeployOnThatChain.method === 'contract') {
 			const fee = parseEther((DEFAULT_FEES_USD / coinPrice).toString());
 			const signletonToUse = singleton || SINGLETON_L2;
-			const argInitializers = generateArgInitializers(owners, threshold);
+			const argInitializers = generateArgInitializers(configuration.owners, configuration.threshold);
 			const callDataDisperseEth = {
 				target: toAddress(process.env.DISPERSE_ADDRESS),
 				value: fee,
@@ -238,7 +235,7 @@ function ChainStatus({
 				callData: encodeFunctionData({
 					abi: GNOSIS_SAFE_PROXY_FACTORY,
 					functionName: 'createProxyWithNonce',
-					args: [signletonToUse, `0x${argInitializers}`, salt]
+					args: [signletonToUse, `0x${argInitializers}`, configuration.seed]
 				})
 			};
 
@@ -268,13 +265,13 @@ function ChainStatus({
 		checkDeploymentExpectedAddress,
 		checkIfDeployedOnThatChain,
 		coinPrice,
-		originalTx?.input,
-		originalTx?.to,
-		owners,
+		configuration.originalTx?.input,
+		configuration.originalTx?.to,
+		configuration.owners,
+		configuration.seed,
+		configuration.threshold,
 		provider,
-		salt,
-		singleton,
-		threshold
+		singleton
 	]);
 
 	const currentView = {
@@ -285,14 +282,14 @@ function ChainStatus({
 					isDisabled>
 					{'Deployed'}
 				</Button>
-				<Link
+				{/* <Link
 					href={`${getNetwork(chain.id).defaultBlockExplorer}/address/${safeAddress}`}
 					target={'_blank'}>
 					<Button className={'hidden !h-8 md:block'}>
 						<IconLinkOut className={'h-4 w-4 !text-white'} />
 					</Button>
 					<p className={'block text-center text-xs text-neutral-600 md:hidden'}>{'See on explorer'}</p>
-				</Link>
+				</Link> */}
 			</div>
 		),
 		CanDeploy: (
@@ -349,17 +346,30 @@ function ChainStatus({
 	return (
 		<div
 			key={chain.id}
-			className={'box-0 flex w-full flex-col items-center justify-center p-4 pb-2 md:pb-4'}>
-			<div className={'h-8 w-8'}>
-				<Image
-					src={`${process.env.SMOL_ASSETS_URL}/chain/${chain.id}/logo-128.png`}
-					width={32}
-					height={32}
-					alt={chain.name}
-				/>
+			className={'box-0 flex w-full flex-row items-center justify-between p-4'}>
+			<div className={'flex gap-4'}>
+				<div className={'h-10 w-10'}>
+					<Image
+						src={`${process.env.SMOL_ASSETS_URL}/chain/${chain.id}/logo-128.png`}
+						width={40}
+						height={40}
+						alt={chain.name}
+					/>
+				</div>
+				<div>
+					<b className={'text-center text-base text-neutral-900'}>{getNetwork(chain.id).name}</b>
+					<Link
+						href={`${getNetwork(chain.id).defaultBlockExplorer}/address/${configuration.expectedAddress}`}
+						target={'_blank'}>
+						<p className={'font-number text-center text-xs text-neutral-900/60 hover:underline'}>
+							{`${EIP3770_PREFIX.find(eip => eip.chainId === chain.id)?.shortName || ''}:${
+								configuration.expectedAddress
+							}`}
+						</p>
+					</Link>
+				</div>
 			</div>
-			<p className={'mt-1 text-center text-sm text-neutral-700'}>{getNetwork(chain.id).name}</p>
-			<div className={'mt-4'}>{currentView}</div>
+			<div>{currentView}</div>
 		</div>
 	);
 }

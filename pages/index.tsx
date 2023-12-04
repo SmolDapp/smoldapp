@@ -1,11 +1,7 @@
-import React, {Fragment, useCallback, useState} from 'react';
+import React, {Fragment, useState} from 'react';
 import SectionDonate from 'components/SectionDonate';
 import {useTokenList} from 'contexts/useTokenList';
 import useWallet from 'contexts/useWallet';
-import ViewTokenToSend from '@disperse/1.ViewTokenToSend';
-import ViewTable from '@disperse/2.ViewTable';
-import ViewApprovalWizard from '@disperse/3.ViewApprovalWizard';
-import {Step, useDisperse} from '@disperse/useDisperse';
 import {useDeepCompareEffect, useDeepCompareMemo} from '@react-hookz/web';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
@@ -95,63 +91,6 @@ function SectionYourTokens(): ReactElement {
 				</div>
 			))}
 		</Fragment>
-	);
-}
-
-function Disperse(): ReactElement {
-	const {isWalletSafe} = useWeb3();
-	const {tokenToDisperse, currentStep, set_currentStep} = useDisperse();
-
-	const onStartDisperse = useCallback((): void => {
-		set_currentStep(Step.CONFIRMATION);
-		document?.getElementById('tldr')?.scrollIntoView({behavior: 'smooth', block: 'center'});
-		if (isWalletSafe) {
-			return document.getElementById('DISPERSE_TOKENS')?.click();
-		}
-		if (toAddress(tokenToDisperse?.address) === ETH_TOKEN_ADDRESS) {
-			return document.getElementById('DISPERSE_TOKENS')?.click();
-		}
-		return document.getElementById('APPROVE_TOKEN_TO_DISPERSE')?.click();
-	}, [isWalletSafe, set_currentStep, tokenToDisperse]);
-
-	return (
-		<div className={'mx-auto grid w-full max-w-5xl'}>
-			<div
-				id={'tokenToSend'}
-				className={`pt-10 transition-opacity ${
-					[Step.SELECTOR, Step.CONFIRMATION, Step.TOSEND].includes(currentStep)
-						? 'opacity-100'
-						: 'pointer-events-none h-0 overflow-hidden opacity-0'
-				}`}>
-				<ViewTokenToSend
-					onProceed={(): void => {
-						if (currentStep === Step.TOSEND) {
-							set_currentStep(Step.SELECTOR);
-						}
-					}}
-				/>
-			</div>
-
-			<div
-				id={'selector'}
-				className={`pt-10 transition-opacity ${
-					[Step.SELECTOR, Step.CONFIRMATION].includes(currentStep)
-						? 'opacity-100'
-						: 'pointer-events-none h-0 overflow-hidden opacity-0'
-				}`}>
-				<ViewTable onProceed={onStartDisperse} />
-			</div>
-
-			<div
-				id={'tldr'}
-				className={`pt-10 transition-opacity ${
-					[Step.CONFIRMATION].includes(currentStep)
-						? 'opacity-100'
-						: 'pointer-events-none h-0 overflow-hidden opacity-0'
-				}`}>
-				<ViewApprovalWizard />
-			</div>
-		</div>
 	);
 }
 

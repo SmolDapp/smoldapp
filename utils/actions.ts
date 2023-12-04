@@ -1,6 +1,6 @@
 import assert from 'assert';
+import {SINGLETON_L2} from 'components/sections/Safe/utils';
 import DISPERSE_ABI from 'utils/abi/disperse.abi';
-import {SINGLETON_L2} from '@safeCreatooor/constants';
 import {
 	erc20ABI,
 	erc721ABI,

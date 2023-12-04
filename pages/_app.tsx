@@ -1,8 +1,6 @@
-import React, {Fragment, memo} from 'react';
-import {Inter} from 'next/font/google';
-import {type NextRouter, useRouter} from 'next/router';
-import SectionHeader from 'components/SectionHeader';
-import {MenuContextApp} from 'contexts/useMenu';
+import React from 'react';
+import {Inter, Source_Code_Pro} from 'next/font/google';
+import {BaseLayout} from 'components/sections/Header/layout';
 import {TokenListContextApp} from 'contexts/useTokenList';
 import {WalletContextApp} from 'contexts/useWallet';
 import {SUPPORTED_CHAINS} from 'utils/constants';
@@ -11,10 +9,8 @@ import {useLocalStorageValue} from '@react-hookz/web';
 import {Analytics} from '@vercel/analytics/react';
 import {WithYearn} from '@yearn-finance/web-lib/contexts/WithYearn';
 import {localhost} from '@yearn-finance/web-lib/utils/wagmi/networks';
-import AppWrapper from '@common/AppWrapper';
 import {FeebackPopover} from '@common/FeebackPopover';
 
-import type {NextComponentType} from 'next';
 import type {AppProps} from 'next/app';
 import type {ReactElement} from 'react';
 
@@ -27,20 +23,11 @@ const inter = Inter({
 	variable: '--inter-font'
 });
 
-type TGetLayout = NextComponentType & {
-	getLayout: (p: ReactElement, router: NextRouter) => ReactElement;
-};
-const WithLayout = memo(function WithLayout(props: AppProps): ReactElement {
-	const router = useRouter();
-	const {Component} = props;
-	const getLayout = (Component as TGetLayout).getLayout || ((page: ReactElement): ReactElement => page);
-
-	return (
-		<Fragment>
-			<SectionHeader />
-			{getLayout(<AppWrapper {...props} />, router)}
-		</Fragment>
-	);
+const sourceCodePro = Source_Code_Pro({
+	weight: ['400', '500', '600', '700'],
+	subsets: ['latin'],
+	display: 'swap',
+	variable: '--scp-font'
 });
 
 function MyApp(props: AppProps): ReactElement {
@@ -53,23 +40,21 @@ function MyApp(props: AppProps): ReactElement {
 				global>
 				{`
 					html {
-						font-family: ${inter.style.fontFamily};
+						font-family: ${inter.style.fontFamily}, ${sourceCodePro.style.fontFamily};
 					}
 				`}
 			</style>
 			<WithYearn supportedChains={[...SUPPORTED_CHAINS, localhost]}>
 				<TokenListContextApp>
 					<WalletContextApp>
-						<MenuContextApp>
-							<SafeProvider>
-								<main
-									id={'app'}
-									className={`flex flex-col ${inter.variable}`}>
-									<WithLayout {...props} />
-								</main>
-								{!shouldHidePopover && <FeebackPopover />}
-							</SafeProvider>
-						</MenuContextApp>
+						<SafeProvider>
+							<main
+								id={'app'}
+								className={`flex flex-col ${inter.variable} ${sourceCodePro.variable}`}>
+								<BaseLayout {...props} />
+							</main>
+							{!shouldHidePopover && <FeebackPopover />}
+						</SafeProvider>
 					</WalletContextApp>
 				</TokenListContextApp>
 			</WithYearn>

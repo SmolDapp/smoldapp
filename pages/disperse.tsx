@@ -1,110 +1,70 @@
-import React, {useCallback} from 'react';
+import React, {Fragment} from 'react';
+import Link from 'next/link';
 import {DefaultSeo} from 'next-seo';
-import ViewTokenToSend from '@disperse/1.ViewTokenToSend';
-import ViewTable from '@disperse/2.ViewTable';
-import ViewApprovalWizard from '@disperse/3.ViewApprovalWizard';
-import {DisperseContextApp, Step, useDisperse} from '@disperse/useDisperse';
-import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
-import {toAddress} from '@yearn-finance/web-lib/utils/address';
-import {ETH_TOKEN_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
+import {DisperseContextApp} from '@disperse/useDisperse';
 
 import type {ReactElement} from 'react';
 
-function Disperse(): ReactElement {
-	const {isWalletSafe} = useWeb3();
-	const {tokenToDisperse, currentStep, set_currentStep} = useDisperse();
-
-	const onStartDisperse = useCallback((): void => {
-		set_currentStep(Step.CONFIRMATION);
-		document?.getElementById('tldr')?.scrollIntoView({behavior: 'smooth', block: 'center'});
-		if (isWalletSafe) {
-			return document.getElementById('DISPERSE_TOKENS')?.click();
-		}
-		if (toAddress(tokenToDisperse?.address) === ETH_TOKEN_ADDRESS) {
-			return document.getElementById('DISPERSE_TOKENS')?.click();
-		}
-		return document.getElementById('APPROVE_TOKEN_TO_DISPERSE')?.click();
-	}, [isWalletSafe, set_currentStep, tokenToDisperse]);
-
+function DispersePage(): ReactElement {
 	return (
-		<div className={'mx-auto grid w-full max-w-4xl'}>
-			<div className={'mb-10 mt-6 flex flex-col justify-center md:mt-20'}>
-				<h1
-					className={
-						'-ml-1 mt-4 w-full text-3xl tracking-tight text-neutral-900 md:mt-6 md:w-1/2 md:text-5xl'
-					}>
-					{'Disperse tokens in a single click.'}
-				</h1>
-				<b className={'mt-4 w-full text-base leading-normal text-neutral-500 md:w-2/3 md:text-lg md:leading-8'}>
-					{'Pay contributors, send out grants or just transfer tokens to friends with disperse.'}
-				</b>
-			</div>
-
-			<div id={'tokenToSend'}>
-				<ViewTokenToSend
-					onProceed={(): void => {
-						if (currentStep === Step.TOSEND) {
-							set_currentStep(Step.SELECTOR);
-						}
-					}}
-				/>
-			</div>
-
-			<div
-				id={'selector'}
-				className={`pt-10 transition-opacity ${
-					[Step.SELECTOR, Step.CONFIRMATION].includes(currentStep)
-						? 'opacity-100'
-						: 'pointer-events-none h-0 overflow-hidden opacity-0'
-				}`}>
-				<ViewTable onProceed={onStartDisperse} />
-			</div>
-
-			<div
-				id={'tldr'}
-				className={`pt-10 transition-opacity ${
-					[Step.CONFIRMATION].includes(currentStep)
-						? 'opacity-100'
-						: 'pointer-events-none h-0 overflow-hidden opacity-0'
-				}`}>
-				<ViewApprovalWizard />
-			</div>
+		<div>
+			<section className={'z-10 mx-auto mt-10 grid w-full max-w-5xl'}>
+				<div className={'mb-0'}>
+					<div className={'flex flex-row items-center justify-between'}>
+						<h2 className={'scroll-m-20 pb-4 text-sm'}>
+							<Link href={'/'}>
+								<span
+									className={
+										'text-neutral-400 transition-colors hover:text-neutral-900 hover:underline'
+									}>
+									{'Smol'}
+								</span>
+							</Link>
+							<span className={'text-neutral-400'}>{' / '}</span>
+							<span className={'font-medium text-neutral-900'}>{'Disperse'}</span>
+						</h2>
+					</div>
+					<div>
+						<Disperse />
+					</div>
+				</div>
+			</section>
 		</div>
 	);
 }
 
-export default function DisperseWrapper(): ReactElement {
+DispersePage.getLayout = function getLayout(page: ReactElement): ReactElement {
 	return (
-		<DisperseContextApp>
-			<>
-				<DefaultSeo
-					title={'Disperse - SmolDapp'}
-					defaultTitle={'Disperse - SmolDapp'}
-					description={'Distribute ether or tokens to multiple addresses'}
-					openGraph={{
-						type: 'website',
-						locale: 'en-US',
-						url: 'https://disperse.smold.app',
-						site_name: 'Disperse - SmolDapp',
-						title: 'Disperse - SmolDapp',
-						description: 'Distribute ether or tokens to multiple addresses',
-						images: [
-							{
-								url: 'https://smold.app/og_disperse.png',
-								width: 800,
-								height: 400,
-								alt: 'disperse'
-							}
-						]
-					}}
-					twitter={{
-						handle: '@smoldapp',
-						site: '@smoldapp',
-						cardType: 'summary_large_image'
-					}}
-				/>
-				<Disperse />
-			</>
-		</DisperseContextApp>
+		<Fragment>
+			<DefaultSeo
+				title={'Disperse - SmolDapp'}
+				defaultTitle={'Disperse - SmolDapp'}
+				description={'Distribute ether or tokens to multiple addresses'}
+				openGraph={{
+					type: 'website',
+					locale: 'en-US',
+					url: 'https://disperse.smold.app',
+					site_name: 'Disperse - SmolDapp',
+					title: 'Disperse - SmolDapp',
+					description: 'Distribute ether or tokens to multiple addresses',
+					images: [
+						{
+							url: 'https://smold.app/og_disperse.png',
+							width: 800,
+							height: 400,
+							alt: 'disperse'
+						}
+					]
+				}}
+				twitter={{
+					handle: '@smoldapp',
+					site: '@smoldapp',
+					cardType: 'summary_large_image'
+				}}
+			/>
+			<DisperseContextApp>{page}</DisperseContextApp>
+		</Fragment>
 	);
-}
+};
+
+export default DispersePage;

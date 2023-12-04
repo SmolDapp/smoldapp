@@ -1,10 +1,10 @@
 import {SmallCardWithIcon} from './CardWithIcon';
 
-import type {Dispatch, ReactElement, SetStateAction} from 'react';
+import type {ReactElement} from 'react';
 
 type TPopoverSettingsItemTestnets = {
 	isSelected: boolean;
-	set_isSelected: Dispatch<SetStateAction<boolean>>;
+	onChange: (isSelected: boolean) => void;
 };
 export function PopoverSettingsItemTestnets(props: TPopoverSettingsItemTestnets): ReactElement {
 	return (
@@ -35,7 +35,7 @@ export function PopoverSettingsItemTestnets(props: TPopoverSettingsItemTestnets)
 						</svg>
 					}
 					label={'Hide testnets'}
-					onClick={(): void => props.set_isSelected(false)}
+					onClick={(): void => props.onChange(false)}
 				/>
 
 				<SmallCardWithIcon
@@ -54,7 +54,7 @@ export function PopoverSettingsItemTestnets(props: TPopoverSettingsItemTestnets)
 						</svg>
 					}
 					label={'Display testnets'}
-					onClick={(): void => props.set_isSelected(true)}
+					onClick={(): void => props.onChange(true)}
 				/>
 			</div>
 		</div>

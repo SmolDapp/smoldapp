@@ -18,6 +18,7 @@ type TAddressLikeInput = {
 	onChange: (address: string | undefined) => void;
 	onPaste: (UUID: string, pasted: string) => void;
 	isDuplicate?: boolean;
+	isDisabled?: boolean;
 	shouldAutoFocus?: boolean;
 };
 
@@ -53,6 +54,7 @@ export function AddressLikeInput({
 	onChange,
 	onPaste,
 	isDuplicate,
+	isDisabled,
 	shouldAutoFocus
 }: TAddressLikeInput): ReactElement {
 	const [isValidDestination, set_isValidDestination] = useState<boolean | 'undetermined'>('undetermined');
@@ -161,17 +163,21 @@ export function AddressLikeInput({
 	}, [label]);
 
 	return (
-		<div className={'box-0 flex h-[46px] w-full items-center p-2'}>
-			<div className={'flex h-[46px] w-full flex-row items-center justify-between px-0 py-4'}>
+		<div className={'smol--input-wrapper flex h-10 w-full items-center'}>
+			<div className={'flex h-10 w-full flex-row items-center justify-between px-0 py-4'}>
 				<input
 					id={`add_input_${uuid}`}
 					aria-invalid={!isValidDestination}
-					required
+					required={!isDisabled}
+					disabled={isDisabled}
 					autoFocus={shouldAutoFocus}
 					spellCheck={false}
 					placeholder={'0x...'}
 					value={label}
 					onPaste={(e): void => {
+						if (isDisabled) {
+							return;
+						}
 						const value = e.clipboardData.getData('text/plain');
 						const isValidValue = looksValidAddress(value);
 						if (isValidValue) {
@@ -181,17 +187,20 @@ export function AddressLikeInput({
 						onPaste(uuid, value);
 					}}
 					onChange={(e): void => {
+						if (isDisabled) {
+							return;
+						}
 						set_isValidDestination('undetermined');
 						onChangeLabel(e.target.value);
 					}}
-					className={'smol--input font-mono font-bold'}
+					className={cl('smol--input font-mono font-bold', isDisabled ? 'cursor-not-allowed' : '')}
 					type={'text'}
 				/>
 			</div>
 			<label
 				htmlFor={`add_input_${uuid}`}
 				className={cl(
-					'relative',
+					'relative mr-2',
 					status === 'invalid' || status === 'warning'
 						? 'pointer-events-none relative h-full w-4 flex justify-center items-center'
 						: ''
