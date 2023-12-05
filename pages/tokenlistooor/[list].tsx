@@ -12,6 +12,7 @@ import {MigratooorContextApp} from '@migratooor/useMigratooor';
 import {useMountEffect} from '@react-hookz/web';
 import {DownloadAssetButton} from '@tokenlistooor/DownloadAssetButton';
 import {Button} from '@yearn-finance/web-lib/components/Button';
+import {toast} from '@yearn-finance/web-lib/components/yToast';
 import {IconSocialGithub} from '@yearn-finance/web-lib/icons/IconSocialGithub';
 import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 import {ImageWithFallback} from '@common/ImageWithFallback';
@@ -129,7 +130,8 @@ function TokenListItem({item}: {item: TTokenListItem['tokens'][0]}): ReactElemen
 	const downloadAssetCommonParams = {
 		address: item.address,
 		chainId: item.chainId,
-		fileName: item.symbol
+		fileName: item.symbol,
+		onSuccess: () => toast({type: 'success', content: `Succesfully dowloaded ${item.symbol} asset`})
 	};
 
 	return (

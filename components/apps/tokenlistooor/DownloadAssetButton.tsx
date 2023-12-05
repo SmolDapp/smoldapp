@@ -4,7 +4,7 @@ import {downloadAsset} from '@utils/downloadAsset';
 import type {ReactElement} from 'react';
 import type {TDownloadAsset} from '@utils/downloadAsset';
 
-export function DownloadAssetButton({address, type, chainId, fileName}: TDownloadAsset): ReactElement {
+export function DownloadAssetButton({address, type, chainId, fileName, onSuccess}: TDownloadAsset): ReactElement {
 	return (
 		<button
 			className={
@@ -15,7 +15,8 @@ export function DownloadAssetButton({address, type, chainId, fileName}: TDownloa
 					address,
 					type,
 					chainId,
-					fileName
+					fileName,
+					onSuccess
 				})
 			}>
 			{type.toUpperCase()}
