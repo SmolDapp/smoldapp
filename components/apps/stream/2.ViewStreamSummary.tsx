@@ -111,7 +111,7 @@ function Buttons(): ReactElement {
 				onClick={(): void => {
 					onApproveToken();
 				}}
-				isDisabled={toBigInt(allowance) >= toBigInt(configuration?.amountToSend?.raw)}
+				isDisabled={toBigInt(allowance) >= toBigInt(configuration?.amountToSend?.raw) || !address}
 				isBusy={txStatusAllowance.pending}
 				className={'w-full'}>
 				{'Approve'}
@@ -121,7 +121,8 @@ function Buttons(): ReactElement {
 				isDisabled={
 					allowance === 0n ||
 					allowance === undefined ||
-					allowance < toBigInt(configuration?.amountToSend?.raw)
+					allowance < toBigInt(configuration?.amountToSend?.raw) ||
+					!address
 				}
 				isBusy={txStatus.pending}
 				className={'w-full'}>
