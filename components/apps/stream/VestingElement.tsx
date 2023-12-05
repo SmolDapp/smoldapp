@@ -109,8 +109,6 @@ export function VestingElement({vesting}: {vesting: TStreamArgs}): ReactElement 
 		}
 	}, [chainID, provider, refetch, vesting.escrow, vesting.recipient]);
 
-	console.log({amount: vesting.amount, totalClaimed});
-
 	return (
 		<div className={'flex flex-col px-6 py-4'}>
 			<div className={'flex w-full flex-col items-start justify-between md:flex-row md:items-center'}>
