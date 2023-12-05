@@ -143,7 +143,7 @@ export function VestingElement({vesting}: {vesting: TStreamArgs}): ReactElement 
 				<dl className={'flex justify-between'}>
 					<dt className={'text-xs font-medium text-neutral-900'}>{'Start Date: '}</dt>
 					<dd className={'font-number text-xs text-neutral-900'}>
-						{format(new Date(Number(vesting.vesting_start) * 1000), 'PPPPpp')}
+						{format(new Date(Number(vesting.vesting_start) * 1000), 'PPPP')}
 					</dd>
 				</dl>
 				<dl className={'flex justify-between'}>
@@ -151,7 +151,7 @@ export function VestingElement({vesting}: {vesting: TStreamArgs}): ReactElement 
 					<dd className={'font-number text-xs text-neutral-900'}>
 						{format(
 							new Date(Number(vesting.vesting_start) * 1000 + Number(vesting.vesting_duration) * 1000),
-							'PPPPpp'
+							'PPPP'
 						)}
 					</dd>
 				</dl>
@@ -163,7 +163,7 @@ export function VestingElement({vesting}: {vesting: TStreamArgs}): ReactElement 
 						<dd className={'font-number text-xs text-neutral-900'}>
 							{format(
 								new Date(Number(vesting.vesting_start) * 1000 + Number(vesting.cliff_length) * 1000),
-								'PPPPpp'
+								'PPPP'
 							)}
 						</dd>
 					</dl>
