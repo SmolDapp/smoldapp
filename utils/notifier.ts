@@ -6,10 +6,10 @@ import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
 
 import {EIP3770_PREFIX} from './eip-3770';
 
-import type {TTokenInfo} from 'contexts/useTokenList';
 import type {Hex} from 'viem';
 import type {TAddress} from '@yearn-finance/web-lib/types';
 import type {TSelectedElement} from '@migratooor/useMigratooor';
+import type {TToken} from './types/types';
 
 const safeBaseURI = 'https://app.safe.global/transactions/tx?safe=';
 export function notifyGib({
@@ -42,7 +42,7 @@ export function notifyGib({
 
 export function notifyDisperse(props: {
 	chainID: number;
-	tokenToDisperse: TTokenInfo;
+	tokenToDisperse: TToken;
 	receivers: TAddress[];
 	amounts: bigint[];
 	hash: Hex;

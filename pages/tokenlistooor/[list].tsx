@@ -456,7 +456,7 @@ export const getServerSideProps = async (
 	}
 	try {
 		const listRes = await fetch(`https://raw.githubusercontent.com/SmolDapp/tokenLists/main/lists/${listID}.json`);
-		const tokenListResponse = await listRes.json();
+		const tokenListResponse = (await listRes.json()) as TTokenListItem;
 		return {
 			props: {
 				list: {

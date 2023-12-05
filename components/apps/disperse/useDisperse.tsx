@@ -1,7 +1,7 @@
 import React, {createContext, useContext, useEffect, useMemo, useState} from 'react';
-import {scrollToTargetAdjusted} from 'utils/animations';
-import {HEADER_HEIGHT} from 'utils/constants';
 import {useMountEffect, useUpdateEffect} from '@react-hookz/web';
+import {scrollToTargetAdjusted} from '@utils/animations';
+import {HEADER_HEIGHT} from '@utils/constants';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {ETH_TOKEN_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
 import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
@@ -9,7 +9,7 @@ import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 import type {Dispatch, SetStateAction} from 'react';
 import type {TAddress} from '@yearn-finance/web-lib/types';
 import type {TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
-import type {TTokenInfo} from '../../../contexts/useTokenList';
+import type {TToken} from '@utils/types/types';
 
 export enum Step {
 	WALLET = 'wallet',
@@ -26,12 +26,12 @@ export type TDisperseElement = {
 };
 
 export type TSelected = {
-	tokenToDisperse: TTokenInfo;
+	tokenToDisperse: TToken;
 	currentStep: Step;
 	disperseArray: TDisperseElement[];
 	isDispersed: boolean;
 	set_currentStep: Dispatch<SetStateAction<Step>>;
-	set_tokenToDisperse: Dispatch<SetStateAction<TTokenInfo>>;
+	set_tokenToDisperse: Dispatch<SetStateAction<TToken>>;
 	set_disperseArray: Dispatch<SetStateAction<TDisperseElement[]>>;
 	onResetDisperse: () => void;
 };
@@ -39,7 +39,7 @@ const {wrappedToken: mainnetToken} = getNetwork(1).contracts;
 const defaultProps: TSelected = {
 	tokenToDisperse: {
 		address: ETH_TOKEN_ADDRESS,
-		chainId: 1,
+		chainID: 1,
 		name: mainnetToken?.coinName || 'Ether',
 		symbol: mainnetToken?.coinSymbol || 'ETH',
 		decimals: mainnetToken?.decimals || 18,
@@ -67,7 +67,7 @@ const DisperseContext = createContext<TSelected>(defaultProps);
 export const DisperseContextApp = ({children}: {children: React.ReactElement}): React.ReactElement => {
 	const {address, isActive, isWalletSafe, isWalletLedger} = useWeb3();
 	const [currentStep, set_currentStep] = useState<Step>(Step.WALLET);
-	const [tokenToDisperse, set_tokenToDisperse] = useState<TTokenInfo>(defaultProps.tokenToDisperse);
+	const [tokenToDisperse, set_tokenToDisperse] = useState<TToken>(defaultProps.tokenToDisperse);
 
 	const [disperseArray, set_disperseArray] = useState<TDisperseElement[]>([]);
 	const [isDispersed, set_isDispersed] = useState<boolean>(false);

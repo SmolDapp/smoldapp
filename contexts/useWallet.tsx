@@ -1,6 +1,5 @@
 import React, {createContext, memo, useCallback, useContext, useMemo, useState} from 'react';
 import {useTokenList} from 'contexts/useTokenList';
-import defaultTokenList from 'utils/tokenLists.json';
 import {useLocalStorageValue, useMountEffect, useUpdateEffect} from '@react-hookz/web';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {useBalances} from '@yearn-finance/web-lib/hooks/useBalances';
@@ -11,11 +10,11 @@ import {toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 
 import type {Dispatch, ReactElement, SetStateAction} from 'react';
-import type {TToken} from 'utils/types';
 import type {TUseBalancesTokens} from '@yearn-finance/web-lib/hooks/useBalances';
 import type {TAddress, TDict} from '@yearn-finance/web-lib/types';
 import type {TBalanceData} from '@yearn-finance/web-lib/types/hooks';
 import type {TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
+import type {TToken} from '@utils/types/types';
 
 export type TWalletContext = {
 	balances: TDict<TBalanceData>;
@@ -55,10 +54,10 @@ export const WalletContextApp = memo(function WalletContextApp({children}: {chil
 	);
 
 	const availableTokens = useMemo((): TUseBalancesTokens[] => {
-		const withDefaultTokens = [...Object.values(tokenList), ...defaultTokenList.tokens];
+		const withTokenList = [...Object.values(tokenList)];
 		const tokens: TUseBalancesTokens[] = [];
-		withDefaultTokens
-			.filter((token): boolean => token.chainId === safeChainID)
+		withTokenList
+			.filter((token): boolean => token.chainID === safeChainID)
 			.forEach((token): void => {
 				tokens.push({
 					token: toAddress(token.address),
@@ -101,7 +100,7 @@ export const WalletContextApp = memo(function WalletContextApp({children}: {chil
 			const withDefaultTokens = [...Object.values(newTokenList)];
 			const tokens: TUseBalancesTokens[] = [];
 			withDefaultTokens
-				.filter((token): boolean => token.chainId === safeChainID)
+				.filter((token): boolean => token.chainID === safeChainID)
 				.forEach((token): void => {
 					tokens.push({
 						token: toAddress(token.address),

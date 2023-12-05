@@ -92,6 +92,7 @@ module.exports = phase =>
 				];
 			},
 			env: {
+				PROJECT_SLUG: 'smoldapp',
 				JSON_RPC_URL: {
 					1: process.env.RPC_URL_MAINNET,
 					5: process.env.RPC_URL_GOERLI,
@@ -110,6 +111,7 @@ module.exports = phase =>
 				ALCHEMY_API_KEY: process.env.ALCHEMY_API_KEY,
 				INFURA_PROJECT_ID: process.env.INFURA_PROJECT_ID,
 				OPENSEA_API_KEY: process.env.OPENSEA_API_KEY,
+				SMOL_ASSETS_URL: 'https://assets.smold.app/api',
 
 				// Wallet Connect modal configuration
 				WALLETCONNECT_PROJECT_ID: process.env.WALLETCONNECT_PROJECT_ID,

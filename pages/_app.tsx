@@ -31,11 +31,13 @@ function MyApp(props: AppProps): ReactElement {
 		<>
 			<style
 				jsx
-				global>{`
-				html {
-					font-family: ${inter.style.fontFamily};
-				}
-			`}</style>
+				global>
+				{`
+					html {
+						font-family: ${inter.style.fontFamily};
+					}
+				`}
+			</style>
 			<WithYearn supportedChains={[...SUPPORTED_CHAINS, localhost]}>
 				<TokenListContextApp>
 					<WalletContextApp>

@@ -1,8 +1,8 @@
 import React, {Fragment, useCallback, useEffect, useMemo, useState} from 'react';
 import {ImageWithFallback} from 'components/common/ImageWithFallback';
-import IconCheck from 'components/icons/IconCheck';
-import IconChevronBoth from 'components/icons/IconChevronBoth';
-import IconSpinner from 'components/icons/IconSpinner';
+import {IconChevronBoth} from 'components/icons/IconChevronBoth';
+import {IconCircleCheck} from 'components/icons/IconCircleCheck';
+import {IconSpinner} from 'components/icons/IconSpinner';
 import {useWallet} from 'contexts/useWallet';
 import {isAddress} from 'viem';
 import {erc20ABI} from 'wagmi';
@@ -15,15 +15,15 @@ import {decodeAsNumber, decodeAsString} from '@yearn-finance/web-lib/utils/decod
 import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
 
-import type {TTokenInfo} from 'contexts/useTokenList';
 import type {Dispatch, ReactElement, SetStateAction} from 'react';
 import type {TAddress, TDict} from '@yearn-finance/web-lib/types';
+import type {TToken} from '@utils/types/types';
 
 type TComboboxAddressInput = {
 	value: string;
-	possibleValues: TDict<TTokenInfo>;
+	possibleValues: TDict<TToken>;
 	onChangeValue: Dispatch<SetStateAction<string>>;
-	onAddValue: Dispatch<SetStateAction<TDict<TTokenInfo>>>;
+	onAddValue: Dispatch<SetStateAction<TDict<TToken>>>;
 };
 
 type TElement = {
@@ -58,7 +58,7 @@ function Element(props: TElement): ReactElement {
 	);
 }
 
-function ComboboxOption({option}: {option: TTokenInfo}): ReactElement {
+function ComboboxOption({option}: {option: TToken}): ReactElement {
 	const {balances} = useWallet();
 
 	return (
@@ -72,7 +72,7 @@ function ComboboxOption({option}: {option: TTokenInfo}): ReactElement {
 			{({selected: isSelected}): ReactElement => (
 				<>
 					<Element
-						logoURI={option.logoURI}
+						logoURI={option.logoURI || ''}
 						symbol={option.symbol}
 						address={option.address}
 						decimals={option.decimals}
@@ -80,7 +80,7 @@ function ComboboxOption({option}: {option: TTokenInfo}): ReactElement {
 					/>
 					{isSelected ? (
 						<span className={'absolute inset-y-0 right-8 flex items-center'}>
-							<IconCheck className={'absolute h-4 w-4 text-neutral-900'} />
+							<IconCircleCheck className={'absolute h-4 w-4 text-neutral-900'} />
 						</span>
 					) : null}
 				</>
@@ -137,7 +137,7 @@ function ComboboxAddressInput({possibleValues, value, onChangeValue, onAddValue}
 				set_isLoadingTokenData(false);
 			}
 
-			onAddValue((prev: TDict<TTokenInfo>): TDict<TTokenInfo> => {
+			onAddValue((prev: TDict<TToken>): TDict<TToken> => {
 				if (prev[_selected]) {
 					return prev;
 				}
@@ -148,7 +148,7 @@ function ComboboxAddressInput({possibleValues, value, onChangeValue, onAddValue}
 						name: _tokenData?.name || '',
 						symbol: _tokenData?.symbol || '',
 						decimals: _tokenData?.decimals || 18,
-						chainId: safeChainID,
+						chainID: safeChainID,
 						logoURI: `https://assets.smold.app/api/token/${safeChainID}/${toAddress(
 							_selected
 						)}/logo-128.png`
@@ -175,7 +175,7 @@ function ComboboxAddressInput({possibleValues, value, onChangeValue, onAddValue}
 						.includes(query.toLowerCase().replace(/\s+/g, ''))
 			  );
 
-	const filteredBalances = useMemo((): [TTokenInfo[], TTokenInfo[]] => {
+	const filteredBalances = useMemo((): [TToken[], TToken[]] => {
 		const withBalance = [];
 		const withoutBalance = [];
 		for (const dest of filteredValues) {
@@ -193,7 +193,7 @@ function ComboboxAddressInput({possibleValues, value, onChangeValue, onAddValue}
 		return (
 			<div className={'relative flex w-full flex-row items-center space-x-4'}>
 				<div
-					key={`${value}_${currentElement?.chainId || 0}`}
+					key={`${value}_${currentElement?.chainID || 0}`}
 					className={'h-6 w-6'}>
 					<ImageWithFallback
 						alt={''}
@@ -296,7 +296,7 @@ function ComboboxAddressInput({possibleValues, value, onChangeValue, onAddValue}
 								<ComboboxOption
 									option={{
 										address: toAddress(query),
-										chainId: safeChainID,
+										chainID: safeChainID,
 										name: tokenData.name,
 										symbol: tokenData.symbol,
 										decimals: tokenData.decimals,
@@ -307,7 +307,7 @@ function ComboboxAddressInput({possibleValues, value, onChangeValue, onAddValue}
 								[...filteredBalances[0], ...filteredBalances[1]].slice(0, 100).map(
 									(dest): ReactElement => (
 										<ComboboxOption
-											key={`${dest.address}_${dest.chainId}`}
+											key={`${dest.address}_${dest.chainID}`}
 											option={dest}
 										/>
 									)

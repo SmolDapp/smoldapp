@@ -340,10 +340,10 @@ function ChainStatus({
 		canDeployOnThatChain.isLoading
 			? 'Loading'
 			: isDeployedOnThatChain
-			? 'Deployed'
-			: canDeployOnThatChain.canDeploy
-			? 'CanDeploy'
-			: 'CannotDeploy'
+			  ? 'Deployed'
+			  : canDeployOnThatChain.canDeploy
+			    ? 'CanDeploy'
+			    : 'CannotDeploy'
 	];
 
 	return (

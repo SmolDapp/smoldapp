@@ -1,7 +1,7 @@
 import React from 'react';
-import IconCheck from 'components/icons/IconCheck';
-import IconCircleCross from 'components/icons/IconCircleCross';
-import IconSpinner from 'components/icons/IconSpinner';
+import {IconCircleCheck} from 'components/icons/IconCircleCheck';
+import {IconCircleCross} from 'components/icons/IconCircleCross';
+import {IconSpinner} from 'components/icons/IconSpinner';
 
 import type {ReactElement} from 'react';
 import type {TAddress} from '@yearn-finance/web-lib/types';
@@ -20,7 +20,7 @@ type TApprovalWizardItemProps = {
 function ApprovalWizardItem({token, executeStatus, prefix = 'Send'}: TApprovalWizardItemProps): ReactElement {
 	function renderExecuteIndication(): ReactElement {
 		if (executeStatus === 'success') {
-			return <IconCheck className={'h-4 w-4 text-[#16a34a]'} />;
+			return <IconCircleCheck className={'h-4 w-4 text-[#16a34a]'} />;
 		}
 		if (executeStatus === 'pending') {
 			return <IconSpinner />;

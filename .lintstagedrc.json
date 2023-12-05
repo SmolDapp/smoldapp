@@ -1,4 +1,4 @@
 {
-	"*.ts|*.tsx": ["yarn prettier-format", "eslint"],
+	"*.ts|*.tsx": ["yarn prettier-format", "yarn eslint --quiet --fix", "bash -c tsc --noEmit"],
 	"*.scss|*.css": "yarn prettier-format"
 }

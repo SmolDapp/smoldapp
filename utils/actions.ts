@@ -20,6 +20,8 @@ import ERC1155_ABI from './abi/ERC1155.abi';
 import GNOSIS_SAFE_PROXY_FACTORY from './abi/gnosisSafeProxyFactory.abi';
 import {MULTICALL_ABI} from './abi/multicall3.abi';
 import NFT_MIGRATOOOR_ABI from './abi/NFTMigratooor.abi';
+import {YVESTING_FACTORY_ABI} from './abi/yVestingFactory.abi';
+import {YVESTING_SIMPLE_ABI} from './abi/yVestingSimple.abi';
 
 import type {BaseError, Hex} from 'viem';
 import type {Connector} from 'wagmi';
@@ -428,5 +430,63 @@ export async function multicall(props: TMulticall): Promise<TTxResponse> {
 		functionName: 'aggregate3Value',
 		args: [props.multicallData],
 		value: value
+	});
+}
+
+/* 🔵 - Smold App **************************************************************
+ ** deployVestingContract is a _WRITE_ function that will deploy a new vesting
+ ** contract.
+ **
+ ** @param token ERC20 token being distributed
+ ** @param recipient Address to vest tokens for
+ ** @param amount Amount of tokens being vested for `recipient`
+ ** @param vesting_duration Time period (in seconds) over which tokens are released
+ ** @param vesting_start Epoch time when tokens begin to vest
+ ** @param cliff_length Time period (in seconds) before tokens begin to vest
+ ** @param owner Vesting contract owner
+ ******************************************************************************/
+type TNewVestingContract = TWriteTransaction & {
+	token: TAddress;
+	recipient: TAddress;
+	amount: bigint;
+	vesting_duration: bigint;
+	vesting_start: bigint;
+	cliff_length: bigint;
+	owner: TAddress;
+};
+export async function deployVestingContract(props: TNewVestingContract): Promise<TTxResponse> {
+	assertAddress(props.contractAddress);
+	return await handleTx(props, {
+		address: props.contractAddress,
+		abi: YVESTING_FACTORY_ABI,
+		functionName: 'deploy_vesting_contract',
+		args: [
+			props.token,
+			props.recipient,
+			props.amount,
+			props.vesting_duration,
+			props.vesting_start,
+			props.cliff_length,
+			true,
+			0n,
+			props.owner
+		]
+	});
+}
+
+/* 🔵 - Smold App **************************************************************
+ ** claimFromVesting is a _WRITE_ function that will claim the available tokens
+ ** from a vesting contract.
+ ******************************************************************************/
+type TClaimFromVesting = TWriteTransaction & {
+	streamOwner: TAddress;
+};
+export async function claimFromVesting(props: TClaimFromVesting): Promise<TTxResponse> {
+	assertAddress(props.contractAddress);
+	return await handleTx(props, {
+		address: props.contractAddress,
+		abi: YVESTING_SIMPLE_ABI,
+		functionName: 'claim',
+		args: [props.streamOwner]
 	});
 }
