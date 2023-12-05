@@ -81,7 +81,7 @@ function TokenInput({
 	return (
 		<div className={'grid w-full'}>
 			{label && <div className={'mb-1 flex w-full text-neutral-600'}>{label}</div>}
-			<div className={'flex w-full gap-2'}>
+			<div className={'flex w-full flex-col gap-2 md:flex-row'}>
 				<div className={'flex w-full'}>
 					{tokens && tokens?.length > 0 ? (
 						<MultipleTokenSelector
@@ -93,7 +93,7 @@ function TokenInput({
 						<UniqueTokenSelector token={token} />
 					)}
 				</div>
-				<div className={'flex items-center'}>
+				<div className={'hidden items-center md:flex'}>
 					<IconChevronPlain className={'h-4 w-4 -rotate-90 text-neutral-900/30'} />
 				</div>
 				<label className={'flex h-[42px] w-full'}>

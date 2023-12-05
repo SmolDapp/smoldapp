@@ -19,7 +19,7 @@ function ViewFlowSelection(): ReactElement {
 				/>
 
 				<div className={'col-span-12 p-4 pt-0 md:p-6 md:pt-0'}>
-					<div className={'grid grid-cols-12 gap-4 md:gap-6'}>
+					<div className={'col-span-6 grid gap-4 md:grid-cols-12 md:gap-6'}>
 						<div className={'relative col-span-6'}>
 							<CardWithIcon
 								isSelected={currentFlow === 'CHECK'}
