@@ -1,13 +1,11 @@
-import React, {useCallback, useMemo, useState} from 'react';
-import {Step, useVesting} from 'components/apps/vesting/useVesting';
+import React, {Fragment, useCallback, useMemo, useState} from 'react';
 import {useTokenList} from 'contexts/useTokenList';
 import useWallet from 'contexts/useWallet';
 import {addMonths, addYears, isAfter} from 'date-fns';
 import {zeroAddress} from 'viem';
-import IconChevronPlain from '@icons/IconChevronPlain';
-import {IconCircleCheck} from '@icons/IconCircleCheck';
 import IconInfo from '@icons/IconInfo';
 import {useDeepCompareEffect, useDeepCompareMemo, useUpdateEffect} from '@react-hookz/web';
+import {Step, useStream} from '@stream/useStream';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {isZeroAddress, toAddress} from '@yearn-finance/web-lib/utils/address';
@@ -19,22 +17,23 @@ import AddressInput from '@common/AddressInput';
 import {PopoverSettings} from '@common/PopoverSettings';
 import {PopoverSettingsItemExpert} from '@common/PopoverSettings.item.expert';
 import {PopoverSettingsItemTokenList} from '@common/PopoverSettings.item.tokenlist';
-import {ComboboxDemo} from '@common/Primitives/Combobox';
 import {DatePicker} from '@common/Primitives/DatePicker';
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from '@common/Primitives/Tooltip';
 import TokenInput from '@common/TokenInput';
 import ViewSectionHeading from '@common/ViewSectionHeading';
 
+import {TemplateButton} from './TemplateButton';
+
 import type {ReactElement} from 'react';
 import type {TDict} from '@yearn-finance/web-lib/types';
 import type {TToken} from '@utils/types/types';
 
-function ExpertModeDateView(): ReactElement {
-	const {configuration, dispatchConfiguration} = useVesting();
+function StreamCustomizedDates(): ReactElement {
+	const {configuration, dispatchConfiguration} = useStream();
 
-	function renderLabels(): ReactElement {
-		return (
-			<div className={'flex w-full gap-2'}>
+	return (
+		<Fragment>
+			<div className={'col-span-12 mt-0 flex w-full flex-col'}>
 				<div className={'flex w-full flex-col'}>
 					<TooltipProvider delayDuration={200}>
 						<Tooltip>
@@ -44,17 +43,23 @@ function ExpertModeDateView(): ReactElement {
 							</TooltipTrigger>
 							<TooltipContent>
 								<p className={'max-w-xs whitespace-break-spaces text-center'}>
-									{
-										'This is the date at which the vesting period starts and the beneficiary can start claiming tokens.\n'
-									}
+									{'Select the date and time for your stream to begin.'}
 								</p>
 							</TooltipContent>
 						</Tooltip>
 					</TooltipProvider>
 				</div>
-				<div className={'flex h-full'}>
-					<IconChevronPlain className={'invisible h-4 w-4'} />
+				<div className={'flex w-full'}>
+					<DatePicker
+						date={configuration.vestingStartDate}
+						onChangeDate={(newStart: Date | undefined) => {
+							dispatchConfiguration({type: 'SET_VESTING_START_DATE', payload: newStart});
+						}}
+					/>
 				</div>
+			</div>
+
+			<div className={'col-span-12 mt-0 flex w-full flex-col'}>
 				<div className={'flex w-full flex-col'}>
 					<TooltipProvider delayDuration={200}>
 						<Tooltip>
@@ -65,52 +70,12 @@ function ExpertModeDateView(): ReactElement {
 							<TooltipContent>
 								<p className={'max-w-xs whitespace-break-spaces text-center'}>
 									{
-										'This is the date at which the vesting period ends and the beneficiary can claim all the tokens.'
+										'Select the date and time for your stream to end (with 100% of the tokens being streamed out by that date).'
 									}
 								</p>
 							</TooltipContent>
 						</Tooltip>
 					</TooltipProvider>
-				</div>
-				<div className={'flex h-full'}>
-					<IconChevronPlain className={'invisible h-4 w-4'} />
-				</div>
-				<div className={'flex w-full flex-col'}>
-					<TooltipProvider delayDuration={200}>
-						<Tooltip>
-							<TooltipTrigger className={'flex w-fit items-center gap-1 pb-1'}>
-								<small className={'text-left'}>{'Cliff End'}</small>
-								<IconInfo className={'h-3 w-3 text-neutral-900/30'} />
-							</TooltipTrigger>
-							<TooltipContent>
-								<p className={'max-w-xs whitespace-break-spaces text-center'}>
-									{
-										'Specific period after which the initial portion of the asset becomes fully vested.\n'
-									}
-								</p>
-							</TooltipContent>
-						</Tooltip>
-					</TooltipProvider>
-				</div>
-			</div>
-		);
-	}
-
-	return (
-		<div className={'col-span-12 mt-4 flex w-full flex-col'}>
-			{renderLabels()}
-
-			<div className={'flex w-full gap-2'}>
-				<div className={'flex w-full'}>
-					<DatePicker
-						date={configuration.vestingStartDate}
-						onChangeDate={(newStart: Date | undefined) => {
-							dispatchConfiguration({type: 'SET_VESTING_START_DATE', payload: newStart});
-						}}
-					/>
-				</div>
-				<div className={'flex items-center'}>
-					<IconChevronPlain className={'h-4 w-4 -rotate-90 text-neutral-900/30'} />
 				</div>
 				<div className={'flex w-full'}>
 					<DatePicker
@@ -124,8 +89,23 @@ function ExpertModeDateView(): ReactElement {
 						}
 					/>
 				</div>
-				<div className={'flex items-center'}>
-					<p className={'text-neutral-900/30'}>{'⎮'}</p>
+			</div>
+
+			<div className={'col-span-12 mt-0 flex w-full flex-col'}>
+				<div className={'flex w-full flex-col'}>
+					<TooltipProvider delayDuration={200}>
+						<Tooltip>
+							<TooltipTrigger className={'flex w-fit items-center gap-1 pb-1'}>
+								<small className={'text-left'}>{'Cliff End'}</small>
+								<IconInfo className={'h-3 w-3 text-neutral-900/30'} />
+							</TooltipTrigger>
+							<TooltipContent>
+								<p className={'max-w-xs whitespace-break-spaces text-center'}>
+									{'Set a cliff date, before which the recipient cannot claim their tokens.'}
+								</p>
+							</TooltipContent>
+						</Tooltip>
+					</TooltipProvider>
 				</div>
 				<div className={'flex w-full'}>
 					<DatePicker
@@ -139,19 +119,18 @@ function ExpertModeDateView(): ReactElement {
 					/>
 				</div>
 			</div>
-		</div>
+		</Fragment>
 	);
 }
 
-function BabyModeTemplateView(): ReactElement {
+function StreamTemplateView(): ReactElement {
 	const [selectedTemplate, set_selectedTemplate] = useState(-1);
-	const {dispatchConfiguration} = useVesting();
+	const {dispatchConfiguration} = useStream();
 
 	return (
-		<div className={'col-span-12 mt-4 flex w-full flex-col'}>
-			<small className={'pb-1'}>{'Basic configuration'}</small>
+		<div className={'col-span-12 flex w-full flex-col'}>
+			<small className={'pb-1'}>{'Configuration'}</small>
 			<div className={'col-span-12 grid grid-cols-3 gap-4'}>
-				<ComboboxDemo />
 				<TemplateButton
 					title={'The Basic'}
 					description={'• 1 month vesting\n• No cliff\n• Starting now'}
@@ -164,7 +143,7 @@ function BabyModeTemplateView(): ReactElement {
 					}}
 				/>
 				<TemplateButton
-					title={'The yBudget'}
+					title={'yBudget'}
 					description={'• 3 months vesting\n• No cliff\n• Starting now'}
 					isSelected={selectedTemplate === 1}
 					onSelect={(): void => {
@@ -175,50 +154,54 @@ function BabyModeTemplateView(): ReactElement {
 					}}
 				/>
 				<TemplateButton
-					title={'The see-ya-next-year'}
-					description={'• 1 year vesting\n• 3 month cliff\n• Starting now'}
+					title={'Off the Cliff'}
+					description={'• 3 years vesting\n• No cliff\n• Starting now'}
 					isSelected={selectedTemplate === 2}
 					onSelect={(): void => {
 						set_selectedTemplate(2);
+						dispatchConfiguration({type: 'SET_CLIFF_END_DATE', payload: undefined});
+						dispatchConfiguration({type: 'SET_VESTING_START_DATE', payload: new Date()});
+						dispatchConfiguration({type: 'SET_VESTING_END_DATE', payload: addYears(new Date(), 3)});
+					}}
+				/>
+				<TemplateButton
+					title={'See-ya-next-year'}
+					description={'• 1 year vesting\n• 3 month cliff\n• Starting now'}
+					isSelected={selectedTemplate === 3}
+					onSelect={(): void => {
+						set_selectedTemplate(3);
 						dispatchConfiguration({type: 'SET_CLIFF_END_DATE', payload: addMonths(new Date(), 3)});
 						dispatchConfiguration({type: 'SET_VESTING_START_DATE', payload: new Date()});
 						dispatchConfiguration({type: 'SET_VESTING_END_DATE', payload: addYears(new Date(), 1)});
 					}}
 				/>
+				<TemplateButton
+					title={'S&P 500'}
+					description={'• 4 year vesting\n• 6 month cliff\n• Starting now'}
+					isSelected={selectedTemplate === 4}
+					onSelect={(): void => {
+						set_selectedTemplate(4);
+						dispatchConfiguration({type: 'SET_CLIFF_END_DATE', payload: addMonths(new Date(), 6)});
+						dispatchConfiguration({type: 'SET_VESTING_START_DATE', payload: new Date()});
+						dispatchConfiguration({type: 'SET_VESTING_END_DATE', payload: addYears(new Date(), 4)});
+					}}
+				/>
+				<TemplateButton
+					title={'Customize'}
+					description={'Your own rules, to rule them all'}
+					isSelected={selectedTemplate === 5}
+					onSelect={(): void => {
+						set_selectedTemplate(5);
+					}}
+				/>
 			</div>
+			<div className={'mt-4 grid gap-4'}>{selectedTemplate === 5 ? <StreamCustomizedDates /> : null}</div>
 		</div>
 	);
 }
 
-function TemplateButton(props: {
-	title: string;
-	description: string;
-	isSelected: boolean;
-	onSelect: () => void;
-}): ReactElement {
-	return (
-		<button
-			type={'button'}
-			className={cl(
-				'hover box-0 group relative flex w-full p-2 md:p-4 text-left',
-				props.isSelected ? '!bg-primary-50' : ''
-			)}
-			onClick={props.onSelect}>
-			<div>
-				<b>{props.title}</b>
-				<small className={'whitespace-break-spaces'}>{props.description}</small>
-			</div>
-			<IconCircleCheck
-				className={`absolute right-4 top-4 h-4 w-4 text-[#16a34a] transition-opacity ${
-					props.isSelected ? 'opacity-100' : 'opacity-0'
-				}`}
-			/>
-		</button>
-	);
-}
-
-function ViewVestingConfiguration(): ReactElement {
-	const {configuration, dispatchConfiguration, set_currentStep} = useVesting();
+function ViewStreamConfiguration(): ReactElement {
+	const {configuration, dispatchConfiguration, set_currentStep} = useStream();
 	const {safeChainID} = useChainID();
 	const {getBalance} = useWallet();
 	const [isValidTokenToReceive, set_isValidTokenToReceive] = useState<boolean | 'undetermined'>(true);
@@ -326,8 +309,11 @@ function ViewVestingConfiguration(): ReactElement {
 		<section>
 			<div className={'box-0 grid w-full grid-cols-12'}>
 				<ViewSectionHeading
-					title={'We are Draper'}
-					content={<span>{'Pls configure your vesting contract? Pls pls pls, so we can proceed'}</span>}
+					title={'Configure your stream.'}
+					content={
+						'Select the recipient, token, amount and dates and your stream will be ready to start streaming.\nThere are some common templates to help you out, or select customize to set your own rules.'
+					}
+					className={'!pb-0'}
 					configSection={
 						<PopoverSettings>
 							<PopoverSettingsItemTokenList />
@@ -365,9 +351,9 @@ function ViewVestingConfiguration(): ReactElement {
 							/>
 						</div>
 
-						{shouldUseExpertMode ? <ExpertModeDateView /> : <BabyModeTemplateView />}
+						<StreamTemplateView />
 
-						<div className={'col-span-12 mt-4 flex w-full flex-col'}>
+						<div className={'col-span-12 mt-0 flex w-full flex-col'}>
 							<Button
 								onClick={onConfirm}
 								isDisabled={!canContinue}>
@@ -381,4 +367,4 @@ function ViewVestingConfiguration(): ReactElement {
 	);
 }
 
-export default ViewVestingConfiguration;
+export default ViewStreamConfiguration;

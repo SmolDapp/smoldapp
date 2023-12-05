@@ -1,6 +1,6 @@
 'use client';
 
-import * as React from 'react';
+import {Children} from 'react';
 import {DayPicker} from 'react-day-picker';
 import {IconChevronBottom} from '@yearn-finance/web-lib/icons/IconChevronBottom';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
@@ -91,14 +91,14 @@ export function Calendar({
 								'', //ghost
 								'pl-2 pr-1 py-2 h-7 w-fit font-medium [.is-between_&]:hidden [.is-end_&]:hidden [.is-start.is-end_&]:flex'
 							)}>
-							<SelectValue placeholder={props?.caption}>{props?.caption}</SelectValue>
+							<SelectValue placeholder={props?.caption as string}>{props?.caption}</SelectValue>
 						</SelectTrigger>
 						<SelectContent
 							className={
 								'scrolling-auto max-h-[var(--radix-popper-available-height);] min-w-[var(--radix-popper-anchor-width)] overflow-y-auto'
 							}>
 							{props.children &&
-								React.Children.map(props.children, child => (
+								Children.map(props.children, child => (
 									<SelectItem
 										value={(child as React.ReactElement)?.props?.value}
 										className={'min-w-[var(--radix-popper-anchor-width)]'}>

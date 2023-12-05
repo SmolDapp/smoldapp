@@ -10,7 +10,7 @@
 			"@nftmigratooor/*": ["components/apps/nftmigratooor/*"],
 			"@tokenlistooor/*": ["components/apps/tokenlistooor/*"],
 			"@safeCreatooor/*": ["components/apps/safeCreator/*"],
-			"@vesting/*": ["components/apps/vesting/*"],
+			"@stream/*": ["components/apps/stream/*"],
 			"@utils/*": ["utils/*"]
 		},
 		"types": ["bun-types"],

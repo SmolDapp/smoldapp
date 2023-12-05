@@ -21,6 +21,7 @@ import GNOSIS_SAFE_PROXY_FACTORY from './abi/gnosisSafeProxyFactory.abi';
 import {MULTICALL_ABI} from './abi/multicall3.abi';
 import NFT_MIGRATOOOR_ABI from './abi/NFTMigratooor.abi';
 import {YVESTING_FACTORY_ABI} from './abi/yVestingFactory.abi';
+import {YVESTING_SIMPLE_ABI} from './abi/yVestingSimple.abi';
 
 import type {BaseError, Hex} from 'viem';
 import type {Connector} from 'wagmi';
@@ -442,8 +443,6 @@ export async function multicall(props: TMulticall): Promise<TTxResponse> {
  ** @param vesting_duration Time period (in seconds) over which tokens are released
  ** @param vesting_start Epoch time when tokens begin to vest
  ** @param cliff_length Time period (in seconds) before tokens begin to vest
- ** @param open_claim Switch if anyone can claim for `recipient`
- ** @param support_vyper Donation percentage in bps, 1% by default
  ** @param owner Vesting contract owner
  ******************************************************************************/
 type TNewVestingContract = TWriteTransaction & {
@@ -453,25 +452,10 @@ type TNewVestingContract = TWriteTransaction & {
 	vesting_duration: bigint;
 	vesting_start: bigint;
 	cliff_length: bigint;
-	open_claim: boolean;
-	support_vyper: bigint;
 	owner: TAddress;
 };
 export async function deployVestingContract(props: TNewVestingContract): Promise<TTxResponse> {
 	assertAddress(props.contractAddress);
-
-	console.log({
-		token: props.token,
-		recipient: props.recipient,
-		amount: props.amount,
-		vesting_duration: props.vesting_duration,
-		vesting_start: props.vesting_start,
-		cliff_length: props.cliff_length,
-		open_claim: props.open_claim,
-		support_vyper: props.support_vyper,
-		owner: props.owner
-	});
-
 	return await handleTx(props, {
 		address: props.contractAddress,
 		abi: YVESTING_FACTORY_ABI,
@@ -483,9 +467,26 @@ export async function deployVestingContract(props: TNewVestingContract): Promise
 			props.vesting_duration,
 			props.vesting_start,
 			props.cliff_length,
-			props.open_claim,
-			props.support_vyper,
+			true,
+			0n,
 			props.owner
 		]
+	});
+}
+
+/* 🔵 - Smold App **************************************************************
+ ** claimFromVesting is a _WRITE_ function that will claim the available tokens
+ ** from a vesting contract.
+ ******************************************************************************/
+type TClaimFromVesting = TWriteTransaction;
+export async function claimFromVesting(props: TClaimFromVesting): Promise<TTxResponse> {
+	assertAddress(props.contractAddress);
+	const wagmiProvider = await toWagmiProvider(props.connector);
+	assertAddress(wagmiProvider.address, 'userAddress');
+	return await handleTx(props, {
+		address: props.contractAddress,
+		abi: YVESTING_SIMPLE_ABI,
+		functionName: 'claim',
+		args: [wagmiProvider.address]
 	});
 }
