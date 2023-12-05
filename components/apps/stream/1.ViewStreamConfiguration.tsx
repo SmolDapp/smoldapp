@@ -264,6 +264,9 @@ function ViewStreamConfiguration(): ReactElement {
 		const withBalance = [];
 		for (const dest of Object.values(possibleTokenToReceive)) {
 			if (getBalance(dest.address).raw > 0n) {
+				if (dest.address === ETH_TOKEN_ADDRESS) {
+					continue;
+				}
 				withBalance.push(dest);
 			}
 		}
