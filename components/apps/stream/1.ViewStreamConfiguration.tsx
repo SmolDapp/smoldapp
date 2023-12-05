@@ -130,7 +130,7 @@ function StreamTemplateView(): ReactElement {
 	return (
 		<div className={'col-span-12 flex w-full flex-col'}>
 			<small className={'pb-1'}>{'Configuration'}</small>
-			<div className={'col-span-12 grid grid-cols-3 gap-4'}>
+			<div className={'col-span-12 grid grid-cols-1 gap-4 md:grid-cols-3'}>
 				<TemplateButton
 					title={'The Basic'}
 					description={'• 1 month vesting\n• No cliff\n• Starting now'}

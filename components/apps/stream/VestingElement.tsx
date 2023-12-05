@@ -44,7 +44,7 @@ function AlreadyStreamed(props: {vesting: TStreamArgs; available: bigint; decima
 	return (
 		<b
 			suppressHydrationWarning
-			className={'font-number text-sm text-neutral-900'}>
+			className={'font-number text-center text-sm text-neutral-900  md:text-left'}>
 			<Counter
 				value={alreadyVested}
 				decimals={props.decimals}
@@ -98,7 +98,7 @@ export function VestingElement({vesting}: {vesting: TStreamArgs}): ReactElement 
 
 	return (
 		<div className={'flex flex-col px-6 py-4'}>
-			<div className={'flex w-full flex-row items-center justify-between'}>
+			<div className={'flex w-full flex-col items-start justify-between md:flex-row md:items-center'}>
 				<div className={'flex gap-4'}>
 					<div>
 						<ImageWithFallback
@@ -110,10 +110,12 @@ export function VestingElement({vesting}: {vesting: TStreamArgs}): ReactElement 
 					</div>
 					<div>
 						<b>{symbol}</b>
-						<small className={'font-number text-neutral-900/60'}>{toAddress(vesting.token)}</small>
+						<small className={'font-number w-2/3 truncate text-neutral-900/60 md:w-full'}>
+							{toAddress(vesting.token)}
+						</small>
 					</div>
 				</div>
-				<div className={''}>
+				<div className={'mt-6 w-full text-center md:mt-0 md:w-auto md:text-left'}>
 					<AlreadyStreamed
 						available={vesting.amount - totalClaimed}
 						vesting={vesting}
@@ -123,7 +125,7 @@ export function VestingElement({vesting}: {vesting: TStreamArgs}): ReactElement 
 						{`of ${formatAmount(toNormalizedBN(vesting.amount, decimals).normalized, 4, 4)} ${symbol}`}
 					</small>
 				</div>
-				<div>
+				<div className={'w-full md:w-auto'}>
 					<Button
 						onClick={onClaim}
 						isBusy={txStatus.pending}
@@ -133,19 +135,19 @@ export function VestingElement({vesting}: {vesting: TStreamArgs}): ReactElement 
 				</div>
 			</div>
 			<div className={'mt-4 grid gap-1 rounded-md bg-neutral-100 p-4'}>
-				<dl className={'flex justify-between'}>
+				<dl className={'mb-2 flex flex-col justify-between md:mb-0 md:flex-row'}>
 					<dt className={'text-xs font-medium text-neutral-900'}>{'Already claimed: '}</dt>
 					<dd className={'font-number text-xs text-neutral-900'}>
 						{`${formatAmount(toNormalizedBN(totalClaimed, decimals).normalized)} ${symbol}`}
 					</dd>
 				</dl>
-				<dl className={'flex justify-between'}>
+				<dl className={'mb-2 flex flex-col justify-between md:mb-0 md:flex-row'}>
 					<dt className={'text-xs font-medium text-neutral-900'}>{'Start Date: '}</dt>
 					<dd className={'font-number text-xs text-neutral-900'}>
 						{format(new Date(Number(vesting.vesting_start) * 1000), 'PPPp')}
 					</dd>
 				</dl>
-				<dl className={'flex justify-between'}>
+				<dl className={'mb-2 flex flex-col justify-between md:mb-0 md:flex-row'}>
 					<dt className={'text-xs font-medium text-neutral-900'}>{'End Date: '}</dt>
 					<dd className={'font-number text-xs text-neutral-900'}>
 						{format(
@@ -157,7 +159,7 @@ export function VestingElement({vesting}: {vesting: TStreamArgs}): ReactElement 
 				{vesting.cliff_length === 0n ? (
 					<Fragment />
 				) : (
-					<dl className={'flex justify-between'}>
+					<dl className={'mb-2 flex flex-col justify-between md:mb-0 md:flex-row'}>
 						<dt className={'text-xs font-medium text-neutral-900'}>{'End of Cliff'}</dt>
 						<dd className={'font-number text-xs text-neutral-900'}>
 							{format(

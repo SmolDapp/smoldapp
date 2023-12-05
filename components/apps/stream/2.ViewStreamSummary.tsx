@@ -245,7 +245,7 @@ function ViewStreamSummary(): ReactElement {
 								</p>
 
 								<div className={'mt-4'}>
-									<dl className={'flex justify-between'}>
+									<dl className={'mb-2 flex flex-col justify-between md:mb-0 md:flex-row'}>
 										<dt className={'text-sm font-medium text-neutral-900'}>{'Per month'}</dt>
 										<dd className={'font-number text-sm text-neutral-900'}>
 											{`${formatAmount(
@@ -256,7 +256,7 @@ function ViewStreamSummary(): ReactElement {
 										</dd>
 									</dl>
 
-									<dl className={'flex justify-between'}>
+									<dl className={'mb-2 flex flex-col justify-between md:mb-0 md:flex-row'}>
 										<dt className={'text-sm font-medium text-neutral-900'}>{'Per day'}</dt>
 										<dd className={'font-number text-sm text-neutral-900'}>
 											{`${formatAmount(
@@ -267,7 +267,7 @@ function ViewStreamSummary(): ReactElement {
 										</dd>
 									</dl>
 
-									<dl className={'flex justify-between'}>
+									<dl className={'mb-2 flex flex-col justify-between md:mb-0 md:flex-row'}>
 										<dt className={'text-sm font-medium text-neutral-900'}>{'Per seconds'}</dt>
 										<dd className={'font-number text-sm text-neutral-900'}>
 											{`${formatAmount(
@@ -278,7 +278,7 @@ function ViewStreamSummary(): ReactElement {
 										</dd>
 									</dl>
 
-									<dl className={'flex justify-between'}>
+									<dl className={'mb-2 flex flex-col justify-between md:mb-0 md:flex-row'}>
 										<dt className={'text-sm font-medium text-neutral-900'}>{'Already vested'}</dt>
 										<dd className={'font-number text-sm text-neutral-900'}>
 											{renderAlreadyVested()}
@@ -297,29 +297,29 @@ function ViewStreamSummary(): ReactElement {
 							<div className={'p-4 pt-0'}>
 								<small className={'ml-1 pb-1 text-left'}>{'Params'}</small>
 								<div className={'rounded-md bg-primary-100 p-4 opacity-80'}>
-									<dl className={'flex justify-between'}>
+									<dl className={'mb-2 flex flex-col justify-between md:mb-0 md:flex-row'}>
 										<dt className={'text-xs font-medium text-neutral-900'}>{'Token'}</dt>
-										<dd className={'font-number text-xs text-neutral-900'}>
+										<dd className={'font-number truncate text-xs text-neutral-900'}>
 											{configuration.tokenToSend?.address || ''}
 										</dd>
 									</dl>
-									<dl className={'flex justify-between'}>
+									<dl className={'mb-2 flex flex-col justify-between md:mb-0 md:flex-row'}>
 										<dt className={'text-xs font-medium text-neutral-900'}>{'Recipient'}</dt>
-										<dd className={'font-number text-xs text-neutral-900'}>
+										<dd className={'font-number truncate text-xs text-neutral-900'}>
 											{configuration.receiver.address || ''}
 										</dd>
 									</dl>
-									<dl className={'flex justify-between'}>
+									<dl className={'mb-2 flex flex-col justify-between md:mb-0 md:flex-row'}>
 										<dt className={'text-xs font-medium text-neutral-900'}>{'Funder'}</dt>
-										<dd className={'font-number text-xs text-neutral-900'}>{address}</dd>
+										<dd className={'font-number truncate text-xs text-neutral-900'}>{address}</dd>
 									</dl>
-									<dl className={'flex justify-between'}>
+									<dl className={'mb-2 flex flex-col justify-between md:mb-0 md:flex-row'}>
 										<dt className={'text-xs font-medium text-neutral-900'}>{'Amount'}</dt>
 										<dd className={'font-number text-xs text-neutral-900'}>
 											{configuration.amountToSend.raw.toString() || ''}
 										</dd>
 									</dl>
-									<dl className={'flex justify-between'}>
+									<dl className={'mb-2 flex flex-col justify-between md:mb-0 md:flex-row'}>
 										<dt className={'text-xs font-medium text-neutral-900'}>
 											{'Vesting Duration (seconds)'}
 										</dt>
@@ -330,7 +330,7 @@ function ViewStreamSummary(): ReactElement {
 											)}
 										</dd>
 									</dl>
-									<dl className={'flex justify-between'}>
+									<dl className={'mb-2 flex flex-col justify-between md:mb-0 md:flex-row'}>
 										<dt className={'text-xs font-medium text-neutral-900'}>
 											{'Cliff length (seconds)'}
 										</dt>
@@ -343,7 +343,7 @@ function ViewStreamSummary(): ReactElement {
 											)}
 										</dd>
 									</dl>
-									<dl className={'flex justify-between'}>
+									<dl className={'mb-2 flex flex-col justify-between md:mb-0 md:flex-row'}>
 										<dt className={'text-xs font-medium text-neutral-900'}>{'Vesting Start'}</dt>
 										<dd className={'font-number text-xs text-neutral-900'}>
 											{configuration.vestingStartDate?.toISOString() || ''}

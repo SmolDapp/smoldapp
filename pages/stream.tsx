@@ -20,7 +20,7 @@ function Stream(): ReactElement {
 				</h1>
 				<b
 					className={cl(
-						'mt-4 w-full whitespace-pre text-base leading-normal text-neutral-500',
+						'mt-4 w-full whitespace-break-spaces text-base leading-normal text-neutral-500',
 						'md:w-2/3 md:text-lg md:leading-8'
 					)}>
 					{'Whether it’s salaries, a token vest, or something else… \n'}
