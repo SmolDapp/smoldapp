@@ -8,6 +8,7 @@ import relativeTime from 'dayjs/plugin/relativeTime.js';
 import weekday from 'dayjs/plugin/weekday.js';
 import {SUPPORTED_CHAIN_IDS} from 'utils/constants';
 import {motion} from 'framer-motion';
+import IconDownload from '@icons/IconDownload';
 import {MigratooorContextApp} from '@migratooor/useMigratooor';
 import {useMountEffect} from '@react-hookz/web';
 import {Button} from '@yearn-finance/web-lib/components/Button';
@@ -125,7 +126,7 @@ function TokenListItem({item}: {item: TTokenListItem['tokens'][0]}): ReactElemen
 
 	return (
 		<div className={'grid w-full grid-cols-12 items-center gap-4'}>
-			<div className={'col-span-12 flex flex-row items-center space-x-6 md:col-span-8'}>
+			<div className={'col-span-12 flex flex-row items-center space-x-6 md:col-span-10'}>
 				<ImageWithFallback
 					alt={`${item.address}_${item.name}_${item.symbol}`}
 					width={40}
@@ -139,25 +140,39 @@ function TokenListItem({item}: {item: TTokenListItem['tokens'][0]}): ReactElemen
 						{item.name}
 						<span className={'text-xs text-neutral-600'}>{` - (${item.symbol})`}</span>
 					</p>
-					<span
+					<div
 						className={
-							'font-number mt-2 block !font-mono text-xxs text-neutral-600 transition-colors md:text-xs'
+							'font-number mt-2 flex flex-col flex-wrap content-around gap-1 !font-mono text-xxs text-neutral-600 transition-colors md:flex-row md:items-center md:gap-6 md:text-xs'
 						}>
-						<a
-							href={`${currentNetwork?.blockExplorers?.etherscan?.url || 'https://etherscan.io'}/token/${
-								item.address
-							}`}
-							target={'_blank'}
-							rel={'noreferrer'}
-							className={'font-mono hover:text-neutral-900 hover:underline'}>
-							{item.address}
-						</a>
-						{` • ${item.decimals} decimals`}
-					</span>
+						<span>
+							<a
+								href={`${
+									currentNetwork?.blockExplorers?.etherscan?.url || 'https://etherscan.io'
+								}/token/${item.address}`}
+								target={'_blank'}
+								rel={'noreferrer'}
+								className={'font-mono hover:text-neutral-900 hover:underline'}>
+								{item.address}
+							</a>
+							{` • ${item.decimals} decimals`}
+						</span>
+						<div className={'flex items-center gap-2'}>
+							{'Icon: '}
+							<div className={'flex gap-1'}>
+								<button className={'flex items-center gap-1 rounded-full bg-neutral-100 px-2 py-1'}>
+									{'PNG'} <IconDownload />
+								</button>
+								<button className={'flex items-center gap-1 rounded-full bg-neutral-100 px-2 py-1'}>
+									{'SVG'}
+									<IconDownload />
+								</button>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 
-			<div className={'col-span-12 flex justify-end text-right md:col-span-4'}>
+			<div className={'col-span-12 flex justify-end text-right md:col-span-2'}>
 				<div>
 					<p className={'block text-xxs text-neutral-700 md:text-xs'}>{'Chain'}</p>
 					<b>{currentNetwork?.name || `Chain ${item.chainId}`}</b>
