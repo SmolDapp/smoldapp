@@ -24,7 +24,6 @@ function AlreadyStreamed(props: {vesting: TStreamArgs; available: bigint; decima
 		const start = new Date(Number(props.vesting.vesting_start) * 1000);
 		const end = addSeconds(start, Number(props.vesting.vesting_duration));
 		const now = new Date();
-		console.log(start, end, now);
 		if (now < start) {
 			return 0;
 		}
@@ -126,7 +125,7 @@ export function VestingElement({vesting}: {vesting: TStreamArgs}): ReactElement 
 				<div>
 					<Button
 						onClick={onClaim}
-						variant={'outlined'}
+						// variant={'outlined'}
 						isBusy={txStatus.pending}
 						className={'mt-2 !h-8 w-full'}>
 						{'Claim'}
@@ -143,7 +142,7 @@ export function VestingElement({vesting}: {vesting: TStreamArgs}): ReactElement 
 				<dl className={'flex justify-between'}>
 					<dt className={'text-xs font-medium text-neutral-900'}>{'Start Date: '}</dt>
 					<dd className={'font-number text-xs text-neutral-900'}>
-						{format(new Date(Number(vesting.vesting_start) * 1000), 'PPPP')}
+						{format(new Date(Number(vesting.vesting_start) * 1000), 'PPPp')}
 					</dd>
 				</dl>
 				<dl className={'flex justify-between'}>
@@ -151,7 +150,7 @@ export function VestingElement({vesting}: {vesting: TStreamArgs}): ReactElement 
 					<dd className={'font-number text-xs text-neutral-900'}>
 						{format(
 							new Date(Number(vesting.vesting_start) * 1000 + Number(vesting.vesting_duration) * 1000),
-							'PPPP'
+							'PPPp'
 						)}
 					</dd>
 				</dl>
@@ -163,7 +162,7 @@ export function VestingElement({vesting}: {vesting: TStreamArgs}): ReactElement 
 						<dd className={'font-number text-xs text-neutral-900'}>
 							{format(
 								new Date(Number(vesting.vesting_start) * 1000 + Number(vesting.cliff_length) * 1000),
-								'PPPP'
+								'PPPp'
 							)}
 						</dd>
 					</dl>

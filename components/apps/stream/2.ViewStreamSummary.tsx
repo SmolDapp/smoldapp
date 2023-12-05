@@ -109,7 +109,6 @@ function Buttons(): ReactElement {
 		<div className={'mt-4 grid grid-cols-2 gap-4'}>
 			<Button
 				onClick={(): void => {
-					console.log('approve');
 					onApproveToken();
 				}}
 				isDisabled={toBigInt(allowance) >= toBigInt(configuration?.amountToSend?.raw)}

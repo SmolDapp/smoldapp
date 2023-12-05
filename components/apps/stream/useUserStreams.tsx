@@ -30,6 +30,11 @@ export function useUserStreams(): {data: TStreamArgs[]; isFetching: boolean} {
 
 	useAsyncTrigger(async (): Promise<void> => {
 		const vestings: TStreamArgs[] = [];
+		if (!address) {
+			set_vestings([]);
+			return;
+		}
+
 		const vestingContracts = getVestingContract(chainID);
 		if (!vestingContracts) {
 			console.warn(`No vesting contract on chain ${chainID}`);
