@@ -19,6 +19,7 @@ function ViewUserStreams(): ReactElement {
 
 	useEffect(() => {
 		set_receiver({address: address, isValid: true, label: ens || address || ''});
+		set_actualReceiver({address: address, isValid: true, label: ens || address || ''});
 	}, [address, ens]);
 
 	return (

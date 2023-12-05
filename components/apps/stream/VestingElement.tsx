@@ -120,13 +120,12 @@ export function VestingElement({vesting}: {vesting: TStreamArgs}): ReactElement 
 						decimals={decimals}
 					/>
 					<small className={'font-number text-neutral-900/60'}>
-						{`Over ${formatAmount(toNormalizedBN(vesting.amount, decimals).normalized, 4, 4)} ${symbol}`}
+						{`of ${formatAmount(toNormalizedBN(vesting.amount, decimals).normalized, 4, 4)} ${symbol}`}
 					</small>
 				</div>
 				<div>
 					<Button
 						onClick={onClaim}
-						// variant={'outlined'}
 						isBusy={txStatus.pending}
 						className={'mt-2 !h-8 w-full'}>
 						{'Claim'}
