@@ -65,7 +65,7 @@ export function useUserStreams(): {data: TStreamArgs[]; isFetching: boolean} {
 		}
 		set_vestings(vestings);
 		set_isFetching(false);
-	}, []);
+	}, [address]);
 
 	return {data: vestings, isFetching};
 }
