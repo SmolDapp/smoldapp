@@ -1,7 +1,6 @@
 import {useState} from 'react';
 import {useAsyncTrigger} from 'hooks/useAsyncTrigger';
 import {YVESTING_FACTORY_ABI} from '@utils/abi/yVestingFactory.abi';
-import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import {getClient} from '@yearn-finance/web-lib/utils/wagmi/utils';
@@ -9,6 +8,7 @@ import {getClient} from '@yearn-finance/web-lib/utils/wagmi/utils';
 import {getVestingContract} from './constants';
 
 import type {TAddress} from '@yearn-finance/web-lib/types';
+import type {TInputAddressLike} from '@common/AddressInput';
 
 export type TStreamArgs = {
 	funder: TAddress;
@@ -22,15 +22,14 @@ export type TStreamArgs = {
 	open_claim: boolean;
 	chainID: number;
 };
-export function useUserStreams(): {data: TStreamArgs[]; isFetching: boolean} {
-	const {address} = useWeb3();
+export function useUserStreams(receiver: TInputAddressLike): {data: TStreamArgs[]; isFetching: boolean} {
 	const {chainID} = useChainID();
 	const [isFetching, set_isFetching] = useState<boolean>(false);
 	const [vestings, set_vestings] = useState<TStreamArgs[]>([]);
 
 	useAsyncTrigger(async (): Promise<void> => {
 		const vestings: TStreamArgs[] = [];
-		if (!address) {
+		if (!receiver?.address || !receiver?.isValid) {
 			set_vestings([]);
 			return;
 		}
@@ -59,7 +58,7 @@ export function useUserStreams(): {data: TStreamArgs[]; isFetching: boolean} {
 				fromBlock: i,
 				toBlock: i + rangeLimit,
 				args: {
-					recipient: address
+					recipient: receiver.address
 				}
 			});
 			for (const log of logs) {
@@ -71,7 +70,7 @@ export function useUserStreams(): {data: TStreamArgs[]; isFetching: boolean} {
 		}
 		set_vestings(vestings);
 		set_isFetching(false);
-	}, [address, chainID]);
+	}, [receiver?.address, receiver?.isValid, chainID]);
 
 	return {data: vestings, isFetching};
 }
