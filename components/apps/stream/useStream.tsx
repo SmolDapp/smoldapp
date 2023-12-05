@@ -2,7 +2,7 @@ import React, {createContext, useContext, useEffect, useMemo, useReducer, useSta
 import {isBefore} from 'date-fns';
 import {scrollToTargetAdjusted} from 'utils/animations';
 import {HEADER_HEIGHT} from 'utils/constants';
-import {useMountEffect, useUpdateEffect} from '@react-hookz/web';
+import {useUpdateEffect} from '@react-hookz/web';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {defaultInputAddressLike, type TInputAddressLike} from '@common/AddressInput';
 
@@ -15,8 +15,7 @@ import type {TToken} from '@utils/types/types';
 export enum Step {
 	FLOW_SELECTION = 'flow',
 	CONFIGURATION = 'configuration',
-	SUMMARY = 'summary',
-	NEW_DEPLOY = 'newDeploy'
+	SUMMARY = 'summary'
 }
 
 type TStreamConfiguration = {
@@ -84,25 +83,6 @@ export const StreamContextApp = ({children}: {children: React.ReactElement}): Re
 	/**********************************************************************************************
 	 ** This effect is used to handle some UI transitions and sections jumps. Once the current step
 	 ** changes, we need to scroll to the correct section.
-	 ** This effect is triggered only on mount to set the initial scroll position.
-	 **********************************************************************************************/
-	useMountEffect((): void => {
-		setTimeout((): void => {
-			if (currentStep === Step.FLOW_SELECTION) {
-				document?.getElementById('flow')?.scrollIntoView({behavior: 'smooth', block: 'start'});
-			} else if (currentStep === Step.CONFIGURATION) {
-				document?.getElementById('configuration')?.scrollIntoView({behavior: 'smooth', block: 'start'});
-			} else if (currentStep === Step.SUMMARY) {
-				document?.getElementById('summary')?.scrollIntoView({behavior: 'smooth', block: 'start'});
-			} else if (currentStep === Step.NEW_DEPLOY) {
-				document?.getElementById('newDeploy')?.scrollIntoView({behavior: 'smooth', block: 'start'});
-			}
-		}, 0);
-	});
-
-	/**********************************************************************************************
-	 ** This effect is used to handle some UI transitions and sections jumps. Once the current step
-	 ** changes, we need to scroll to the correct section.
 	 ** This effect is ignored on mount but will be triggered on every update to set the correct
 	 ** scroll position.
 	 **********************************************************************************************/
@@ -117,8 +97,6 @@ export const StreamContextApp = ({children}: {children: React.ReactElement}): Re
 				currentStepContainer = document?.getElementById('configuration');
 			} else if (currentStep === Step.SUMMARY) {
 				currentStepContainer = document?.getElementById('summary');
-			} else if (currentStep === Step.NEW_DEPLOY) {
-				currentStepContainer = document?.getElementById('newDeploy');
 			}
 			const currentElementHeight = currentStepContainer?.offsetHeight;
 			if (scalooor?.style) {

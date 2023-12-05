@@ -5,6 +5,7 @@ import ViewVestingConfiguration from 'components/apps/stream/1.ViewStreamConfigu
 import ViewVestingSummary from 'components/apps/stream/2.ViewStreamSummary';
 import ViewUserVestings from 'components/apps/stream/3.ViewUserStreams';
 import {Step, StreamContextApp, useStream} from '@stream/useStream';
+import {cl} from '@yearn-finance/web-lib/utils/cl';
 
 import type {ReactElement} from 'react';
 
@@ -18,12 +19,12 @@ function Stream(): ReactElement {
 					{'SmolStream'}
 				</h1>
 				<b
-					className={
-						'mt-4 w-full whitespace-pre text-base leading-normal text-neutral-500 md:w-2/3 md:text-lg md:leading-8'
-					}>
-					{
-						'Whether it’s salaries, a token vest, or something else… \nStream it simply, safely and sexily with SmolStream.'
-					}
+					className={cl(
+						'mt-4 w-full whitespace-pre text-base leading-normal text-neutral-500',
+						'md:w-2/3 md:text-lg md:leading-8'
+					)}>
+					{'Whether it’s salaries, a token vest, or something else… \n'}
+					{'Stream it simply, safely and sexily with SmolStream.'}
 				</b>
 			</div>
 
