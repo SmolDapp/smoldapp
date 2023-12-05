@@ -6,20 +6,20 @@ import {useMountEffect, useUpdateEffect} from '@react-hookz/web';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {defaultInputAddressLike, type TInputAddressLike} from '@common/AddressInput';
 
-import {useUserVesting} from './useUserVestings';
+import {useUserStreams} from './useUserStreams';
 
 import type {Dispatch, SetStateAction} from 'react';
 import type {TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import type {TToken} from '@utils/types/types';
 
 export enum Step {
-	WALLET = 'wallet',
+	FLOW_SELECTION = 'flow',
 	CONFIGURATION = 'configuration',
 	SUMMARY = 'summary',
 	NEW_DEPLOY = 'newDeploy'
 }
 
-type TVestingConfiguration = {
+type TStreamConfiguration = {
 	tokenToSend: TToken | undefined;
 	amountToSend: TNormalizedBN | undefined;
 	receiver: TInputAddressLike;
@@ -28,10 +28,12 @@ type TVestingConfiguration = {
 	cliffEndDate: Date | undefined;
 };
 
-export type TVesting = {
+export type TStream = {
 	currentStep: Step;
 	set_currentStep: Dispatch<SetStateAction<Step>>;
-	configuration: TVestingConfiguration;
+	currentFlow: 'CHECK' | 'CREATE' | undefined;
+	set_currentFlow: Dispatch<SetStateAction<'CHECK' | 'CREATE' | undefined>>;
+	configuration: TStreamConfiguration;
 	dispatchConfiguration: Dispatch<
 		| {type: 'SET_TOKEN_TO_SEND'; payload: TToken | undefined}
 		| {type: 'SET_AMOUNT_TO_SEND'; payload: TNormalizedBN | undefined}
@@ -41,9 +43,11 @@ export type TVesting = {
 		| {type: 'SET_CLIFF_END_DATE'; payload: Date | undefined}
 	>;
 };
-const defaultProps: TVesting = {
-	currentStep: Step.WALLET,
+const defaultProps: TStream = {
+	currentStep: Step.FLOW_SELECTION,
 	set_currentStep: (): void => undefined,
+	currentFlow: undefined,
+	set_currentFlow: (): void => undefined,
 	dispatchConfiguration: (): void => undefined,
 	configuration: {
 		tokenToSend: undefined,
@@ -55,26 +59,27 @@ const defaultProps: TVesting = {
 	}
 };
 
-const VestingContext = createContext<TVesting>(defaultProps);
-export const VestingContextApp = ({children}: {children: React.ReactElement}): React.ReactElement => {
-	const {address, isActive, isWalletLedger, isWalletSafe} = useWeb3();
-	const [currentStep, set_currentStep] = useState<Step>(Step.WALLET);
+const StreamContext = createContext<TStream>(defaultProps);
+export const StreamContextApp = ({children}: {children: React.ReactElement}): React.ReactElement => {
+	const {address, isActive, isWalletLedger, isWalletSafe, onConnect} = useWeb3();
+	const [currentStep, set_currentStep] = useState<Step>(Step.FLOW_SELECTION);
+	const [currentFlow, set_currentFlow] = useState<'CHECK' | 'CREATE' | undefined>(undefined);
 
-	useUserVesting();
+	useUserStreams();
 
 	/**********************************************************************************************
 	 ** This effect is used to directly jump the UI to the CONFIGURATION section if the wallet is
 	 ** already connected or if the wallet is a special wallet type (e.g. EMBED_LEDGER).
-	 ** If the wallet is not connected, jump to the WALLET section to connect.
+	 ** If the wallet is not connected, jump to the FLOW_SELECTION section to connect.
 	 **********************************************************************************************/
 	useEffect((): void => {
-		const isEmbedWallet = isWalletLedger || isWalletSafe;
-		if ((isActive && address) || isEmbedWallet) {
-			set_currentStep(Step.CONFIGURATION);
-		} else if (!isActive || !address) {
-			set_currentStep(Step.WALLET);
+		if (!isActive && !address) {
+			onConnect();
+			return;
 		}
-	}, [address, isActive, isWalletLedger, isWalletSafe]);
+
+		set_currentStep(Step.FLOW_SELECTION);
+	}, [address, isActive, onConnect]);
 
 	/**********************************************************************************************
 	 ** This effect is used to handle some UI transitions and sections jumps. Once the current step
@@ -83,10 +88,9 @@ export const VestingContextApp = ({children}: {children: React.ReactElement}): R
 	 **********************************************************************************************/
 	useMountEffect((): void => {
 		setTimeout((): void => {
-			const isEmbedWallet = isWalletLedger || isWalletSafe;
-			if (currentStep === Step.WALLET && !isEmbedWallet) {
-				document?.getElementById('wallet')?.scrollIntoView({behavior: 'smooth', block: 'start'});
-			} else if (currentStep === Step.CONFIGURATION || isEmbedWallet) {
+			if (currentStep === Step.FLOW_SELECTION) {
+				document?.getElementById('flow')?.scrollIntoView({behavior: 'smooth', block: 'start'});
+			} else if (currentStep === Step.CONFIGURATION) {
 				document?.getElementById('configuration')?.scrollIntoView({behavior: 'smooth', block: 'start'});
 			} else if (currentStep === Step.SUMMARY) {
 				document?.getElementById('summary')?.scrollIntoView({behavior: 'smooth', block: 'start'});
@@ -105,12 +109,11 @@ export const VestingContextApp = ({children}: {children: React.ReactElement}): R
 	useUpdateEffect((): void => {
 		setTimeout((): void => {
 			let currentStepContainer;
-			const isEmbedWallet = isWalletLedger || isWalletSafe;
 			const scalooor = document?.getElementById('scalooor');
 
-			if (currentStep === Step.WALLET && !isEmbedWallet) {
-				currentStepContainer = document?.getElementById('wallet');
-			} else if (currentStep === Step.CONFIGURATION || isEmbedWallet) {
+			if (currentStep === Step.FLOW_SELECTION) {
+				currentStepContainer = document?.getElementById('flow');
+			} else if (currentStep === Step.CONFIGURATION) {
 				currentStepContainer = document?.getElementById('configuration');
 			} else if (currentStep === Step.SUMMARY) {
 				currentStepContainer = document?.getElementById('summary');
@@ -128,7 +131,7 @@ export const VestingContextApp = ({children}: {children: React.ReactElement}): R
 	}, [currentStep, isWalletLedger, isWalletSafe]);
 
 	const configurationReducer = (
-		state: TVestingConfiguration,
+		state: TStreamConfiguration,
 		action:
 			| {type: 'SET_TOKEN_TO_SEND'; payload: TToken | undefined}
 			| {type: 'SET_AMOUNT_TO_SEND'; payload: TNormalizedBN | undefined}
@@ -136,7 +139,7 @@ export const VestingContextApp = ({children}: {children: React.ReactElement}): R
 			| {type: 'SET_VESTING_START_DATE'; payload: Date | undefined}
 			| {type: 'SET_VESTING_END_DATE'; payload: Date | undefined}
 			| {type: 'SET_CLIFF_END_DATE'; payload: Date | undefined}
-	): TVestingConfiguration => {
+	): TStreamConfiguration => {
 		switch (action.type) {
 			case 'SET_TOKEN_TO_SEND':
 				return {...state, tokenToSend: action.payload};
@@ -169,23 +172,25 @@ export const VestingContextApp = ({children}: {children: React.ReactElement}): R
 	});
 
 	const contextValue = useMemo(
-		(): TVesting => ({
+		(): TStream => ({
 			currentStep,
 			set_currentStep,
+			currentFlow,
+			set_currentFlow,
 			configuration,
 			dispatchConfiguration: dispatch
 		}),
-		[currentStep, configuration]
+		[currentStep, currentFlow, configuration]
 	);
 
 	return (
-		<VestingContext.Provider value={contextValue}>
+		<StreamContext.Provider value={contextValue}>
 			<div className={'mx-auto w-full'}>
 				{children}
 				<div id={'scalooor'} />
 			</div>
-		</VestingContext.Provider>
+		</StreamContext.Provider>
 	);
 };
 
-export const useVesting = (): TVesting => useContext(VestingContext);
+export const useStream = (): TStream => useContext(StreamContext);

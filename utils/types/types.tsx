@@ -39,11 +39,12 @@ export type TToken = {
 export type TChainTokens = TNDict<TDict<TToken>>;
 
 export type TComboboxAddressInput = {
-	value: TToken | null;
+	value: TToken | undefined;
 	possibleValues: TDict<TToken>;
 	onChangeValue: (value: TToken) => void;
 	onAddValue: Dispatch<SetStateAction<TDict<TToken>>>;
 	shouldSort?: boolean;
+	shouldHideZeroBalance?: boolean;
 };
 
 export type TTokenWithAmount = TToken & {

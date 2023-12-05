@@ -3,7 +3,6 @@
 import * as React from 'react';
 import {Command as CommandPrimitive} from 'cmdk';
 import {Dialog, DialogContent, type DialogProps} from '@radix-ui/react-dialog';
-import {IconSettings} from '@yearn-finance/web-lib/icons/IconSettings';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
 
 const Command = React.forwardRef<
@@ -45,11 +44,25 @@ const CommandInput = React.forwardRef<
 	<div
 		className={'flex items-center border-b px-3'}
 		cmdk-input-wrapper={''}>
-		<IconSettings className={'mr-2 h-4 w-4 shrink-0 opacity-50'} />
+		<svg
+			xmlns={'http://www.w3.org/2000/svg'}
+			height={'16'}
+			width={'16'}
+			viewBox={'0 0 512 512'}
+			className={' h-4 w-4 shrink-0 text-neutral-600/50'}>
+			<path
+				d={
+					'M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z'
+				}
+				fill={'currentColor'}
+			/>
+		</svg>
 		<CommandPrimitive.Input
 			ref={ref}
 			className={cl(
-				'flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50',
+				'flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground',
+				'disabled:cursor-not-allowed disabled:opacity-50',
+				'border-none',
 				className
 			)}
 			{...props}

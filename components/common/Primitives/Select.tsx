@@ -1,6 +1,6 @@
 'use client';
 
-import * as React from 'react';
+import {forwardRef} from 'react';
 import {IconChevronBoth} from '@icons/IconChevronBoth';
 import {IconCircleCheck} from '@icons/IconCircleCheck';
 import * as SelectPrimitive from '@radix-ui/react-select';
@@ -12,7 +12,7 @@ export const SelectGroup = SelectPrimitive.Group;
 
 export const SelectValue = SelectPrimitive.Value;
 
-export const SelectTrigger = React.forwardRef<
+export const SelectTrigger = forwardRef<
 	React.ElementRef<typeof SelectPrimitive.Trigger>,
 	React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger>
 >(({className, children, ...props}, ref) => (
@@ -36,7 +36,7 @@ export const SelectTrigger = React.forwardRef<
 ));
 SelectTrigger.displayName = SelectPrimitive.Trigger.displayName;
 
-export const SelectContent = React.forwardRef<
+export const SelectContent = forwardRef<
 	React.ElementRef<typeof SelectPrimitive.Content>,
 	React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content>
 >(({className, children, position = 'popper', ...props}, ref) => (
@@ -69,7 +69,7 @@ export const SelectContent = React.forwardRef<
 ));
 SelectContent.displayName = SelectPrimitive.Content.displayName;
 
-export const SelectLabel = React.forwardRef<
+export const SelectLabel = forwardRef<
 	React.ElementRef<typeof SelectPrimitive.Label>,
 	React.ComponentPropsWithoutRef<typeof SelectPrimitive.Label>
 >(({className, ...props}, ref) => (
@@ -81,7 +81,7 @@ export const SelectLabel = React.forwardRef<
 ));
 SelectLabel.displayName = SelectPrimitive.Label.displayName;
 
-export const SelectItem = React.forwardRef<
+export const SelectItem = forwardRef<
 	React.ElementRef<typeof SelectPrimitive.Item>,
 	React.ComponentPropsWithoutRef<typeof SelectPrimitive.Item>
 >(({className, children, ...props}, ref) => (
