@@ -1,13 +1,25 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {IconSpinner} from '@icons/IconSpinner';
+import {Button} from '@yearn-finance/web-lib/components/Button';
+import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
+import {isZeroAddress, toAddress} from '@yearn-finance/web-lib/utils/address';
+import AddressInput, {defaultInputAddressLike} from '@common/AddressInput';
 
 import {useUserStreams} from './useUserStreams';
 import {VestingElement} from './VestingElement';
 
 import type {ReactElement} from 'react';
+import type {TInputAddressLike} from '@common/AddressInput';
 
 function ViewUserStreams(): ReactElement {
-	const {data: userVestings, isFetching} = useUserStreams();
+	const {address, ens} = useWeb3();
+	const [receiver, set_receiver] = useState<TInputAddressLike>(defaultInputAddressLike);
+	const [actualReceiver, set_actualReceiver] = useState<TInputAddressLike>(defaultInputAddressLike);
+	const {data: userVestings, isFetching} = useUserStreams(actualReceiver);
+
+	useEffect(() => {
+		set_receiver({address: address, isValid: true, label: ens || address || ''});
+	}, [address, ens]);
 
 	return (
 		<section>
@@ -19,6 +31,29 @@ function ViewUserStreams(): ReactElement {
 							{'Feel free to claim your tokens whenever and your stream will keep streaming.'}
 						</p>
 					</div>
+
+					<div className={'mt-6'}>
+						<small className={'pb-1'}>{'Owner'}</small>
+						<form
+							onSubmit={async (e): Promise<void> => e.preventDefault()}
+							className={'grid w-full grid-cols-12 flex-row items-center justify-between gap-4 md:gap-6'}>
+							<div className={'col-span-12 md:col-span-9'}>
+								<AddressInput
+									value={receiver}
+									onChangeValue={(e): void => set_receiver(e)}
+								/>
+							</div>
+							<div className={'col-span-12 md:col-span-3'}>
+								<Button
+									className={'yearn--button w-full rounded-md !text-sm'}
+									isDisabled={isZeroAddress(toAddress(receiver.address)) || !receiver.isValid}
+									onClick={(): void => set_actualReceiver(receiver)}>
+									{'Check streams'}
+								</Button>
+							</div>
+						</form>
+					</div>
+
 					<div className={'box-0 mt-4 gap-6 divide-y divide-primary-200/60 md:mt-6'}>
 						{isFetching ? (
 							<div className={'col-span-12 flex min-h-[200px] flex-col items-center justify-center'}>

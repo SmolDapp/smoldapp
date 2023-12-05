@@ -6,8 +6,6 @@ import {useUpdateEffect} from '@react-hookz/web';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {defaultInputAddressLike, type TInputAddressLike} from '@common/AddressInput';
 
-import {useUserStreams} from './useUserStreams';
-
 import type {Dispatch, SetStateAction} from 'react';
 import type {TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import type {TToken} from '@utils/types/types';
@@ -64,8 +62,6 @@ export const StreamContextApp = ({children}: {children: React.ReactElement}): Re
 	const [currentStep, set_currentStep] = useState<Step>(Step.FLOW_SELECTION);
 	const [currentFlow, set_currentFlow] = useState<'CHECK' | 'CREATE' | undefined>(undefined);
 
-	useUserStreams();
-
 	/**********************************************************************************************
 	 ** This effect is used to directly jump the UI to the CONFIGURATION section if the wallet is
 	 ** already connected or if the wallet is a special wallet type (e.g. EMBED_LEDGER).
@@ -76,8 +72,6 @@ export const StreamContextApp = ({children}: {children: React.ReactElement}): Re
 			onConnect();
 			return;
 		}
-
-		set_currentStep(Step.FLOW_SELECTION);
 	}, [address, isActive, onConnect]);
 
 	/**********************************************************************************************

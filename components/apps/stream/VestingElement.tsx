@@ -88,12 +88,13 @@ export function VestingElement({vesting}: {vesting: TStreamArgs}): ReactElement 
 			connector: provider,
 			chainID: chainID,
 			contractAddress: vesting.escrow,
+			streamOwner: vesting.recipient,
 			statusHandler: set_txStatus
 		});
 		if (result.isSuccessful) {
 			await refetch();
 		}
-	}, [chainID, provider, refetch, vesting.escrow]);
+	}, [chainID, provider, refetch, vesting.escrow, vesting.recipient]);
 
 	return (
 		<div className={'flex flex-col px-6 py-4'}>

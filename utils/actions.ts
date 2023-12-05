@@ -478,15 +478,15 @@ export async function deployVestingContract(props: TNewVestingContract): Promise
  ** claimFromVesting is a _WRITE_ function that will claim the available tokens
  ** from a vesting contract.
  ******************************************************************************/
-type TClaimFromVesting = TWriteTransaction;
+type TClaimFromVesting = TWriteTransaction & {
+	streamOwner: TAddress;
+};
 export async function claimFromVesting(props: TClaimFromVesting): Promise<TTxResponse> {
 	assertAddress(props.contractAddress);
-	const wagmiProvider = await toWagmiProvider(props.connector);
-	assertAddress(wagmiProvider.address, 'userAddress');
 	return await handleTx(props, {
 		address: props.contractAddress,
 		abi: YVESTING_SIMPLE_ABI,
 		functionName: 'claim',
-		args: [wagmiProvider.address]
+		args: [props.streamOwner]
 	});
 }
