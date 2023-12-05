@@ -16,15 +16,17 @@ import {defaultTxStatus} from '@yearn-finance/web-lib/utils/web3/transaction';
 import {Counter} from '@common/Counter';
 
 import {getDefaultVestingContract} from './constants';
+import {SuccessModal} from './successModal';
 
 import type {ReactElement} from 'react';
 
 function Buttons(): ReactElement {
 	const {provider, address} = useWeb3();
 	const {chainID} = useChainID();
-	const {configuration} = useStream();
+	const {configuration, dispatchConfiguration} = useStream();
 	const [txStatus, set_txStatus] = useState(defaultTxStatus);
 	const [txStatusAllowance, set_txStatusAllowance] = useState(defaultTxStatus);
+	const [isSuccessModalOpen, set_isSuccessModalOpen] = useState(false);
 
 	const {data: allowance, refetch} = useContractRead({
 		address: toAddress(configuration.tokenToSend?.address),
@@ -91,7 +93,7 @@ function Buttons(): ReactElement {
 			statusHandler: set_txStatus
 		});
 		if (result.isSuccessful) {
-			//
+			set_isSuccessModalOpen(true);
 		}
 	}, [
 		address,
@@ -128,6 +130,13 @@ function Buttons(): ReactElement {
 				className={'w-full'}>
 				{'Deploy'}
 			</Button>
+			<SuccessModal
+				isOpen={isSuccessModalOpen}
+				onClose={() => {
+					dispatchConfiguration({type: 'RESET', payload: undefined});
+					set_isSuccessModalOpen(false);
+				}}
+			/>
 		</div>
 	);
 }
