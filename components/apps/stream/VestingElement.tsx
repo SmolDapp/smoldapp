@@ -66,7 +66,7 @@ function AlreadyStreamed(props: {vesting: TStreamArgs; totalClaimed: bigint; dec
 	);
 }
 export function VestingElement({vesting}: {vesting: TStreamArgs}): ReactElement {
-	const {provider} = useWeb3();
+	const {address, provider} = useWeb3();
 	const {chainID} = useChainID();
 	const [txStatus, set_txStatus] = useState(defaultTxStatus);
 	const {data, refetch} = useContractReads({
@@ -141,6 +141,7 @@ export function VestingElement({vesting}: {vesting: TStreamArgs}): ReactElement 
 				<div className={'w-full md:w-auto'}>
 					<Button
 						onClick={onClaim}
+						isDisabled={!address}
 						isBusy={txStatus.pending}
 						className={'mt-2 !h-8 w-full'}>
 						{'Claim'}
