@@ -27,7 +27,7 @@ export const FACTORY_VESTING_CONTRACTS: TDict<TChainContract[]> = {
 
 export function getVestingContracts(chainId: number): TChainContract[] | undefined {
 	const contracts = FACTORY_VESTING_CONTRACTS[chainId];
-	if (!contracts) {
+	if (!contracts || contracts.length === 0) {
 		return undefined;
 	}
 	return contracts;

@@ -5,7 +5,7 @@ import useWallet from 'contexts/useWallet';
 import {addMonths, addYears, isAfter} from 'date-fns';
 import {zeroAddress} from 'viem';
 import IconInfo from '@icons/IconInfo';
-import {useDeepCompareEffect, useDeepCompareMemo, useUpdateEffect} from '@react-hookz/web';
+import {useDeepCompareEffect, useDeepCompareMemo, useIsMounted, useUpdateEffect} from '@react-hookz/web';
 import {Step, useStream} from '@stream/useStream';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
@@ -291,6 +291,7 @@ function TokenSelector(props: {onChangeTokenToReceiveValidity: (v: boolean | 'un
 }
 
 function ViewStreamConfiguration(): ReactElement {
+	const isMounted = useIsMounted();
 	const {configuration, dispatchConfiguration, set_currentStep} = useStream();
 	const {getBalance} = useWallet();
 	const {chainID} = useChainID();
@@ -336,7 +337,7 @@ function ViewStreamConfiguration(): ReactElement {
 		isValidTokenToReceive
 	]);
 
-	if (!currentVestingContract) {
+	if (!currentVestingContract && isMounted()) {
 		return (
 			<section>
 				<div className={'box-0 grid w-full grid-cols-12'}>
