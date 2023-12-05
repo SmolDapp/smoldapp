@@ -115,7 +115,7 @@ export function VestingElement({vesting}: {vesting: TStreamArgs}): ReactElement 
 				<div className={'flex gap-4'}>
 					<div>
 						<ImageWithFallback
-							src={`${process.env.SMOL_ASSETS_URL}/token/1/${vesting.token}/logo-128.png`}
+							src={`${process.env.SMOL_ASSETS_URL}/token/${vesting.chainID}/${vesting.token}/logo-128.png`}
 							width={42}
 							height={42}
 							alt={''}

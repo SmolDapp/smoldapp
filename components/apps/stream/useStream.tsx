@@ -38,6 +38,7 @@ export type TStream = {
 		| {type: 'SET_VESTING_START_DATE'; payload: Date | undefined}
 		| {type: 'SET_VESTING_END_DATE'; payload: Date | undefined}
 		| {type: 'SET_CLIFF_END_DATE'; payload: Date | undefined}
+		| {type: 'RESET'; payload: undefined}
 	>;
 };
 const defaultProps: TStream = {
@@ -111,6 +112,7 @@ export const StreamContextApp = ({children}: {children: React.ReactElement}): Re
 			| {type: 'SET_VESTING_START_DATE'; payload: Date | undefined}
 			| {type: 'SET_VESTING_END_DATE'; payload: Date | undefined}
 			| {type: 'SET_CLIFF_END_DATE'; payload: Date | undefined}
+			| {type: 'RESET'; payload: undefined}
 	): TStreamConfiguration => {
 		switch (action.type) {
 			case 'SET_TOKEN_TO_SEND':
@@ -131,6 +133,8 @@ export const StreamContextApp = ({children}: {children: React.ReactElement}): Re
 					return {...state, cliffEndDate: action.payload, vestingEndDate: action.payload};
 				}
 				return {...state, cliffEndDate: action.payload};
+			case 'RESET':
+				return defaultProps.configuration;
 		}
 	};
 

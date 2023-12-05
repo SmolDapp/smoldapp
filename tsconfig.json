@@ -67,6 +67,7 @@
 		"jest.config.js",
 		"vitest.config.ts",
 		"worker/index.js",
-		"stylelint.config.js"
+		"stylelint.config.js",
+		"utils/*/*.json"
 	]
 }
