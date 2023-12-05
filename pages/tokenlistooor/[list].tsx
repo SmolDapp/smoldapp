@@ -8,9 +8,9 @@ import relativeTime from 'dayjs/plugin/relativeTime.js';
 import weekday from 'dayjs/plugin/weekday.js';
 import {SUPPORTED_CHAIN_IDS} from 'utils/constants';
 import {motion} from 'framer-motion';
-import IconDownload from '@icons/IconDownload';
 import {MigratooorContextApp} from '@migratooor/useMigratooor';
 import {useMountEffect} from '@react-hookz/web';
+import {DownloadAssetButton} from '@tokenlistooor/DownloadAssetButton';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import {IconSocialGithub} from '@yearn-finance/web-lib/icons/IconSocialGithub';
 import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
@@ -124,6 +124,14 @@ function TokenListItem({item}: {item: TTokenListItem['tokens'][0]}): ReactElemen
 		}
 	}, [item.chainId]);
 
+	const isLogoInAssetLists = item.logoURI.includes('assets.smold.app');
+
+	const downloadAssetCommonParams = {
+		address: item.address,
+		chainId: item.chainId,
+		fileName: item.symbol
+	};
+
 	return (
 		<div className={'grid w-full grid-cols-12 items-center gap-4'}>
 			<div className={'col-span-12 flex flex-row items-center space-x-6 md:col-span-10'}>
@@ -156,18 +164,21 @@ function TokenListItem({item}: {item: TTokenListItem['tokens'][0]}): ReactElemen
 							</a>
 							{` • ${item.decimals} decimals`}
 						</span>
-						<div className={'flex items-center gap-2'}>
-							{'Icon: '}
-							<div className={'flex gap-1'}>
-								<button className={'flex items-center gap-1 rounded-full bg-neutral-100 px-2 py-1'}>
-									{'PNG'} <IconDownload />
-								</button>
-								<button className={'flex items-center gap-1 rounded-full bg-neutral-100 px-2 py-1'}>
-									{'SVG'}
-									<IconDownload />
-								</button>
+						{isLogoInAssetLists && (
+							<div className={'flex items-center gap-2'}>
+								{'Icon: '}
+								<div className={'flex gap-1'}>
+									<DownloadAssetButton
+										{...downloadAssetCommonParams}
+										type={'png'}
+									/>
+									<DownloadAssetButton
+										{...downloadAssetCommonParams}
+										type={'svg'}
+									/>
+								</div>
 							</div>
-						</div>
+						)}
 					</div>
 				</div>
 			</div>
