@@ -5,6 +5,7 @@ import LogoDisperse from '@disperse/Logo';
 import LogoMigratooor from '@migratooor/Logo';
 import LogoNFTMigratooor from '@nftmigratooor/Logo';
 import LogoSafeCreator from '@safeCreatooor/Logo';
+import LogoStream from '@stream/Logo';
 import LogoTokenlistooor from '@tokenlistooor/Logo';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 
@@ -24,6 +25,19 @@ const apps = [
 			</span>
 		),
 		icon: <LogoSafeCreator className={'h-[80px] w-[80px]'} />
+	},
+	{
+		href: '/stream',
+		title: 'SmolStream',
+		description: (
+			<span>
+				<span className={'font-semibold text-primary-500 transition-colors group-hover:text-primary-0'}>
+					{'Stream'}
+				</span>
+				{' salaries, token vest, or something else… simply, safely and sexily with SmolStream'}
+			</span>
+		),
+		icon: <LogoStream className={'h-[80px] w-[80px]'} />
 	},
 	{
 		href: '/disperse',
