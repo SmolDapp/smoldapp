@@ -17,7 +17,7 @@ import {ImageWithFallback} from '@common/ImageWithFallback';
 import type {ReactElement} from 'react';
 import type {TStreamArgs} from './useUserStreams';
 
-function AlreadyStreamed(props: {vesting: TStreamArgs; available: bigint; decimals: number}): ReactElement {
+function AlreadyStreamed(props: {vesting: TStreamArgs; totalClaimed: bigint; decimals: number}): ReactElement {
 	const [nonce, set_nonce] = useState(0);
 	const alreadyVested = useMemo((): number => {
 		nonce;
@@ -28,14 +28,27 @@ function AlreadyStreamed(props: {vesting: TStreamArgs; available: bigint; decima
 			return 0;
 		}
 		if (now > end) {
-			return Number(toNormalizedBN(props.available, props.decimals).normalized);
+			return (
+				Number(toNormalizedBN(props.vesting.amount, props.decimals).normalized) -
+				Number(toNormalizedBN(props.totalClaimed, props.decimals).normalized)
+			);
 		}
+
 		const seconds = differenceInSeconds(now, start);
 		const totalSeconds = differenceInSeconds(end, start);
-		const percentage = seconds / totalSeconds;
-		const vested = Number(toNormalizedBN(props.available, props.decimals).normalized) * percentage;
+		const totalAmount = toNormalizedBN(props.vesting.amount, props.decimals).normalized;
+		const rate = Number(totalAmount) / Number(totalSeconds);
+		const vested = rate * Number(seconds) - Number(toNormalizedBN(props.totalClaimed, props.decimals).normalized);
+
 		return Number(vested);
-	}, [nonce, props.vesting.vesting_start, props.vesting.vesting_duration, props.available, props.decimals]);
+	}, [
+		nonce,
+		props.vesting.vesting_start,
+		props.vesting.vesting_duration,
+		props.vesting.amount,
+		props.decimals,
+		props.totalClaimed
+	]);
 
 	useIntervalEffect(() => {
 		set_nonce(nonce + 1);
@@ -96,6 +109,8 @@ export function VestingElement({vesting}: {vesting: TStreamArgs}): ReactElement 
 		}
 	}, [chainID, provider, refetch, vesting.escrow, vesting.recipient]);
 
+	console.log({amount: vesting.amount, totalClaimed});
+
 	return (
 		<div className={'flex flex-col px-6 py-4'}>
 			<div className={'flex w-full flex-col items-start justify-between md:flex-row md:items-center'}>
@@ -117,7 +132,7 @@ export function VestingElement({vesting}: {vesting: TStreamArgs}): ReactElement 
 				</div>
 				<div className={'mt-6 w-full text-center md:mt-0 md:w-auto md:text-left'}>
 					<AlreadyStreamed
-						available={vesting.amount - totalClaimed}
+						totalClaimed={totalClaimed}
 						vesting={vesting}
 						decimals={decimals}
 					/>
