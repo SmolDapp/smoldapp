@@ -5,7 +5,7 @@ import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import {getClient} from '@yearn-finance/web-lib/utils/wagmi/utils';
 
-import {getVestingContract} from './constants';
+import {getVestingContracts} from './constants';
 
 import type {TAddress} from '@yearn-finance/web-lib/types';
 import type {TInputAddressLike} from '@common/AddressInput';
@@ -34,7 +34,7 @@ export function useUserStreams(receiver: TInputAddressLike): {data: TStreamArgs[
 			return;
 		}
 
-		const vestingContracts = getVestingContract(chainID);
+		const vestingContracts = getVestingContracts(chainID);
 		if (!vestingContracts) {
 			console.warn(`No vesting contract on chain ${chainID}`);
 			set_vestings([]);

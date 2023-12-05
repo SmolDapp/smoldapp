@@ -1,4 +1,5 @@
 import React, {Fragment, useCallback, useMemo, useState} from 'react';
+import Link from 'next/link';
 import {useTokenList} from 'contexts/useTokenList';
 import useWallet from 'contexts/useWallet';
 import {addMonths, addYears, isAfter} from 'date-fns';
@@ -22,10 +23,11 @@ import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from '@common/
 import TokenInput from '@common/TokenInput';
 import ViewSectionHeading from '@common/ViewSectionHeading';
 
+import {getDefaultVestingContract} from './constants';
 import {TemplateButton} from './TemplateButton';
 
 import type {ReactElement} from 'react';
-import type {TDict} from '@yearn-finance/web-lib/types';
+import type {TAddress, TDict} from '@yearn-finance/web-lib/types';
 import type {TToken} from '@utils/types/types';
 
 function StreamCustomizedDates(): ReactElement {
@@ -200,14 +202,12 @@ function StreamTemplateView(): ReactElement {
 	);
 }
 
-function ViewStreamConfiguration(): ReactElement {
-	const {configuration, dispatchConfiguration, set_currentStep} = useStream();
+function TokenSelector(props: {onChangeTokenToReceiveValidity: (v: boolean | 'undetermined') => void}): ReactElement {
+	const {configuration, dispatchConfiguration} = useStream();
 	const {safeChainID} = useChainID();
 	const {getBalance} = useWallet();
-	const [isValidTokenToReceive, set_isValidTokenToReceive] = useState<boolean | 'undetermined'>(true);
 	const [possibleTokenToReceive, set_possibleTokenToReceive] = useState<TDict<TToken>>({});
 	const {tokenList} = useTokenList();
-	const [shouldUseExpertMode, set_shouldUseExpertMode] = useState(false);
 
 	/* 🔵 - Yearn Finance **************************************************************************
 	 ** On mount, fetch the token list from the tokenlistooor repo for the cowswap token list, which
@@ -243,9 +243,9 @@ function ViewStreamConfiguration(): ReactElement {
 	 ** trivial as we only check if the address is valid.
 	 **********************************************************************************************/
 	useUpdateEffect((): void => {
-		set_isValidTokenToReceive('undetermined');
+		props.onChangeTokenToReceiveValidity('undetermined');
 		if (!isZeroAddress(configuration.tokenToSend?.address)) {
-			set_isValidTokenToReceive(true);
+			props.onChangeTokenToReceiveValidity(true);
 		}
 	}, [configuration.tokenToSend]);
 
@@ -272,6 +272,34 @@ function ViewStreamConfiguration(): ReactElement {
 		}
 		return withBalance;
 	}, [possibleTokenToReceive, getBalance]);
+
+	return (
+		<div className={'col-span-12 flex w-full flex-col'}>
+			<small className={'pb-1'}>{'Token'}</small>
+			<TokenInput
+				index={0}
+				token={configuration.tokenToSend}
+				tokens={filteredBalances}
+				onChangeToken={(newToken, newAmount) => onUpdateToken(newToken, newAmount)}
+				value={configuration.amountToSend}
+				onChange={(v: TNormalizedBN | undefined) =>
+					dispatchConfiguration({type: 'SET_AMOUNT_TO_SEND', payload: v})
+				}
+			/>
+		</div>
+	);
+}
+
+function ViewStreamConfiguration(): ReactElement {
+	const {configuration, dispatchConfiguration, set_currentStep} = useStream();
+	const {getBalance} = useWallet();
+	const {chainID} = useChainID();
+	const [isValidTokenToReceive, set_isValidTokenToReceive] = useState<boolean | 'undetermined'>(true);
+	const [shouldUseExpertMode, set_shouldUseExpertMode] = useState(false);
+
+	const currentVestingContract = useMemo((): TAddress | undefined => {
+		return getDefaultVestingContract(chainID);
+	}, [chainID]);
 
 	const onConfirm = useCallback((): void => {
 		set_currentStep(Step.SUMMARY);
@@ -308,6 +336,29 @@ function ViewStreamConfiguration(): ReactElement {
 		isValidTokenToReceive
 	]);
 
+	if (!currentVestingContract) {
+		return (
+			<section>
+				<div className={'box-0 grid w-full grid-cols-12'}>
+					<ViewSectionHeading
+						title={`SmolStream isn’t on ${getNetwork(chainID).name}… yet.`}
+						content={'To make the devs work harder, click the button below to shame us on X.'}
+					/>
+					<div className={'relative col-span-12 flex flex-col p-4 pt-0 text-neutral-900 md:p-6 md:pt-0'}>
+						<div>
+							<Link
+								href={`https://twitter.com/intent/tweet?text=${`Hey @smoldapp devs! Pls can you add ${
+									getNetwork(chainID).name
+								} to SmolStream? You are so handsome, sexy and talented. I’m sure you can do it!`}`}>
+								<Button>{'I want to talk to the manager!'}</Button>
+							</Link>
+						</div>
+					</div>
+				</div>
+			</section>
+		);
+	}
+
 	return (
 		<section>
 			<div className={'box-0 grid w-full grid-cols-12'}>
@@ -340,19 +391,7 @@ function ViewStreamConfiguration(): ReactElement {
 							/>
 						</div>
 
-						<div className={'col-span-12 flex w-full flex-col'}>
-							<small className={'pb-1'}>{'Token'}</small>
-							<TokenInput
-								index={0}
-								token={configuration.tokenToSend}
-								tokens={filteredBalances}
-								onChangeToken={(newToken, newAmount) => onUpdateToken(newToken, newAmount)}
-								value={configuration.amountToSend}
-								onChange={(v: TNormalizedBN | undefined) =>
-									dispatchConfiguration({type: 'SET_AMOUNT_TO_SEND', payload: v})
-								}
-							/>
-						</div>
+						<TokenSelector onChangeTokenToReceiveValidity={set_isValidTokenToReceive} />
 
 						<StreamTemplateView />
 

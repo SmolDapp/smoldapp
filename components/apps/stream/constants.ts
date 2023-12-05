@@ -25,7 +25,7 @@ export const FACTORY_VESTING_CONTRACTS: TDict<TChainContract[]> = {
 	]
 };
 
-export function getVestingContract(chainId: number): TChainContract[] | undefined {
+export function getVestingContracts(chainId: number): TChainContract[] | undefined {
 	const contracts = FACTORY_VESTING_CONTRACTS[chainId];
 	if (!contracts) {
 		return undefined;
@@ -34,9 +34,9 @@ export function getVestingContract(chainId: number): TChainContract[] | undefine
 }
 
 export function getDefaultVestingContract(chainId: number): TAddress | undefined {
-	const contracts = getVestingContract(chainId);
+	const contracts = getVestingContracts(chainId);
 	if (!contracts) {
 		return undefined;
 	}
-	return contracts[0].address;
+	return contracts?.[0]?.address;
 }
