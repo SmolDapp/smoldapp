@@ -202,7 +202,6 @@ function TokenListContent({list}: {list: TTokenListItem}): ReactElement {
 	const [itemsPerPage] = useState(50);
 	const [search, set_search] = useState('');
 	const [network, set_network] = useState(-1);
-	console.log(list);
 	useMountEffect((): void => {
 		const {query} = router;
 		if (query?.page) {
