@@ -43,7 +43,7 @@ const defaultProps: TSelected = {
 		name: mainnetToken?.coinName || 'Ether',
 		symbol: mainnetToken?.coinSymbol || 'ETH',
 		decimals: mainnetToken?.decimals || 18,
-		logoURI: `https://assets.smold.app/api/token/${1}/${ETH_TOKEN_ADDRESS}/logo-128.png`
+		logoURI: `${process.env.SMOL_ASSETS_URL}/token/1/${ETH_TOKEN_ADDRESS}/logo-128.png`
 	},
 	currentStep: Step.WALLET,
 	disperseArray: [],

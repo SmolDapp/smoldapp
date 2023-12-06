@@ -149,7 +149,7 @@ function ComboboxAddressInput({possibleValues, value, onChangeValue, onAddValue}
 						symbol: _tokenData?.symbol || '',
 						decimals: _tokenData?.decimals || 18,
 						chainID: safeChainID,
-						logoURI: `https://assets.smold.app/api/token/${safeChainID}/${toAddress(
+						logoURI: `${process.env.SMOL_ASSETS_URL}/token/${safeChainID}/${toAddress(
 							_selected
 						)}/logo-128.png`
 					}

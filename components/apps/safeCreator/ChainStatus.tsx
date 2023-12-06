@@ -352,7 +352,7 @@ function ChainStatus({
 			className={'box-0 flex w-full flex-col items-center justify-center p-4 pb-2 md:pb-4'}>
 			<div className={'h-8 w-8'}>
 				<Image
-					src={`https://assets.smold.app/api/chain/${chain.id}/logo-128.png`}
+					src={`${process.env.SMOL_ASSETS_URL}/chain/${chain.id}/logo-128.png`}
 					width={32}
 					height={32}
 					alt={chain.name}
