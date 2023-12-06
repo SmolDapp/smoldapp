@@ -1,5 +1,5 @@
 import React, {createContext, useContext, useEffect, useMemo, useState} from 'react';
-import {useMountEffect, useUpdateEffect} from '@react-hookz/web';
+import {useUpdateEffect} from '@react-hookz/web';
 import {scrollToTargetAdjusted} from '@utils/animations';
 import {HEADER_HEIGHT} from '@utils/constants';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
@@ -12,7 +12,6 @@ import type {TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber'
 import type {TToken} from '@utils/types/types';
 
 export enum Step {
-	WALLET = 'wallet',
 	TOSEND = 'destination',
 	SELECTOR = 'selector',
 	CONFIRMATION = 'confirmation'
@@ -45,7 +44,7 @@ const defaultProps: TSelected = {
 		decimals: mainnetToken?.decimals || 18,
 		logoURI: `https://assets.smold.app/api/token/${1}/${ETH_TOKEN_ADDRESS}/logo-128.png`
 	},
-	currentStep: Step.WALLET,
+	currentStep: Step.TOSEND,
 	disperseArray: [],
 	isDispersed: false,
 	set_tokenToDisperse: (): void => undefined,
@@ -65,8 +64,8 @@ export function newVoidRow(): TDisperseElement {
 
 const DisperseContext = createContext<TSelected>(defaultProps);
 export const DisperseContextApp = ({children}: {children: React.ReactElement}): React.ReactElement => {
-	const {address, isActive, isWalletSafe, isWalletLedger} = useWeb3();
-	const [currentStep, set_currentStep] = useState<Step>(Step.WALLET);
+	const {address, isActive, isWalletSafe, isWalletLedger, onConnect} = useWeb3();
+	const [currentStep, set_currentStep] = useState<Step>(Step.TOSEND);
 	const [tokenToDisperse, set_tokenToDisperse] = useState<TToken>(defaultProps.tokenToDisperse);
 
 	const [disperseArray, set_disperseArray] = useState<TDisperseElement[]>([]);
@@ -83,38 +82,14 @@ export const DisperseContextApp = ({children}: {children: React.ReactElement}): 
 	};
 
 	/**********************************************************************************************
-	 ** This effect is used to directly jump the UI to the TOSEND section if the wallet is
-	 ** already connected or if the wallet is a special wallet type (e.g. EMBED_LEDGER).
-	 ** If the wallet is not connected, jump to the WALLET section to connect.
+	 ** This effect is used to directly ask the user to connect its wallet if it's not connected
 	 **********************************************************************************************/
 	useEffect((): void => {
-		const isEmbedWallet = isWalletSafe || isWalletLedger;
-		if ((isActive && address) || isEmbedWallet) {
-			set_currentStep(Step.TOSEND);
-		} else if (!isActive || !address) {
-			set_currentStep(Step.WALLET);
+		if (!isActive && !address) {
+			onConnect();
+			return;
 		}
-	}, [address, isActive, isWalletSafe, isWalletLedger]);
-
-	/**********************************************************************************************
-	 ** This effect is used to handle some UI transitions and sections jumps. Once the current step
-	 ** changes, we need to scroll to the correct section.
-	 ** This effect is triggered only on mount to set the initial scroll position.
-	 **********************************************************************************************/
-	useMountEffect((): void => {
-		setTimeout((): void => {
-			const isEmbedWallet = isWalletSafe || isWalletLedger;
-			if (currentStep === Step.WALLET && !isEmbedWallet) {
-				document?.getElementById('wallet')?.scrollIntoView({behavior: 'smooth', block: 'start'});
-			} else if (currentStep === Step.TOSEND || isEmbedWallet) {
-				document?.getElementById('tokenToSend')?.scrollIntoView({behavior: 'smooth', block: 'start'});
-			} else if (currentStep === Step.SELECTOR) {
-				document?.getElementById('selector')?.scrollIntoView({behavior: 'smooth', block: 'start'});
-			} else if (currentStep === Step.CONFIRMATION) {
-				document?.getElementById('tldr')?.scrollIntoView({behavior: 'smooth', block: 'start'});
-			}
-		}, 0);
-	});
+	}, [address, isActive, onConnect]);
 
 	/**********************************************************************************************
 	 ** This effect is used to handle some UI transitions and sections jumps. Once the current step
@@ -125,12 +100,9 @@ export const DisperseContextApp = ({children}: {children: React.ReactElement}): 
 	useUpdateEffect((): void => {
 		setTimeout((): void => {
 			let currentStepContainer;
-			const isEmbedWallet = isWalletSafe || isWalletLedger;
 			const scalooor = document?.getElementById('scalooor');
 
-			if (currentStep === Step.WALLET && !isEmbedWallet) {
-				currentStepContainer = document?.getElementById('wallet');
-			} else if (currentStep === Step.TOSEND || isEmbedWallet) {
+			if (currentStep === Step.TOSEND) {
 				currentStepContainer = document?.getElementById('tokenToSend');
 			} else if (currentStep === Step.SELECTOR) {
 				currentStepContainer = document?.getElementById('selector');
