@@ -37,7 +37,7 @@ function ViewTokenToSend({onProceed}: {onProceed: VoidFunction}): ReactElement {
 				name: wrappedToken.coinName,
 				symbol: wrappedToken.coinSymbol,
 				decimals: wrappedToken.decimals,
-				logoURI: `https://assets.smold.app/api/token/${safeChainID}/${ETH_TOKEN_ADDRESS}/logo-128.png`
+				logoURI: `${process.env.SMOL_ASSETS_URL}/token/${safeChainID}/${ETH_TOKEN_ADDRESS}/logo-128.png`
 			};
 		}
 		for (const eachToken of Object.values(tokenList)) {

@@ -1,4 +1,5 @@
 import React, {Fragment, useCallback, useMemo, useState} from 'react';
+import {useTokenList} from 'contexts/useTokenList';
 import {addSeconds, differenceInSeconds, format} from 'date-fns';
 import {erc20ABI, useContractReads} from 'wagmi';
 import {useIntervalEffect} from '@react-hookz/web';
@@ -68,8 +69,9 @@ function AlreadyStreamed(props: {vesting: TStreamArgs; totalClaimed: bigint; dec
 export function VestingElement({vesting}: {vesting: TStreamArgs}): ReactElement {
 	const {address, provider} = useWeb3();
 	const {chainID} = useChainID();
+	const {getToken} = useTokenList();
 	const [txStatus, set_txStatus] = useState(defaultTxStatus);
-	const {data, refetch} = useContractReads({
+	const {data, refetch, isFetchedAfterMount} = useContractReads({
 		contracts: [
 			{
 				address: toAddress(vesting.token),
@@ -95,6 +97,7 @@ export function VestingElement({vesting}: {vesting: TStreamArgs}): ReactElement 
 		}
 	});
 	const [symbol, decimals, totalClaimed] = (data || ['', 18, 0n]) as [string, number, bigint];
+	const isButtonDisabled = !address || (!vesting.open_claim && address !== vesting.recipient);
 
 	const onClaim = useCallback(async (): Promise<void> => {
 		const result = await claimFromVesting({
@@ -109,6 +112,10 @@ export function VestingElement({vesting}: {vesting: TStreamArgs}): ReactElement 
 		}
 	}, [chainID, provider, refetch, vesting.escrow, vesting.recipient]);
 
+	if (!isFetchedAfterMount || totalClaimed === vesting.amount) {
+		return <Fragment />;
+	}
+
 	return (
 		<div className={'flex flex-col px-6 py-4'}>
 			<div className={'flex w-full flex-col items-start justify-between md:flex-row md:items-center'}>
@@ -116,6 +123,8 @@ export function VestingElement({vesting}: {vesting: TStreamArgs}): ReactElement 
 					<div>
 						<ImageWithFallback
 							src={`${process.env.SMOL_ASSETS_URL}/token/${vesting.chainID}/${vesting.token}/logo-128.png`}
+							altSrc={getToken(vesting.token)?.logoURI || ''}
+							unoptimized
 							width={42}
 							height={42}
 							alt={''}
@@ -145,7 +154,7 @@ export function VestingElement({vesting}: {vesting: TStreamArgs}): ReactElement 
 				<div className={'w-full md:w-auto'}>
 					<Button
 						onClick={onClaim}
-						isDisabled={!address}
+						isDisabled={isButtonDisabled}
 						isBusy={txStatus.pending}
 						className={'mt-2 !h-8 w-full'}>
 						{'Claim'}

@@ -87,7 +87,7 @@ function TokenInput({
 						quality={90}
 						className={'h-6 w-6 md:h-10 md:w-10 md:min-w-[40px]'}
 						unoptimized
-						src={`https://assets.smold.app/api/token/${token.chainID}/${token.address}/logo-128.png`}
+						src={`${process.env.SMOL_ASSETS_URL}/token/${token.chainID}/${token.address}/logo-128.png`}
 						altSrc={token.logoURI || ''}
 					/>
 					<div>
