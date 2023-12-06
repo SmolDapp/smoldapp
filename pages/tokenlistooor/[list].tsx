@@ -118,6 +118,7 @@ function TokenListHero({list}: {list: TTokenListItem}): ReactElement {
 }
 
 function TokenListItem({item}: {item: TTokenListItem['tokens'][0]}): ReactElement {
+	const router = useRouter();
 	const currentNetwork = useMemo((): TExtendedChain => {
 		try {
 			return getNetwork(item.chainId);
@@ -127,6 +128,8 @@ function TokenListItem({item}: {item: TTokenListItem['tokens'][0]}): ReactElemen
 	}, [item.chainId]);
 
 	const isLogoInAssetLists = item.logoURI.includes('assets.smold.app');
+	const isSmolAssetsPage = router.query.list === 'smolAssets';
+	const shouldDisplayDownloadButtons = isLogoInAssetLists && isSmolAssetsPage;
 
 	const downloadAssetCommonParams = {
 		address: item.address,
@@ -167,7 +170,7 @@ function TokenListItem({item}: {item: TTokenListItem['tokens'][0]}): ReactElemen
 							</a>
 							{` • ${item.decimals} decimals`}
 						</span>
-						{isLogoInAssetLists && (
+						{isLogoInAssetLists && shouldDisplayDownloadButtons && (
 							<div className={'flex items-center gap-2'}>
 								{'Icon: '}
 								<div className={'flex gap-1'}>
