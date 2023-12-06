@@ -15,6 +15,7 @@ import {Button} from '@yearn-finance/web-lib/components/Button';
 import {toast} from '@yearn-finance/web-lib/components/yToast';
 import {IconSocialGithub} from '@yearn-finance/web-lib/icons/IconSocialGithub';
 import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
+import {EmptyListMessage} from '@common/EmptyListMessage';
 import {ImageWithFallback} from '@common/ImageWithFallback';
 
 import type {Variants} from 'framer-motion';
@@ -201,7 +202,7 @@ function TokenListContent({list}: {list: TTokenListItem}): ReactElement {
 	const [itemsPerPage] = useState(50);
 	const [search, set_search] = useState('');
 	const [network, set_network] = useState(-1);
-
+	console.log(list);
 	useMountEffect((): void => {
 		const {query} = router;
 		if (query?.page) {
@@ -244,6 +245,24 @@ function TokenListContent({list}: {list: TTokenListItem}): ReactElement {
 				);
 			});
 	}, [list.tokens, search, network]);
+
+	const isSearchResultEmpty = searchResult.length === 0;
+	const isSmolAssetsPage = router.query.list === 'smolAssets';
+	const emptyListMessage = "Oh no! Looks like we don't have that token in stock.";
+	const smolEmptyListMessage = (
+		<span>
+			<br />
+			<span>{'Want to add it? Submit a pull request with the token contract and logo on the '}</span>
+			<Link
+				className={'font-semibold text-black'}
+				target={'_blank'}
+				href={'https://github.com/SmolDapp/tokenLists/tree/main'}>
+				{'repo'}
+			</Link>
+
+			<span>{" and we'll get it added for you. Teamwork!"}</span>
+		</span>
+	);
 
 	return (
 		<div className={'mx-auto grid w-full max-w-5xl pb-32'}>
@@ -312,17 +331,25 @@ function TokenListContent({list}: {list: TTokenListItem}): ReactElement {
 				className={
 					'grid grid-cols-1 divide-y divide-neutral-100 rounded-md border border-neutral-200 bg-neutral-0 md:grid-cols-1'
 				}>
-				{searchResult.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(
-					(item): ReactElement => (
-						<motion.div
-							key={`${item.address}_${item.chainId}`}
-							custom={0}
-							initial={'initial'}
-							whileInView={'enter'}
-							variants={variants as Variants}
-							className={'relative flex w-full p-4 transition-colors hover:bg-neutral-50/40 md:p-6'}>
-							<TokenListItem item={item} />
-						</motion.div>
+				{isSearchResultEmpty ? (
+					<div className={'px-10'}>
+						<EmptyListMessage>
+							{emptyListMessage} {isSmolAssetsPage && smolEmptyListMessage}
+						</EmptyListMessage>
+					</div>
+				) : (
+					searchResult.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(
+						(item): ReactElement => (
+							<motion.div
+								key={`${item.address}_${item.chainId}`}
+								custom={0}
+								initial={'initial'}
+								whileInView={'enter'}
+								variants={variants as Variants}
+								className={'relative flex w-full p-4 transition-colors hover:bg-neutral-50/40 md:p-6'}>
+								<TokenListItem item={item} />
+							</motion.div>
+						)
 					)
 				)}
 			</div>
@@ -384,7 +411,9 @@ function TokenListContent({list}: {list: TTokenListItem}): ReactElement {
 									'text-xs text-neutral-600 transition-all hover:text-neutral-900 hover:underline disabled:text-neutral-400/40'
 								}
 								type={'button'}
-								disabled={currentPage === Math.ceil(searchResult.length / itemsPerPage)}
+								disabled={
+									currentPage === Math.ceil(searchResult.length / itemsPerPage) || isSearchResultEmpty
+								}
 								onClick={(): void => {
 									set_currentPage(currentPage + 1);
 									window.scrollTo({top: 0, behavior: 'smooth'});
@@ -405,7 +434,9 @@ function TokenListContent({list}: {list: TTokenListItem}): ReactElement {
 								'cursor-pointer text-xs text-neutral-600 transition-all hover:text-neutral-900 hover:underline disabled:text-neutral-400/40'
 							}
 							type={'button'}
-							disabled={currentPage === Math.ceil(searchResult.length / itemsPerPage)}
+							disabled={
+								currentPage === Math.ceil(searchResult.length / itemsPerPage) || isSearchResultEmpty
+							}
 							onClick={(): void => {
 								set_currentPage(Math.ceil(searchResult.length / itemsPerPage));
 								window.scrollTo({top: 0, behavior: 'smooth'});
