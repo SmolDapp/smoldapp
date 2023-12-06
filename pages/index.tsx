@@ -120,6 +120,21 @@ const apps = [
 			</span>
 		),
 		icon: <LogoTokenlistooor className={'h-[80px] w-[80px]'} />
+	},
+	{
+		href: '/tokenlistooor/smolAssets',
+		title: 'Token Assets',
+		description: (
+			<span>
+				{'An up to date automatic '}
+				<span className={'font-semibold text-primary-500 transition-colors group-hover:text-primary-0'}>
+					{'tokenAssets'}
+				</span>
+				{' for your dApp.'}
+			</span>
+		),
+		// TODO: Update icon
+		icon: <LogoTokenlistooor className={'h-[80px] w-[80px]'} />
 	}
 ];
 
