@@ -64,9 +64,7 @@ export const StreamContextApp = ({children}: {children: React.ReactElement}): Re
 	const [currentFlow, set_currentFlow] = useState<'CHECK' | 'CREATE' | undefined>(undefined);
 
 	/**********************************************************************************************
-	 ** This effect is used to directly jump the UI to the CONFIGURATION section if the wallet is
-	 ** already connected or if the wallet is a special wallet type (e.g. EMBED_LEDGER).
-	 ** If the wallet is not connected, jump to the FLOW_SELECTION section to connect.
+	 ** This effect is used to directly ask the user to connect its wallet if it's not connected
 	 **********************************************************************************************/
 	useEffect((): void => {
 		if (!isActive && !address) {

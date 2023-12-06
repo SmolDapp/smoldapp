@@ -1,6 +1,5 @@
 import React, {useCallback} from 'react';
 import {DefaultSeo} from 'next-seo';
-import ViewWallet from 'components/apps/0.ViewWallet';
 import ViewTokenToSend from '@disperse/1.ViewTokenToSend';
 import ViewTable from '@disperse/2.ViewTable';
 import ViewApprovalWizard from '@disperse/3.ViewApprovalWizard';
@@ -29,7 +28,7 @@ function Disperse(): ReactElement {
 
 	return (
 		<div className={'mx-auto grid w-full max-w-4xl'}>
-			<div className={'mt-6 flex flex-col justify-center md:mt-20'}>
+			<div className={'mb-10 mt-6 flex flex-col justify-center md:mt-20'}>
 				<h1
 					className={
 						'-ml-1 mt-4 w-full text-3xl tracking-tight text-neutral-900 md:mt-6 md:w-1/2 md:text-5xl'
@@ -41,20 +40,7 @@ function Disperse(): ReactElement {
 				</b>
 			</div>
 
-			<ViewWallet
-				onSelect={(): void => {
-					set_currentStep(Step.TOSEND);
-					document?.getElementById('destination')?.scrollIntoView({behavior: 'smooth', block: 'center'});
-				}}
-			/>
-
-			<div
-				id={'tokenToSend'}
-				className={`pt-10 transition-opacity ${
-					[Step.SELECTOR, Step.CONFIRMATION, Step.TOSEND].includes(currentStep)
-						? 'opacity-100'
-						: 'pointer-events-none h-0 overflow-hidden opacity-0'
-				}`}>
+			<div id={'tokenToSend'}>
 				<ViewTokenToSend
 					onProceed={(): void => {
 						if (currentStep === Step.TOSEND) {

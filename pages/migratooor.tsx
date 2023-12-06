@@ -1,6 +1,5 @@
 import React, {useCallback} from 'react';
 import {DefaultSeo} from 'next-seo';
-import ViewWallet from 'components/apps/0.ViewWallet';
 import ViewDestination from '@migratooor/1.ViewDestination';
 import ViewTable from '@migratooor/2.ViewTable';
 import ViewApprovalWizard from '@migratooor/3.ViewApprovalWizard';
@@ -10,11 +9,6 @@ import type {ReactElement} from 'react';
 
 function Migrate(): ReactElement {
 	const {currentStep, set_currentStep} = useMigratooor();
-
-	const onProceedWallet = useCallback((): void => {
-		set_currentStep(Step.DESTINATION);
-		document?.getElementById('destination')?.scrollIntoView({behavior: 'smooth', block: 'center'});
-	}, [set_currentStep]);
 
 	const onProceedDestination = useCallback((): void => {
 		set_currentStep(Step.SELECTOR);
@@ -29,7 +23,7 @@ function Migrate(): ReactElement {
 
 	return (
 		<div className={'mx-auto grid w-full max-w-5xl'}>
-			<div className={'mt-6 flex flex-col justify-center md:mt-20'}>
+			<div className={'mb-10 mt-6 flex flex-col justify-center md:mt-20'}>
 				<h1
 					className={
 						'-ml-1 mt-4 w-full text-3xl tracking-tight text-neutral-900 md:mt-6 md:w-1/2 md:text-5xl'
@@ -41,15 +35,7 @@ function Migrate(): ReactElement {
 				</b>
 			</div>
 
-			<ViewWallet onSelect={onProceedWallet} />
-
-			<div
-				id={'destination'}
-				className={`pt-10 transition-opacity ${
-					[Step.SELECTOR, Step.CONFIRMATION, Step.DESTINATION].includes(currentStep)
-						? 'opacity-100'
-						: 'pointer-events-none h-0 overflow-hidden opacity-0'
-				}`}>
+			<div id={'destination'}>
 				<ViewDestination onProceed={onProceedDestination} />
 			</div>
 

@@ -1,6 +1,5 @@
 import React, {useCallback} from 'react';
 import {DefaultSeo} from 'next-seo';
-import ViewWallet from 'components/apps/0.ViewWallet';
 import ViewDestination from '@nftmigratooor/1.ViewDestination';
 import ViewTable from '@nftmigratooor/2.ViewTable';
 import ViewApprovalWizard from '@nftmigratooor/3.ViewApprovalWizard';
@@ -10,11 +9,6 @@ import type {ReactElement} from 'react';
 
 function NFTMigratooor(): ReactElement {
 	const {currentStep, set_currentStep} = useNFTMigratooor();
-
-	const onProceedWallet = useCallback((): void => {
-		set_currentStep(Step.DESTINATION);
-		document?.getElementById('destination')?.scrollIntoView({behavior: 'smooth', block: 'center'});
-	}, [set_currentStep]);
 
 	const onProceedDestination = useCallback((): void => {
 		set_currentStep(Step.SELECTOR);
@@ -29,15 +23,19 @@ function NFTMigratooor(): ReactElement {
 
 	return (
 		<div className={'mx-auto grid w-full max-w-4xl'}>
-			<ViewWallet onSelect={onProceedWallet} />
+			<div className={'mb-10 mt-6 flex flex-col justify-center md:mt-20'}>
+				<h1
+					className={
+						'-ml-1 mt-4 w-full text-3xl tracking-tight text-neutral-900 md:mt-6 md:w-1/2 md:text-5xl'
+					}>
+					{'Migrate your JPEG like a pingouin.'}
+				</h1>
+				<b className={'mt-4 w-full text-base leading-normal text-neutral-500 md:w-2/3 md:text-lg md:leading-8'}>
+					{'The easiest way to migrate your NFTs from one wallet to another.'}
+				</b>
+			</div>
 
-			<div
-				id={'destination'}
-				className={`pt-10 transition-opacity ${
-					[Step.SELECTOR, Step.CONFIRMATION, Step.DESTINATION].includes(currentStep)
-						? 'opacity-100'
-						: 'pointer-events-none h-0 overflow-hidden opacity-0'
-				}`}>
+			<div id={'destination'}>
 				<ViewDestination onProceed={onProceedDestination} />
 			</div>
 

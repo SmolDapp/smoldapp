@@ -2,7 +2,7 @@ import React, {createContext, useContext, useEffect, useMemo, useState} from 're
 import {scrollToTargetAdjusted} from 'utils/animations';
 import {coingeckoGasCoinIDs, HEADER_HEIGHT} from 'utils/constants';
 import useSWR from 'swr';
-import {useMountEffect, useUpdateEffect} from '@react-hookz/web';
+import {useUpdateEffect} from '@react-hookz/web';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {baseFetcher} from '@yearn-finance/web-lib/utils/fetchers';
 
@@ -11,7 +11,6 @@ import type {TAddress, TDict} from '@yearn-finance/web-lib/types';
 import type {TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 
 export enum Step {
-	WALLET = 'wallet',
 	FLOW = 'flow',
 	FLOW_DATA = 'flowData',
 	NEW_DEPLOY = 'newDeploy'
@@ -33,7 +32,7 @@ export type TSelected = {
 	chainCoinPrices: TPriceFromGecko;
 };
 const defaultProps: TSelected = {
-	currentStep: Step.WALLET,
+	currentStep: Step.FLOW,
 	selectedFlow: 'NONE',
 	set_currentStep: (): void => undefined,
 	set_selectedFlow: (): void => undefined,
@@ -42,8 +41,8 @@ const defaultProps: TSelected = {
 
 const SafeCreatorContext = createContext<TSelected>(defaultProps);
 export const SafeCreatorContextApp = ({children}: {children: React.ReactElement}): React.ReactElement => {
-	const {address, isActive, isWalletLedger, isWalletSafe} = useWeb3();
-	const [currentStep, set_currentStep] = useState<Step>(Step.WALLET);
+	const {address, isActive, isWalletLedger, isWalletSafe, onConnect} = useWeb3();
+	const [currentStep, set_currentStep] = useState<Step>(Step.FLOW);
 	const [selectedFlow, set_selectedFlow] = useState<'NONE' | 'EXISTING' | 'NEW'>('NONE');
 	const {data: chainCoinPrices} = useSWR<TPriceFromGecko>(
 		`https://api.coingecko.com/api/v3/simple/price?ids=${Object.values(coingeckoGasCoinIDs)}&vs_currencies=usd`,
@@ -52,38 +51,14 @@ export const SafeCreatorContextApp = ({children}: {children: React.ReactElement}
 	);
 
 	/**********************************************************************************************
-	 ** This effect is used to directly jump the UI to the FLOW section if the wallet is
-	 ** already connected or if the wallet is a special wallet type (e.g. EMBED_LEDGER).
-	 ** If the wallet is not connected, jump to the WALLET section to connect.
+	 ** This effect is used to directly ask the user to connect its wallet if it's not connected
 	 **********************************************************************************************/
 	useEffect((): void => {
-		const isEmbedWallet = isWalletLedger || isWalletSafe;
-		if ((isActive && address) || isEmbedWallet) {
-			set_currentStep(Step.FLOW);
-		} else if (!isActive || !address) {
-			set_currentStep(Step.WALLET);
+		if (!isActive && !address) {
+			onConnect();
+			return;
 		}
-	}, [address, isActive, isWalletLedger, isWalletSafe]);
-
-	/**********************************************************************************************
-	 ** This effect is used to handle some UI transitions and sections jumps. Once the current step
-	 ** changes, we need to scroll to the correct section.
-	 ** This effect is triggered only on mount to set the initial scroll position.
-	 **********************************************************************************************/
-	useMountEffect((): void => {
-		setTimeout((): void => {
-			const isEmbedWallet = isWalletLedger || isWalletSafe;
-			if (currentStep === Step.WALLET && !isEmbedWallet) {
-				document?.getElementById('wallet')?.scrollIntoView({behavior: 'smooth', block: 'start'});
-			} else if (currentStep === Step.FLOW || isEmbedWallet) {
-				document?.getElementById('flow')?.scrollIntoView({behavior: 'smooth', block: 'start'});
-			} else if (currentStep === Step.FLOW_DATA) {
-				document?.getElementById('flowData')?.scrollIntoView({behavior: 'smooth', block: 'start'});
-			} else if (currentStep === Step.NEW_DEPLOY) {
-				document?.getElementById('newDeploy')?.scrollIntoView({behavior: 'smooth', block: 'start'});
-			}
-		}, 0);
-	});
+	}, [address, isActive, onConnect]);
 
 	/**********************************************************************************************
 	 ** This effect is used to handle some UI transitions and sections jumps. Once the current step
@@ -94,12 +69,9 @@ export const SafeCreatorContextApp = ({children}: {children: React.ReactElement}
 	useUpdateEffect((): void => {
 		setTimeout((): void => {
 			let currentStepContainer;
-			const isEmbedWallet = isWalletLedger || isWalletSafe;
 			const scalooor = document?.getElementById('scalooor');
 
-			if (currentStep === Step.WALLET && !isEmbedWallet) {
-				currentStepContainer = document?.getElementById('wallet');
-			} else if (currentStep === Step.FLOW || isEmbedWallet) {
+			if (currentStep === Step.FLOW) {
 				currentStepContainer = document?.getElementById('flow');
 			} else if (currentStep === Step.FLOW_DATA) {
 				currentStepContainer = document?.getElementById('flowData');
