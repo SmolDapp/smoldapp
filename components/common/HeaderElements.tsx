@@ -45,7 +45,7 @@ function CurrentNetworkButton({label, value, isOpen}: {label: string; value: num
 
 	useEffect((): void => {
 		if (value) {
-			set_src(`https://assets.smold.app/api/chain/${value}/logo-128.png`);
+			set_src(`${process.env.SMOL_ASSETS_URL}/chain/${value}/logo-128.png`);
 		}
 	}, [value]);
 

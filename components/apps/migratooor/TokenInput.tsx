@@ -86,15 +86,18 @@ function TokenInput({
 				)}>
 				<div className={'mr-2 h-6 w-6 min-w-[24px]'}>
 					<ImageWithFallback
-						alt={token.name}
+						alt={`${token.address}_${token.name}_${token.symbol}`}
+						width={40}
+						height={40}
+						quality={90}
+						className={'h-6 w-6 md:h-10 md:w-10 md:min-w-[40px]'}
 						unoptimized={!token.logoURI?.includes('assets.smold.app')}
 						src={
 							token.logoURI?.includes('assets.smold.app')
 								? `${process.env.SMOL_ASSETS_URL}/token/${token.chainID}/${token.address}/logo-32.png`
 								: token.logoURI || ''
 						}
-						width={24}
-						height={24}
+						altSrc={token.logoURI || ''}
 					/>
 				</div>
 				{tokens && tokens?.length > 0 ? (
