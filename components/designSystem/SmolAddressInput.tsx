@@ -1,13 +1,13 @@
 import React, {useCallback, useRef, useState} from 'react';
-import {isAddress} from 'viem';
 import {getEnsName} from 'viem/ens';
 import {IconAddressBook} from '@icons/IconAddressBook';
 import {IconChevron} from '@icons/IconChevron';
 import {useAsyncAbortable} from '@react-hookz/web';
+import {isAddress} from '@utils/tools.address';
 import {checkENSValidity} from '@utils/tools.ens';
 import {checkLensValidity} from '@utils/tools.lens';
 import {getPublicClient} from '@wagmi/core';
-import {isZeroAddress, toAddress, truncateHex} from '@yearn-finance/web-lib/utils/address';
+import {toAddress, truncateHex} from '@yearn-finance/web-lib/utils/address';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
 import {defaultInputAddressLike} from '@common/AddressInput';
 
@@ -43,10 +43,9 @@ export function SmolAddressInput(): ReactElement {
 						if (signal.aborted) {
 							reject(new Error('Aborted!'));
 						}
-						if (currentLabel.current === input && !isZeroAddress(address)) {
+						if (currentLabel.current === input && isAddress(address)) {
 							currentAddress.current = address;
 							currentLabel.current = input;
-							console.warn(address);
 							set_value({address, label: input, isValid});
 						} else {
 							console.log('npp');
@@ -76,7 +75,7 @@ export function SmolAddressInput(): ReactElement {
 						return resolve();
 					}
 
-					if (!isZeroAddress(toAddress(input))) {
+					if (isAddress(input)) {
 						currentAddress.current = toAddress(input);
 						if (signal.aborted) {
 							reject(new Error('Aborted!'));
@@ -114,16 +113,16 @@ export function SmolAddressInput(): ReactElement {
 	);
 
 	return (
-		<div className={'relative h-full w-full rounded-lg p-[1px]'}>
+		<div className={'relative h-full w-full max-w-[442px] rounded-lg p-[1px]'}>
 			<div
 				className={cl(
-					'absolute inset-0 z-0 rounded-[9px]',
-					status === 'loading' ? 'borderPulse' : 'bg-neutral-300'
+					'absolute inset-0 z-0 rounded-[9px] transition-colors ',
+					status === 'loading' ? 'borderPulse' : !isFocused && value.error ? 'bg-red-500' : 'bg-neutral-400'
 				)}
 			/>
 			<label
 				className={cl(
-					'h-20 w-[444px] z-20 relative',
+					'h-20 z-20 relative',
 					'flex flex-row items-center cursor-text',
 					'p-2 group bg-neutral-0 rounded-lg'
 				)}>
@@ -131,8 +130,8 @@ export function SmolAddressInput(): ReactElement {
 					<input
 						className={cl(
 							'w-full border-none bg-transparent p-0 text-xl transition-all',
-							'text-neutral-900 placeholder:text-neutral-400 focus:placeholder:text-neutral-400/30',
-							'placeholder:transition-colors overflow-hidden',
+							'text-neutral-900 placeholder:text-neutral-600 caret-neutral-700',
+							'focus:placeholder:text-neutral-300 placeholder:transition-colors',
 							!currentLabel.current ? 'translate-y-2' : 'translate-y-0',
 							isFocused ? 'translate-y-2' : 'translate-y-0'
 						)}
@@ -145,10 +144,10 @@ export function SmolAddressInput(): ReactElement {
 							isFocused
 								? currentInput.current // If focused, always display what was last inputed
 								: !isFocused && isAddress(currentLabel.current)
-								  ? truncateHex(currentLabel.current, 8) // if it's not focused, and it's an address, display the truncated address
-								  : !isFocused && !isAddress(currentLabel.current)
-								    ? currentLabel.current // if it's not focused, and it's not an address, display the label
-								    : undefined
+								? truncateHex(currentLabel.current, 8) // if it's not focused, and it's an address, display the truncated address
+								: !isFocused && !isAddress(currentLabel.current)
+								? currentLabel.current // if it's not focused, and it's not an address, display the label
+								: undefined
 						}
 						onChange={e => onChange(e.target.value)}
 						onFocus={() => set_isFocused(true)}
@@ -161,17 +160,19 @@ export function SmolAddressInput(): ReactElement {
 							isFocused ? 'opacity-0' : 'opacity-100',
 							isFocused ? 'translate-y-8' : 'translate-y-0',
 							isFocused ? 'pointer-events-none' : 'pointer-events-auto',
-							value.error ? 'text-red-500' : 'text-[#ADB1BD]'
+							value.error ? 'text-red-500' : 'text-neutral-600'
 						)}>
-						{(!isZeroAddress(value.address) && toAddress(value.address)) || value.error || ''}&nbsp;
+						{(isAddress(value?.address) && toAddress(value.address)) || value.error || ''}
+						{/* Adding &nbsp; to make sure we have an element here */}
+						&nbsp;
 					</p>
 				</div>
 				<button
 					className={cl(
 						'flex items-center gap-4 rounded-lg p-4',
-						'bg-neutral-100 hover:bg-neutral-200 transition-colors'
+						'bg-neutral-200 hover:bg-neutral-300 transition-colors'
 					)}>
-					<IconAddressBook className={'h-8 w-8 text-neutral-400'} />
+					<IconAddressBook className={'h-8 w-8 text-neutral-600'} />
 					<IconChevron className={'h-4 w-4 text-neutral-900'} />
 				</button>
 			</label>

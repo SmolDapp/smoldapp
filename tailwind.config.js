@@ -4,15 +4,6 @@ const plugin = require('tailwindcss/plugin');
 const defaultTheme = require('tailwindcss/defaultTheme');
 const colors = require('tailwindcss/colors');
 
-function withOpacityValue(variable) {
-	return ({opacityValue}) => {
-		if (opacityValue === undefined) {
-			return `hsl(var(${variable}))`;
-		}
-		return `hsl(var(${variable}) / ${opacityValue})`;
-	};
-}
-
 module.exports = {
 	content: [
 		'./components/**/*.{js,ts,jsx,tsx}',
