@@ -8,154 +8,170 @@
 	font-family: 'Source Code Pro', monospace !important;
 }
 @layer base {
+	.max-w-4xl {
+		@apply max-w-[888px] px-4;
+	}
+	.max-w-5xl {
+		@apply max-w-[992px] px-4;
+	}
 
-.max-w-4xl {@apply max-w-[888px] px-4;}
-.max-w-5xl {@apply max-w-[992px] px-4;}
+	.font-number {
+		@apply font-mono tabular-nums;
+	}
 
+	.yearn--header {
+		@apply !p-0 !h-14;
+	}
 
-.font-number {
-	@apply font-mono tabular-nums;
-}
+	.yearn--listbox-menu-item {
+		@apply hover:!bg-neutral-100/80;
+	}
+	.yearn--button-smaller {
+		@apply !rounded-md;
+	}
 
-.yearn--header {
-	@apply !p-0 !h-14;
-}
-
-.yearn--listbox-menu-item {
-	@apply hover:!bg-neutral-100/80;
-}
-.yearn--button-smaller {
-	@apply !rounded-md;
-}
-
-
-/* 🔵 - Yearn Finance ******************************************************************************
+	/* 🔵 - Yearn Finance ******************************************************************************
 ** Table
 ** Fake table properties
 ***************************************************************************************************/
-.yearn--table-head-wrapper {
-	@apply mb-2 hidden w-full grid-cols-9 px-6 md:grid;
-}
-.yearn--table-head-token-section {
-	@apply col-span-3;
-}
-.yearn--table-head-data-section {
-	@apply col-span-6 grid grid-cols-12 gap-x-7;
-}
-.yearn--table-head-label {
-	@apply text-start text-sm text-neutral-400;
-}
-.yearn--table-head-label-wrapper {
-	@apply col-span-1 flex flex-row items-center justify-start space-x-1;
-	&[datatype="number"] {
-		@apply justify-end;
-		& > .yearn--table-head-label {
-			@apply text-end;
+	.yearn--table-head-wrapper {
+		@apply mb-2 hidden w-full grid-cols-9 px-6 md:grid;
+	}
+	.yearn--table-head-token-section {
+		@apply col-span-3;
+	}
+	.yearn--table-head-data-section {
+		@apply col-span-6 grid grid-cols-12 gap-x-7;
+	}
+	.yearn--table-head-label {
+		@apply text-start text-sm text-neutral-400;
+	}
+	.yearn--table-head-label-wrapper {
+		@apply col-span-1 flex flex-row items-center justify-start space-x-1;
+		&[datatype='number'] {
+			@apply justify-end;
+			& > .yearn--table-head-label {
+				@apply text-end;
+			}
 		}
 	}
-}
-.yearn--table-wrapper {
-	@apply grid w-full grid-cols-1 border-t border-neutral-200 py-2 px-4 md:grid-cols-9 md:border-none md:px-6;
-}
-.yearn--table-token-section {
-	@apply col-span-3 mb-2 flex flex-row items-center justify-between py-4 md:mb-0 md:py-0;
-}
-.yearn--table-token-section-item {
-	@apply flex flex-row items-center space-x-4 md:space-x-6;
-}
-.yearn--table-token-section-item-image {
-	@apply h-8 min-h-[32px] w-8 min-w-[32px] md:flex md:h-10 md:w-10;
-}
-.yearn--table-data-section {
-	@apply col-span-6 grid grid-cols-1 gap-x-0 md:grid-cols-12 gap-y-2 md:gap-y-0 mb-4 md:mb-0;
-}
-.yearn--table-data-section-item-label {
-	@apply inline text-start text-neutral-500 md:hidden text-xs ml-1;
-}
-.yearn--table-data-section-item-value {
-	@apply text-neutral-900;
-}
-.yearn--table-data-section-item {
-	@apply col-span-1 flex h-auto flex-col justify-between pt-0 px-0 md:h-14 md:py-2;
-	&[datatype="number"] {
-		@apply md:justify-end font-number;
-		& > .yearn--table-data-section-item-value {
-			@apply font-number text-end;
+	.yearn--table-wrapper {
+		@apply grid w-full grid-cols-1 border-t border-neutral-200 py-2 px-4 md:grid-cols-9 md:border-none md:px-6;
+	}
+	.yearn--table-token-section {
+		@apply col-span-3 mb-2 flex flex-row items-center justify-between py-4 md:mb-0 md:py-0;
+	}
+	.yearn--table-token-section-item {
+		@apply flex flex-row items-center space-x-4 md:space-x-6;
+	}
+	.yearn--table-token-section-item-image {
+		@apply h-8 min-h-[32px] w-8 min-w-[32px] md:flex md:h-10 md:w-10;
+	}
+	.yearn--table-data-section {
+		@apply col-span-6 grid grid-cols-1 gap-x-0 md:grid-cols-12 gap-y-2 md:gap-y-0 mb-4 md:mb-0;
+	}
+	.yearn--table-data-section-item-label {
+		@apply inline text-start text-neutral-500 md:hidden text-xs ml-1;
+	}
+	.yearn--table-data-section-item-value {
+		@apply text-neutral-900;
+	}
+	.yearn--table-data-section-item {
+		@apply col-span-1 flex h-auto flex-col justify-between pt-0 px-0 md:h-14 md:py-2;
+		&[datatype='number'] {
+			@apply md:justify-end font-number;
+			& > .yearn--table-data-section-item-value {
+				@apply font-number text-end;
+			}
 		}
 	}
-}
-.yearn--table-label {
-	@apply inline text-start text-neutral-500 md:hidden;
-}
+	.yearn--table-label {
+		@apply inline text-start text-neutral-500 md:hidden;
+	}
 
-/* 🔵 - Yearn Finance ******************************************************************************
+	/* 🔵 - Yearn Finance ******************************************************************************
 	** Details and summary nice styles.
 	***************************************************************************************************/
-details > summary {
-	list-style: none;
-}
-details > summary::-webkit-details-marker {
-	display: none;
-}
-details {
-	& > summary {
-		@apply px-4 md:px-6 py-6 md:py-8 cursor-pointer flex flex-row items-center justify-between;
+	details > summary {
+		list-style: none;
 	}
-}
+	details > summary::-webkit-details-marker {
+		display: none;
+	}
+	details {
+		& > summary {
+			@apply px-4 md:px-6 py-6 md:py-8 cursor-pointer flex flex-row items-center justify-between;
+		}
+	}
 
-/* 🔵 - Yearn Finance ******************************************************************************
+	/* 🔵 - Yearn Finance ******************************************************************************
 ** Loader
 ** Custom style for the loader icon
 ***************************************************************************************************/
-.loader {
-	width: 8px;
-	height: 8px;
-	border-radius: 50%;
-	background-color: #fff;
-	box-shadow: 16px 0 #fff, -16px 0 #fff;
-	position: relative;
-	animation: flash 1s ease-out infinite alternate;
-}
-
-@keyframes flash {
-	0% {
-		background-color: #fff2;
-		box-shadow: 12px 0 #fff2, -12px 0 #fff;
-	}
-	50% {
+	.loader {
+		width: 8px;
+		height: 8px;
+		border-radius: 50%;
 		background-color: #fff;
-		box-shadow: 12px 0 #fff2, -12px 0 #fff2;
+		box-shadow:
+			16px 0 #fff,
+			-16px 0 #fff;
+		position: relative;
+		animation: flash 1s ease-out infinite alternate;
 	}
-	100% {
-		background-color: #fff2;
-		box-shadow: 12px 0 #fff, -12px 0 #fff2;
-	}
-}
-}
 
+	@keyframes flash {
+		0% {
+			background-color: #fff2;
+			box-shadow:
+				12px 0 #fff2,
+				-12px 0 #fff;
+		}
+		50% {
+			background-color: #fff;
+			box-shadow:
+				12px 0 #fff2,
+				-12px 0 #fff2;
+		}
+		100% {
+			background-color: #fff2;
+			box-shadow:
+				12px 0 #fff,
+				-12px 0 #fff2;
+		}
+	}
+}
 
 .loader-900 {
 	width: 8px;
 	height: 8px;
 	border-radius: 50%;
 	background-color: #000000;
-	box-shadow: 16px 0 #000000, -16px 0 #000000;
+	box-shadow:
+		16px 0 #000000,
+		-16px 0 #000000;
 	position: relative;
 	animation: flash 1s ease-out infinite alternate;
 }
 
 @keyframes flash {
 	0% {
-		background-color: #AAAAAA;
-		box-shadow: 12px 0 #AAAAAA, -12px 0 #000000;
+		background-color: #aaaaaa;
+		box-shadow:
+			12px 0 #aaaaaa,
+			-12px 0 #000000;
 	}
 	50% {
 		background-color: #000000;
-		box-shadow: 12px 0 #AAAAAA, -12px 0 #AAAAAA;
+		box-shadow:
+			12px 0 #aaaaaa,
+			-12px 0 #aaaaaa;
 	}
 	100% {
-		background-color: #AAAAAA;
-		box-shadow: 12px 0 #000000, -12px 0 #AAAAAA;
+		background-color: #aaaaaa;
+		box-shadow:
+			12px 0 #000000,
+			-12px 0 #aaaaaa;
 	}
 }
 
@@ -164,12 +180,11 @@ details {
 
 	@apply focus:!outline-none focus:!ring-transparent;
 
-
-	&[aria-busy="true"] {
+	&[aria-busy='true'] {
 		@apply border-neutral-300 bg-neutral-300 text-neutral-300 accent-neutral-300 rounded-sm focus:outline-neutral-300 relative after:animate-spin;
 		background-image: none;
 	}
-	&[aria-busy="true"]:after {
+	&[aria-busy='true']:after {
 		height: 12px;
 		width: 12px;
 		position: absolute;
@@ -178,14 +193,13 @@ details {
 		background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 512 512' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M415.136 355.749L415.133 355.754C405.65 372.24 411.246 393.373 427.754 402.867C444.239 412.349 465.369 406.755 474.865 390.251C496.879 352.28 509.5 308.05 509.5 261C509.5 118.219 393.781 2.5 251 2.5C231.919 2.5 216.5 17.9193 216.5 37C216.5 56.0807 231.919 71.5 251 71.5C355.619 71.5 440.5 156.381 440.5 261C440.5 295.547 431.223 327.917 415.136 355.749Z' fill='white' stroke='white' stroke-width='5' /%3e%3c/svg%3e");
 	}
 
-	&[aria-invalid="true"] {
+	&[aria-invalid='true'] {
 		background-image: url("data:image/svg+xml,%3csvg height='1em' viewBox='0 0 384 512' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z'/%3e%3c/svg%3e");
 		background-repeat: no-repeat;
 		background-position: center;
 		@apply border-red-200 bg-red-200 text-red-200 accent-red-200 focus:outline-red-200;
 	}
 }
-
 
 .yearn--tab {
 	@apply mx-5 flex h-full flex-col justify-center text-base cursor-pointer font-normal;
@@ -234,7 +248,7 @@ details {
 }
 .tooltip .tooltiptext::after,
 .tooltip .tooltiptextsmall::after {
-	content: "";
+	content: '';
 	position: absolute;
 	bottom: 98%;
 	right: 50%;
@@ -293,30 +307,28 @@ details {
 	}
 }
 .approvalWizardDivider {
-	&> *:last-child{
+	& > *:last-child {
 		@apply border-b-0 !mb-0 !pb-0;
 	}
 }
 
 .bg-black {
-	background: linear-gradient(84.14deg,#1e243e,#1b2037);
+	background: linear-gradient(84.14deg, #1e243e, #1b2037);
 }
-
 
 .container {
-  @apply flex flex-row justify-between items-center space-x-10 relative max-w-xs;
-  & > dt {
-    @apply bg-primary-600 z-10 pr-2;
-  }
-  & > dd {
-    @apply bg-primary-600 z-10 pl-2 font-number whitespace-nowrap;
-  }
+	@apply flex flex-row justify-between items-center space-x-10 relative max-w-xs;
+	& > dt {
+		@apply bg-primary-600 z-10 pr-2;
+	}
+	& > dd {
+		@apply bg-primary-600 z-10 pl-2 font-number whitespace-nowrap;
+	}
 }
 .filler {
-  @apply w-3/4 border-b-2 border-dashed border-neutral-0 absolute inset-0 h-full;
-  top: calc(-50% + 1px);
+	@apply w-3/4 border-b-2 border-dashed border-neutral-0 absolute inset-0 h-full;
+	top: calc(-50% + 1px);
 }
-
 
 .svg-fit {
 	& > svg {
@@ -337,6 +349,6 @@ details {
 }
 .scrollbar-show::-webkit-scrollbar-thumb {
 	border-radius: 0px;
-	background-color: rgba(0, 0, 0, .3);
-	-webkit-box-shadow: 0 0 1px rgba(255, 255, 255, .3);
-  }
+	background-color: rgba(0, 0, 0, 0.3);
+	-webkit-box-shadow: 0 0 1px rgba(255, 255, 255, 0.3);
+}
