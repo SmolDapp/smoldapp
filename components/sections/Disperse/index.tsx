@@ -44,7 +44,7 @@ function AmountToSendInput(props: {
 	);
 }
 
-const DisperseForm = memo(function DisperseForm(): ReactElement {
+const Disperse = memo(function Disperse(): ReactElement {
 	const {configuration, dispatchConfiguration} = useDisperse();
 	const tokensWithBalance = useTokensWithBalance();
 
@@ -226,4 +226,4 @@ const DisperseForm = memo(function DisperseForm(): ReactElement {
 	);
 });
 
-export default DisperseForm;
+export default Disperse;

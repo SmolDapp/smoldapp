@@ -3,7 +3,6 @@ import SectionDonate from 'components/SectionDonate';
 import {useTokenList} from 'contexts/useTokenList';
 import useWallet from 'contexts/useWallet';
 import {useDeepCompareEffect, useDeepCompareMemo} from '@react-hookz/web';
-import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {ETH_TOKEN_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
@@ -83,7 +82,10 @@ function SectionYourTokens(): ReactElement {
 					<div>
 						<p className={'font-number text-right text-sm text-neutral-900'}>
 							<b suppressHydrationWarning>
-								<Counter value={Number(getBalance(token.address).normalized)} />
+								<Counter
+									value={Number(getBalance(token.address).normalized)}
+									decimals={token.decimals}
+								/>
 							</b>
 							<small className={'font-number text-neutral-900/60'}>{'$ 1414'}</small>
 						</p>

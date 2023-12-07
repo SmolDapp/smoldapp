@@ -1,6 +1,7 @@
 import React, {Fragment} from 'react';
 import Link from 'next/link';
 import {DefaultSeo} from 'next-seo';
+import Disperse from 'components/sections/Disperse';
 import {DisperseContextApp} from '@disperse/useDisperse';
 
 import type {ReactElement} from 'react';

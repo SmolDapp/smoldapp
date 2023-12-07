@@ -374,7 +374,7 @@ function ViewStreamConfiguration(): ReactElement {
 							<PopoverSettingsItemTokenList />
 							<PopoverSettingsItemExpert
 								isSelected={shouldUseExpertMode}
-								set_isSelected={set_shouldUseExpertMode}
+								onChange={set_shouldUseExpertMode}
 							/>
 						</PopoverSettings>
 					}
