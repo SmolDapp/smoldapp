@@ -59,17 +59,17 @@ module.exports = {
 				950: '#431407'
 			},
 			neutral: {
-				0: withOpacityValue('--color-neutral-0'),
-				50: withOpacityValue('--color-neutral-50'),
-				100: withOpacityValue('--color-neutral-100'),
-				200: withOpacityValue('--color-neutral-200'),
-				300: withOpacityValue('--color-neutral-300'),
-				400: withOpacityValue('--color-neutral-400'),
+				0: '#FFFFFF',
+				50: '#F4F6FC',
+				100: '#F8F9FD',
+				200: '#F1F5FF',
+				300: '#D3D9E2',
+				400: '#ADB1BD',
 				500: withOpacityValue('--color-neutral-500'),
 				600: withOpacityValue('--color-neutral-600'),
 				700: withOpacityValue('--color-neutral-700'),
 				800: withOpacityValue('--color-neutral-800'),
-				900: withOpacityValue('--color-neutral-900')
+				900: '#242833'
 			},
 			pink: colors.pink,
 			red: colors.rose,

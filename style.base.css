@@ -95,31 +95,6 @@ label[aria-invalid='true'] {
 	outline-color: transparent;
 }
 
-/* 🔵 - Yearn Finance ******************************************************
-** First, we are declaring the Yearn's specific class for the components.
-** We need to declare them first in order to work with css inheritence
-** correctly. Aka theses class should be possible to overwrite by adding an
-** extra tailwind class
-**************************************************************************/
-.flex-center {
-	@apply flex justify-center items-center;
-}
-.rounded-default {
-	@apply rounded-md;
-}
-.rounded-b-default {
-	@apply rounded-b-md;
-}
-.rounded-t-default {
-	@apply rounded-t-md;
-}
-.rounded-l-default {
-	@apply rounded-l-md;
-}
-.rounded-r-default {
-	@apply rounded-r-md;
-}
-
 /* -- Button.tsx ------------------------------------------------------- */
 .yearn--button {
 	@apply cursor-pointer flex justify-center items-center transition-all relative focus-within:outline-primary-600 outline-offset-2 outline rounded-md outline-transparent;
@@ -228,25 +203,6 @@ select.smol--input {
 **************************************************************************/
 @tailwind components;
 @tailwind utilities;
-
-/* 🔵 - Yearn Finance ******************************************************
-** Shorthand for some group of style used across the application
-***************************************************************************/
-.flex-row-center {
-	@apply flex flex-row items-center;
-}
-.flex-row-start {
-	@apply flex flex-row items-start;
-}
-.flex-col-start {
-	@apply flex flex-col items-start;
-}
-.flex-col-full {
-	@apply flex flex-col w-full h-full;
-}
-.max-w-6xl {
-	@apply max-w-[1232px] px-4;
-}
 
 /* 🔵 - Yearn Finance ******************************************************
 ** NsProgress is used to display the loading indicator. All of theses

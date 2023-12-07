@@ -2,7 +2,6 @@
 
 import React, {Fragment} from 'react';
 import {type NextRouter, useRouter} from 'next/router';
-import SectionHeader from 'components/sections/Header';
 import AppWrapper from '@common/AppWrapper';
 
 import type {NextComponentType} from 'next';
@@ -17,10 +16,5 @@ export function BaseLayout(props: AppProps): ReactElement {
 	const {Component} = props;
 	const getLayout = (Component as TGetLayout).getLayout || ((page: ReactElement): ReactElement => page);
 
-	return (
-		<Fragment>
-			<SectionHeader />
-			{getLayout(<AppWrapper {...props} />, router)}
-		</Fragment>
-	);
+	return <Fragment>{getLayout(<AppWrapper {...props} />, router)}</Fragment>;
 }

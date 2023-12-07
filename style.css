@@ -1,8 +1,5 @@
 @import './style.base.css';
 
-:root {
-	@apply bg-primary-50;
-}
 .font-mono {
 	font-family: 'Source Code Pro', monospace !important;
 }
@@ -12,6 +9,9 @@
 	}
 	.max-w-5xl {
 		@apply max-w-[992px] px-4;
+	}
+	.max-w-6xl {
+		@apply max-w-[1232px] px-4;
 	}
 
 	.font-number {
@@ -168,6 +168,19 @@
 		box-shadow:
 			12px 0 #000000,
 			-12px 0 #aaaaaa;
+	}
+}
+
+.borderPulse {
+	animation: borderPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+@keyframes borderPulse {
+	0%,
+	100% {
+		@apply bg-neutral-900;
+	}
+	50% {
+		@apply bg-neutral-200;
 	}
 }
 

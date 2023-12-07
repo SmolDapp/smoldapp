@@ -1,6 +1,5 @@
 import React from 'react';
 import Document, {Head, Html, Main, NextScript} from 'next/document';
-import PatternBackground from 'components/icons/PatternBackground';
 
 import type {DocumentContext, DocumentInitialProps} from 'next/document';
 import type {ReactElement} from 'react';
@@ -25,8 +24,7 @@ class MyDocument extends Document {
 						crossOrigin={'anonymous'}
 					/>
 				</Head>
-				<body className={'bg-primary-50 transition-colors duration-150'}>
-					<PatternBackground />
+				<body className={'bg-neutral-50 transition-colors duration-150'}>
 					<Main />
 					<NextScript />
 				</body>
