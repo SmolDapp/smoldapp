@@ -20,6 +20,7 @@ export type TInputAddressLike = {
 	address: TAddress | undefined;
 	label: string;
 	isValid: boolean | 'undetermined';
+	error?: string;
 };
 export const defaultInputAddressLike: TInputAddressLike = {
 	address: undefined,

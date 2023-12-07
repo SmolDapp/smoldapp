@@ -20,6 +20,7 @@ export function SmolAddressInput(): ReactElement {
 	const [value, set_value] = useState<TInputAddressLike>(defaultInputAddressLike);
 	const currentAddress = useRef<TAddress | undefined>(defaultInputAddressLike.address);
 	const currentLabel = useRef<string>(defaultInputAddressLike.label);
+	const currentInput = useRef<string>(defaultInputAddressLike.label);
 
 	const [{status}, actions] = useAsyncAbortable(
 		async (signal, input: string): Promise<void> =>
@@ -31,18 +32,30 @@ export function SmolAddressInput(): ReactElement {
 					currentLabel.current = input;
 					currentAddress.current = undefined;
 
+					if (input === '') {
+						set_value(defaultInputAddressLike);
+						return resolve();
+					}
+
 					if (input.endsWith('.eth') && input.length > 4) {
 						set_value({address: undefined, label: input, isValid: 'undetermined'});
 						const [address, isValid] = await checkENSValidity(input);
 						if (signal.aborted) {
 							reject(new Error('Aborted!'));
 						}
-						if (currentLabel.current === input) {
+						if (currentLabel.current === input && !isZeroAddress(address)) {
 							currentAddress.current = address;
 							currentLabel.current = input;
+							console.warn(address);
 							set_value({address, label: input, isValid});
 						} else {
-							set_value({address: undefined, label: input, isValid: 'undetermined'});
+							console.log('npp');
+							set_value({
+								address: undefined,
+								label: input,
+								isValid: false,
+								error: 'This ENS name looks invalid'
+							});
 						}
 						return resolve();
 					}
@@ -64,8 +77,10 @@ export function SmolAddressInput(): ReactElement {
 					}
 
 					if (!isZeroAddress(toAddress(input))) {
-						console.log('here');
 						currentAddress.current = toAddress(input);
+						if (signal.aborted) {
+							reject(new Error('Aborted!'));
+						}
 						set_value({address: toAddress(input), label: input, isValid: true});
 						const client = getPublicClient({chainId: 1});
 						const ensName = await getEnsName(client, {address: toAddress(input)});
@@ -82,7 +97,7 @@ export function SmolAddressInput(): ReactElement {
 					}
 
 					currentAddress.current = undefined;
-					set_value({address: undefined, label: input, isValid: false});
+					set_value({address: undefined, label: input, isValid: false, error: 'This address looks invalid'});
 					resolve();
 				}
 			}),
@@ -91,6 +106,7 @@ export function SmolAddressInput(): ReactElement {
 
 	const onChange = useCallback(
 		(label: string): void => {
+			currentInput.current = label;
 			actions.abort();
 			actions.execute(label);
 		},
@@ -111,15 +127,13 @@ export function SmolAddressInput(): ReactElement {
 					'flex flex-row items-center cursor-text',
 					'p-2 group bg-neutral-0 rounded-lg'
 				)}>
-				<div className={'w-full'}>
+				<div className={'relative w-full pr-2'}>
 					<input
 						className={cl(
 							'w-full border-none bg-transparent p-0 text-xl transition-all',
 							'text-neutral-900 placeholder:text-neutral-400 focus:placeholder:text-neutral-400/30',
-							'placeholder:transition-colors',
-							!currentLabel.current || isZeroAddress(currentAddress.current)
-								? 'translate-y-2'
-								: 'translate-y-0',
+							'placeholder:transition-colors overflow-hidden',
+							!currentLabel.current ? 'translate-y-2' : 'translate-y-0',
 							isFocused ? 'translate-y-2' : 'translate-y-0'
 						)}
 						type={'text'}
@@ -129,7 +143,7 @@ export function SmolAddressInput(): ReactElement {
 						spellCheck={'false'}
 						value={
 							isFocused
-								? currentLabel.current // If focused, always display what was last inputed
+								? currentInput.current // If focused, always display what was last inputed
 								: !isFocused && isAddress(currentLabel.current)
 								  ? truncateHex(currentLabel.current, 8) // if it's not focused, and it's an address, display the truncated address
 								  : !isFocused && !isAddress(currentLabel.current)
@@ -143,12 +157,13 @@ export function SmolAddressInput(): ReactElement {
 
 					<p
 						className={cl(
-							'text-xs text-[#ADB1BD] transition-all',
+							'text-xs transition-all',
 							isFocused ? 'opacity-0' : 'opacity-100',
 							isFocused ? 'translate-y-8' : 'translate-y-0',
-							isFocused ? 'pointer-events-none' : 'pointer-events-auto'
+							isFocused ? 'pointer-events-none' : 'pointer-events-auto',
+							value.error ? 'text-red-500' : 'text-[#ADB1BD]'
 						)}>
-						{(!isZeroAddress(value.address) && toAddress(value.address)) || ' '}&nbsp;
+						{(!isZeroAddress(value.address) && toAddress(value.address)) || value.error || ''}&nbsp;
 					</p>
 				</div>
 				<button
