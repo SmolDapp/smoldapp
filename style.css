@@ -177,7 +177,7 @@
 @keyframes borderPulse {
 	0%,
 	100% {
-		@apply bg-neutral-900;
+		@apply bg-neutral-300;
 	}
 	50% {
 		@apply bg-neutral-200;
