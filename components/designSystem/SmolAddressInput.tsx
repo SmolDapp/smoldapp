@@ -16,10 +16,10 @@ import type {TAddress} from '@yearn-finance/web-lib/types';
 import type {TInputAddressLike} from '@common/AddressInput';
 
 export function SmolAddressInput(): ReactElement {
+	const [isFocused, set_isFocused] = useState<boolean>(false);
 	const [value, set_value] = useState<TInputAddressLike>(defaultInputAddressLike);
 	const currentAddress = useRef<TAddress | undefined>(defaultInputAddressLike.address);
 	const currentLabel = useRef<string>(defaultInputAddressLike.label);
-	const [isFocused, set_isFocused] = useState<boolean>(false);
 
 	const [{status}, actions] = useAsyncAbortable(
 		async (signal, input: string): Promise<void> =>
@@ -131,10 +131,10 @@ export function SmolAddressInput(): ReactElement {
 							isFocused
 								? currentLabel.current // If focused, always display what was last inputed
 								: !isFocused && isAddress(currentLabel.current)
-								? truncateHex(currentLabel.current, 8) // if it's not focused, and it's an address, display the truncated address
-								: !isFocused && !isAddress(currentLabel.current)
-								? currentLabel.current // if it's not focused, and it's not an address, display the label
-								: undefined
+								  ? truncateHex(currentLabel.current, 8) // if it's not focused, and it's an address, display the truncated address
+								  : !isFocused && !isAddress(currentLabel.current)
+								    ? currentLabel.current // if it's not focused, and it's not an address, display the label
+								    : undefined
 						}
 						onChange={e => onChange(e.target.value)}
 						onFocus={() => set_isFocused(true)}
