@@ -5,6 +5,15 @@ const thumbnailVariants = {
 	exit: {y: 0, opacity: 1, transition}
 };
 
+const initial = {duration: 0.6, ease: 'easeInOut', delay: 0.2};
+const animate = {duration: 0.6, ease: 'easeInOut'};
+const out = {duration: 0.2, ease: 'easeInOut'};
+export const appWrapperVariants = {
+	initial: {scale: 0.9, opacity: 0, transition: initial},
+	animate: (isReady: boolean) => ({scale: 1, opacity: 1, transition: isReady ? animate : initial}),
+	exit: {scale: 0.9, opacity: 0, transition: out}
+};
+
 export function scrollToTargetAdjusted(element: HTMLElement): void {
 	const headerOffset = 32;
 	if (!element) {

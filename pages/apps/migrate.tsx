@@ -1,5 +1,4 @@
 import React, {Fragment} from 'react';
-import Link from 'next/link';
 import {DefaultSeo} from 'next-seo';
 import {Migrate} from 'components/sections/Migrate';
 import {MigrateContextApp} from 'components/sections/Migrate/useMigrate';
@@ -7,31 +6,7 @@ import {MigrateContextApp} from 'components/sections/Migrate/useMigrate';
 import type {ReactElement} from 'react';
 
 function MigratePage(): ReactElement {
-	return (
-		<div>
-			<section className={'z-10 mx-auto mt-10 grid w-full max-w-5xl'}>
-				<div className={'mb-0'}>
-					<div className={'flex flex-row items-center justify-between'}>
-						<h2 className={'scroll-m-20 pb-4 text-sm'}>
-							<Link href={'/'}>
-								<span
-									className={
-										'text-neutral-400 transition-colors hover:text-neutral-900 hover:underline'
-									}>
-									{'Smol'}
-								</span>
-							</Link>
-							<span className={'text-neutral-400'}>{' / '}</span>
-							<span className={'font-medium text-neutral-900'}>{'Migrate'}</span>
-						</h2>
-					</div>
-					<div>
-						<Migrate />
-					</div>
-				</div>
-			</section>
-		</div>
-	);
+	return <Migrate />;
 }
 
 MigratePage.getLayout = function getLayout(page: ReactElement): ReactElement {
@@ -66,6 +41,12 @@ MigratePage.getLayout = function getLayout(page: ReactElement): ReactElement {
 			<MigrateContextApp>{page}</MigrateContextApp>
 		</Fragment>
 	);
+};
+
+MigratePage.AppName = 'Migrate';
+MigratePage.AppDescription = 'Transfer all your funds to another wallet';
+MigratePage.getLayout = function getLayout(page: ReactElement): ReactElement {
+	return <Fragment>{page}</Fragment>;
 };
 
 export default MigratePage;

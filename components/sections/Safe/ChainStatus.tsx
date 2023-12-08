@@ -15,11 +15,11 @@ import {
 	switchNetwork,
 	waitForTransaction
 } from '@wagmi/core';
-import {Button} from '@yearn-finance/web-lib/components/Button';
 import {toast} from '@yearn-finance/web-lib/components/yToast';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {getClient, getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 import {defaultTxStatus} from '@yearn-finance/web-lib/utils/web3/transaction';
+import {Button} from '@common/Primitives/Button';
 
 import {
 	DEFAULT_FEES_USD,
@@ -316,7 +316,7 @@ function ChainStatus({chain, singleton}: TChainStatusArgs): ReactElement {
 					<span className={'tooltipLight top-full mt-1'}>
 						<div
 							className={
-								'font-number w-40 border border-neutral-300 bg-neutral-100 p-1 px-2 text-center text-xxs text-neutral-900'
+								'font-number bg-neutral-100 w-40 border border-neutral-300 p-1 px-2 text-center text-xxs text-neutral-900'
 							}>
 							<p>{'The Safe was deployed using an un-cloneable legacy method. Soz 😕'}</p>
 						</div>

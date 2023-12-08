@@ -63,9 +63,11 @@ export function ProfileAvatar(props: {
 		);
 	}
 	return (
-		<div className={'h-10 w-10 min-w-[40px] rounded-full bg-neutral-200'}>
+		<div className={'h-10 w-10 min-w-[40px] rounded-full bg-neutral-200/40'}>
 			<Image
-				className={'animate-fadeIn rounded-full'}
+				key={props.address}
+				id={props.address}
+				className={'rounded-full'}
 				unoptimized
 				src={imageSrc || ''}
 				width={40}
@@ -93,6 +95,36 @@ export function ProfileAddress(props: {
 		);
 	}
 
+	if (!props.ens) {
+		return (
+			<div className={'grid w-full gap-2'}>
+				<b className={'text-base leading-4'}>{props.address?.substring(0, 6)}</b>
+				<Tooltip.Provider delayDuration={250}>
+					<Tooltip.Root>
+						<Tooltip.Trigger className={'flex w-fit items-center gap-1'}>
+							<small>{safeAddress({address: props.address})}</small>
+						</Tooltip.Trigger>
+						<TooltipContent
+							side={'right'}
+							className={'TooltipContent bg-primary !p-0'}>
+							<button
+								onClick={() => copyToClipboard(toAddress(props.address))}
+								className={'flex cursor-copy px-2 py-1.5'}>
+								<small className={'font-number text-xxs text-neutral-900/70'}>
+									{toAddress(props.address)}
+								</small>
+							</button>
+							<Tooltip.Arrow
+								className={'fill-primary'}
+								width={11}
+								height={5}
+							/>
+						</TooltipContent>
+					</Tooltip.Root>
+				</Tooltip.Provider>
+			</div>
+		);
+	}
 	return (
 		<div className={'grid w-full gap-2'}>
 			<b className={'text-base leading-4'}>
@@ -127,18 +159,18 @@ export function ProfileAddress(props: {
 
 export function Profile(): ReactElement {
 	const {address, ens} = useWeb3();
-	const {isConnecting, isReconnecting} = useAccount();
+	const {isConnecting} = useAccount();
 	const {data: avatar, isLoading: isLoadingAvatar} = useEnsAvatar({chainId: 1, name: ens});
 
 	return (
 		<div className={'flex gap-2'}>
 			<ProfileAvatar
-				isLoading={isLoadingAvatar || isConnecting || isReconnecting}
+				isLoading={isLoadingAvatar || isConnecting}
 				address={address}
 				src={avatar}
 			/>
 			<ProfileAddress
-				isConnecting={isConnecting || isReconnecting}
+				isConnecting={isConnecting}
 				address={address}
 				ens={ens}
 			/>
@@ -199,7 +231,7 @@ export function NetworkSelector(): ReactElement {
 
 			<Popover.Content
 				style={{boxShadow: 'rgba(36, 40, 51, 0.08) 0px 0px 20px 8px'}}
-				className={'PopoverContent z-10 rounded-lg bg-neutral-0 p-0'}>
+				className={'PopoverContent z-50 rounded-lg bg-neutral-0 p-0'}>
 				<Command>
 					<CommandInput placeholder={'Search chain...'} />
 					<CommandEmpty>{'No chain found.'}</CommandEmpty>

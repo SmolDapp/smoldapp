@@ -1,4 +1,6 @@
-import {cloneElement, Fragment, type ReactElement, useState} from 'react';
+import {cloneElement, Fragment, type ReactElement} from 'react';
+import Link from 'next/link';
+import {usePathname} from 'next/navigation';
 import {
 	IconAppAddressBook,
 	IconAppDisperse,
@@ -14,22 +16,30 @@ import {cl} from '@yearn-finance/web-lib/utils/cl';
 
 type TNavItemProps = {
 	label: string;
+	href: string;
 	icon: ReactElement;
 	isSelected: boolean;
-	onSelect: () => void;
 };
 function NavItem(props: TNavItemProps): ReactElement {
 	return (
-		<li>
-			<button
-				onClick={props.onSelect}
-				className={cl(
-					'flex items-center gap-2 rounded-3xl px-4 py-2 transition-colors w-full',
-					props.isSelected ? 'bg-neutral-300' : 'bg-neutral-0 hover:bg-neutral-300'
-				)}>
-				{cloneElement(props.icon, {className: 'h-4 w-4 text-neutral-600'})}
-				<p className={props.isSelected ? 'text-neutral-900' : 'text-neutral-600'}>{props.label}</p>
-			</button>
+		<li className={'relative z-10'}>
+			<Link href={props.href}>
+				<div
+					className={cl(
+						'flex items-center gap-2 rounded-3xl px-4 py-2 transition-colors w-full',
+						'group hover:bg-neutral-300',
+						props.isSelected ? 'bg-neutral-300' : 'hover:bg-neutral-300'
+					)}>
+					{cloneElement(props.icon, {className: 'h-4 w-4 text-neutral-600'})}
+					<p
+						className={cl(
+							'transition-colors',
+							props.isSelected ? 'text-neutral-900' : 'text-neutral-600 group-hover:text-neutral-900'
+						)}>
+						{props.label}
+					</p>
+				</div>
+			</Link>
 		</li>
 	);
 }
@@ -52,45 +62,45 @@ function LogOutButton(): ReactElement {
 	);
 }
 export function SideMenu(): ReactElement {
-	const [currentPage, set_currentPage] = useState<string>('send');
+	const pathname = usePathname();
 
 	return (
 		<>
 			<section className={'flex h-full flex-col p-4'}>
 				<ul className={'grid gap-2'}>
 					<NavItem
-						onSelect={() => set_currentPage('send')}
-						isSelected={currentPage === 'send'}
+						href={'/apps/send'}
+						isSelected={pathname.startsWith('/apps/send')}
 						label={'Send'}
 						icon={<IconAppSend />}
 					/>
 					<NavItem
-						onSelect={() => set_currentPage('disperse')}
-						isSelected={currentPage === 'disperse'}
+						href={'/apps/disperse'}
+						isSelected={pathname.startsWith('/apps/disperse')}
 						label={'Disperse'}
 						icon={<IconAppDisperse />}
 					/>
 					<NavItem
-						onSelect={() => set_currentPage('migrate')}
-						isSelected={currentPage === 'migrate'}
+						href={'/apps/migrate'}
+						isSelected={pathname.startsWith('/apps/migrate')}
 						label={'Migrate'}
 						icon={<IconAppMigrate />}
 					/>
 					<NavItem
-						onSelect={() => set_currentPage('swap')}
-						isSelected={currentPage === 'swap'}
+						href={'/apps/swap'}
+						isSelected={pathname.startsWith('/apps/swap')}
 						label={'Swap'}
 						icon={<IconAppSwap />}
 					/>
 					<NavItem
-						onSelect={() => set_currentPage('earn')}
-						isSelected={currentPage === 'earn'}
+						href={'/apps/earn'}
+						isSelected={pathname.startsWith('/apps/earn')}
 						label={'Earn'}
 						icon={<IconAppEarn />}
 					/>
 					<NavItem
-						onSelect={() => set_currentPage('address_book')}
-						isSelected={currentPage === 'address_book'}
+						href={'/apps/address-book'}
+						isSelected={pathname.startsWith('/apps/address-book')}
 						label={'Address Book'}
 						icon={<IconAppAddressBook />}
 					/>

@@ -55,11 +55,11 @@ export function Migrate(): ReactElement {
 
 	return (
 		<section>
-			<div className={'box-0 grid w-full grid-cols-12'}>
-				<div className={'relative col-span-12 flex flex-col p-4 text-neutral-900 md:p-6'}>
+			<div className={'grid w-full grid-cols-12'}>
+				<div className={'relative col-span-12 flex flex-col text-neutral-900'}>
 					<div className={'w-full md:w-3/4'}>
 						<b>{'Where to migrate?'}</b>
-						<p className={'text-sm text-neutral-500'}>
+						<p className={'text-neutral-500 text-sm'}>
 							{
 								'Enter the address where you want to migrate your funds to. Be sure to double check the address before proceeding.'
 							}
@@ -102,8 +102,8 @@ export function Migrate(): ReactElement {
 
 						<div className={'col-span-12 flex w-full flex-col'}>
 							<div className={'mb-2 grid grid-cols-2 gap-4'}>
-								<p className={'text-xs text-neutral-500'}>{'Token'}</p>
-								<p className={'text-xs text-neutral-500'}>{'Amount'}</p>
+								<p className={'text-neutral-500 text-xs'}>{'Token'}</p>
+								<p className={'text-neutral-500 text-xs'}>{'Amount'}</p>
 							</div>
 							<div>
 								{tokensWithBalance.length === 0 && isLoading ? (
@@ -112,7 +112,7 @@ export function Migrate(): ReactElement {
 											'col-span-12 flex min-h-[200px] flex-col items-center justify-center'
 										}>
 										<IconSpinner />
-										<p className={'mt-6 text-sm text-neutral-500'}>
+										<p className={'text-neutral-500 mt-6 text-sm'}>
 											{'We are looking for your tokens ...'}
 										</p>
 									</div>
@@ -132,7 +132,7 @@ export function Migrate(): ReactElement {
 												fill={'currentcolor'}
 											/>
 										</svg>
-										<p className={'mt-6 text-sm text-neutral-500'}>
+										<p className={'text-neutral-500 mt-6 text-sm'}>
 											{"Oh no, we couldn't find any token!"}
 										</p>
 									</div>
