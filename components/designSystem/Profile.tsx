@@ -246,7 +246,7 @@ export function ConnectProfile(): ReactElement {
 	return (
 		<section
 			className={cl(
-				'h-[145px] rounded-lg bg-primary',
+				'h-[145px] rounded-t-lg bg-primary',
 				'px-10 pb-6 pt-5',
 				'flex flex-col justify-center items-center'
 			)}>
@@ -264,8 +264,44 @@ export function ConnectProfile(): ReactElement {
 	);
 }
 
+export function SkeletonPlaceholder(): ReactElement {
+	return (
+		<section className={'p-4'}>
+			<div className={'flex gap-2'}>
+				<ProfileAvatar
+					isLoading
+					src={undefined}
+				/>
+				<ProfileAddress
+					isConnecting
+					address={undefined}
+					ens={undefined}
+				/>
+			</div>
+
+			<hr className={'mb-2 mt-4 text-neutral-200'} />
+
+			<div className={'grid grid-cols-2 gap-6'}>
+				<div>
+					<small className={'text-xxs'}>{'Chain'}</small>
+					<NetworkSelector />
+				</div>
+				<div>
+					<small className={'text-xxs'}>{'Coin'}</small>
+					<div className={'skeleton-lg mt-1 h-6 w-2/3'} />
+				</div>
+			</div>
+		</section>
+	);
+}
+
 export function NavProfile(): ReactElement {
+	const isMounted = useIsMounted();
 	const {address} = useWeb3();
+
+	if (!isMounted()) {
+		return <SkeletonPlaceholder />;
+	}
 
 	if (!isAddress(address)) {
 		return <ConnectProfile />;
