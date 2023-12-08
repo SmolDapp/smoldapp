@@ -33,8 +33,8 @@ import {
 } from './utils';
 
 import type {ReactElement} from 'react';
-import type {TAppExtendedChain} from 'utils/constants';
 import type {TAddress} from '@yearn-finance/web-lib/types';
+import type {TAppExtendedChain} from '@utils/tools.chains';
 import type {Chain} from '@wagmi/core';
 
 function getProxyFromSingleton(singleton: TAddress): TAddress {

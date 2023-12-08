@@ -1,6 +1,6 @@
 import React, {createContext, useContext, useEffect, useMemo, useState} from 'react';
 import {scrollToTargetAdjusted} from 'utils/animations';
-import {coingeckoGasCoinIDs, HEADER_HEIGHT} from 'utils/constants';
+import {COINGECKO_GAS_COIN_IDS, HEADER_HEIGHT} from 'utils/constants';
 import useSWR from 'swr';
 import {useUpdateEffect} from '@react-hookz/web';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
@@ -45,7 +45,7 @@ export const SafeCreatorContextApp = ({children}: {children: React.ReactElement}
 	const [currentStep, set_currentStep] = useState<Step>(Step.FLOW);
 	const [selectedFlow, set_selectedFlow] = useState<'NONE' | 'EXISTING' | 'NEW'>('NONE');
 	const {data: chainCoinPrices} = useSWR<TPriceFromGecko>(
-		`https://api.coingecko.com/api/v3/simple/price?ids=${Object.values(coingeckoGasCoinIDs)}&vs_currencies=usd`,
+		`https://api.coingecko.com/api/v3/simple/price?ids=${Object.values(COINGECKO_GAS_COIN_IDS)}&vs_currencies=usd`,
 		baseFetcher,
 		{refreshInterval: 10_000}
 	);

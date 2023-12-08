@@ -1,5 +1,5 @@
 import React, {createContext, useContext, useMemo, useReducer} from 'react';
-import {coingeckoGasCoinIDs} from 'utils/constants';
+import {COINGECKO_GAS_COIN_IDS} from 'utils/constants';
 import {concat, hexToBigInt, keccak256, toHex} from 'viem';
 import useSWR from 'swr';
 import {baseFetcher} from '@yearn-finance/web-lib/utils/fetchers';
@@ -90,7 +90,7 @@ const MultiSafeContext = createContext<TSafe>(defaulMultiSafetProps);
 export const MultiSafeContextApp = ({children}: {children: React.ReactElement}): React.ReactElement => {
 	const [configuration, dispatch] = useReducer(configurationReducer, defaulMultiSafetProps.configuration);
 	const {data: chainCoinPrices} = useSWR<TPriceFromGecko>(
-		`https://api.coingecko.com/api/v3/simple/price?ids=${Object.values(coingeckoGasCoinIDs)}&vs_currencies=usd`,
+		`https://api.coingecko.com/api/v3/simple/price?ids=${Object.values(COINGECKO_GAS_COIN_IDS)}&vs_currencies=usd`,
 		baseFetcher,
 		{refreshInterval: 10_000}
 	);

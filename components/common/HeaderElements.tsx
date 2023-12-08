@@ -6,6 +6,7 @@ import {Listbox, Transition} from '@headlessui/react';
 import {useAccountModal, useChainModal} from '@rainbow-me/rainbowkit';
 import {useIsMounted} from '@react-hookz/web';
 import {truncateHex} from '@utils/tools.address';
+import {supportedTestNetworks} from '@utils/tools.chains';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {toSafeChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {IconChevronBottom} from '@yearn-finance/web-lib/icons/IconChevronBottom';
@@ -81,7 +82,7 @@ function CurrentNetworkButton({label, value, isOpen}: {label: string; value: num
 }
 
 type TNetwork = {value: number; label: string};
-export function NetworkSelector({networks}: {networks: number[]}): ReactElement {
+export function NetworkSelector(): ReactElement {
 	const {onSwitchChain} = useWeb3();
 	const publicClient = usePublicClient();
 	const {connectors} = useConnect();
@@ -92,14 +93,17 @@ export function NetworkSelector({networks}: {networks: number[]}): ReactElement 
 		const injectedConnector = connectors.find((e): boolean => e.id.toLocaleLowerCase() === 'injected');
 		assert(injectedConnector, 'No injected connector found');
 		const chainsForInjected = injectedConnector.chains;
+		const testnet = supportedTestNetworks;
 
 		return chainsForInjected
-			.filter(
-				({id}): boolean =>
-					![5, 1337, 84531].includes(id) && ((networks.length > 0 && networks.includes(id)) || true)
-			)
+			.filter(({id}): boolean => {
+				if (testnet.find((network): boolean => network.id === id)) {
+					return false;
+				}
+				return true;
+			})
 			.map((network: Chain): TNetwork => ({value: network.id, label: network.name}));
-	}, [connectors, networks]);
+	}, [connectors]);
 
 	const currentNetwork = useMemo(
 		(): TNetwork | undefined => supportedNetworks.find((network): boolean => network.value === safeChainID),
