@@ -226,3 +226,29 @@ select:focus {
 	outline: none;
 	box-shadow: none;
 }
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+@keyframes fadeOut {
+	from {
+		opacity: 1;
+	}
+	to {
+		opacity: 0;
+	}
+}
+
+.PopoverContent[data-state='open'] {
+	animation: fadeIn 100ms ease-out;
+}
+
+.PopoverContent[data-state='closed'] {
+	animation: fadeOut 100ms ease-in;
+}
