@@ -21,9 +21,28 @@ import {TooltipContent} from '@common/Primitives/Tooltip';
 
 import type {TAddress} from '@yearn-finance/web-lib/types';
 
-export function ProfileAvatar(props: {src: string | null | undefined; isLoading: boolean}): ReactElement {
+export function ProfileAvatar(props: {
+	src: string | null | undefined;
+	address: TAddress | undefined;
+	isLoading: boolean;
+}): ReactElement {
 	const [imageSrc, set_imageSrc] = useState(props.src);
 	const hasAvatar = useMemo(() => imageSrc !== undefined, [imageSrc]);
+	const addressColor = useMemo((): string => {
+		if (!props.address) {
+			return '#000000';
+		}
+		let hash = 0;
+		for (let i = 0; i < props.address.length; i++) {
+			hash = props.address.charCodeAt(i) + ((hash << 5) - hash);
+		}
+		let color = '#';
+		for (let i = 0; i < 3; i++) {
+			const value = (hash >> (i * 8)) & 0xff;
+			color += value.toString(16).padStart(2, '0');
+		}
+		return color;
+	}, [props.address]);
 
 	useUpdateEffect((): void => {
 		set_imageSrc(props.src);
@@ -32,8 +51,16 @@ export function ProfileAvatar(props: {src: string | null | undefined; isLoading:
 	if (props.isLoading) {
 		return <div className={'skeleton-full h-10 w-10 min-w-[40px]'} />;
 	}
-	if (!hasAvatar) {
+	if (!hasAvatar && !isAddress(props.address)) {
 		return <div className={'h-10 w-10 min-w-[40px] rounded-full bg-neutral-200'} />;
+	}
+	if (!hasAvatar) {
+		return (
+			<div
+				style={{background: addressColor}}
+				className={'h-10 w-10 min-w-[40px] rounded-full'}
+			/>
+		);
 	}
 	return (
 		<div className={'h-10 w-10 min-w-[40px] rounded-full bg-neutral-200'}>
@@ -107,6 +134,7 @@ export function Profile(): ReactElement {
 		<div className={'flex gap-2'}>
 			<ProfileAvatar
 				isLoading={isLoadingAvatar || isConnecting || isReconnecting}
+				address={address}
 				src={avatar}
 			/>
 			<ProfileAddress
@@ -270,6 +298,7 @@ export function SkeletonPlaceholder(): ReactElement {
 			<div className={'flex gap-2'}>
 				<ProfileAvatar
 					isLoading
+					address={undefined}
 					src={undefined}
 				/>
 				<ProfileAddress

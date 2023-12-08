@@ -22,6 +22,7 @@ function NavProfileDemo(props: TNavProfileDemoProps): ReactElement {
 		<section className={'p-4'}>
 			<div className={'flex gap-2'}>
 				<ProfileAvatar
+					address={props.address}
 					isLoading={props.isLoadingAvatar}
 					src={props.avatar}
 				/>
