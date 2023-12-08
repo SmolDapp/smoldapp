@@ -245,10 +245,11 @@ select:focus {
 	}
 }
 
+.TooltipContent[data-state='delayed-open'],
 .PopoverContent[data-state='open'] {
 	animation: fadeIn 100ms ease-out;
 }
-
+.TooltipContent[data-state='closed'],
 .PopoverContent[data-state='closed'] {
 	animation: fadeOut 100ms ease-in;
 }
