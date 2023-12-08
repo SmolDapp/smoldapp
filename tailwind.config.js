@@ -42,7 +42,7 @@ module.exports = {
 		},
 		extend: {
 			fontFamily: {
-				sans: ['var(--inter-font)', 'Inter', 'Roboto', ...defaultTheme.fontFamily.sans],
+				sans: ['var(--rubik-font)', 'Rubik', 'Roboto', ...defaultTheme.fontFamily.sans],
 				mono: ['Source Code Pro', ...defaultTheme.fontFamily.mono]
 			},
 			width: {

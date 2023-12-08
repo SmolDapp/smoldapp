@@ -242,7 +242,7 @@ export function WalletSelector(): ReactElement {
 			}}>
 			<div
 				suppressHydrationWarning
-				className={'font-inter cursor-pointer text-sm font-medium'}>
+				className={'font-rubik cursor-pointer text-sm font-medium'}>
 				{walletIdentity ? (
 					walletIdentity
 				) : (

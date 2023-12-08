@@ -44,7 +44,7 @@ function LogOutButton(): ReactElement {
 	return (
 		<div className={'mt-auto px-4 pb-2'}>
 			<button
-				className={'text-xxs text-neutral-400'}
+				className={'text-xxs text-neutral-600 transition-colors hover:text-neutral-900'}
 				onClick={onDesactivate}>
 				{'Log out'}
 			</button>

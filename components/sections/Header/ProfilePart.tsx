@@ -2,28 +2,21 @@
 
 import React from 'react';
 import {useTokenList} from 'contexts/useTokenList';
-import {useEnsAvatar} from 'wagmi';
-import {toAddress, truncateHex} from '@utils/tools.address';
+import {truncateHex} from '@utils/tools.address';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 
-import {Avatar} from './Avatar';
 import {LinksPart} from './LinksPart';
 
 import type {ReactElement} from 'react';
 
 export function ProfilePart(): ReactElement {
 	const {address, ens} = useWeb3();
-	const {data: ensAvatar} = useEnsAvatar({name: ens, chainId: 1});
 	const {openTokenListModal} = useTokenList();
 
 	return (
 		<div className={'relative col-span-8 flex flex-col'}>
 			<div className={'ml-0 mt-2 flex flex-row items-center space-x-2 md:-ml-2 md:mt-0 md:space-x-4'}>
-				<Avatar
-					address={toAddress(address)}
-					src={ensAvatar}
-				/>
 				<span>
 					<h1
 						suppressHydrationWarning
