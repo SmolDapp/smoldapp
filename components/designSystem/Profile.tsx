@@ -30,13 +30,13 @@ export function ProfileAvatar(props: {src: string | null | undefined; isLoading:
 	}, [props.src]);
 
 	if (props.isLoading) {
-		return <div className={'h-10 w-10 min-w-[40px] animate-pulse rounded-full bg-neutral-300'} />;
+		return <div className={'skeleton-full h-10 w-10 min-w-[40px]'} />;
 	}
 	if (!hasAvatar) {
 		return <div className={'h-10 w-10 min-w-[40px] rounded-full bg-neutral-200'} />;
 	}
 	return (
-		<div className={'h-10 w-10 min-w-[40px] rounded-full bg-neutral-100'}>
+		<div className={'h-10 w-10 min-w-[40px] rounded-full bg-neutral-200'}>
 			<Image
 				className={'animate-fadeIn rounded-full'}
 				unoptimized
@@ -60,8 +60,8 @@ export function ProfileAddress(props: {
 	if (!isMounted() || props.isConnecting) {
 		return (
 			<div className={'grid w-full gap-2'}>
-				<div className={'h-4 w-full animate-pulse rounded-lg bg-neutral-300'} />
-				<div className={'h-4 w-2/3 animate-pulse rounded-lg bg-neutral-300'} />
+				<div className={'skeleton-lg h-4 w-full'} />
+				<div className={'skeleton-lg h-4 w-2/3'} />
 			</div>
 		);
 	}
@@ -74,11 +74,11 @@ export function ProfileAddress(props: {
 			<Tooltip.Provider delayDuration={250}>
 				<Tooltip.Root>
 					<Tooltip.Trigger className={'flex w-fit items-center gap-1'}>
-						<p className={'text-xs text-neutral-400'}>{safeAddress({address: props.address})}</p>
+						<small>{safeAddress({address: props.address})}</small>
 					</Tooltip.Trigger>
 					<TooltipContent
 						side={'right'}
-						className={'TooltipContent bg-primary-500 !p-0'}>
+						className={'TooltipContent bg-primary !p-0'}>
 						<button
 							onClick={() => copyToClipboard(toAddress(props.address))}
 							className={'flex cursor-copy px-2 py-1.5'}>
@@ -87,7 +87,7 @@ export function ProfileAddress(props: {
 							</small>
 						</button>
 						<Tooltip.Arrow
-							className={'fill-primary-500'}
+							className={'fill-primary'}
 							width={11}
 							height={5}
 						/>
@@ -160,22 +160,22 @@ export function NetworkSelector(): ReactElement {
 					aria-expanded={isOpen}
 					className={cl(
 						'flex w-full items-center justify-between rounded-lg p-2',
-						'bg-neutral-100 hover:bg-neutral-200 transition-colors'
+						'bg-neutral-200 hover:bg-neutral-300 transition-colors'
 					)}>
 					<p className={'truncate text-xs'}>
 						{isMounted() && currentNetwork?.label ? currentNetwork?.label : 'Select chain...'}
 					</p>
-					<IconChevron className={'h-4 w-4 rotate-90 text-neutral-900'} />
+					<IconChevron className={'h-4 w-4 rotate-90'} />
 				</button>
 			</Popover.Trigger>
 
 			<Popover.Content
 				style={{boxShadow: 'rgba(36, 40, 51, 0.08) 0px 0px 20px 8px'}}
-				className={'PopoverContent z-10 rounded-lg bg-primary-0 p-0'}>
+				className={'PopoverContent z-10 rounded-lg bg-neutral-0 p-0'}>
 				<Command>
 					<CommandInput placeholder={'Search chain...'} />
 					<CommandEmpty>{'No chain found.'}</CommandEmpty>
-					<CommandGroup>
+					<CommandGroup className={'max-h-48 overflow-y-auto'}>
 						{supportedNetworks.map(network => (
 							<CommandItem
 								key={network.value}
@@ -191,7 +191,6 @@ export function NetworkSelector(): ReactElement {
 									const chain = supportedNetworks.find(
 										network => network.label.toLowerCase() === selectedNetwork
 									);
-									console.warn(supportedNetworks, selectedNetwork, chain);
 									onSwitchChain(chain?.value || 1);
 									set_isOpen(false);
 								}}>
@@ -222,14 +221,14 @@ export function CoinBalance(): ReactElement {
 	if (!isMounted()) {
 		return (
 			<div>
-				<small className={'text-xxs'}>{'Coin'}</small>
-				<div className={'h-8 w-2/3 animate-pulse rounded-md bg-neutral-100'} />
+				<small>{'Coin'}</small>
+				<div className={'skeleton-lg h-8 w-2/3'} />
 			</div>
 		);
 	}
 	return (
 		<div>
-			<small className={'text-xxs'}>{currentChain.symbol || 'ETH'}</small>
+			<small>{currentChain.symbol || 'ETH'}</small>
 			<strong>
 				<Counter
 					className={'text-base leading-8'}
@@ -247,17 +246,17 @@ export function ConnectProfile(): ReactElement {
 	return (
 		<section
 			className={cl(
-				'h-36 rounded-lg bg-primary-500',
+				'h-[145px] rounded-lg bg-primary',
 				'px-10 pb-6 pt-5',
 				'flex flex-col justify-center items-center'
 			)}>
-			<div className={'mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-primary-0/60'}>
-				<IconWallet className={'h-6 w-6 text-neutral-400'} />
+			<div className={'mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-neutral-0/60'}>
+				<IconWallet className={'h-6 w-6 text-neutral-600'} />
 			</div>
 			<div className={'w-full'}>
 				<button
 					onClick={onConnect}
-					className={'h-8 w-full rounded-lg bg-neutral-0 transition-colors hover:bg-neutral-100'}>
+					className={'h-8 w-full rounded-lg bg-neutral-0 transition-colors hover:bg-neutral-200'}>
 					{'Connect Wallet'}
 				</button>
 			</div>
@@ -276,11 +275,11 @@ export function NavProfile(): ReactElement {
 		<section className={'p-4'}>
 			<Profile />
 
-			<hr className={'mb-2 mt-4 text-neutral-50'} />
+			<hr className={'mb-2 mt-4 text-neutral-200'} />
 
 			<div className={'grid grid-cols-2 gap-6'}>
 				<div>
-					<small className={'text-xxs'}>{'Chain'}</small>
+					<small>{'Chain'}</small>
 					<NetworkSelector />
 				</div>
 				<CoinBalance />

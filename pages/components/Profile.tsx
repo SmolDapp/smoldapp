@@ -32,7 +32,7 @@ function NavProfileDemo(props: TNavProfileDemoProps): ReactElement {
 				/>
 			</div>
 
-			<hr className={'mb-2 mt-4 text-neutral-50'} />
+			<hr className={'mb-2 mt-4 text-neutral-200'} />
 
 			<div className={'grid grid-cols-2 gap-6'}>
 				<div>
@@ -42,7 +42,7 @@ function NavProfileDemo(props: TNavProfileDemoProps): ReactElement {
 				<div>
 					<small className={'text-xxs'}>{'Coin'}</small>
 					{props.isConnecting ? (
-						<div className={'mt-1 h-6 w-2/3 animate-pulse rounded-md bg-neutral-100'} />
+						<div className={'skeleton-lg mt-1 h-6 w-2/3'} />
 					) : (
 						<strong className={'text-base leading-8'}>{'0.00000'}</strong>
 					)}

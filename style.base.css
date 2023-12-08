@@ -15,7 +15,7 @@ h6 {
 	@apply text-base font-bold text-neutral-700;
 }
 small {
-	@apply text-xs font-normal text-neutral-600 leading-tight block;
+	@apply text-xxs font-normal text-neutral-600 block;
 }
 #__next {
 	@apply w-full h-full;
@@ -252,4 +252,11 @@ select:focus {
 .TooltipContent[data-state='closed'],
 .PopoverContent[data-state='closed'] {
 	animation: fadeOut 100ms ease-in;
+}
+
+.skeleton-lg {
+	@apply animate-pulse rounded-lg bg-neutral-300;
+}
+.skeleton-full {
+	@apply animate-pulse rounded-full bg-neutral-300;
 }
