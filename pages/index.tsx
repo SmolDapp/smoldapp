@@ -2,6 +2,7 @@ import React, {Fragment} from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import LogoDisperse from '@disperse/Logo';
+import {LogoTokenAssets} from '@icons/LogoTokenAssets';
 import LogoMigratooor from '@migratooor/Logo';
 import LogoNFTMigratooor from '@nftmigratooor/Logo';
 import LogoSafeCreator from '@safeCreatooor/Logo';
@@ -134,6 +135,20 @@ const apps = [
 			</span>
 		),
 		icon: <LogoTokenlistooor className={'h-[80px] w-[80px]'} />
+	},
+	{
+		href: '/tokenlistooor/smolAssets',
+		title: 'Token Assets',
+		description: (
+			<span>
+				{'A simple way to get '}
+				<span className={'font-semibold text-primary-500 transition-colors group-hover:text-primary-0'}>
+					{'token logos'}
+				</span>
+				{'. Noice.'}
+			</span>
+		),
+		icon: <LogoTokenAssets className={'h-[80px] w-[80px]'} />
 	}
 ];
 

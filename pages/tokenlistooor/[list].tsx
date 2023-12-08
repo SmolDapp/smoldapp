@@ -10,9 +10,12 @@ import {SUPPORTED_CHAIN_IDS} from 'utils/constants';
 import {motion} from 'framer-motion';
 import {MigratooorContextApp} from '@migratooor/useMigratooor';
 import {useMountEffect} from '@react-hookz/web';
+import {DownloadAssetButton} from '@tokenlistooor/DownloadAssetButton';
 import {Button} from '@yearn-finance/web-lib/components/Button';
+import {toast} from '@yearn-finance/web-lib/components/yToast';
 import {IconSocialGithub} from '@yearn-finance/web-lib/icons/IconSocialGithub';
 import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
+import {EmptyListMessage} from '@common/EmptyListMessage';
 import {ImageWithFallback} from '@common/ImageWithFallback';
 
 import type {Variants} from 'framer-motion';
@@ -115,6 +118,7 @@ function TokenListHero({list}: {list: TTokenListItem}): ReactElement {
 }
 
 function TokenListItem({item}: {item: TTokenListItem['tokens'][0]}): ReactElement {
+	const router = useRouter();
 	const currentNetwork = useMemo((): TExtendedChain => {
 		try {
 			return getNetwork(item.chainId);
@@ -123,9 +127,20 @@ function TokenListItem({item}: {item: TTokenListItem['tokens'][0]}): ReactElemen
 		}
 	}, [item.chainId]);
 
+	const isLogoInAssetLists = item.logoURI.includes('assets.smold.app');
+	const isSmolAssetsPage = router.query.list === 'smolAssets';
+	const shouldDisplayDownloadButtons = isLogoInAssetLists && isSmolAssetsPage;
+
+	const downloadAssetCommonParams = {
+		address: item.address,
+		chainId: item.chainId,
+		fileName: item.symbol,
+		onSuccess: () => toast({type: 'success', content: `Succesfully dowloaded ${item.symbol} asset`})
+	};
+
 	return (
 		<div className={'grid w-full grid-cols-12 items-center gap-4'}>
-			<div className={'col-span-12 flex flex-row items-center space-x-6 md:col-span-8'}>
+			<div className={'col-span-12 flex flex-row items-center space-x-6 md:col-span-10'}>
 				<ImageWithFallback
 					alt={`${item.address}_${item.name}_${item.symbol}`}
 					width={40}
@@ -139,25 +154,42 @@ function TokenListItem({item}: {item: TTokenListItem['tokens'][0]}): ReactElemen
 						{item.name}
 						<span className={'text-xs text-neutral-600'}>{` - (${item.symbol})`}</span>
 					</p>
-					<span
+					<div
 						className={
-							'font-number mt-2 block !font-mono text-xxs text-neutral-600 transition-colors md:text-xs'
+							'font-number mt-2 flex flex-col flex-wrap content-around gap-1 !font-mono text-xxs text-neutral-600 transition-colors md:flex-row md:items-center md:gap-6 md:text-xs'
 						}>
-						<a
-							href={`${currentNetwork?.blockExplorers?.etherscan?.url || 'https://etherscan.io'}/token/${
-								item.address
-							}`}
-							target={'_blank'}
-							rel={'noreferrer'}
-							className={'font-mono hover:text-neutral-900 hover:underline'}>
-							{item.address}
-						</a>
-						{` • ${item.decimals} decimals`}
-					</span>
+						<span>
+							<a
+								href={`${
+									currentNetwork?.blockExplorers?.etherscan?.url || 'https://etherscan.io'
+								}/token/${item.address}`}
+								target={'_blank'}
+								rel={'noreferrer'}
+								className={'font-mono hover:text-neutral-900 hover:underline'}>
+								{item.address}
+							</a>
+							{` • ${item.decimals} decimals`}
+						</span>
+						{isLogoInAssetLists && shouldDisplayDownloadButtons && (
+							<div className={'flex items-center gap-2'}>
+								{'Icon: '}
+								<div className={'flex gap-1'}>
+									<DownloadAssetButton
+										{...downloadAssetCommonParams}
+										type={'png'}
+									/>
+									<DownloadAssetButton
+										{...downloadAssetCommonParams}
+										type={'svg'}
+									/>
+								</div>
+							</div>
+						)}
+					</div>
 				</div>
 			</div>
 
-			<div className={'col-span-12 flex justify-end text-right md:col-span-4'}>
+			<div className={'col-span-12 flex justify-end text-right md:col-span-2'}>
 				<div>
 					<p className={'block text-xxs text-neutral-700 md:text-xs'}>{'Chain'}</p>
 					<b>{currentNetwork?.name || `Chain ${item.chainId}`}</b>
@@ -173,7 +205,6 @@ function TokenListContent({list}: {list: TTokenListItem}): ReactElement {
 	const [itemsPerPage] = useState(50);
 	const [search, set_search] = useState('');
 	const [network, set_network] = useState(-1);
-
 	useMountEffect((): void => {
 		const {query} = router;
 		if (query?.page) {
@@ -216,6 +247,24 @@ function TokenListContent({list}: {list: TTokenListItem}): ReactElement {
 				);
 			});
 	}, [list.tokens, search, network]);
+
+	const isSearchResultEmpty = searchResult.length === 0;
+	const isSmolAssetsPage = router.query.list === 'smolAssets';
+	const emptyListMessage = "Oh no! Looks like we don't have that token in stock.";
+	const smolEmptyListMessage = (
+		<span>
+			<br />
+			<span>{'Want to add it? Submit a pull request with the token contract and logo on the '}</span>
+			<Link
+				className={'font-semibold text-black hover:underline'}
+				target={'_blank'}
+				href={'https://github.com/SmolDapp/tokenLists/tree/main'}>
+				{'repo'}
+			</Link>
+
+			<span>{" and we'll get it added for you. Teamwork!"}</span>
+		</span>
+	);
 
 	return (
 		<div className={'mx-auto grid w-full max-w-5xl pb-32'}>
@@ -284,17 +333,25 @@ function TokenListContent({list}: {list: TTokenListItem}): ReactElement {
 				className={
 					'grid grid-cols-1 divide-y divide-neutral-100 rounded-md border border-neutral-200 bg-neutral-0 md:grid-cols-1'
 				}>
-				{searchResult.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(
-					(item): ReactElement => (
-						<motion.div
-							key={`${item.address}_${item.chainId}`}
-							custom={0}
-							initial={'initial'}
-							whileInView={'enter'}
-							variants={variants as Variants}
-							className={'relative flex w-full p-4 transition-colors hover:bg-neutral-50/40 md:p-6'}>
-							<TokenListItem item={item} />
-						</motion.div>
+				{isSearchResultEmpty ? (
+					<div className={'px-10'}>
+						<EmptyListMessage>
+							{emptyListMessage} {isSmolAssetsPage && smolEmptyListMessage}
+						</EmptyListMessage>
+					</div>
+				) : (
+					searchResult.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(
+						(item): ReactElement => (
+							<motion.div
+								key={`${item.address}_${item.chainId}`}
+								custom={0}
+								initial={'initial'}
+								whileInView={'enter'}
+								variants={variants as Variants}
+								className={'relative flex w-full p-4 transition-colors hover:bg-neutral-50/40 md:p-6'}>
+								<TokenListItem item={item} />
+							</motion.div>
+						)
 					)
 				)}
 			</div>
@@ -356,7 +413,9 @@ function TokenListContent({list}: {list: TTokenListItem}): ReactElement {
 									'text-xs text-neutral-600 transition-all hover:text-neutral-900 hover:underline disabled:text-neutral-400/40'
 								}
 								type={'button'}
-								disabled={currentPage === Math.ceil(searchResult.length / itemsPerPage)}
+								disabled={
+									currentPage === Math.ceil(searchResult.length / itemsPerPage) || isSearchResultEmpty
+								}
 								onClick={(): void => {
 									set_currentPage(currentPage + 1);
 									window.scrollTo({top: 0, behavior: 'smooth'});
@@ -377,7 +436,9 @@ function TokenListContent({list}: {list: TTokenListItem}): ReactElement {
 								'cursor-pointer text-xs text-neutral-600 transition-all hover:text-neutral-900 hover:underline disabled:text-neutral-400/40'
 							}
 							type={'button'}
-							disabled={currentPage === Math.ceil(searchResult.length / itemsPerPage)}
+							disabled={
+								currentPage === Math.ceil(searchResult.length / itemsPerPage) || isSearchResultEmpty
+							}
 							onClick={(): void => {
 								set_currentPage(Math.ceil(searchResult.length / itemsPerPage));
 								window.scrollTo({top: 0, behavior: 'smooth'});
