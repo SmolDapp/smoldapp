@@ -1,5 +1,5 @@
 import React from 'react';
-import {Inter, Source_Code_Pro} from 'next/font/google';
+import {Rubik, Source_Code_Pro} from 'next/font/google';
 import {TokenListContextApp} from 'contexts/useTokenList';
 import {WalletContextApp} from 'contexts/useWallet';
 import {SafeProvider} from '@gnosis.pm/safe-apps-react-sdk';
@@ -16,11 +16,11 @@ import type {ReactElement} from 'react';
 
 import '../style.css';
 
-const inter = Inter({
+const rubik = Rubik({
 	weight: ['400', '500', '600', '700'],
 	subsets: ['latin'],
 	display: 'swap',
-	variable: '--inter-font'
+	variable: '--rubik-font'
 });
 
 const sourceCodePro = Source_Code_Pro({
@@ -40,7 +40,7 @@ function MyApp(props: AppProps): ReactElement {
 				global>
 				{`
 					html {
-						font-family: ${inter.style.fontFamily}, ${sourceCodePro.style.fontFamily};
+						font-family: ${rubik.style.fontFamily}, ${sourceCodePro.style.fontFamily};
 					}
 				`}
 			</style>
@@ -50,7 +50,7 @@ function MyApp(props: AppProps): ReactElement {
 						<SafeProvider>
 							<main
 								id={'app'}
-								className={`flex flex-col ${inter.variable} ${sourceCodePro.variable}`}>
+								className={`flex flex-col ${rubik.variable} ${sourceCodePro.variable}`}>
 								<AppWrapper {...props} />
 							</main>
 							{!shouldHidePopover && <FeebackPopover />}

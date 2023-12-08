@@ -210,7 +210,7 @@ function ComboboxAddressInput({possibleValues, value, onChangeValue, onAddValue}
 						}>
 						<Combobox.Input
 							className={
-								'font-inter w-full cursor-default overflow-x-scroll border-none bg-transparent p-0 outline-none scrollbar-none'
+								'font-rubik w-full cursor-default overflow-x-scroll border-none bg-transparent p-0 outline-none scrollbar-none'
 							}
 							displayValue={(dest: TAddress): string => possibleValues?.[toAddress(dest)]?.symbol || ''}
 							placeholder={'0x...'}
