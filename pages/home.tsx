@@ -17,7 +17,7 @@ const apps = [
 		description: (
 			<span>
 				{'One address, all the chains. Deploy your Safe across '}
-				<span className={'font-semibold text-primary-500 transition-colors group-hover:text-primary-0'}>
+				<span className={'text-primary-500 font-semibold transition-colors group-hover:text-neutral-0'}>
 					{'multiple chains'}
 				</span>
 				{'.'}
@@ -30,7 +30,7 @@ const apps = [
 		title: 'Disperse',
 		description: (
 			<span>
-				<span className={'font-semibold text-primary-500 transition-colors group-hover:text-primary-0'}>
+				<span className={'text-primary-500 font-semibold transition-colors group-hover:text-neutral-0'}>
 					{'Distribute'}
 				</span>
 				{' ether or tokens to multiple addresses.'}
@@ -44,7 +44,7 @@ const apps = [
 		description: (
 			<span>
 				{'The easiest way to '}
-				<span className={'font-semibold text-primary-500 transition-colors group-hover:text-primary-0'}>
+				<span className={'text-primary-500 font-semibold transition-colors group-hover:text-neutral-0'}>
 					{'donate'}
 				</span>
 				{' to the crypto projects you love.'}
@@ -64,7 +64,7 @@ const apps = [
 		title: 'Dump Services',
 		description: (
 			<span>
-				<span className={'font-semibold text-primary-500 transition-colors group-hover:text-primary-0'}>
+				<span className={'text-primary-500 font-semibold transition-colors group-hover:text-neutral-0'}>
 					{'Dump'}
 				</span>
 				{' your tokens like a pro'}
@@ -85,7 +85,7 @@ const apps = [
 		description: (
 			<span>
 				{'The hassle-free solution to '}
-				<span className={'font-semibold text-primary-500 transition-colors group-hover:text-primary-0'}>
+				<span className={'text-primary-500 font-semibold transition-colors group-hover:text-neutral-0'}>
 					{'migrate'}
 				</span>
 				{' your tokens.'}
@@ -99,7 +99,7 @@ const apps = [
 		description: (
 			<span>
 				{'Easily '}
-				<span className={'font-semibold text-primary-500 transition-colors group-hover:text-primary-0'}>
+				<span className={'text-primary-500 font-semibold transition-colors group-hover:text-neutral-0'}>
 					{'migrate your NFTs'}
 				</span>
 				{' to your new wallet.'}
@@ -113,7 +113,7 @@ const apps = [
 		description: (
 			<span>
 				{'An up to date automatic '}
-				<span className={'font-semibold text-primary-500 transition-colors group-hover:text-primary-0'}>
+				<span className={'text-primary-500 font-semibold transition-colors group-hover:text-neutral-0'}>
 					{'tokenList'}
 				</span>
 				{' for your dApp.'}

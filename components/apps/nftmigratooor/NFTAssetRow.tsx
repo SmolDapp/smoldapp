@@ -60,8 +60,8 @@ const NFTAsset = memo(function NFTAsset(props: TNFTAssetProps): ReactElement {
 		<div
 			role={'button'}
 			onClick={(): void => onSelect(nft)}
-			className={`group relative grid w-full grid-cols-1 border-y-0 border-l-2 border-r-0 border-solid border-neutral-200 px-4 py-2 text-left transition-colors hover:bg-neutral-50/50 md:grid-cols-9 md:px-6 md:pl-16 ${
-				isSelected ? 'border-primary-600 bg-neutral-50/50' : 'border-transparent'
+			className={`hover:bg-neutral-50/50 group relative grid w-full grid-cols-1 border-y-0 border-l-2 border-r-0 border-solid border-neutral-200 px-4 py-2 text-left transition-colors md:grid-cols-9 md:px-6 md:pl-16 ${
+				isSelected ? 'bg-neutral-50/50 border-primary' : 'border-transparent'
 			}`}>
 			<div className={'col-span-5 mb-2 flex h-14 flex-row items-center justify-between py-4 md:mb-0 md:py-0'}>
 				<div className={'flex flex-row items-center space-x-4 md:space-x-6'}>
@@ -103,7 +103,7 @@ const NFTAsset = memo(function NFTAsset(props: TNFTAssetProps): ReactElement {
 							}/${nft.tokenID}`}
 							onClick={(e): void => e.stopPropagation()}
 							className={
-								'flex cursor-pointer flex-row items-center space-x-2 text-neutral-500 transition-colors hover:text-neutral-900 hover:underline'
+								'text-neutral-500 flex cursor-pointer flex-row items-center space-x-2 transition-colors hover:text-neutral-900 hover:underline'
 							}>
 							<p className={'font-mono text-xs'}>{truncateHex(nft.collection.address, 6)}</p>
 							<IconLinkOut className={'h-3 w-3'} />

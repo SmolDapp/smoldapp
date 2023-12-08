@@ -1,6 +1,5 @@
 import React from 'react';
 import {Inter, Source_Code_Pro} from 'next/font/google';
-import {BaseLayout} from 'components/sections/Header/layout';
 import {TokenListContextApp} from 'contexts/useTokenList';
 import {WalletContextApp} from 'contexts/useWallet';
 import {SUPPORTED_CHAINS} from 'utils/constants';
@@ -9,6 +8,7 @@ import {useLocalStorageValue} from '@react-hookz/web';
 import {Analytics} from '@vercel/analytics/react';
 import {WithYearn} from '@yearn-finance/web-lib/contexts/WithYearn';
 import {localhost} from '@yearn-finance/web-lib/utils/wagmi/networks';
+import AppWrapper from '@common/AppWrapper';
 import {FeebackPopover} from '@common/FeebackPopover';
 
 import type {AppProps} from 'next/app';
@@ -51,7 +51,7 @@ function MyApp(props: AppProps): ReactElement {
 							<main
 								id={'app'}
 								className={`flex flex-col ${inter.variable} ${sourceCodePro.variable}`}>
-								<BaseLayout {...props} />
+								<AppWrapper {...props} />
 							</main>
 							{!shouldHidePopover && <FeebackPopover />}
 						</SafeProvider>
