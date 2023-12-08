@@ -20,7 +20,7 @@ import type {TChainContract, TExtendedChain} from '@yearn-finance/web-lib/utils/
 
 export const supportedNetworks = [
 	mainnet,
-	optimism,
+	{...optimism, name: 'Optimism'},
 	bsc,
 	gnosis,
 	polygon,
