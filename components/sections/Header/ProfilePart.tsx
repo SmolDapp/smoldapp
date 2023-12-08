@@ -3,9 +3,9 @@
 import React from 'react';
 import {useTokenList} from 'contexts/useTokenList';
 import {useEnsAvatar} from 'wagmi';
+import {toAddress, truncateHex} from '@utils/tools.address';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
-import {toAddress, truncateHex} from '@yearn-finance/web-lib/utils/address';
 
 import {Avatar} from './Avatar';
 import {LinksPart} from './LinksPart';

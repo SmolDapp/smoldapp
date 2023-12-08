@@ -4,8 +4,8 @@ import React, {createContext, useCallback, useContext, useMemo, useState} from '
 import {useAsyncTrigger} from 'hooks/useAsyncTrigger';
 import axios from 'axios';
 import {useLocalStorageValue} from '@react-hookz/web';
+import {toAddress} from '@utils/tools.address';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
-import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import {TokenListHandlerPopover} from '@common/TokenList/TokenListHandlerPopover';
 

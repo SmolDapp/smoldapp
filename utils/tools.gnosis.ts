@@ -1,5 +1,5 @@
 import abiCoder from 'web3-eth-abi';
-import {toAddress} from '@yearn-finance/web-lib/utils/address';
+import {toAddress} from '@utils/tools.address';
 import {ETH_TOKEN_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
 
 import type {AbiCoder} from 'web3-eth-abi';

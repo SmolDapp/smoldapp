@@ -3,8 +3,8 @@ import {checkENSValidity} from 'utils/tools.ens';
 import {checkLensValidity} from 'utils/tools.lens';
 import {IconCircleCheck} from '@icons/IconCircleCheck';
 import {IconCircleCross} from '@icons/IconCircleCross';
+import {isZeroAddress, toAddress} from '@utils/tools.address';
 import {IconLoader} from '@yearn-finance/web-lib/icons/IconLoader';
-import {isZeroAddress, toAddress} from '@yearn-finance/web-lib/utils/address';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
 import {ZERO_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
 

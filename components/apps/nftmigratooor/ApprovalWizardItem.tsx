@@ -6,7 +6,7 @@ import {IconSpinner} from 'components/icons/IconSpinner';
 import {ETHEREUM_ENS_ADDRESS} from 'utils/constants';
 import {useNetwork} from 'wagmi';
 import {useNFTMigratooor} from '@nftmigratooor/useNFTMigratooor';
-import {toAddress, truncateHex} from '@yearn-finance/web-lib/utils/address';
+import {toAddress, truncateHex} from '@utils/tools.address';
 
 import type {ReactElement} from 'react';
 import type {TApprovalStatus, TNFT, TWizardStatus} from 'utils/types/nftMigratooor';
@@ -61,7 +61,7 @@ function ApprovalWizardItem({
 					href={`${chain?.blockExplorers?.default?.url || 'https://etherscan.io'}/tx/${
 						collectionStatus.receipt.transactionHash
 					}`}
-					className={'text-xs text-neutral-500 transition-colors hover:text-neutral-900 hover:underline'}
+					className={'text-neutral-500 text-xs transition-colors hover:text-neutral-900 hover:underline'}
 					target={'_blank'}
 					rel={'noreferrer'}>
 					{`See transaction: ${truncateHex(collectionStatus.receipt.transactionHash, 6)}`}
@@ -99,11 +99,11 @@ function ApprovalWizardItem({
 					</div>
 					<div className={'absolute right-2 top-2 px-2'}>
 						<IconChevronBoth
-							className={'h-4 w-4 text-neutral-500 transition-colors group-hover:text-neutral-900'}
+							className={'text-neutral-500 h-4 w-4 transition-colors group-hover:text-neutral-900'}
 						/>
 					</div>
 				</summary>
-				<div className={'font-number mt-2 space-y-2 rounded-md bg-neutral-100 text-sm'}>
+				<div className={'font-number bg-neutral-100 mt-2 space-y-2 rounded-md text-sm'}>
 					<ul className={'list-inside list-disc px-4 py-2'}>
 						{collection.map(
 							(item): ReactElement => (
@@ -145,11 +145,11 @@ function ApprovalWizardItem({
 					</div>
 					<div className={'absolute right-2 top-2 px-2'}>
 						<IconChevronBoth
-							className={'h-4 w-4 text-neutral-500 transition-colors group-hover:text-neutral-900'}
+							className={'text-neutral-500 h-4 w-4 transition-colors group-hover:text-neutral-900'}
 						/>
 					</div>
 				</summary>
-				<div className={'font-number mt-2 space-y-2 rounded-md bg-neutral-100 text-sm'}>
+				<div className={'font-number bg-neutral-100 mt-2 space-y-2 rounded-md text-sm'}>
 					<ul className={'list-inside list-disc px-4 py-2'}>
 						{collection.map(
 							(item): ReactElement => (

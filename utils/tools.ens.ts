@@ -1,7 +1,7 @@
 import {gql, request} from 'graphql-request';
 import {isAddress, toHex} from 'viem';
+import {toAddress} from '@utils/tools.address';
 import {fetchEnsAddress} from '@wagmi/core';
-import {toAddress} from '@yearn-finance/web-lib/utils/address';
 
 import type {TAddress} from '@yearn-finance/web-lib/types';
 

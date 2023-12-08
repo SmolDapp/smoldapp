@@ -5,11 +5,11 @@ import {useConnect, usePublicClient} from 'wagmi';
 import {Listbox, Transition} from '@headlessui/react';
 import {useAccountModal, useChainModal} from '@rainbow-me/rainbowkit';
 import {useIsMounted} from '@react-hookz/web';
+import {truncateHex} from '@utils/tools.address';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {toSafeChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {IconChevronBottom} from '@yearn-finance/web-lib/icons/IconChevronBottom';
 import {IconWallet} from '@yearn-finance/web-lib/icons/IconWallet';
-import {truncateHex} from '@yearn-finance/web-lib/utils/address';
 
 import type {ReactElement} from 'react';
 import type {Chain} from 'wagmi';
@@ -29,7 +29,7 @@ function NetworkButton({
 			onClick={onClick}
 			suppressHydrationWarning
 			className={
-				'yearn--header-nav-item mr-4 hidden !cursor-default flex-row items-center border-0 p-0 text-sm hover:!text-neutral-500 md:flex'
+				'yearn--header-nav-item hover:!text-neutral-500 mr-4 hidden !cursor-default flex-row items-center border-0 p-0 text-sm md:flex'
 			}>
 			<div
 				suppressHydrationWarning
@@ -133,7 +133,7 @@ export function NetworkSelector({networks}: {networks: number[]}): ReactElement 
 
 	if (!isMounted() || !currentNetwork) {
 		<div className={'relative z-50 mr-4'}>
-			<div className={'h-10 w-full animate-pulse bg-neutral-100'} />
+			<div className={'bg-neutral-100 h-10 w-full animate-pulse'} />
 		</div>;
 	}
 
@@ -178,7 +178,7 @@ export function NetworkSelector({networks}: {networks: number[]}): ReactElement 
 										}>
 										<div
 											className={
-												'w-fit border border-neutral-300 bg-neutral-100 p-1 px-2 text-center text-xxs text-neutral-900'
+												'bg-neutral-100 w-fit border border-neutral-300 p-1 px-2 text-center text-xxs text-neutral-900'
 											}>
 											{supportedNetworks.map(
 												(network): ReactElement => (

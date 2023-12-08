@@ -8,9 +8,9 @@ import {isAddress} from 'viem';
 import {erc20ABI} from 'wagmi';
 import {Combobox, Transition} from '@headlessui/react';
 import {useAsync, useThrottledState} from '@react-hookz/web';
+import {toAddress} from '@utils/tools.address';
 import {multicall} from '@wagmi/core';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
-import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {decodeAsNumber, decodeAsString} from '@yearn-finance/web-lib/utils/decoder';
 import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
@@ -48,7 +48,7 @@ function Element(props: TElement): ReactElement {
 			<div className={'flex flex-col font-sans text-neutral-900'}>
 				<div className={'flex flex-row items-center'}>
 					{props.symbol}
-					<p className={'font-number pl-2 text-xxs text-neutral-500'}>
+					<p className={'font-number text-neutral-500 pl-2 text-xxs'}>
 						{` - ${formatAmount(props.balanceNormalized, 6, props.decimals)}`}
 					</p>
 				</div>
@@ -225,7 +225,7 @@ function ComboboxAddressInput({possibleValues, value, onChangeValue, onAddValue}
 					</p>
 					<small
 						suppressHydrationWarning
-						className={'font-number -mt-1 text-xxs text-neutral-500'}>
+						className={'font-number text-neutral-500 -mt-1 text-xxs'}>
 						{query === ''
 							? `Available: ${formatAmount(
 									balances?.[toAddress(value)]?.normalized || 0,
@@ -263,14 +263,14 @@ function ComboboxAddressInput({possibleValues, value, onChangeValue, onAddValue}
 							<div className={'absolute right-8'}>
 								<IconSpinner
 									className={
-										'h-4 w-4 text-neutral-500 transition-colors group-hover:text-neutral-900'
+										'text-neutral-500 h-4 w-4 transition-colors group-hover:text-neutral-900'
 									}
 								/>
 							</div>
 						)}
 						<div className={'absolute right-2 md:right-3'}>
 							<IconChevronBoth
-								className={'h-4 w-4 text-neutral-500 transition-colors group-hover:text-neutral-900'}
+								className={'text-neutral-500 h-4 w-4 transition-colors group-hover:text-neutral-900'}
 							/>
 						</div>
 					</Combobox.Button>
@@ -289,7 +289,7 @@ function ComboboxAddressInput({possibleValues, value, onChangeValue, onAddValue}
 								'box-0 absolute left-0 z-50 mt-1 flex max-h-60 w-full min-w-fit flex-col overflow-y-auto scrollbar-none'
 							}>
 							{filteredValues.length === 0 && query !== '' && !tokenData ? (
-								<div className={'relative cursor-default select-none px-4 py-2 text-neutral-500'}>
+								<div className={'text-neutral-500 relative cursor-default select-none px-4 py-2'}>
 									{'No token found.'}
 								</div>
 							) : filteredValues.length === 0 && query !== '' && tokenData ? (

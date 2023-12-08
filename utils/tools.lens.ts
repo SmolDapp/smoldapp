@@ -1,5 +1,5 @@
 import {isAddress} from 'viem';
-import {toAddress} from '@yearn-finance/web-lib/utils/address';
+import {toAddress} from '@utils/tools.address';
 import {lensProtocolFetcher} from '@yearn-finance/web-lib/utils/fetchers';
 
 import type {TAddress} from '@yearn-finance/web-lib/types';

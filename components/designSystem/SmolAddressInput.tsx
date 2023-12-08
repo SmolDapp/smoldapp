@@ -3,11 +3,10 @@ import {getEnsName} from 'viem/ens';
 import {IconAddressBook} from '@icons/IconAddressBook';
 import {IconChevron} from '@icons/IconChevron';
 import {useAsyncAbortable} from '@react-hookz/web';
-import {isAddress} from '@utils/tools.address';
+import {isAddress, toAddress, truncateHex} from '@utils/tools.address';
 import {checkENSValidity} from '@utils/tools.ens';
 import {checkLensValidity} from '@utils/tools.lens';
 import {getPublicClient} from '@wagmi/core';
-import {toAddress, truncateHex} from '@yearn-finance/web-lib/utils/address';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
 import {defaultInputAddressLike} from '@common/AddressInput';
 
@@ -83,14 +82,10 @@ export function SmolAddressInput(): ReactElement {
 						set_value({address: toAddress(input), label: input, isValid: true});
 						const client = getPublicClient({chainId: 1});
 						const ensName = await getEnsName(client, {address: toAddress(input)});
-						await new Promise(set_value => setTimeout(set_value, 2000));
 						if (signal.aborted) {
 							reject(new Error('Aborted!'));
 						}
-						console.log(ensName);
-						//sleep 2s
 						currentLabel.current = ensName || input;
-						console.warn({address: toAddress(input), label: ensName || input, isValid: true});
 						set_value({address: toAddress(input), label: ensName || input, isValid: true});
 						return resolve();
 					}
@@ -144,14 +139,17 @@ export function SmolAddressInput(): ReactElement {
 							isFocused
 								? currentInput.current // If focused, always display what was last inputed
 								: !isFocused && isAddress(currentLabel.current)
-								? truncateHex(currentLabel.current, 8) // if it's not focused, and it's an address, display the truncated address
-								: !isFocused && !isAddress(currentLabel.current)
-								? currentLabel.current // if it's not focused, and it's not an address, display the label
-								: undefined
+								  ? truncateHex(currentLabel.current, 8) // if it's not focused, and it's an address, display the truncated address
+								  : !isFocused && !isAddress(currentLabel.current)
+								    ? currentLabel.current // if it's not focused, and it's not an address, display the label
+								    : undefined
 						}
 						onChange={e => onChange(e.target.value)}
 						onFocus={() => set_isFocused(true)}
-						onBlur={() => set_isFocused(false)}
+						onBlur={() => {
+							currentInput.current = currentLabel.current;
+							set_isFocused(false);
+						}}
 					/>
 
 					<p

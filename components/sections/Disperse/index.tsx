@@ -4,7 +4,7 @@ import IconSquarePlus from 'components/icons/IconSquarePlus';
 import {newVoidRow, useDisperse} from 'components/sections/Disperse/useDisperse';
 import {useTokensWithBalance} from 'hooks/useTokensWithBalance';
 import {handleInputChangeEventValue} from 'utils/handleInputChangeEventValue';
-import {isZeroAddress, toAddress} from '@yearn-finance/web-lib/utils/address';
+import {isZeroAddress, toAddress} from '@utils/tools.address';
 import {parseUnits, toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import {AddressLikeInput} from '@common/AddressLikeInput';
 import {MultipleTokenSelector} from '@common/TokenInput/TokenSelector';

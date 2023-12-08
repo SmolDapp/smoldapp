@@ -1,4 +1,4 @@
-import {toAddress} from '@yearn-finance/web-lib/utils/address';
+import {toAddress} from '@utils/tools.address';
 
 import type {TAddress, TDict} from '@yearn-finance/web-lib/types';
 import type {TChainContract} from '@yearn-finance/web-lib/utils/wagmi/utils';

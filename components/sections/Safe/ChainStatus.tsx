@@ -7,6 +7,7 @@ import GNOSIS_SAFE_PROXY_FACTORY from 'utils/abi/gnosisSafeProxyFactory.abi';
 import {multicall} from 'utils/actions';
 import {encodeFunctionData, parseEther} from 'viem';
 import {EIP3770_PREFIX} from '@utils/eip-3770';
+import {toAddress} from '@utils/tools.address';
 import {
 	getNetwork as getWagmiNetwork,
 	prepareSendTransaction,
@@ -17,7 +18,6 @@ import {
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import {toast} from '@yearn-finance/web-lib/components/yToast';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
-import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {getClient, getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 import {defaultTxStatus} from '@yearn-finance/web-lib/utils/web3/transaction';
 

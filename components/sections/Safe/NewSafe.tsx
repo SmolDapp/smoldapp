@@ -10,8 +10,8 @@ import {
 } from 'components/sections/Safe/Sections';
 import {useMultiSafe} from 'components/sections/Safe/useSafe';
 import {concat, encodePacked, getContractAddress, hexToBigInt, keccak256, toHex} from 'viem';
+import {isZeroAddress} from '@utils/tools.address';
 import {Button} from '@yearn-finance/web-lib/components/Button';
-import {isZeroAddress} from '@yearn-finance/web-lib/utils/address';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
 
 import {

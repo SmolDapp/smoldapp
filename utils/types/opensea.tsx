@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {toAddress} from '@yearn-finance/web-lib/utils/address';
+import {toAddress} from '@utils/tools.address';
 import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
 
 import type {AxiosResponse} from 'axios';
