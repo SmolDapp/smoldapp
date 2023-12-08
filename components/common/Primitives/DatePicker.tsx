@@ -1,8 +1,8 @@
 import {useState} from 'react';
 import {format, isAfter, isBefore} from 'date-fns';
 import * as Popover from '@radix-ui/react-popover';
-import {Button} from '@yearn-finance/web-lib/components/Button';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
+import {Button} from '@common/Primitives/Button';
 
 import {Calendar} from './Calendar';
 

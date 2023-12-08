@@ -8,13 +8,13 @@ import {isZeroAddress, toAddress} from '@utils/tools.address';
 import {supportedNetworks, supportedTestNetworks} from '@utils/tools.chains';
 import {fetchTransaction} from '@wagmi/core';
 import {AddressLike} from '@yearn-finance/web-lib/components/AddressLike';
-import {Button} from '@yearn-finance/web-lib/components/Button';
 import {Renderable} from '@yearn-finance/web-lib/components/Renderable';
 import {toast} from '@yearn-finance/web-lib/components/yToast';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
 import AddressInput, {defaultInputAddressLike} from '@common/AddressInput';
 import {AddressLikeInput} from '@common/AddressLikeInput';
 import {Label} from '@common/Label';
+import {Button} from '@common/Primitives/Button';
 
 import {newVoidOwner, useMultiSafe} from './useSafe';
 import {CALL_INIT_SIGNATURE, decodeArgInitializers, retrieveSafeTxHash, SINGLETON_L2, SINGLETON_L2_DDP} from './utils';

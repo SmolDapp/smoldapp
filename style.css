@@ -182,12 +182,6 @@
 		@apply transition-colors hover:bg-neutral-200;
 	}
 }
-.box-100 {
-	@apply bg-neutral-200/40 border border-neutral-200/60 rounded-md;
-	&.hover {
-		@apply transition-colors hover:bg-neutral-200;
-	}
-}
 
 .tooltip {
 	@apply relative cursor-help;

@@ -268,7 +268,7 @@ select:focus {
 	&[data-variant='filled'] {
 		@apply text-neutral-900 bg-primary font-normal rounded-lg border border-transparent;
 		&:disabled {
-			@apply bg-primary/40;
+			@apply bg-neutral-600 opacity-40;
 		}
 		&:not(:disabled):not([aria-busy='true']):hover {
 			@apply bg-primary/90;
