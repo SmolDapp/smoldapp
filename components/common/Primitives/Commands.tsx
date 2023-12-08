@@ -28,8 +28,8 @@ export const CommandInput = React.forwardRef<
 			className={cl(
 				'flex h-10 w-full text-sm outline-none',
 				'disabled:cursor-not-allowed disabled:opacity-50',
-				'rounded-lg border !border-neutral-50',
-				'placeholder:text-neutral-400',
+				'rounded-lg border !border-neutral-400',
+				'placeholder:text-neutral-600',
 				className
 			)}
 			{...props}
@@ -45,7 +45,7 @@ export const CommandEmpty = React.forwardRef<
 >((props, ref) => (
 	<CommandPrimitive.Empty
 		ref={ref}
-		className={'pb-4 pt-2 text-center text-xs text-neutral-400'}
+		className={'pb-4 pt-2 text-center text-xs text-neutral-600'}
 		{...props}
 	/>
 ));
@@ -75,7 +75,7 @@ export const CommandItem = React.forwardRef<
 	<CommandPrimitive.Item
 		ref={ref}
 		className={cl(
-			'relative flex cursor-pointer select-none items-center px-2 py-1.5 rounded-lg text-sm outline-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+			'relative flex cursor-pointer select-none items-center px-2 py-1.5 mb-0.5 rounded-lg text-sm outline-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
 			className
 		)}
 		{...props}
