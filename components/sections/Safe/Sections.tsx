@@ -4,7 +4,6 @@ import ChainStatus from 'components/sections/Safe/ChainStatus';
 import IconSquareMinus from '@icons/IconSquareMinus';
 import IconSquarePlus from '@icons/IconSquarePlus';
 import IconWarning from '@icons/IconWarning';
-import {SUPPORTED_CHAINS} from '@utils/constants';
 import {isZeroAddress, toAddress} from '@utils/tools.address';
 import {supportedNetworks, supportedTestNetworks} from '@utils/tools.chains';
 import {fetchTransaction} from '@wagmi/core';
