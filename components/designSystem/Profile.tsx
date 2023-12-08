@@ -2,17 +2,22 @@ import {type ReactElement, useMemo, useState} from 'react';
 import Image from 'next/image';
 import {useAccount, useBalance, useConnect, useEnsAvatar, usePublicClient} from 'wagmi';
 import {IconChevron} from '@icons/IconChevron';
+import {IconWallet} from '@icons/IconWallet';
 import * as Popover from '@radix-ui/react-popover';
+import * as Tooltip from '@radix-ui/react-tooltip';
 import {useIsMounted, useUpdateEffect} from '@react-hookz/web';
-import {safeAddress} from '@utils/tools.address';
+import {isAddress, safeAddress} from '@utils/tools.address';
 import {supportedTestNetworks} from '@utils/tools.chains';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {toSafeChainID, useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
+import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
+import {copyToClipboard} from '@yearn-finance/web-lib/utils/helpers';
 import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 import {Counter} from '@common/Counter';
 import {ImageWithFallback} from '@common/ImageWithFallback';
 import {Command, CommandEmpty, CommandGroup, CommandInput, CommandItem} from '@common/Primitives/Commands';
+import {TooltipContent} from '@common/Primitives/Tooltip';
 
 import type {TAddress} from '@yearn-finance/web-lib/types';
 
@@ -66,7 +71,29 @@ export function ProfileAddress(props: {
 			<b className={'text-base leading-4'}>
 				{safeAddress({address: props.address, ens: props.ens, addrOverride: 'Your Wallet'})}
 			</b>
-			<p className={'text-xs text-neutral-400'}>{safeAddress({address: props.address})}</p>
+			<Tooltip.Provider delayDuration={250}>
+				<Tooltip.Root>
+					<Tooltip.Trigger className={'flex w-fit items-center gap-1'}>
+						<p className={'text-xs text-neutral-400'}>{safeAddress({address: props.address})}</p>
+					</Tooltip.Trigger>
+					<TooltipContent
+						side={'right'}
+						className={'TooltipContent bg-primary-500 !p-0'}>
+						<button
+							onClick={() => copyToClipboard(toAddress(props.address))}
+							className={'flex cursor-copy px-2 py-1.5'}>
+							<small className={'font-number text-xxs text-neutral-900/70'}>
+								{toAddress(props.address)}
+							</small>
+						</button>
+						<Tooltip.Arrow
+							className={'fill-primary-500'}
+							width={11}
+							height={5}
+						/>
+					</TooltipContent>
+				</Tooltip.Root>
+			</Tooltip.Provider>
 		</div>
 	);
 }
@@ -214,7 +241,37 @@ export function CoinBalance(): ReactElement {
 	);
 }
 
+export function ConnectProfile(): ReactElement {
+	const {onConnect} = useWeb3();
+
+	return (
+		<section
+			className={cl(
+				'h-36 rounded-lg bg-primary-500',
+				'px-10 pb-6 pt-5',
+				'flex flex-col justify-center items-center'
+			)}>
+			<div className={'mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-primary-0/60'}>
+				<IconWallet className={'h-6 w-6 text-neutral-400'} />
+			</div>
+			<div className={'w-full'}>
+				<button
+					onClick={onConnect}
+					className={'h-8 w-full rounded-lg bg-neutral-0 transition-colors hover:bg-neutral-100'}>
+					{'Connect Wallet'}
+				</button>
+			</div>
+		</section>
+	);
+}
+
 export function NavProfile(): ReactElement {
+	const {address} = useWeb3();
+
+	if (!isAddress(address)) {
+		return <ConnectProfile />;
+	}
+
 	return (
 		<section className={'p-4'}>
 			<Profile />

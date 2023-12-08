@@ -10,10 +10,7 @@ export const Command = React.forwardRef<
 >(({className, ...props}, ref) => (
 	<CommandPrimitive
 		ref={ref}
-		className={cl(
-			'flex h-full w-full flex-col overflow-hidden rounded-md bg-popover text-popover-foreground',
-			className
-		)}
+		className={cl('flex h-full w-full flex-col overflow-hidden rounded-md', className)}
 		{...props}
 	/>
 ));
