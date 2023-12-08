@@ -46,7 +46,14 @@ module.exports = {
 				mono: ['Source Code Pro', ...defaultTheme.fontFamily.mono]
 			},
 			width: {
-				inherit: 'inherit'
+				inherit: 'inherit',
+				sidebar: '280px',
+				main: '1000px'
+			},
+			maxWidth: {
+				'4xl': '888px',
+				'5xl': '992px',
+				'6xl': '1280px'
 			},
 			fontSize: {
 				xxs: ['10px', '16px'],
@@ -56,14 +63,14 @@ module.exports = {
 				intermediate: ['18px', '24px'],
 				lg: ['20px', '32px'],
 				xl: ['24px', '32px'],
-				'3xl': ['32px', '40px'],
-				'4xl': ['40px', '56px'],
-				'7xl': ['80px', '96px']
+				'3xl': ['32px', '40px']
 			},
-			maxWidth: {
-				xl: '552px',
-				'4xl': '904px',
-				'6xl': '1200px'
+			gridTemplateColumns: {
+				root: 'repeat(32, minmax(0, 1fr))'
+			},
+			gridColumn: {
+				sidebar: 'span 7 / span 7',
+				main: 'span 25 / span 25'
 			}
 		}
 	},
