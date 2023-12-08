@@ -4,7 +4,15 @@ import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
 
 import type {ReactElement} from 'react';
 
-export function Counter({value, decimals = 18}: {value: number; decimals: number}): ReactElement {
+export function Counter({
+	value,
+	decimals = 18,
+	className = 'font-number'
+}: {
+	value: number;
+	decimals: number;
+	className?: string;
+}): ReactElement {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const nodeRef = useRef<any>();
 	const valueRef = useRef(value || 0);
@@ -26,7 +34,7 @@ export function Counter({value, decimals = 18}: {value: number; decimals: number
 
 	return (
 		<span
-			className={'font-number'}
+			className={className}
 			suppressHydrationWarning
 			ref={nodeRef}
 		/>

@@ -1,4 +1,5 @@
-import {ProfileAddress, ProfileAvatar} from 'components/designSystem/Profile';
+import {NavProfile, NetworkSelector, ProfileAddress, ProfileAvatar} from 'components/designSystem/Profile';
+import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 
 import type {ReactElement} from 'react';
 import type {TAddress} from '@yearn-finance/web-lib/types';
@@ -10,75 +11,105 @@ type TNavProfileDemoProps = {
 	ens?: string;
 	avatar?: string;
 };
-function NavProfile(props: TNavProfileDemoProps): ReactElement {
+function NavProfileDemo(props: TNavProfileDemoProps): ReactElement {
 	return (
-		<div className={'flex gap-2'}>
-			<ProfileAvatar
-				isLoading={props.isLoadingAvatar}
-				src={props.avatar}
-			/>
-			<ProfileAddress
-				isConnecting={props.isConnecting}
-				address={props.address}
-				ens={props.ens}
-			/>
-		</div>
+		<section className={'p-4'}>
+			<div className={'flex gap-2'}>
+				<ProfileAvatar
+					isLoading={props.isLoadingAvatar}
+					src={props.avatar}
+				/>
+				<ProfileAddress
+					isConnecting={props.isConnecting}
+					address={props.address}
+					ens={props.ens}
+				/>
+			</div>
+
+			<hr className={'mb-2 mt-4 text-neutral-50'} />
+
+			<div className={'grid grid-cols-2 gap-6'}>
+				<div>
+					<small className={'text-xxs'}>{'Chain'}</small>
+					<NetworkSelector />
+				</div>
+				<div>
+					<small className={'text-xxs'}>{'Coin'}</small>
+					{props.isConnecting ? (
+						<div className={'mt-1 h-6 w-2/3 animate-pulse rounded-md bg-neutral-100'} />
+					) : (
+						<strong className={'text-base leading-8'}>{'0.00000'}</strong>
+					)}
+				</div>
+			</div>
+		</section>
 	);
 }
 
 export default function Component(): ReactElement {
+	const {onConnect} = useWeb3();
 	return (
-		<div className={'fixed inset-0 flex items-center justify-center'}>
-			<div className={'flex h-fit w-full max-w-6xl flex-wrap items-center justify-center gap-4'}>
+		<>
+			<div className={'flex justify-center pt-4'}>
+				<button onClick={onConnect}>{'Connect'}</button>
+			</div>
+			<div className={'mt-20 flex flex-col items-center justify-center gap-20'}>
 				<div>
-					<small className={'pb-1'}>{'Loading'}</small>
-					<div className={'flex w-[280px] flex-col rounded-lg bg-neutral-0 p-4'}>
-						<NavProfile
-							isLoadingAvatar
-							isConnecting
-						/>
+					<div className={'flex w-[280px] flex-col rounded-lg bg-neutral-0'}>
+						<NavProfile />
 					</div>
 				</div>
-
-				<div>
-					<small className={'pb-1'}>{'Loading avatar, no ens'}</small>
-					<div className={'flex w-[280px] flex-col rounded-lg bg-neutral-0 p-4'}>
-						<NavProfile
-							isLoadingAvatar
-							isConnecting={false}
-							address={'0xe8fcbDf9dEaFaDd9e7C4B5859130805599e56864'}
-							ens={undefined}
-							avatar={undefined}
-						/>
+				<div className={'flex h-fit w-full max-w-6xl flex-wrap items-center justify-center gap-4'}>
+					<div>
+						<small className={'pb-1'}>{'Loading'}</small>
+						<div className={'flex w-[280px] flex-col rounded-lg bg-neutral-0'}>
+							<NavProfileDemo
+								isLoadingAvatar
+								isConnecting
+							/>
+						</div>
 					</div>
-				</div>
 
-				<div>
-					<small className={'pb-1'}>{'Ens, no avatar'}</small>
-					<div className={'flex w-[280px] flex-col rounded-lg bg-neutral-0 p-4'}>
-						<NavProfile
-							isLoadingAvatar={false}
-							isConnecting={false}
-							address={'0xe8fcbDf9dEaFaDd9e7C4B5859130805599e56864'}
-							ens={'Dad.eth'}
-							avatar={undefined}
-						/>
+					<div>
+						<small className={'pb-1'}>{'Loading avatar, no ens'}</small>
+						<div className={'flex w-[280px] flex-col rounded-lg bg-neutral-0'}>
+							<NavProfileDemo
+								isLoadingAvatar
+								isConnecting={false}
+								address={'0xe8fcbDf9dEaFaDd9e7C4B5859130805599e56864'}
+								ens={undefined}
+								avatar={undefined}
+							/>
+						</div>
 					</div>
-				</div>
 
-				<div>
-					<small className={'pb-1'}>{'Ens, avatar'}</small>
-					<div className={'flex w-[280px] flex-col rounded-lg bg-neutral-0 p-4'}>
-						<NavProfile
-							isLoadingAvatar={false}
-							isConnecting={false}
-							address={'0xe8fcbDf9dEaFaDd9e7C4B5859130805599e56864'}
-							ens={'Mom.eth'}
-							avatar={'https://pbs.twimg.com/profile_images/1723330184240041984/09skVkUh_400x400.jpg'}
-						/>
+					<div>
+						<small className={'pb-1'}>{'Ens, no avatar'}</small>
+						<div className={'flex w-[280px] flex-col rounded-lg bg-neutral-0'}>
+							<NavProfileDemo
+								isLoadingAvatar={false}
+								isConnecting={false}
+								address={'0xe8fcbDf9dEaFaDd9e7C4B5859130805599e56864'}
+								ens={'Dad.eth'}
+								avatar={undefined}
+							/>
+						</div>
+					</div>
+
+					<div>
+						<small className={'pb-1'}>{'Ens, avatar'}</small>
+						<div className={'flex w-[280px] flex-col rounded-lg bg-neutral-0'}>
+							<NavProfileDemo
+								isLoadingAvatar={false}
+								isConnecting={false}
+								address={'0xe8fcbDf9dEaFaDd9e7C4B5859130805599e56864'}
+								ens={'Mom.eth'}
+								avatar={'https://pbs.twimg.com/profile_images/1723330184240041984/09skVkUh_400x400.jpg'}
+							/>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
+		</>
 	);
 }
