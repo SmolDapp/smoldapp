@@ -61,6 +61,7 @@ function LogOutButton(): ReactElement {
 		</div>
 	);
 }
+
 export function SideMenu(): ReactElement {
 	const pathname = usePathname();
 

@@ -72,7 +72,7 @@ function checksumAddress(address?: string | null | undefined): TAddressSmol {
 			}
 		}
 	} catch (error) {
-		console.error(error);
+		// console.error(error);
 	}
 	return zeroAddress as TAddressSmol;
 }
