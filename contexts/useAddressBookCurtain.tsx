@@ -8,6 +8,7 @@ import * as Dialog from '@radix-ui/react-dialog';
 import * as Tooltip from '@radix-ui/react-tooltip';
 import {useUpdateEffect} from '@react-hookz/web';
 import {isAddress, safeAddress, toAddress} from '@utils/tools.address';
+import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
 import {copyToClipboard} from '@yearn-finance/web-lib/utils/helpers';
 import {CurtainContent} from '@common/Primitives/Curtain';
@@ -197,13 +198,17 @@ export function EntryAddress(props: {address: TAddress | undefined; ens: string 
 	);
 }
 function Entry(props: {entry: TAddressBookEntry; onSelect: (entry: TAddressBookEntry) => void}): ReactElement {
+	const {chainID} = useChainID();
 	const {updateEntry} = useAddressBookCurtain();
-	const {data: ensName} = useEnsName({chainId: 1, address: toAddress(props.entry.address)});
+	const {data: ensName} = useEnsName({
+		chainId: 1,
+		address: toAddress(props.entry.address),
+		enabled: !!props.entry.ens
+	});
 	const {data: avatar, isLoading: isLoadingAvatar} = useEnsAvatar({chainId: 1, name: ensName, enabled: !!ensName});
 
 	useEffect((): void => {
 		if (ensName) {
-			console.log('ensName', ensName);
 			updateEntry({...props.entry, ens: ensName});
 		}
 	}, [ensName, props.entry, updateEntry]);
@@ -215,7 +220,8 @@ function Entry(props: {entry: TAddressBookEntry; onSelect: (entry: TAddressBookE
 			}}
 			className={cl(
 				'mb-2 flex flex-row items-center justify-between rounded-lg p-4 w-full',
-				'bg-neutral-200 hover:bg-neutral-300 transition-colors'
+				'bg-neutral-200 hover:bg-neutral-300 transition-colors',
+				props.entry.chains.includes(chainID) ? '' : 'opacity-40 hover:opacity-100 transition-opacity'
 			)}>
 			<div className={'flex gap-2'}>
 				<EntryAvatar
@@ -232,12 +238,135 @@ function Entry(props: {entry: TAddressBookEntry; onSelect: (entry: TAddressBookE
 	);
 }
 
-const AddressBookCurtain = createContext<TAddressBookCurtainProps>(defaultProps);
-export const AddressBookCurtainContextApp = ({children}: {children: React.ReactElement}): React.ReactElement => {
-	const [shouldOpenCurtain, set_shouldOpenCurtain] = useState(false);
-	const [currentCallbackFunction, set_currentCallbackFunction] = useState<TSelectCallback | undefined>(undefined);
+function AddressBookCurtain(props: {
+	isOpen: boolean;
+	onOpenChange: (isOpen: boolean) => void;
+	onSelect: TSelectCallback | undefined;
+}): ReactElement {
+	const {chainID} = useChainID();
 	const [searchValue, set_searchValue] = useState('');
 
+	/**************************************************************************
+	 * When the curtain is opened, we want to reset the search value.
+	 * This is to avoid preserving the state accross multiple openings.
+	 *************************************************************************/
+	useEffect((): void => {
+		if (props.isOpen) {
+			set_searchValue('');
+		}
+	}, [props.isOpen]);
+
+	/**************************************************************************
+	 * Memo function that filters the entries in the address book based on
+	 * the search value.
+	 * Only entries the label or the address of which includes the search value
+	 * will be returned.
+	 *************************************************************************/
+	const filteredEntries = useMemo(() => {
+		return entriesInAddressBook.filter(
+			e =>
+				e.label.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase()) ||
+				toAddress(e.address).toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())
+		);
+	}, [searchValue]);
+
+	/**************************************************************************
+	 * Memo function that splits the entries in the address book into two
+	 * arrays: available and unavailable.
+	 * An entry is considered available if it is available on the current
+	 * chain.
+	 *************************************************************************/
+	const [availableEntries, unavailableEntries] = useMemo(() => {
+		const available = [];
+		const unavailable = [];
+		for (const entry of filteredEntries) {
+			if (entry.chains.includes(chainID)) {
+				available.push(entry);
+			} else {
+				unavailable.push(entry);
+			}
+		}
+		return [available, unavailable];
+	}, [chainID, filteredEntries]);
+
+	return (
+		<Dialog.Root
+			open={props.isOpen}
+			onOpenChange={props.onOpenChange}>
+			<CurtainContent>
+				<aside
+					style={{boxShadow: '-8px 0px 20px 0px rgba(36, 40, 51, 0.08)'}}
+					className={'flex h-full flex-col overflow-y-hidden bg-neutral-0 p-6'}>
+					<div className={'mb-4 flex flex-row items-center justify-between'}>
+						<h3 className={'font-bold'}>{'Address Book'}</h3>
+						<CloseCurtainButton />
+					</div>
+					<div className={'flex h-full flex-col gap-4'}>
+						<input
+							className={cl(
+								'w-full border-neutral-400 rounded-lg bg-transparent py-3 px-4 text-base',
+								'text-neutral-900 placeholder:text-neutral-600 caret-neutral-700',
+								'focus:placeholder:text-neutral-300 placeholder:transition-colors',
+								'focus:border-neutral-400'
+							)}
+							type={'text'}
+							placeholder={'0x...'}
+							autoComplete={'off'}
+							autoCorrect={'off'}
+							spellCheck={'false'}
+							value={searchValue}
+							onChange={e => set_searchValue(e.target.value)}
+						/>
+						<div className={'mb-4 flex flex-col overflow-y-scroll pb-2'}>
+							{filteredEntries.length === 0 ? (
+								<div>
+									<p className={'text-center text-xs text-neutral-600'}>{'No contact found.'}</p>
+								</div>
+							) : (
+								<>
+									{availableEntries.map(entry => (
+										<Entry
+											key={entry.address}
+											entry={entry}
+											onSelect={selected => {
+												props.onSelect?.(selected);
+												props.onOpenChange(false);
+											}}
+										/>
+									))}
+									{unavailableEntries.length > 0 ? (
+										<small className={'mt-4'}>{'Available on other chains'}</small>
+									) : null}
+									{unavailableEntries.map(entry => (
+										<Entry
+											key={entry.address}
+											entry={entry}
+											onSelect={selected => {
+												props.onSelect?.(selected);
+												props.onOpenChange(false);
+											}}
+										/>
+									))}
+								</>
+							)}
+						</div>
+					</div>
+				</aside>
+			</CurtainContent>
+		</Dialog.Root>
+	);
+}
+
+const AddressBookCurtainContext = createContext<TAddressBookCurtainProps>(defaultProps);
+export const AddressBookCurtainContextApp = ({children}: {children: React.ReactElement}): React.ReactElement => {
+	const [currentCallbackFunction, set_currentCallbackFunction] = useState<TSelectCallback | undefined>(undefined);
+	const [shouldOpenCurtain, set_shouldOpenCurtain] = useState(false);
+
+	/**************************************************************************
+	 * Callback function that can be used to retrieve an entry from the
+	 * address book.
+	 * It can be used to retrieve an entry by its address or by its label.
+	 *************************************************************************/
 	const getAddressBookEntry = useCallback(
 		(props: {address?: TAddress; label?: string}): TAddressBookEntry | undefined => {
 			if (!isAddress(props.address) && !props.label) {
@@ -253,6 +382,11 @@ export const AddressBookCurtainContextApp = ({children}: {children: React.ReactE
 		},
 		[entriesInAddressBook]
 	);
+
+	/**************************************************************************
+	 * Callback function that can be used to update an entry in the address
+	 * book. If the entry does not exist, it will be created.
+	 *************************************************************************/
 	const updateEntry = useCallback(
 		(entry: TAddressBookEntry): void => {
 			const index = entriesInAddressBook.findIndex(e => toAddress(e.address) === toAddress(entry.address));
@@ -265,6 +399,9 @@ export const AddressBookCurtainContextApp = ({children}: {children: React.ReactE
 		[entriesInAddressBook]
 	);
 
+	/**************************************************************************
+	 * Context value that is passed to all children of this component.
+	 *************************************************************************/
 	const contextValue = useMemo(
 		(): TAddressBookCurtainProps => ({
 			shouldOpenCurtain,
@@ -276,57 +413,19 @@ export const AddressBookCurtainContextApp = ({children}: {children: React.ReactE
 			},
 			onCloseCurtain: (): void => set_shouldOpenCurtain(false)
 		}),
-		[getAddressBookEntry, shouldOpenCurtain]
+		[getAddressBookEntry, shouldOpenCurtain, updateEntry]
 	);
 
 	return (
-		<AddressBookCurtain.Provider value={contextValue}>
+		<AddressBookCurtainContext.Provider value={contextValue}>
 			{children}
-			<Dialog.Root
-				open={shouldOpenCurtain}
-				onOpenChange={set_shouldOpenCurtain}>
-				<CurtainContent>
-					<aside
-						style={{boxShadow: '-8px 0px 20px 0px rgba(36, 40, 51, 0.08)'}}
-						className={'flex h-full flex-col overflow-y-hidden bg-neutral-0 p-6'}>
-						<div className={'mb-4 flex flex-row items-center justify-between'}>
-							<h3 className={'font-bold'}>{'Address Book'}</h3>
-							<CloseCurtainButton />
-						</div>
-						<div className={'flex h-full flex-col gap-4'}>
-							<input
-								className={cl(
-									'w-full border-neutral-400 rounded-lg bg-transparent py-3 px-4 text-base',
-									'text-neutral-900 placeholder:text-neutral-600 caret-neutral-700',
-									'focus:placeholder:text-neutral-300 placeholder:transition-colors',
-									'focus:border-neutral-400'
-								)}
-								type={'text'}
-								placeholder={'0x...'}
-								autoComplete={'off'}
-								autoCorrect={'off'}
-								spellCheck={'false'}
-								value={searchValue}
-								onChange={e => set_searchValue(e.target.value)}
-							/>
-							<div className={'mb-4 flex flex-col overflow-y-scroll pb-2'}>
-								{entriesInAddressBook.map(entry => (
-									<Entry
-										key={entry.address}
-										entry={entry}
-										onSelect={selected => {
-											currentCallbackFunction?.(selected);
-											set_shouldOpenCurtain(false);
-										}}
-									/>
-								))}
-							</div>
-						</div>
-					</aside>
-				</CurtainContent>
-			</Dialog.Root>
-		</AddressBookCurtain.Provider>
+			<AddressBookCurtain
+				isOpen={shouldOpenCurtain}
+				onOpenChange={set_shouldOpenCurtain}
+				onSelect={currentCallbackFunction}
+			/>
+		</AddressBookCurtainContext.Provider>
 	);
 };
 
-export const useAddressBookCurtain = (): TAddressBookCurtainProps => useContext(AddressBookCurtain);
+export const useAddressBookCurtain = (): TAddressBookCurtainProps => useContext(AddressBookCurtainContext);
