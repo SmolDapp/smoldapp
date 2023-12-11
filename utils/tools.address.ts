@@ -94,20 +94,20 @@ export function truncateHex(address: string | undefined, size: number): string {
 		if (size === 0) {
 			return zeroAddress;
 		}
-		return `${zeroAddress.slice(0, size)}...${zeroAddress.slice(-size)}`;
+		return `${zeroAddress.slice(2, size)}...${zeroAddress.slice(-size)}`;
 	}
 
 	if (address !== undefined) {
 		if (size === 0) {
 			return address;
 		}
-		if (address.length <= size * 2 + 2) {
+		if (address.length <= size * 2 + 4) {
 			return address;
 		}
-		return `${address.slice(0, size)}...${address.slice(-size)}`;
+		return `${address.slice(2, size)}...${address.slice(-size)}`;
 	}
 	if (size === 0) {
 		return zeroAddress;
 	}
-	return `${zeroAddress.slice(0, size)}...${zeroAddress.slice(-size)}`;
+	return `${zeroAddress.slice(2, size)}...${zeroAddress.slice(-size)}`;
 }

@@ -39,12 +39,12 @@ export function ProfilePart(): ReactElement {
 						<span
 							suppressHydrationWarning
 							className={'inline pl-1 md:hidden'}>
-							{truncateHex(address, 8)}
+							{truncateHex(address, 6)}
 						</span>
 					</p>
 				</span>
 			</div>
-			<p className={'mt-2 min-h-[30px] text-sm text-neutral-500 md:mt-4 md:min-h-[60px] md:text-base'}>
+			<p className={'text-neutral-500 mt-2 min-h-[30px] text-sm md:mt-4 md:min-h-[60px] md:text-base'}>
 				{'Simple, smart and elegant dapps, designed to make your crypto journey a little bit easier.'}
 			</p>
 			<div className={'mt-auto items-center justify-between pt-6 md:flex'}>
