@@ -5,7 +5,6 @@ import * as CurtainPrimitive from '@radix-ui/react-dialog';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
 
 import type {ElementRef, ReactElement} from 'react';
-import type {} from '@radix-ui/react-dialog/node_modules/@types/react';
 
 type TCurtainContent = {
 	className?: string;

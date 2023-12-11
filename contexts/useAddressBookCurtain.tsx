@@ -209,8 +209,7 @@ function Entry(props: {entry: TAddressBookEntry; onSelect: (entry: TAddressBookE
 	const {updateEntry} = useAddressBookCurtain();
 	const {data: ensName} = useEnsName({
 		chainId: 1,
-		address: toAddress(props.entry.address),
-		enabled: !!props.entry.ens
+		address: toAddress(props.entry.address)
 	});
 	const {data: avatar, isLoading: isLoadingAvatar} = useEnsAvatar({
 		chainId: 1,
