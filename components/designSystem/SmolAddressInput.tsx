@@ -108,20 +108,26 @@ export function SmolAddressInput(): ReactElement {
 	);
 
 	return (
-		<div className={'relative h-full w-full max-w-[442px] rounded-lg p-[1px]'}>
+		<div className={'group relative h-full w-full max-w-[442px] rounded-lg p-[1px]'}>
 			<div
 				className={cl(
-					'absolute inset-0 z-0 rounded-[9px] transition-colors ',
-					status === 'loading' ? 'borderPulse' : !isFocused && value.error ? 'bg-red-500' : 'bg-neutral-400'
+					'absolute inset-0 z-0 rounded-[9px] transition-colors',
+					status === 'loading'
+						? 'borderPulse'
+						: !isFocused && value.error
+						  ? 'bg-red-500'
+						  : isFocused
+						    ? 'bg-neutral-600'
+						    : 'bg-neutral-400'
 				)}
 			/>
 			<label
 				className={cl(
 					'h-20 z-20 relative',
 					'flex flex-row items-center cursor-text',
-					'p-2 group bg-neutral-0 rounded-lg'
+					'p-2 pl-4 group bg-neutral-0 rounded-lg'
 				)}>
-				<div className={'relative w-full pr-2'}>
+				<div className={'relative w-full pr-4'}>
 					<input
 						className={cl(
 							'w-full border-none bg-transparent p-0 text-xl transition-all',
