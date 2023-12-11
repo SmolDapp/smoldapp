@@ -28,12 +28,12 @@ type TTokenAmountInput = {
 
 const percentIntervals = [25, 50, 75, 100];
 
-export function SmolTokenAmountInput({showPercentButtons = false, tokens}: TTokenAmountInput): ReactElement {
+export function SmolTokenAmountInput({showPercentButtons = false}: TTokenAmountInput): ReactElement {
 	const [, set_isFocused] = useState<boolean>(false);
 	const [value, set_value] = useState<TTokenAmountInputLike>(defaultTokenInputLike);
 	const currentAmount = useRef<TAddress | undefined>(defaultTokenInputLike.amount);
 
-	const [selectedToken] = useState<TToken | undefined>(tokens.at(0));
+	const [selectedToken] = useState<TToken | undefined>(undefined);
 
 	const [{status}, actions] = useAsyncAbortable(
 		async (signal, input: string): Promise<void> =>
@@ -126,11 +126,11 @@ export function SmolTokenAmountInput({showPercentButtons = false, tokens}: TToke
 				</div>
 				<button
 					className={cl(
-						'flex items-center rounded-lg p-4 max-w-[176px] w-full',
-						'bg-neutral-100 hover:bg-neutral-200 transition-colors'
+						'flex items-center gap-4 rounded-lg p-4 max-w-[176px] w-full',
+						'bg-neutral-200 hover:bg-neutral-300 transition-colors'
 					)}>
-					<div className={'flex w-full gap-2'}>
-						<div className={'h-6 w-6 min-w-[24px]'}>
+					<div className={'flex w-full max-w-[116px] gap-2'}>
+						<div className={'h-6 w-6'}>
 							<ImageWithFallback
 								alt={selectedToken?.name || ''}
 								unoptimized={!selectedToken?.logoURI?.includes('assets.smold.app') || true}
@@ -143,7 +143,9 @@ export function SmolTokenAmountInput({showPercentButtons = false, tokens}: TToke
 								height={24}
 							/>
 						</div>
-						<p className={'truncate font-bold'}>{'DAI'}</p>
+						<p className={cl('truncate', selectedToken?.symbol ? 'font-bold' : '')}>
+							{selectedToken?.symbol || 'Select'}
+						</p>
 					</div>
 
 					<IconChevron className={'h-4 w-4 text-neutral-900'} />
