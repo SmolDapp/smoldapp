@@ -7,7 +7,7 @@ import {useEnsAvatar, useEnsName} from 'wagmi';
 import * as Dialog from '@radix-ui/react-dialog';
 import * as Tooltip from '@radix-ui/react-tooltip';
 import {useUpdateEffect} from '@react-hookz/web';
-import {isAddress, safeAddress, toAddress} from '@utils/tools.address';
+import {getColorFromAdddress, isAddress, safeAddress, toAddress} from '@utils/tools.address';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
 import {copyToClipboard} from '@yearn-finance/web-lib/utils/helpers';
@@ -121,21 +121,7 @@ export function EntryAvatar(props: {
 }): ReactElement {
 	const [imageSrc, set_imageSrc] = useState(props.src);
 	const hasAvatar = useMemo(() => imageSrc !== undefined, [imageSrc]);
-	const addressColor = useMemo((): string => {
-		if (!props.address) {
-			return '#000000';
-		}
-		let hash = 0;
-		for (let i = 0; i < props.address.length; i++) {
-			hash = props.address.charCodeAt(i) + ((hash << 5) - hash);
-		}
-		let color = '#';
-		for (let i = 0; i < 3; i++) {
-			const value = (hash >> (i * 8)) & 0xff;
-			color += value.toString(16).padStart(2, '0');
-		}
-		return color;
-	}, [props.address]);
+	const addressColor = useMemo(() => getColorFromAdddress({address: toAddress(props.address)}), [props.address]);
 
 	useUpdateEffect((): void => {
 		set_imageSrc(props.src);

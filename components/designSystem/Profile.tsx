@@ -6,7 +6,7 @@ import {IconWallet} from '@icons/IconWallet';
 import * as Popover from '@radix-ui/react-popover';
 import * as Tooltip from '@radix-ui/react-tooltip';
 import {useIsMounted, useUpdateEffect} from '@react-hookz/web';
-import {isAddress, safeAddress} from '@utils/tools.address';
+import {getColorFromAdddress, isAddress, safeAddress} from '@utils/tools.address';
 import {supportedTestNetworks} from '@utils/tools.chains';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {toSafeChainID, useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
@@ -28,21 +28,7 @@ export function ProfileAvatar(props: {
 }): ReactElement {
 	const [imageSrc, set_imageSrc] = useState(props.src);
 	const hasAvatar = useMemo(() => imageSrc !== undefined, [imageSrc]);
-	const addressColor = useMemo((): string => {
-		if (!props.address) {
-			return '#000000';
-		}
-		let hash = 0;
-		for (let i = 0; i < props.address.length; i++) {
-			hash = props.address.charCodeAt(i) + ((hash << 5) - hash);
-		}
-		let color = '#';
-		for (let i = 0; i < 3; i++) {
-			const value = (hash >> (i * 8)) & 0xff;
-			color += value.toString(16).padStart(2, '0');
-		}
-		return color;
-	}, [props.address]);
+	const addressColor = useMemo(() => getColorFromAdddress({address: toAddress(props.address)}), [props.address]);
 
 	useUpdateEffect((): void => {
 		set_imageSrc(props.src);
