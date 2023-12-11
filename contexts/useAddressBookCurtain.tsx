@@ -20,8 +20,9 @@ import type {TAddress} from '@utils/tools.address';
 export type TAddressBookEntry = {
 	address: TAddress;
 	label: string;
-	ens?: string;
 	chains: number[];
+	ens?: string;
+	isFavorite?: boolean;
 };
 export type TSelectCallback = (item: TAddressBookEntry) => void;
 export type TAddressBookCurtainProps = {
@@ -55,25 +56,31 @@ const entriesInAddressBook: TAddressBookEntry[] = [
 		label: 'Dad',
 		chains: [1, 10, 8453]
 	},
-	{
-		address: '0xbC62b72821be835aaC35853E5296B4B05856b51A',
-		label: 'Electricity Provider',
-		chains: [1]
-	},
+	// {
+	// 	address: '0xbC62b72821be835aaC35853E5296B4B05856b51A',
+	// 	label: 'Electricity Provider',
+	// 	chains: [1]
+	// },
 	{
 		address: '0x45BF1Cc5F3FfE58Fec6DDcF042ECc187A1d025CF',
 		label: 'Cold Storage',
 		chains: [1, 10, 56, 100, 137, 250, 1101, 324, 8453, 42161]
 	},
+	// {
+	// 	address: '0x7f76E7a3fe9d8090169757c3d992F52af7a22067',
+	// 	label: '',
+	// 	chains: [1, 10, 56, 100, 137, 250, 1101, 324, 8453, 42161]
+	// },
+	// {
+	// 	address: '0x0A098Eda01Ce92ff4A4CCb7A4fFFb5A43EBC70DC',
+	// 	label: '',
+	// 	chains: [1, 10, 56, 100, 137, 250, 1101, 324, 8453, 42161]
+	// },
 	{
-		address: '0x7f76E7a3fe9d8090169757c3d992F52af7a22067',
-		label: '',
-		chains: [1, 10, 56, 100, 137, 250, 1101, 324, 8453, 42161]
-	},
-	{
-		address: '0x0A098Eda01Ce92ff4A4CCb7A4fFFb5A43EBC70DC',
-		label: '',
-		chains: [1, 10, 56, 100, 137, 250, 1101, 324, 8453, 42161]
+		address: '0x4F909396A75FE9d59F584156A851B3770f3F438a',
+		label: 'Mom',
+		chains: [1, 10, 56, 100, 137, 250, 1101, 324, 8453, 42161],
+		isFavorite: true
 	},
 	{
 		address: '0xE481a5144f76A3EAC704c1f7dE0d5270618EAe4d',
@@ -85,16 +92,16 @@ const entriesInAddressBook: TAddressBookEntry[] = [
 		label: '',
 		chains: [250]
 	},
-	{
-		address: '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D',
-		label: '',
-		chains: [1, 8453, 42161]
-	},
-	{
-		address: '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984',
-		label: '',
-		chains: [1, 10, 324, 8453, 42161]
-	},
+	// {
+	// 	address: '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D',
+	// 	label: '',
+	// 	chains: [1, 8453, 42161]
+	// },
+	// {
+	// 	address: '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984',
+	// 	label: '',
+	// 	chains: [1, 10, 324, 8453, 42161]
+	// },
 	{
 		address: '0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9',
 		label: '',
@@ -205,7 +212,11 @@ function Entry(props: {entry: TAddressBookEntry; onSelect: (entry: TAddressBookE
 		address: toAddress(props.entry.address),
 		enabled: !!props.entry.ens
 	});
-	const {data: avatar, isLoading: isLoadingAvatar} = useEnsAvatar({chainId: 1, name: ensName, enabled: !!ensName});
+	const {data: avatar, isLoading: isLoadingAvatar} = useEnsAvatar({
+		chainId: 1,
+		name: ensName || props.entry.ens,
+		enabled: Boolean(ensName || props.entry.ens)
+	});
 
 	useEffect((): void => {
 		if (ensName) {
@@ -214,7 +225,8 @@ function Entry(props: {entry: TAddressBookEntry; onSelect: (entry: TAddressBookE
 	}, [ensName, props.entry, updateEntry]);
 
 	return (
-		<button
+		<div
+			role={'button'}
 			onClick={() => {
 				props.onSelect({...props.entry, ens: ensName || undefined});
 			}}
@@ -234,7 +246,7 @@ function Entry(props: {entry: TAddressBookEntry; onSelect: (entry: TAddressBookE
 					ens={ensName ? `${props.entry.label} (${ensName})` : props.entry.label}
 				/>
 			</div>
-		</button>
+		</div>
 	);
 }
 
@@ -271,22 +283,27 @@ function AddressBookCurtain(props: {
 	}, [searchValue]);
 
 	/**************************************************************************
-	 * Memo function that splits the entries in the address book into two
-	 * arrays: available and unavailable.
+	 * Memo function that splits the entries in the address book into three
+	 * arrays: favorite, available and unavailable.
 	 * An entry is considered available if it is available on the current
 	 * chain.
 	 *************************************************************************/
-	const [availableEntries, unavailableEntries] = useMemo(() => {
+	const [favorite, availableEntries, unavailableEntries] = useMemo(() => {
+		const favorite = [];
 		const available = [];
 		const unavailable = [];
 		for (const entry of filteredEntries) {
 			if (entry.chains.includes(chainID)) {
-				available.push(entry);
+				if (entry.isFavorite) {
+					favorite.push(entry);
+				} else {
+					available.push(entry);
+				}
 			} else {
 				unavailable.push(entry);
 			}
 		}
-		return [available, unavailable];
+		return [favorite, available, unavailable];
 	}, [chainID, filteredEntries]);
 
 	return (
@@ -324,6 +341,29 @@ function AddressBookCurtain(props: {
 								</div>
 							) : (
 								<>
+									<small className={'mt-0'}>{'Favorite'}</small>
+									{favorite.length > 0 ? (
+										favorite.map(entry => (
+											<Entry
+												key={entry.address}
+												entry={entry}
+												onSelect={selected => {
+													props.onSelect?.(selected);
+													props.onOpenChange(false);
+												}}
+											/>
+										))
+									) : (
+										<div
+											className={
+												'flex h-[72px] min-h-[72px] w-full items-center justify-center rounded-lg border border-dashed border-neutral-400'
+											}>
+											<p className={'text-center text-xs text-neutral-600'}>
+												{'No favorite yet.'}
+											</p>
+										</div>
+									)}
+									<small className={'mt-4'}>{'Available on this chain'}</small>
 									{availableEntries.map(entry => (
 										<Entry
 											key={entry.address}
