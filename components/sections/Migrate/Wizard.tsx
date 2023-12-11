@@ -8,7 +8,6 @@ import {IconCircleCheck} from '@icons/IconCircleCheck';
 import {IconCircleCross} from '@icons/IconCircleCross';
 import {IconSpinner} from '@icons/IconSpinner';
 import {isZeroAddress, toAddress} from '@utils/tools.address';
-import {Button} from '@yearn-finance/web-lib/components/Button';
 import {toast} from '@yearn-finance/web-lib/components/yToast';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
@@ -19,6 +18,7 @@ import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
 import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 import {defaultTxStatus, type TTxResponse} from '@yearn-finance/web-lib/utils/web3/transaction';
 import {SuccessModal} from '@common/ConfirmationModal';
+import {Button} from '@common/Primitives/Button';
 
 import {useMigrate} from './useMigrate';
 
@@ -384,7 +384,7 @@ export function MigrateWizard(): ReactElement {
 		<div className={'col-span-12 mt-4'}>
 			<small className={'pb-1 pl-1'}>{'Summary'}</small>
 
-			<div className={'rounded-md bg-primary-100 md:p-6'}>
+			<div className={'bg-primary-100 rounded-md md:p-6'}>
 				<SpendingWizard onHandleMigration={onHandleMigration} />
 
 				<div className={'mt-4 flex w-full justify-end'}>

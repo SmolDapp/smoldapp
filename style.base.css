@@ -260,3 +260,25 @@ select:focus {
 .skeleton-full {
 	@apply animate-pulse rounded-full bg-neutral-300;
 }
+
+.button {
+	@apply cursor-pointer px-5 flex justify-center items-center h-14 text-base transition-all relative;
+	border-radius: var(--default-rounded);
+
+	&[data-variant='filled'] {
+		@apply text-neutral-900 bg-primary font-normal rounded-lg border border-transparent;
+		&:disabled {
+			@apply bg-neutral-600 opacity-40;
+		}
+		&:not(:disabled):not([aria-busy='true']):hover {
+			@apply bg-primary/90;
+		}
+	}
+	&[aria-busy='true'] {
+		@apply cursor-wait;
+		color: transparent !important;
+	}
+	&:disabled {
+		@apply cursor-not-allowed;
+	}
+}

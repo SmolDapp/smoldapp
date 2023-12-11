@@ -42,8 +42,14 @@ module.exports = {
 		},
 		extend: {
 			fontFamily: {
-				sans: ['var(--inter-font)', 'Inter', 'Roboto', ...defaultTheme.fontFamily.sans],
+				sans: ['var(--rubik-font)', 'Rubik', 'Roboto', ...defaultTheme.fontFamily.sans],
 				mono: ['Source Code Pro', ...defaultTheme.fontFamily.mono]
+			},
+			height: {
+				app: 'calc(100dvh - 80px)'
+			},
+			minHeight: {
+				app: 'calc(100dvh - 80px)'
 			},
 			width: {
 				inherit: 'inherit',
@@ -77,6 +83,7 @@ module.exports = {
 	plugins: [
 		require('@tailwindcss/forms'),
 		require('@tailwindcss/typography'),
+		require('tailwindcss-animate'),
 		plugin(function ({addUtilities}) {
 			addUtilities({
 				'.scrollbar-none': {

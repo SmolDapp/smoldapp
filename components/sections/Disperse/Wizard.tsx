@@ -9,7 +9,6 @@ import {getTransferTransaction} from 'utils/tools.gnosis';
 import {erc20ABI, useContractRead} from 'wagmi';
 import {useSafeAppsSDK} from '@gnosis.pm/safe-apps-react-sdk';
 import {isZeroAddress, toAddress} from '@utils/tools.address';
-import {Button} from '@yearn-finance/web-lib/components/Button';
 import {toast} from '@yearn-finance/web-lib/components/yToast';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
@@ -19,6 +18,7 @@ import {formatBigNumberAsAmount, toBigInt} from '@yearn-finance/web-lib/utils/fo
 import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
 import {defaultTxStatus} from '@yearn-finance/web-lib/utils/web3/transaction';
 import {SuccessModal} from '@common/ConfirmationModal';
+import {Button} from '@common/Primitives/Button';
 
 import {useDisperse} from './useDisperse';
 
@@ -514,7 +514,7 @@ export function DisperseWizard(): ReactElement {
 		<div className={'col-span-12 mt-4'}>
 			<small className={'pb-1 pl-1'}>{'Summary'}</small>
 
-			<div className={'rounded-md bg-primary-100 p-4 md:p-6'}>
+			<div className={'bg-primary-100 rounded-md p-4 md:p-6'}>
 				{shouldApprove && !isWalletSafe && (
 					<ApprovalWizard
 						allowance={toBigInt(allowance)}
