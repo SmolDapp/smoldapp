@@ -333,7 +333,7 @@ function AddressBookCurtain(props: {
 							value={searchValue}
 							onChange={e => set_searchValue(e.target.value)}
 						/>
-						<div className={'mb-4 flex flex-col overflow-y-scroll pb-2'}>
+						<div className={'scrollable mb-8 flex flex-col pb-2'}>
 							{filteredEntries.length === 0 ? (
 								<div>
 									<p className={'text-center text-xs text-neutral-600'}>{'No contact found.'}</p>
