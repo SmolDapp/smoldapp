@@ -8,10 +8,10 @@ import {LogoDisperse} from '@icons/LogoDisperse';
 import {useDeepCompareEffect, useDeepCompareMemo, useUpdateEffect} from '@react-hookz/web';
 import {transferERC20, transferEther} from '@utils/actions';
 import handleInputChangeEventValue from '@utils/handleInputChangeEventValue';
+import {isZeroAddress, toAddress} from '@utils/tools.address';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
-import {isZeroAddress, toAddress} from '@yearn-finance/web-lib/utils/address';
 import {ETH_TOKEN_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
 import {type TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
@@ -300,7 +300,7 @@ function DonateBox(): ReactElement {
 											Number(price?.[safeChainID]?.[toAddress(tokenToSend.address)] || 0),
 										0,
 										2
-								  )}`
+									)}`
 								: ''}{' '}
 							&nbsp;
 						</p>
@@ -332,7 +332,7 @@ function DonateBox(): ReactElement {
 										balances?.[toAddress(tokenToSend?.address)]?.normalized || 0,
 										2,
 										6
-								  )} ${tokenToSend?.symbol}`
+									)} ${tokenToSend?.symbol}`
 								: ''}
 							&nbsp;
 						</button>

@@ -1,7 +1,7 @@
 import {SUPPORTED_CHAINS} from 'utils/constants';
 import {fromHex, type Hex, pad, toHex} from 'viem';
 import axios from 'axios';
-import {toAddress} from '@yearn-finance/web-lib/utils/address';
+import {toAddress} from '@utils/tools.address';
 import {ZERO_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
 import {getClient, getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 

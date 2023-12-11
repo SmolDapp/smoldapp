@@ -1,6 +1,6 @@
 import React from 'react';
 import useWallet from 'contexts/useWallet';
-import {toAddress} from '@yearn-finance/web-lib/utils/address';
+import {toAddress} from '@utils/tools.address';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
 import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
 import {ImageWithFallback} from '@common/ImageWithFallback';

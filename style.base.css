@@ -2,31 +2,6 @@
 
 @tailwind base;
 
-:root {
-	--color-primary: 220 95% 50%;
-	--color-neutral-0: 0 0% 100%;
-	--color-neutral-50: 0 0% 98%;
-	--color-neutral-100: 0 0% 96%;
-	--color-neutral-200: 0 0% 92%;
-	--color-neutral-300: 0 0% 88%;
-	--color-neutral-400: 0 0% 62%;
-	--color-neutral-500: 0 0% 50%;
-	--color-neutral-600: 0 0% 36%;
-	--color-neutral-700: 229 34% 24%;
-	--color-neutral-800: 229 34% 16%;
-	--color-neutral-900: 229 34% 13%;
-
-	--color-yellow-900: 32 100% 45%;
-	--color-yellow-300: 32 100% 95%;
-	--color-yellow-200: 32 100% 90%;
-	--color-error-900: 328 100% 45%;
-	--color-error-300: 328 100% 95%;
-	--color-error-200: 328 100% 90%;
-	--color-red-900: 0 100% 45%;
-	--color-red-300: 0 100% 95%;
-	--color-red-200: 0 100% 90%;
-}
-
 body {
 	@apply text-neutral-900;
 }
@@ -40,7 +15,7 @@ h6 {
 	@apply text-base font-bold text-neutral-700;
 }
 small {
-	@apply text-xs font-normal text-neutral-500 leading-tight block;
+	@apply text-xs font-normal text-neutral-600 leading-tight block;
 }
 #__next {
 	@apply w-full h-full;
@@ -79,7 +54,7 @@ input[type='number'] {
 	-moz-appearance: textfield;
 }
 label[aria-invalid='true'] {
-	@apply text-neutral-500 transition-colors;
+	@apply text-neutral-600 transition-colors;
 	& > form > div {
 		@apply border-[#FE0000] focus-within:border-[#FE0000] text-[#FE0000] focus-within:text-[#FE0000];
 	}
@@ -95,123 +70,12 @@ label[aria-invalid='true'] {
 	outline-color: transparent;
 }
 
-/* 🔵 - Yearn Finance ******************************************************
-** First, we are declaring the Yearn's specific class for the components.
-** We need to declare them first in order to work with css inheritence
-** correctly. Aka theses class should be possible to overwrite by adding an
-** extra tailwind class
-**************************************************************************/
-.flex-center {
-	@apply flex justify-center items-center;
-}
-.rounded-default {
-	@apply rounded-md;
-}
-.rounded-b-default {
-	@apply rounded-b-md;
-}
-.rounded-t-default {
-	@apply rounded-t-md;
-}
-.rounded-l-default {
-	@apply rounded-l-md;
-}
-.rounded-r-default {
-	@apply rounded-r-md;
-}
-
 /* -- Button.tsx ------------------------------------------------------- */
-.yearn--button {
-	@apply cursor-pointer flex justify-center items-center transition-all relative focus-within:outline-primary-600 outline-offset-2 outline rounded-md outline-transparent;
-
-	&[data-variant='filled'] {
-		@apply text-primary-0 bg-primary-600 font-normal border border-transparent;
-		&:disabled {
-			@apply bg-primary-600 opacity-40;
-		}
-		&:not(:disabled):not([aria-busy='true']):hover {
-			@apply bg-primary-700;
-		}
-	}
-	&[data-variant='outlined-light'] {
-		@apply text-primary-900 bg-neutral-0 font-normal border border-primary-200/60 rounded-md shadow-sm;
-		&:disabled {
-			@apply bg-neutral-0 opacity-40;
-		}
-		&:not(:disabled):not([aria-busy='true']):hover {
-			@apply hover:bg-primary-100;
-		}
-	}
-
-	&[data-variant='light'] {
-		@apply text-primary-900 bg-primary-100 border border-transparent;
-		&:disabled {
-			@apply opacity-40;
-		}
-		&:not(:disabled):not([aria-busy='true']):hover {
-			@apply bg-primary-200;
-		}
-	}
-	&[data-variant='outlined'] {
-		@apply text-primary-600 bg-transparent border border-primary-600;
-		&:disabled {
-			@apply opacity-40;
-		}
-		&:not(:disabled):not([aria-busy='true']):hover {
-			@apply bg-primary-600 text-primary-0;
-		}
-	}
-	&[data-variant='reverted'] {
-		@apply text-primary-600 bg-primary-0 font-normal border border-transparent;
-		&:disabled {
-			@apply bg-primary-200 opacity-40;
-		}
-		&:not(:disabled):not([aria-busy='true']):hover {
-			@apply bg-primary-200;
-		}
-		&[aria-busy='true'] svg {
-			@apply text-primary-900;
-		}
-	}
-	&[data-variant='reverted-alt'] {
-		@apply text-primary-900 bg-primary-0 font-normal border border-transparent focus:outline-primary-0;
-		&:disabled {
-			@apply bg-primary-200 opacity-40;
-		}
-		&:not(:disabled):not([aria-busy='true']):hover {
-			@apply bg-primary-200;
-		}
-
-		&[aria-busy='true'] svg {
-			@apply text-primary-900;
-		}
-	}
-	&[aria-busy='true'] {
-		@apply cursor-wait;
-		color: transparent !important;
-	}
-
-	&[data-size='tight'] {
-		@apply px-2 h-8 text-xs;
-	}
-	&:not([data-size='tight']),
-	&[data-size='normal'] {
-		@apply px-4 h-10 text-sm;
-	}
-	&[data-size='loose'] {
-		@apply px-4 h-10 text-sm;
-	}
-
-	&:disabled {
-		@apply cursor-not-allowed;
-	}
-}
-
 .smol--input-wrapper {
 	@apply flex h-10 w-full items-center rounded-md border border-neutral-200 bg-neutral-0 transition-colors;
 
 	&:has(input:focus) {
-		@apply border-primary-500;
+		@apply border-primary;
 	}
 }
 .smol--input {
@@ -228,25 +92,6 @@ select.smol--input {
 **************************************************************************/
 @tailwind components;
 @tailwind utilities;
-
-/* 🔵 - Yearn Finance ******************************************************
-** Shorthand for some group of style used across the application
-***************************************************************************/
-.flex-row-center {
-	@apply flex flex-row items-center;
-}
-.flex-row-start {
-	@apply flex flex-row items-start;
-}
-.flex-col-start {
-	@apply flex flex-col items-start;
-}
-.flex-col-full {
-	@apply flex flex-col w-full h-full;
-}
-.max-w-6xl {
-	@apply max-w-[1232px] px-4;
-}
 
 /* 🔵 - Yearn Finance ******************************************************
 ** NsProgress is used to display the loading indicator. All of theses
@@ -319,87 +164,11 @@ select.smol--input {
 	@apply hidden w-1/3 flex-row items-center space-x-3 md:flex md:space-x-6;
 }
 .yearn--header-nav-item {
-	@apply relative cursor-pointer transition-colors text-neutral-500 hover:text-neutral-900 font-normal text-sm;
+	@apply relative cursor-pointer transition-colors text-neutral-600 hover:text-neutral-900 font-normal text-sm;
 
 	&.active {
 		@apply text-neutral-900 font-bold;
 	}
-}
-
-/* 🔵 - Yearn Finance ******************************************************
-** Dropdown menu and listbox
-**************************************************************************/
-.yearn--dropdown-menu {
-	--dropdown-bg-color: hsl(var(--color-neutral-100));
-	--dropdown-bg-color-active: hsl(var(--color-neutral-600));
-	--dropdown-border-width: 0px;
-	--dropdown-border-color: transparent;
-
-	@apply flex overflow-y-auto absolute left-0 flex-col mt-1 w-full min-w-fit max-h-60 scrollbar-none text-neutral-400 border border-neutral-300 bg-neutral-100;
-}
-.yearn--dropdown-menu-item {
-	@apply w-full flex flex-row items-center cursor-pointer py-2 pr-4 pl-3 transition-colors;
-	&[data-active='true'] {
-		@apply bg-neutral-0/40;
-	}
-}
-.yearn--listbox-menu {
-	@apply flex overflow-y-auto absolute left-0 flex-col mt-1 w-full min-w-[148px] max-h-52 scrollbar-none text-neutral-900 bg-neutral-0;
-}
-.yearn--listbox-menu-item {
-	@apply w-full flex flex-row items-center cursor-pointer py-2 pr-4 pl-3 transition-colors;
-	&[data-active='true'] {
-		@apply bg-neutral-0/40;
-	}
-}
-
-.yearn--modal-wrapper {
-	@apply flex justify-center items-end px-4 pt-4 pb-20 min-h-screen text-center sm:block sm:p-0;
-}
-.yearn--modal-overlay {
-	@apply fixed inset-0 z-10 bg-neutral-900/60 transition-opacity;
-}
-.yearn--modal {
-	@apply inline-block overflow-hidden relative z-50 w-full text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:align-middle md:mb-96 bg-neutral-0;
-
-	border-radius: var(--default-rounded);
-}
-.yearn--modalLogin-wrapper {
-}
-.yearn--modalLogin-card {
-	@apply flex flex-col justify-center items-center p-6 text-center transition-colors cursor-pointer bg-neutral-0 hover:bg-neutral-100;
-
-	border-radius: var(--default-rounded);
-	& > div > svg {
-		@apply w-12 h-12;
-	}
-	& > b {
-		@apply mt-2 text-lg text-neutral-700;
-	}
-	& > p {
-		@apply text-neutral-500;
-	}
-}
-.yearn--modalLogin {
-	@apply grid grid-cols-2;
-}
-
-/* 🔵 - Yearn Finance ******************************************************
-** Misc
-**************************************************************************/
-.yearn--button-smaller {
-	@apply h-8 text-xs py-2 w-16 px-2;
-}
-.yearn--modalMobileMenu-childrenWrapper > a {
-	&:last-child > .mobile-nav-item {
-		@apply border-b-0;
-	}
-}
-.yearn--sort-chevron {
-	@apply h-4 w-4 min-w-[16px] cursor-pointer text-neutral-500;
-}
-.yearn--sort-chevron--off {
-	@apply h-4 w-4 min-w-[16px] cursor-pointer transition-colors text-neutral-300 group-hover:text-neutral-500;
 }
 
 .yearn--toast-options {
@@ -407,17 +176,17 @@ select.smol--input {
 }
 
 .yearn--toast-button {
-	@apply text-xs px-3 py-1 text-[#0657F9] bg-white;
+	@apply text-xs px-3 py-1 text-primary bg-white;
 }
 
 .mobile-nav-item {
-	@apply flex flex-col items-start justify-between rounded-md bg-neutral-100;
+	@apply flex flex-col items-start justify-between rounded-md bg-neutral-200;
 	& > p {
 		@apply p-2 text-base font-bold text-neutral-900;
 	}
 }
 .mobile-nav-item {
-	@apply rounded-none border-b border-neutral-300 bg-neutral-100/60;
+	@apply rounded-none border-b border-neutral-300 bg-neutral-200/60;
 }
 
 .tab {
@@ -456,45 +225,4 @@ textarea:focus,
 select:focus {
 	outline: none;
 	box-shadow: none;
-}
-
-/* -- ModalMobileMenu.tsx ---------------------------------------------------- */
-.yearn--modalMobileMenu-content {
-	@apply relative flex w-full flex-col items-center justify-center space-y-1 pt-4;
-}
-.yearn--modalMobileMenu-title {
-	@apply text-center text-xl font-bold text-neutral-700;
-}
-.yearn--modalMobileMenu-networkIndicator {
-	@apply text-sm text-neutral-500;
-	& > span {
-		@apply flex flex-row items-center;
-	}
-}
-.yearn--modalMobileMenu-select {
-	@apply rounded-md relative ml-1 flex flex-row items-center bg-neutral-500/10 py-1 pl-2 text-neutral-500;
-}
-.yearn--modalMobileMenu-walletCard {
-	@apply rounded-md flex cursor-pointer flex-col items-center justify-center bg-neutral-100 py-4 px-2 text-center transition-colors;
-}
-.yearn--modalMobileMenu-childrenWrapper {
-	@apply mb-4 space-y-2 px-2;
-}
-.yearn--modalMobileMenu-separatorWrapper {
-	@apply w-full px-2;
-}
-.yearn--modalMobileMenu-separator {
-	@apply mx-auto mt-2 mb-4 h-[2px] w-full items-center justify-center bg-neutral-500/20;
-}
-.yearn--modalMobileMenu-chevron {
-	@apply absolute right-2;
-	& > svg {
-		@apply ml-1 h-3 w-3;
-	}
-}
-.yearn--modalMobileMenu-logout {
-	@apply absolute top-4 right-4;
-	& > svg {
-		@apply h-6 w-6 rounded-full bg-neutral-200 p-1.5 text-neutral-500;
-	}
 }

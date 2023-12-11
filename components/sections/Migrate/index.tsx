@@ -2,7 +2,7 @@ import React, {useCallback} from 'react';
 import useWallet from 'contexts/useWallet';
 import {useTokensWithBalance} from 'hooks/useTokensWithBalance';
 import {IconSpinner} from '@icons/IconSpinner';
-import {toAddress} from '@yearn-finance/web-lib/utils/address';
+import {toAddress} from '@utils/tools.address';
 import {toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import {AddressLikeInput} from '@common/AddressLikeInput';
 import TokenInput from '@common/TokenInput';

@@ -1,8 +1,8 @@
 import React from 'react';
 import {useIsMounted} from '@react-hookz/web';
+import {toAddress} from '@utils/tools.address';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
-import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {copyToClipboard} from '@yearn-finance/web-lib/utils/helpers';
 
 import type {ReactElement} from 'react';

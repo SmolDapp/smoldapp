@@ -7,8 +7,8 @@ import {useAccount} from 'wagmi';
 import axios from 'axios';
 import {Popover as PopoverHeadlessUI, Portal, Transition} from '@headlessui/react';
 import {useLocalStorageValue} from '@react-hookz/web';
+import {toAddress, truncateHex} from '@utils/tools.address';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
-import {toAddress, truncateHex} from '@yearn-finance/web-lib/utils/address';
 
 import type {ReactElement} from 'react';
 
@@ -75,7 +75,7 @@ export function FeebackPopover(): ReactElement {
 			y: window.pageYOffset + window.scrollY,
 			ignoreElements: (element): boolean => element.id === 'headlessui-portal-root'
 		});
-		const reporter = ens || lensProtocolHandle || (address ? truncateHex(toAddress(address), 4) : '');
+		const reporter = ens || lensProtocolHandle || (address ? truncateHex(toAddress(address), 6) : '');
 		const formData = new FormData();
 		const blob = await new Promise<Blob | null>((resolve): void => {
 			canvas.toBlob((blob): void => resolve(blob));
@@ -115,7 +115,7 @@ export function FeebackPopover(): ReactElement {
 			<PopoverHeadlessUI className={'relative z-50'}>
 				<PopoverHeadlessUI.Button
 					className={
-						'fixed bottom-5 right-5 flex h-10 w-10 items-center justify-center rounded-full bg-primary-500'
+						'bg-primary-500 fixed bottom-5 right-5 flex h-10 w-10 items-center justify-center rounded-full'
 					}
 					ref={set_referenceElement}>
 					<IconBug className={'h-4 w-4 text-neutral-0'} />
@@ -142,7 +142,7 @@ export function FeebackPopover(): ReactElement {
 									name={'type'}
 									id={'type'}
 									className={
-										'cursor-pointer border border-neutral-300/50 bg-transparent text-xs transition-colors hover:bg-neutral-100/40 focus:border-neutral-300/50'
+										'hover:bg-neutral-100/40 cursor-pointer border border-neutral-300/50 bg-transparent text-xs transition-colors focus:border-neutral-300/50'
 									}
 									onChange={({target: {value}}): void => {
 										if (isRequestTypeKnown(value)) {
@@ -157,7 +157,7 @@ export function FeebackPopover(): ReactElement {
 									cols={30}
 									rows={4}
 									className={
-										'resize-none border border-neutral-300/50 bg-transparent p-2 text-xs transition-colors hover:bg-neutral-100/40 focus:border-neutral-300/50'
+										'hover:bg-neutral-100/40 resize-none border border-neutral-300/50 bg-transparent p-2 text-xs transition-colors focus:border-neutral-300/50'
 									}
 									onChange={({target: {value}}): void => set_description(value)}
 									placeholder={`Describe the ${type} in detail`}
@@ -165,7 +165,7 @@ export function FeebackPopover(): ReactElement {
 								<input
 									id={'telegramHandle'}
 									className={
-										'resize-none border border-neutral-300/50 bg-transparent p-2 text-xs transition-colors hover:bg-neutral-100/40 focus:border-neutral-300/50'
+										'hover:bg-neutral-100/40 resize-none border border-neutral-300/50 bg-transparent p-2 text-xs transition-colors focus:border-neutral-300/50'
 									}
 									onChange={({target: {value}}): void => set_telegramHandle(value)}
 									placeholder={'Your telegram handle'}

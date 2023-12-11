@@ -5,12 +5,12 @@ import IconSquareMinus from '@icons/IconSquareMinus';
 import IconSquarePlus from '@icons/IconSquarePlus';
 import IconWarning from '@icons/IconWarning';
 import {SUPPORTED_CHAINS} from '@utils/constants';
+import {isZeroAddress, toAddress} from '@utils/tools.address';
 import {fetchTransaction} from '@wagmi/core';
 import {AddressLike} from '@yearn-finance/web-lib/components/AddressLike';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import {Renderable} from '@yearn-finance/web-lib/components/Renderable';
 import {toast} from '@yearn-finance/web-lib/components/yToast';
-import {isZeroAddress, toAddress} from '@yearn-finance/web-lib/utils/address';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
 import AddressInput, {defaultInputAddressLike} from '@common/AddressInput';
 import {AddressLikeInput} from '@common/AddressLikeInput';
@@ -118,7 +118,7 @@ export function SectionPossibleTestnetsSafes(): ReactElement {
 		<Renderable
 			shouldRender={!!configuration?.expectedAddress}
 			fallback={<span className={'text-neutral-400'}>{'-'}</span>}>
-			<div className={'mt-6 grid grid-cols-2 gap-2 border-t border-primary-100 pt-6 md:grid-cols-1 md:gap-4'}>
+			<div className={'border-primary-100 mt-6 grid grid-cols-2 gap-2 border-t pt-6 md:grid-cols-1 md:gap-4'}>
 				{SUPPORTED_CHAINS.filter((chain): boolean => ![324].includes(chain.id))
 					.filter((chain): boolean => [5, 1337, 84531].includes(chain.id))
 					.map(
@@ -357,9 +357,9 @@ export function SectionThresholdInput(props: {onChange?: VoidFunction}): ReactEl
 								type={'button'}
 								className={cl(
 									'flex h-6 w-6 items-center justify-center text-center',
-									'outline outline-offset-2 rounded-md focus-within:outline-primary-600',
+									'outline outline-offset-2 rounded-md focus-within:outline-primary',
 									'transition-colors text-neutral-0',
-									'hover:bg-primary-800 disabled:opacity-10 bg-primary-600 '
+									'hover:bg-primary-800 disabled:opacity-10 bg-primary '
 								)}
 								disabled={configuration.threshold <= 1}
 								onClick={() => {
@@ -387,9 +387,9 @@ export function SectionThresholdInput(props: {onChange?: VoidFunction}): ReactEl
 								type={'button'}
 								className={cl(
 									'flex h-6 w-6 items-center justify-center text-center',
-									'outline outline-offset-2 rounded-md focus-within:outline-primary-600',
+									'outline outline-offset-2 rounded-md focus-within:outline-primary',
 									'transition-colors text-neutral-0',
-									'hover:bg-primary-800 disabled:opacity-10 bg-primary-600 '
+									'hover:bg-primary-800 disabled:opacity-10 bg-primary '
 								)}
 								disabled={configuration.threshold >= configuration.owners.length}
 								onClick={() => {
@@ -557,7 +557,7 @@ export function SectionSeedInput(props: {onChange?: VoidFunction}): ReactElement
 							'flex flex-row whitespace-pre rounded-md border p-2 text-xs font-bold',
 							'border-orange-200 !bg-orange-200/60 text-orange-600'
 						)}>
-						<IconWarning className={'mr-2 h-4 w-4 text-orange-600'} />
+						<IconWarning className={'text-orange-600 mr-2 h-4 w-4'} />
 						{'The more characters you add, the longer it will take to find a safe (it can be hours).'}
 					</div>
 				</div>

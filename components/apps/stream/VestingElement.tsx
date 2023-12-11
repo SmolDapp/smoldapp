@@ -5,10 +5,10 @@ import {erc20ABI, useContractReads} from 'wagmi';
 import {useIntervalEffect} from '@react-hookz/web';
 import {YVESTING_SIMPLE_ABI} from '@utils/abi/yVestingSimple.abi';
 import {claimFromVesting} from '@utils/actions';
+import {toAddress} from '@utils/tools.address';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
-import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {toBigInt, toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
 import {defaultTxStatus} from '@yearn-finance/web-lib/utils/web3/transaction';
@@ -161,7 +161,7 @@ export function VestingElement({vesting}: {vesting: TStreamArgs}): ReactElement 
 					</Button>
 				</div>
 			</div>
-			<div className={'mt-4 grid gap-1 rounded-md bg-neutral-100 p-4'}>
+			<div className={'bg-neutral-100 mt-4 grid gap-1 rounded-md p-4'}>
 				<dl className={'mb-2 flex flex-col justify-between md:mb-0 md:flex-row'}>
 					<dt className={'text-xs font-medium text-neutral-900'}>{'Already claimed: '}</dt>
 					<dd className={'font-number text-xs text-neutral-900'}>

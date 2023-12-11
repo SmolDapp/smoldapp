@@ -1,6 +1,6 @@
 import axios from 'axios';
+import {truncateHex} from '@utils/tools.address';
 import {getNetwork} from '@wagmi/core';
-import {truncateHex} from '@yearn-finance/web-lib/utils/address';
 import {toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
 

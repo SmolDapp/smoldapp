@@ -58,7 +58,7 @@ function TokenListHero({list}: {list: TTokenListItem}): ReactElement {
 					<div className={'absolute -top-10 right-0'}>
 						<div
 							className={
-								'w-full rounded-md border border-dashed border-neutral-300 bg-neutral-0 px-3 py-1 text-xs leading-6 text-neutral-500 md:text-sm'
+								'text-neutral-500 w-full rounded-md border border-dashed border-neutral-300 bg-neutral-0 px-3 py-1 text-xs leading-6 md:text-sm'
 							}>
 							{'Last update: '}
 							<span className={'inline-flex items-center pl-2 font-bold text-neutral-900'}>
@@ -82,7 +82,7 @@ function TokenListHero({list}: {list: TTokenListItem}): ReactElement {
 					<h1 className={'mt-1 text-3xl font-bold tracking-tight text-neutral-900 md:mt-1 md:text-4xl'}>
 						{list.name}
 					</h1>
-					<div className={'mt-4 text-base leading-normal text-neutral-500 md:mt-6 md:text-lg md:leading-8'}>
+					<div className={'text-neutral-500 mt-4 text-base leading-normal md:mt-6 md:text-lg md:leading-8'}>
 						{list.description || `A list of token for ${list.name}`}
 						<p className={'text-sm'}>
 							{'Version: '}
@@ -223,7 +223,7 @@ function TokenListContent({list}: {list: TTokenListItem}): ReactElement {
 				<div>
 					<input
 						className={
-							'rounded-md border border-neutral-200 bg-neutral-0 px-3 py-1 text-xs leading-6 text-neutral-500 md:text-sm'
+							'text-neutral-500 rounded-md border border-neutral-200 bg-neutral-0 px-3 py-1 text-xs leading-6 md:text-sm'
 						}
 						type={'text'}
 						placeholder={'Search'}
@@ -248,7 +248,7 @@ function TokenListContent({list}: {list: TTokenListItem}): ReactElement {
 				<div>
 					<select
 						className={
-							'rounded-md border border-neutral-200 bg-neutral-0 px-3 py-1 pr-10 text-xs leading-6 text-neutral-500 md:text-sm'
+							'text-neutral-500 rounded-md border border-neutral-200 bg-neutral-0 px-3 py-1 pr-10 text-xs leading-6 md:text-sm'
 						}
 						value={network}
 						onChange={(e): void => {
@@ -282,7 +282,7 @@ function TokenListContent({list}: {list: TTokenListItem}): ReactElement {
 			</div>
 			<div
 				className={
-					'grid grid-cols-1 divide-y divide-neutral-100 rounded-md border border-neutral-200 bg-neutral-0 md:grid-cols-1'
+					'divide-neutral-100 grid grid-cols-1 divide-y rounded-md border border-neutral-200 bg-neutral-0 md:grid-cols-1'
 				}>
 				{searchResult.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(
 					(item): ReactElement => (
@@ -292,7 +292,7 @@ function TokenListContent({list}: {list: TTokenListItem}): ReactElement {
 							initial={'initial'}
 							whileInView={'enter'}
 							variants={variants as Variants}
-							className={'relative flex w-full p-4 transition-colors hover:bg-neutral-50/40 md:p-6'}>
+							className={'hover:bg-neutral-50/40 relative flex w-full p-4 transition-colors md:p-6'}>
 							<TokenListItem item={item} />
 						</motion.div>
 					)
