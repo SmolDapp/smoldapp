@@ -115,17 +115,18 @@ export function SmolAddressInput(): ReactElement {
 					status === 'loading'
 						? 'borderPulse'
 						: !isFocused && value.error
-						  ? 'bg-red-500'
-						  : isFocused
-						    ? 'bg-neutral-600'
-						    : 'bg-neutral-400'
+							? 'bg-red-500'
+							: isFocused
+								? 'bg-neutral-600'
+								: 'bg-neutral-400'
 				)}
 			/>
 			<label
 				className={cl(
 					'h-20 z-20 relative',
 					'flex flex-row items-center cursor-text',
-					'p-2 pl-4 group bg-neutral-0 rounded-lg'
+					'p-2 pl-4 group bg-neutral-0 rounded-lg',
+					'overflow-y-hidden'
 				)}>
 				<div className={'relative w-full pr-4'}>
 					<input
@@ -145,10 +146,10 @@ export function SmolAddressInput(): ReactElement {
 							isFocused
 								? currentInput.current // If focused, always display what was last inputed
 								: !isFocused && isAddress(currentLabel.current)
-								  ? truncateHex(currentLabel.current, 8) // if it's not focused, and it's an address, display the truncated address
-								  : !isFocused && !isAddress(currentLabel.current)
-								    ? currentLabel.current // if it's not focused, and it's not an address, display the label
-								    : undefined
+									? truncateHex(currentLabel.current, 8) // if it's not focused, and it's an address, display the truncated address
+									: !isFocused && !isAddress(currentLabel.current)
+										? currentLabel.current // if it's not focused, and it's not an address, display the label
+										: undefined
 						}
 						onChange={e => onChange(e.target.value)}
 						onFocus={() => set_isFocused(true)}
