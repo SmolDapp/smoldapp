@@ -399,8 +399,8 @@ function AddressBookCurtain(props: {
 
 const AddressBookCurtainContext = createContext<TAddressBookCurtainProps>(defaultProps);
 export const AddressBookCurtainContextApp = ({children}: {children: React.ReactElement}): React.ReactElement => {
-	const [currentCallbackFunction, set_currentCallbackFunction] = useState<TSelectCallback | undefined>(undefined);
 	const [shouldOpenCurtain, set_shouldOpenCurtain] = useState(false);
+	const [currentCallbackFunction, set_currentCallbackFunction] = useState<TSelectCallback | undefined>(undefined);
 
 	/**************************************************************************
 	 * Callback function that can be used to retrieve an entry from the
