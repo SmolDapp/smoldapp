@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {IconSpinner} from '@icons/IconSpinner';
 import {isZeroAddress, toAddress} from '@utils/tools.address';
-import {Button} from '@yearn-finance/web-lib/components/Button';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import AddressInput, {defaultInputAddressLike} from '@common/AddressInput';
+import {Button} from '@common/Primitives/Button';
 
 import {useUserStreams} from './useUserStreams';
 import {VestingElement} from './VestingElement';

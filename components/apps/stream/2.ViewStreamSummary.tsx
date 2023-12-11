@@ -7,13 +7,13 @@ import {useStream} from '@stream/useStream';
 import {approveERC20, deployVestingContract, isApprovedERC20} from '@utils/actions';
 import {toAddress} from '@utils/tools.address';
 import {AddressLike} from '@yearn-finance/web-lib/components/AddressLike';
-import {Button} from '@yearn-finance/web-lib/components/Button';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
 import {defaultTxStatus} from '@yearn-finance/web-lib/utils/web3/transaction';
 import {Counter} from '@common/Counter';
+import {Button} from '@common/Primitives/Button';
 
 import {getDefaultVestingContract} from './constants';
 import {SuccessModal} from './successModal';

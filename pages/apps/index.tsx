@@ -6,7 +6,7 @@ import {LogoMigrate} from '@icons/LogoMigrate';
 import {LogoMultiSafe} from '@icons/LogoMultiSafe';
 import LogoNFTMigratooor from '@nftmigratooor/Logo';
 import LogoTokenlistooor from '@tokenlistooor/Logo';
-import {Button} from '@yearn-finance/web-lib/components/Button';
+import {Button} from '@common/Primitives/Button';
 
 import type {ReactElement} from 'react';
 
