@@ -337,10 +337,10 @@ function ChainStatus({chain, singleton}: TChainStatusArgs): ReactElement {
 		canDeployOnThatChain.isLoading
 			? 'Loading'
 			: isDeployedOnThatChain
-			  ? 'Deployed'
-			  : canDeployOnThatChain.canDeploy
-			    ? 'CanDeploy'
-			    : 'CannotDeploy'
+				? 'Deployed'
+				: canDeployOnThatChain.canDeploy
+					? 'CanDeploy'
+					: 'CannotDeploy'
 	];
 
 	return (

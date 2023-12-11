@@ -173,7 +173,7 @@ function ComboboxAddressInput({possibleValues, value, onChangeValue, onAddValue}
 						.toLowerCase()
 						.replace(/\s+/g, '')
 						.includes(query.toLowerCase().replace(/\s+/g, ''))
-			  );
+				);
 
 	const filteredBalances = useMemo((): [TToken[], TToken[]] => {
 		const withBalance = [];
@@ -231,7 +231,7 @@ function ComboboxAddressInput({possibleValues, value, onChangeValue, onAddValue}
 									balances?.[toAddress(value)]?.normalized || 0,
 									6,
 									currentElement?.decimals || 18
-							  )}`
+								)}`
 							: 'Available: -'}
 					</small>
 				</div>
