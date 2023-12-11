@@ -169,10 +169,10 @@ export function SmolAddressInput(): ReactElement {
 					status === 'loading'
 						? 'borderPulse'
 						: !isFocused && value.error
-						  ? 'bg-red-500'
-						  : isFocused
-						    ? 'bg-neutral-600'
-						    : 'bg-neutral-400'
+							? 'bg-red-500'
+							: isFocused
+								? 'bg-neutral-600'
+								: 'bg-neutral-400'
 				)}
 			/>
 			<label
@@ -201,14 +201,14 @@ export function SmolAddressInput(): ReactElement {
 							isFocused
 								? currentInput.current // If focused, always display what was last inputed
 								: !isFocused && value.source === 'addressBook' && addressBookEntry?.label
-								  ? addressBookEntry.label // if it's not focused, and it's in the address book, display the label
-								  : !isFocused && isAddress(currentLabel.current) && addressBookEntry
-								    ? truncateHex(currentLabel.current, 8) // if it's not focused, and it's an address, display the truncated address
-								    : !isFocused && isAddress(currentLabel.current)
-								      ? truncateHex(currentLabel.current, 8) // if it's not focused, and it's an address, display the truncated address
-								      : !isFocused && !isAddress(currentLabel.current)
-								        ? currentLabel.current // if it's not focused, and it's not an address, display the label
-								        : undefined
+									? addressBookEntry.label // if it's not focused, and it's in the address book, display the label
+									: !isFocused && isAddress(currentLabel.current) && addressBookEntry
+										? truncateHex(currentLabel.current, 8) // if it's not focused, and it's an address, display the truncated address
+										: !isFocused && isAddress(currentLabel.current)
+											? truncateHex(currentLabel.current, 8) // if it's not focused, and it's an address, display the truncated address
+											: !isFocused && !isAddress(currentLabel.current)
+												? currentLabel.current // if it's not focused, and it's not an address, display the label
+												: undefined
 						}
 						onChange={e => onChange(e.target.value)}
 						onFocus={() => {
@@ -246,7 +246,7 @@ export function SmolAddressInput(): ReactElement {
 					</p>
 				</div>
 				<button
-					onClick={() => onOpenCurtain(v => onSelectItem(v))}
+					onClick={() => onOpenCurtain(selectedEntry => onSelectItem(selectedEntry))}
 					className={cl(
 						'flex items-center gap-4 rounded-lg p-4',
 						'bg-neutral-200 hover:bg-neutral-300 transition-colors'
