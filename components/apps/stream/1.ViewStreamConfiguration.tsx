@@ -5,10 +5,10 @@ import useWallet from 'contexts/useWallet';
 import {addMonths, addYears, isAfter} from 'date-fns';
 import {zeroAddress} from 'viem';
 import IconInfo from '@icons/IconInfo';
+import * as Tooltip from '@radix-ui/react-tooltip';
 import {useDeepCompareEffect, useDeepCompareMemo, useIsMounted, useUpdateEffect} from '@react-hookz/web';
 import {Step, useStream} from '@stream/useStream';
 import {isZeroAddress, toAddress} from '@utils/tools.address';
-import {Button} from '@yearn-finance/web-lib/components/Button';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
 import {ETH_TOKEN_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
@@ -18,8 +18,9 @@ import AddressInput from '@common/AddressInput';
 import {PopoverSettings} from '@common/PopoverSettings';
 import {PopoverSettingsItemExpert} from '@common/PopoverSettings.item.expert';
 import {PopoverSettingsItemTokenList} from '@common/PopoverSettings.item.tokenlist';
+import {Button} from '@common/Primitives/Button';
 import {DatePicker} from '@common/Primitives/DatePicker';
-import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from '@common/Primitives/Tooltip';
+import {TooltipContent} from '@common/Primitives/Tooltip';
 import TokenInput from '@common/TokenInput';
 import ViewSectionHeading from '@common/ViewSectionHeading';
 
@@ -37,19 +38,19 @@ function StreamCustomizedDates(): ReactElement {
 		<Fragment>
 			<div className={'col-span-12 mt-0 flex w-full flex-col'}>
 				<div className={'flex w-full flex-col'}>
-					<TooltipProvider delayDuration={200}>
-						<Tooltip>
-							<TooltipTrigger className={'flex w-fit items-center gap-1 pb-1'}>
+					<Tooltip.Provider delayDuration={200}>
+						<Tooltip.Root>
+							<Tooltip.Trigger className={'flex w-fit items-center gap-1 pb-1'}>
 								<small className={'text-left'}>{'Start Date'}</small>
 								<IconInfo className={'h-3 w-3 text-neutral-900/30'} />
-							</TooltipTrigger>
+							</Tooltip.Trigger>
 							<TooltipContent>
 								<p className={'max-w-xs whitespace-break-spaces text-center'}>
 									{'Select the date and time for your stream to begin.'}
 								</p>
 							</TooltipContent>
-						</Tooltip>
-					</TooltipProvider>
+						</Tooltip.Root>
+					</Tooltip.Provider>
 				</div>
 				<div className={'flex w-full'}>
 					<DatePicker
@@ -63,12 +64,12 @@ function StreamCustomizedDates(): ReactElement {
 
 			<div className={'col-span-12 mt-0 flex w-full flex-col'}>
 				<div className={'flex w-full flex-col'}>
-					<TooltipProvider delayDuration={200}>
-						<Tooltip>
-							<TooltipTrigger className={'flex w-fit items-center gap-1 pb-1'}>
+					<Tooltip.Provider delayDuration={200}>
+						<Tooltip.Root>
+							<Tooltip.Trigger className={'flex w-fit items-center gap-1 pb-1'}>
 								<small className={'text-left'}>{'End Date'}</small>
 								<IconInfo className={'h-3 w-3 text-neutral-900/30'} />
-							</TooltipTrigger>
+							</Tooltip.Trigger>
 							<TooltipContent>
 								<p className={'max-w-xs whitespace-break-spaces text-center'}>
 									{
@@ -76,8 +77,8 @@ function StreamCustomizedDates(): ReactElement {
 									}
 								</p>
 							</TooltipContent>
-						</Tooltip>
-					</TooltipProvider>
+						</Tooltip.Root>
+					</Tooltip.Provider>
 				</div>
 				<div className={'flex w-full'}>
 					<DatePicker
@@ -95,19 +96,19 @@ function StreamCustomizedDates(): ReactElement {
 
 			<div className={'col-span-12 mt-0 flex w-full flex-col'}>
 				<div className={'flex w-full flex-col'}>
-					<TooltipProvider delayDuration={200}>
-						<Tooltip>
-							<TooltipTrigger className={'flex w-fit items-center gap-1 pb-1'}>
+					<Tooltip.Provider delayDuration={200}>
+						<Tooltip.Root>
+							<Tooltip.Trigger className={'flex w-fit items-center gap-1 pb-1'}>
 								<small className={'text-left'}>{'Cliff End'}</small>
 								<IconInfo className={'h-3 w-3 text-neutral-900/30'} />
-							</TooltipTrigger>
+							</Tooltip.Trigger>
 							<TooltipContent>
 								<p className={'max-w-xs whitespace-break-spaces text-center'}>
 									{'Set a cliff date, before which the recipient cannot claim their tokens.'}
 								</p>
 							</TooltipContent>
-						</Tooltip>
-					</TooltipProvider>
+						</Tooltip.Root>
+					</Tooltip.Provider>
 				</div>
 				<div className={'flex w-full'}>
 					<DatePicker

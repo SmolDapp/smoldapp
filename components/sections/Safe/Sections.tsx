@@ -4,17 +4,17 @@ import ChainStatus from 'components/sections/Safe/ChainStatus';
 import IconSquareMinus from '@icons/IconSquareMinus';
 import IconSquarePlus from '@icons/IconSquarePlus';
 import IconWarning from '@icons/IconWarning';
-import {SUPPORTED_CHAINS} from '@utils/constants';
 import {isZeroAddress, toAddress} from '@utils/tools.address';
+import {supportedNetworks, supportedTestNetworks} from '@utils/tools.chains';
 import {fetchTransaction} from '@wagmi/core';
 import {AddressLike} from '@yearn-finance/web-lib/components/AddressLike';
-import {Button} from '@yearn-finance/web-lib/components/Button';
 import {Renderable} from '@yearn-finance/web-lib/components/Renderable';
 import {toast} from '@yearn-finance/web-lib/components/yToast';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
 import AddressInput, {defaultInputAddressLike} from '@common/AddressInput';
 import {AddressLikeInput} from '@common/AddressLikeInput';
 import {Label} from '@common/Label';
+import {Button} from '@common/Primitives/Button';
 
 import {newVoidOwner, useMultiSafe} from './useSafe';
 import {CALL_INIT_SIGNATURE, decodeArgInitializers, retrieveSafeTxHash, SINGLETON_L2, SINGLETON_L2_DDP} from './utils';
@@ -97,15 +97,17 @@ export function SectionPossibleSafes(): ReactElement {
 			shouldRender={!!configuration?.expectedAddress}
 			fallback={<span className={'text-neutral-400'}>{'-'}</span>}>
 			<div className={'mt-1 grid grid-cols-2 gap-2 md:grid-cols-1 md:gap-2'}>
-				{SUPPORTED_CHAINS.filter((chain): boolean => ![5, 324, 1337, 84531].includes(chain.id)).map(
-					(chain): ReactElement => (
-						<ChainStatus
-							key={chain.id}
-							chain={chain}
-							singleton={configuration.factory == 'ssf' ? SINGLETON_L2 : SINGLETON_L2_DDP}
-						/>
-					)
-				)}
+				{supportedNetworks
+					.filter((chain): boolean => ![324].includes(chain.id))
+					.map(
+						(chain): ReactElement => (
+							<ChainStatus
+								key={chain.id}
+								chain={chain}
+								singleton={configuration.factory == 'ssf' ? SINGLETON_L2 : SINGLETON_L2_DDP}
+							/>
+						)
+					)}
 			</div>
 		</Renderable>
 	);
@@ -119,17 +121,15 @@ export function SectionPossibleTestnetsSafes(): ReactElement {
 			shouldRender={!!configuration?.expectedAddress}
 			fallback={<span className={'text-neutral-400'}>{'-'}</span>}>
 			<div className={'border-primary-100 mt-6 grid grid-cols-2 gap-2 border-t pt-6 md:grid-cols-1 md:gap-4'}>
-				{SUPPORTED_CHAINS.filter((chain): boolean => ![324].includes(chain.id))
-					.filter((chain): boolean => [5, 1337, 84531].includes(chain.id))
-					.map(
-						(chain): ReactElement => (
-							<ChainStatus
-								key={chain.id}
-								chain={chain}
-								singleton={configuration.factory == 'ssf' ? SINGLETON_L2 : SINGLETON_L2_DDP}
-							/>
-						)
-					)}
+				{supportedTestNetworks.map(
+					(chain): ReactElement => (
+						<ChainStatus
+							key={chain.id}
+							chain={chain}
+							singleton={configuration.factory == 'ssf' ? SINGLETON_L2 : SINGLETON_L2_DDP}
+						/>
+					)
+				)}
 			</div>
 		</Renderable>
 	);

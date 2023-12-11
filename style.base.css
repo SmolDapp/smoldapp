@@ -15,7 +15,7 @@ h6 {
 	@apply text-base font-bold text-neutral-700;
 }
 small {
-	@apply text-xs font-normal text-neutral-600 leading-tight block;
+	@apply text-xxs font-normal text-neutral-600 block;
 }
 #__next {
 	@apply w-full h-full;
@@ -225,4 +225,60 @@ textarea:focus,
 select:focus {
 	outline: none;
 	box-shadow: none;
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+@keyframes fadeOut {
+	from {
+		opacity: 1;
+	}
+	to {
+		opacity: 0;
+	}
+}
+
+.TooltipContent[data-state='delayed-open'],
+.PopoverContent[data-state='open'] {
+	animation: fadeIn 100ms ease-out;
+}
+.TooltipContent[data-state='closed'],
+.PopoverContent[data-state='closed'] {
+	animation: fadeOut 100ms ease-in;
+}
+
+.skeleton-lg {
+	@apply animate-pulse rounded-lg bg-neutral-300;
+}
+.skeleton-full {
+	@apply animate-pulse rounded-full bg-neutral-300;
+}
+
+.button {
+	@apply cursor-pointer px-5 flex justify-center items-center h-14 text-base transition-all relative;
+	border-radius: var(--default-rounded);
+
+	&[data-variant='filled'] {
+		@apply text-neutral-900 bg-primary font-normal rounded-lg border border-transparent;
+		&:disabled {
+			@apply bg-neutral-600 opacity-40;
+		}
+		&:not(:disabled):not([aria-busy='true']):hover {
+			@apply bg-primary/90;
+		}
+	}
+	&[aria-busy='true'] {
+		@apply cursor-wait;
+		color: transparent !important;
+	}
+	&:disabled {
+		@apply cursor-not-allowed;
+	}
 }

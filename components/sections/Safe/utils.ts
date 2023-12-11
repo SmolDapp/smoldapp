@@ -1,11 +1,10 @@
-import {SUPPORTED_CHAINS} from 'utils/constants';
 import {fromHex, type Hex, pad, toHex} from 'viem';
 import axios from 'axios';
 import {toAddress} from '@utils/tools.address';
+import {supportedNetworks, type TAppExtendedChain} from '@utils/tools.chains';
 import {ZERO_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
 import {getClient, getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 
-import type {TAppExtendedChain} from 'utils/constants';
 import type {TAddress} from '@yearn-finance/web-lib/types';
 import type {TOwners} from './types';
 
@@ -33,7 +32,7 @@ export const DEFAULT_FEES_USD = 4.2;
 export const SMOL_MS = toAddress('0x55537a67607d1985698d41CE2E53a6eB6b8BD555');
 
 export async function retrieveSafeTxHash(address: TAddress): Promise<{hash: Hex; chainID: number} | undefined> {
-	for (const chain of SUPPORTED_CHAINS) {
+	for (const chain of supportedNetworks) {
 		try {
 			const publicClient = getClient(chain.id);
 			const byteCode = await publicClient.getBytecode({address});

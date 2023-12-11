@@ -72,7 +72,7 @@ function checksumAddress(address?: string | null | undefined): TAddressSmol {
 			}
 		}
 	} catch (error) {
-		console.error(error);
+		// console.error(error);
 	}
 	return zeroAddress as TAddressSmol;
 }
@@ -94,7 +94,7 @@ export function truncateHex(address: string | undefined, size: number): string {
 		if (size === 0) {
 			return zeroAddress;
 		}
-		return `${zeroAddress.slice(2, size)}...${zeroAddress.slice(-size)}`;
+		return `0x${zeroAddress.slice(2, size)}...${zeroAddress.slice(-size)}`;
 	}
 
 	if (address !== undefined) {
@@ -104,10 +104,30 @@ export function truncateHex(address: string | undefined, size: number): string {
 		if (address.length <= size * 2 + 4) {
 			return address;
 		}
-		return `${address.slice(2, size)}...${address.slice(-size)}`;
+		return `0x${address.slice(2, size + 2)}...${address.slice(-size)}`;
 	}
 	if (size === 0) {
 		return zeroAddress;
 	}
-	return `${zeroAddress.slice(2, size)}...${zeroAddress.slice(-size)}`;
+	return `0x${zeroAddress.slice(2, size)}...${zeroAddress.slice(-size)}`;
+}
+
+/******************************************************************************
+ ** getColorFromAdddress - Used to generate a color from an address. This color
+ ** is used as background color for the avatar.
+ *****************************************************************************/
+export function getColorFromAdddress({address}: {address: TAddress}): string {
+	if (!address) {
+		return '#000000';
+	}
+	let hash = 0;
+	for (let i = 0; i < address.length; i++) {
+		hash = address.charCodeAt(i) + ((hash << 5) - hash);
+	}
+	let color = '#';
+	for (let i = 0; i < 3; i++) {
+		const value = (hash >> (i * 8)) & 0xff;
+		color += value.toString(16).padStart(2, '0');
+	}
+	return color;
 }

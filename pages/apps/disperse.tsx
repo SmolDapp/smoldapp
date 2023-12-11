@@ -1,5 +1,4 @@
 import React, {Fragment} from 'react';
-import Link from 'next/link';
 import {DefaultSeo} from 'next-seo';
 import Disperse from 'components/sections/Disperse';
 import {DisperseContextApp} from '@disperse/useDisperse';
@@ -7,31 +6,7 @@ import {DisperseContextApp} from '@disperse/useDisperse';
 import type {ReactElement} from 'react';
 
 function DispersePage(): ReactElement {
-	return (
-		<div>
-			<section className={'z-10 mx-auto mt-10 grid w-full max-w-5xl'}>
-				<div className={'mb-0'}>
-					<div className={'flex flex-row items-center justify-between'}>
-						<h2 className={'scroll-m-20 pb-4 text-sm'}>
-							<Link href={'/'}>
-								<span
-									className={
-										'text-neutral-400 transition-colors hover:text-neutral-900 hover:underline'
-									}>
-									{'Smol'}
-								</span>
-							</Link>
-							<span className={'text-neutral-400'}>{' / '}</span>
-							<span className={'font-medium text-neutral-900'}>{'Disperse'}</span>
-						</h2>
-					</div>
-					<div>
-						<Disperse />
-					</div>
-				</div>
-			</section>
-		</div>
-	);
+	return <Disperse />;
 }
 
 DispersePage.getLayout = function getLayout(page: ReactElement): ReactElement {
@@ -66,6 +41,12 @@ DispersePage.getLayout = function getLayout(page: ReactElement): ReactElement {
 			<DisperseContextApp>{page}</DisperseContextApp>
 		</Fragment>
 	);
+};
+
+DispersePage.AppName = 'Disperse';
+DispersePage.AppDescription = 'Transfer funds to multiple receivers';
+DispersePage.getLayout = function getLayout(page: ReactElement): ReactElement {
+	return <Fragment>{page}</Fragment>;
 };
 
 export default DispersePage;

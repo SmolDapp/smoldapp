@@ -55,8 +55,8 @@ export function Migrate(): ReactElement {
 
 	return (
 		<section>
-			<div className={'box-0 grid w-full grid-cols-12'}>
-				<div className={'relative col-span-12 flex flex-col p-4 text-neutral-900 md:p-6'}>
+			<div className={'grid w-full grid-cols-12'}>
+				<div className={'relative col-span-12 flex flex-col text-neutral-900'}>
 					<div className={'w-full md:w-3/4'}>
 						<b>{'Where to migrate?'}</b>
 						<p className={'text-neutral-500 text-sm'}>
