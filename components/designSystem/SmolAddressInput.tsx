@@ -1,6 +1,6 @@
 import React, {useCallback, useRef, useState} from 'react';
 import {getEnsName} from 'viem/ens';
-import {IconAddressBook} from '@icons/IconAddressBook';
+import {IconAppAddressBook} from '@icons/IconApps';
 import {IconChevron} from '@icons/IconChevron';
 import {useAsyncAbortable} from '@react-hookz/web';
 import {isAddress, toAddress, truncateHex} from '@utils/tools.address';
@@ -124,11 +124,11 @@ export function SmolAddressInput(): ReactElement {
 			<label
 				className={cl(
 					'h-20 z-20 relative',
-					'flex flex-row items-center cursor-text',
+					'flex flex-row justify-between items-center cursor-text',
 					'p-2 pl-4 group bg-neutral-0 rounded-lg',
 					'overflow-y-hidden'
 				)}>
-				<div className={'relative w-full pr-4'}>
+				<div className={'relative w-full pr-2'}>
 					<input
 						className={cl(
 							'w-full border-none bg-transparent p-0 text-xl transition-all',
@@ -177,7 +177,7 @@ export function SmolAddressInput(): ReactElement {
 						'flex items-center gap-4 rounded-lg p-4',
 						'bg-neutral-200 hover:bg-neutral-300 transition-colors'
 					)}>
-					<IconAddressBook className={'h-8 w-8 text-neutral-600'} />
+					<IconAppAddressBook className={'h-8 w-8 text-neutral-600'} />
 					<IconChevron className={'h-4 w-4 text-neutral-900'} />
 				</button>
 			</label>
