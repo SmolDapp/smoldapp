@@ -353,7 +353,7 @@ function AddressBookCurtain(props: {
 												}}
 											/>
 										))
-									) : (
+									) : searchValue !== '' ? (
 										<div
 											className={
 												'flex h-[72px] min-h-[72px] w-full items-center justify-center rounded-lg border border-dashed border-neutral-400'
@@ -362,7 +362,7 @@ function AddressBookCurtain(props: {
 												{'No favorite yet.'}
 											</p>
 										</div>
-									)}
+									) : null}
 									<small className={'mt-4'}>{'Available on this chain'}</small>
 									{availableEntries.map(entry => (
 										<Entry
