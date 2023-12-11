@@ -28,7 +28,7 @@ function ComboboxInput(props: TToken & {onChange: (event: ChangeEvent<HTMLInputE
 					}>
 					<Combobox.Input
 						className={
-							'font-inter w-full cursor-default overflow-x-scroll border-none bg-transparent p-0 outline-none scrollbar-none'
+							'font-rubik w-full cursor-default overflow-x-scroll border-none bg-transparent p-0 outline-none scrollbar-none'
 						}
 						displayValue={(): string => props.symbol}
 						placeholder={'0x...'}

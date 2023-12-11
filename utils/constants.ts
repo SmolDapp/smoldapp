@@ -1,44 +1,13 @@
 'use client';
 
-import {arbitrum, base, baseGoerli, bsc, goerli, mainnet, optimism, polygon, polygonZkEvm, zkSync} from 'wagmi/chains';
-import {toAddress} from '@utils/tools.address';
-import {indexedWagmiChains} from '@yearn-finance/web-lib/utils/wagmi/utils';
-
-import {gnosis} from './chains';
+import {toAddress} from '@yearn-finance/web-lib/utils/address';
 
 import type {TAddress, TNDict} from '@yearn-finance/web-lib/types';
-import type {TChainContract, TExtendedChain} from '@yearn-finance/web-lib/utils/wagmi/utils';
 
 export const MATIC_TOKEN_ADDRESS = toAddress('0x0000000000000000000000000000000000001010');
 export const POLYGON_LENS_ADDRESS = toAddress('0xDb46d1Dc155634FbC732f92E853b10B288AD5a1d');
 export const ETHEREUM_ENS_ADDRESS = toAddress('0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85');
-
 export const HEADER_HEIGHT = 64;
-
-export const SUPPORTED_CHAINS = [
-	mainnet,
-	optimism,
-	bsc,
-	gnosis,
-	polygon,
-	polygonZkEvm,
-	// fantom,
-	zkSync,
-	base,
-	arbitrum,
-
-	//Testnets
-	goerli,
-	baseGoerli
-	// localhost
-	// sepolia,
-	// optimismGoerli,
-	// bscTestnet,
-	// polygonMumbai,
-	// polygonZkEvmTestnet,
-	// fantomTestnet,
-	// arbitrumGoerli
-];
 
 export const SUPPORTED_CHAIN_IDS: TNDict<string> = {
 	1: 'Ethereum',
@@ -67,7 +36,7 @@ export const NFTMIGRATOOOR_CONTRACT_PER_CHAIN: TNDict<TAddress> = {
 	42161: toAddress('0x7E08735690028cdF3D81e7165493F1C34065AbA2')
 };
 
-const SAFE_API_URI: {[chainId: number]: string} = {
+export const SAFE_API_URI: {[chainId: number]: string} = {
 	1: 'https://safe-transaction-mainnet.safe.global',
 	5: 'https://safe-transaction-goerli.safe.global',
 	10: 'https://safe-transaction-optimism.safe.global',
@@ -80,7 +49,7 @@ const SAFE_API_URI: {[chainId: number]: string} = {
 	42161: 'https://safe-transaction-arbitrum.safe.global'
 };
 
-export const coingeckoGasCoinIDs: TNDict<string> = {
+export const COINGECKO_GAS_COIN_IDS: TNDict<string> = {
 	1: 'ethereum',
 	10: 'ethereum',
 	56: 'binancecoin',
@@ -91,26 +60,3 @@ export const coingeckoGasCoinIDs: TNDict<string> = {
 	8453: 'ethereum',
 	42161: 'ethereum'
 };
-
-export type TAppExtendedChain = TExtendedChain & {
-	safeApiUri?: string;
-	coingeckoGasCoinID: string;
-	contracts: {
-		nftMigratooorContract?: TChainContract;
-	};
-};
-for (const chain of Object.values(indexedWagmiChains)) {
-	if (!chain || typeof chain !== 'object' || !chain.id) {
-		continue;
-	}
-	const extendedChain = chain as TAppExtendedChain;
-	extendedChain.contracts = {
-		...chain.contracts,
-		nftMigratooorContract: {
-			address: NFTMIGRATOOOR_CONTRACT_PER_CHAIN[chain.id],
-			blockCreated: 0 //not important
-		}
-	};
-	extendedChain.safeApiUri = SAFE_API_URI?.[chain.id] || '';
-	extendedChain.coingeckoGasCoinID = coingeckoGasCoinIDs?.[chain.id] || 'ethereum';
-}

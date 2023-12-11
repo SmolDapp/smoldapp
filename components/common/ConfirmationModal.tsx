@@ -2,8 +2,8 @@ import {Fragment, useState} from 'react';
 import Confetti from 'react-dom-confetti';
 import {Dialog, Transition} from '@headlessui/react';
 import {useUpdateEffect} from '@react-hookz/web';
-import {Button} from '@yearn-finance/web-lib/components/Button';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
+import {Button} from '@common/Primitives/Button';
 
 import type {ReactElement} from 'react';
 
@@ -41,7 +41,7 @@ function SuccessModal(props: TSuccessModal): ReactElement {
 					leave={'ease-in duration-200'}
 					leaveFrom={'opacity-100'}
 					leaveTo={'opacity-0'}>
-					<div className={'fixed inset-0 bg-primary-900/40 backdrop-blur-sm transition-opacity'} />
+					<div className={'bg-primary-900/40 fixed inset-0 backdrop-blur-sm transition-opacity'} />
 				</Transition.Child>
 
 				<div className={'fixed inset-0 z-[1001] flex h-screen w-screen items-center justify-center'}>
@@ -69,7 +69,7 @@ function SuccessModal(props: TSuccessModal): ReactElement {
 									<div className={'text-center'}>
 										<Dialog.Title
 											as={'h3'}
-											className={'text-3xl font-bold leading-6 text-primary-900'}>
+											className={'text-primary-900 text-3xl font-bold leading-6'}>
 											{props.title}
 										</Dialog.Title>
 										<div className={'mt-6'}>

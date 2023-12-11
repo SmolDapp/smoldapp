@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import AddressInput, {defaultInputAddressLike} from 'components/common/AddressInput';
 import {useNFTMigratooor} from '@nftmigratooor/useNFTMigratooor';
 import {isZeroAddress, toAddress} from '@utils/tools.address';
-import {Button} from '@yearn-finance/web-lib/components/Button';
+import {Button} from '@common/Primitives/Button';
 import ViewSectionHeading from '@common/ViewSectionHeading';
 
 import type {TInputAddressLike} from 'components/common/AddressInput';

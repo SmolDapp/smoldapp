@@ -2,9 +2,10 @@
 
 import {cloneElement} from 'react';
 import Link from 'next/link';
+import * as Tooltip from '@radix-ui/react-tooltip';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
 
-import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from './Primitives/Tooltip';
+import {TooltipContent} from './Primitives/Tooltip';
 
 import type {ReactElement} from 'react';
 
@@ -42,9 +43,9 @@ export default function SocialMediaCard(props: TSocialMediaCard): ReactElement {
 	}
 
 	return (
-		<TooltipProvider delayDuration={0}>
-			<Tooltip>
-				<TooltipTrigger>
+		<Tooltip.Provider delayDuration={0}>
+			<Tooltip.Root>
+				<Tooltip.Trigger>
 					<Link
 						suppressHydrationWarning
 						href={props.href}
@@ -67,11 +68,11 @@ export default function SocialMediaCard(props: TSocialMediaCard): ReactElement {
 							</div>
 						</div>
 					</Link>
-				</TooltipTrigger>
+				</Tooltip.Trigger>
 				<TooltipContent>
 					<p>{props.tooltip}</p>
 				</TooltipContent>
-			</Tooltip>
-		</TooltipProvider>
+			</Tooltip.Root>
+		</Tooltip.Provider>
 	);
 }

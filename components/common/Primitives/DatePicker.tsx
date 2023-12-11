@@ -1,12 +1,10 @@
-'use client';
-
 import {useState} from 'react';
 import {format, isAfter, isBefore} from 'date-fns';
-import {Button} from '@yearn-finance/web-lib/components/Button';
+import * as Popover from '@radix-ui/react-popover';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
+import {Button} from '@common/Primitives/Button';
 
 import {Calendar} from './Calendar';
-import {Popover, PopoverContent, PopoverTrigger} from './Popover';
 
 import type {ChangeEventHandler, ReactElement} from 'react';
 
@@ -41,15 +39,15 @@ export function DatePicker({date, onChangeDate, startDate, endDate}: TDatePicker
 					isOpen ? 'bg-neutral-900/10 backdrop-blur-[1px]' : 'bg-neutral-900/0 pointer-events-none'
 				)}
 			/>
-			<Popover open={isOpen}>
-				<PopoverTrigger asChild>
+			<Popover.Root open={isOpen}>
+				<Popover.Trigger asChild>
 					<button
 						onClick={() => set_isOpen(o => !o)}
 						className={cl('smol--input-wrapper text-sm', !date ? 'text-neutral-600/60' : '')}>
 						{date ? format(date, "dd/MM/yyyy 'at' HH:mm") : <span>{'Pick a date'}</span>}
 					</button>
-				</PopoverTrigger>
-				<PopoverContent
+				</Popover.Trigger>
+				<Popover.Content
 					onInteractOutside={() => set_isOpen(false)}
 					className={'w-auto p-0'}
 					align={'start'}>
@@ -96,8 +94,8 @@ export function DatePicker({date, onChangeDate, startDate, endDate}: TDatePicker
 							</div>
 						}
 					/>
-				</PopoverContent>
-			</Popover>
+				</Popover.Content>
+			</Popover.Root>
 		</>
 	);
 }

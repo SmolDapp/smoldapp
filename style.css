@@ -4,14 +4,10 @@
 	font-family: 'Source Code Pro', monospace !important;
 }
 @layer base {
-	.max-w-4xl {
-		@apply max-w-[888px] px-4;
-	}
-	.max-w-5xl {
-		@apply max-w-[992px] px-4;
-	}
+	.max-w-4xl,
+	.max-w-5xl,
 	.max-w-6xl {
-		@apply max-w-[1232px] px-4;
+		@apply px-0;
 	}
 
 	.font-number {
@@ -186,12 +182,6 @@
 		@apply transition-colors hover:bg-neutral-200;
 	}
 }
-.box-100 {
-	@apply bg-neutral-200/40 border border-neutral-200/60 rounded-md;
-	&.hover {
-		@apply transition-colors hover:bg-neutral-200;
-	}
-}
 
 .tooltip {
 	@apply relative cursor-help;
@@ -311,4 +301,27 @@
 	@apply rounded-md;
 	background-color: rgba(0, 0, 0, 0.1);
 	-webkit-box-shadow: 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+.scrollable {
+	@apply -mr-2 pr-1 overflow-y-auto;
+	scrollbar-gutter: stable;
+}
+
+* {
+	scrollbar-color: #f7f7f7;
+	scroll-behavior: smooth;
+
+	&::-webkit-scrollbar {
+		background: #f7f7f7;
+		border-radius: 14px;
+		width: 4px;
+		height: 4px;
+	}
+
+	&::-webkit-scrollbar-thumb {
+		background: #dcdddd;
+		border-radius: 14px;
+		background-clip: padding-box;
+	}
 }
