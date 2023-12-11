@@ -182,7 +182,7 @@ export function SmolAddressInput(): ReactElement {
 					'p-2 pl-4 group bg-neutral-0 rounded-lg',
 					'overflow-y-hidden'
 				)}>
-				<div className={'relative w-full pr-2'}>
+				<div className={'relative w-full pr-4'}>
 					<input
 						ref={inputRef}
 						className={cl(
