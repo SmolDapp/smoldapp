@@ -300,7 +300,7 @@ function DonateBox(): ReactElement {
 											Number(price?.[safeChainID]?.[toAddress(tokenToSend.address)] || 0),
 										0,
 										2
-									)}`
+								  )}`
 								: ''}{' '}
 							&nbsp;
 						</p>
@@ -332,7 +332,7 @@ function DonateBox(): ReactElement {
 										balances?.[toAddress(tokenToSend?.address)]?.normalized || 0,
 										2,
 										6
-									)} ${tokenToSend?.symbol}`
+								  )} ${tokenToSend?.symbol}`
 								: ''}
 							&nbsp;
 						</button>
