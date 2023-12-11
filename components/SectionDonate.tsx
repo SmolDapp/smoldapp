@@ -9,7 +9,6 @@ import {useDeepCompareEffect, useDeepCompareMemo, useUpdateEffect} from '@react-
 import {transferERC20, transferEther} from '@utils/actions';
 import handleInputChangeEventValue from '@utils/handleInputChangeEventValue';
 import {isZeroAddress, toAddress} from '@utils/tools.address';
-import {Button} from '@yearn-finance/web-lib/components/Button';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {ETH_TOKEN_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
@@ -19,6 +18,7 @@ import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 import {defaultTxStatus} from '@yearn-finance/web-lib/utils/web3/transaction';
 import AddressInput, {defaultInputAddressLike} from '@common/AddressInput';
 import {RowCardWithIcon} from '@common/CardWithIcon';
+import {Button} from '@common/Primitives/Button';
 import {MultipleTokenSelector} from '@common/TokenInput/TokenSelector';
 
 import type {ChangeEvent, Dispatch, ReactElement, SetStateAction} from 'react';
@@ -300,7 +300,7 @@ function DonateBox(): ReactElement {
 											Number(price?.[safeChainID]?.[toAddress(tokenToSend.address)] || 0),
 										0,
 										2
-								  )}`
+									)}`
 								: ''}{' '}
 							&nbsp;
 						</p>
@@ -332,7 +332,7 @@ function DonateBox(): ReactElement {
 										balances?.[toAddress(tokenToSend?.address)]?.normalized || 0,
 										2,
 										6
-								  )} ${tokenToSend?.symbol}`
+									)} ${tokenToSend?.symbol}`
 								: ''}
 							&nbsp;
 						</button>

@@ -11,8 +11,8 @@ import {
 import {useMultiSafe} from 'components/sections/Safe/useSafe';
 import {concat, encodePacked, getContractAddress, hexToBigInt, keccak256, toHex} from 'viem';
 import {isZeroAddress} from '@utils/tools.address';
-import {Button} from '@yearn-finance/web-lib/components/Button';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
+import {Button} from '@common/Primitives/Button';
 
 import {
 	generateArgInitializers,
@@ -141,7 +141,7 @@ function NewSafe(): ReactElement {
 								'rounded-md border border-orange-200 !bg-orange-200/60',
 								'text-xs font-bold text-orange-600 md:whitespace-pre'
 							)}>
-							<IconWarning className={'mr-2 mt-[1px] h-4 w-4 min-w-[16px] text-orange-600'} />
+							<IconWarning className={'text-orange-600 mr-2 mt-[1px] h-4 w-4 min-w-[16px]'} />
 							{'At least 1/2 threshold is recommanded to avoid issues.\n'}
 							{'You can use any other wallet or even the Safe app on your phone as another owner.'}
 						</div>

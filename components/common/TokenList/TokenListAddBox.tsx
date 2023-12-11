@@ -3,12 +3,12 @@ import axios from 'axios';
 import {IconCircleCheck} from '@icons/IconCircleCheck';
 import {IconCircleCross} from '@icons/IconCircleCross';
 import {erc20ABI, readContracts} from '@wagmi/core';
-import {Button} from '@yearn-finance/web-lib/components/Button';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {IconLoader} from '@yearn-finance/web-lib/icons/IconLoader';
 import {decodeAsBigInt, decodeAsNumber, decodeAsString} from '@yearn-finance/web-lib/utils/decoder';
 import {toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import AddressInput, {defaultInputAddressLike} from '@common/AddressInput';
+import {Button} from '@common/Primitives/Button';
 
 import type {TInputAddressLike} from '@common/AddressInput';
 import type {TToken, TTokenList} from '@utils/types/types';
@@ -133,7 +133,7 @@ function TokenListAddBox({onAddTokenList, onAddToken}: TTokenListAddBox): React.
 
 	return (
 		<div className={'mt-4 px-4 md:mt-6 md:px-6'}>
-			<div className={'rounded-md bg-primary-50 p-2 md:p-4'}>
+			<div className={'bg-primary-50 rounded-md p-2 md:p-4'}>
 				<p className={'text-sm text-neutral-700'}>
 					{
 						"Need more tokens? Add a single token via it's contract address, or add a custom token list for extra tokens. You can also browse existing token lists "
@@ -142,7 +142,7 @@ function TokenListAddBox({onAddTokenList, onAddToken}: TTokenListAddBox): React.
 						href={'https://smold.app/tokenlistooor'}
 						target={'_blank'}
 						rel={'noreferrer'}
-						className={'font-medium text-primary-900 hover:underline'}>
+						className={'text-primary-900 font-medium hover:underline'}>
 						{'here'}
 					</a>
 					{'.'}

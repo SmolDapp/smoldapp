@@ -72,7 +72,7 @@ function checksumAddress(address?: string | null | undefined): TAddressSmol {
 			}
 		}
 	} catch (error) {
-		console.error(error);
+		// console.error(error);
 	}
 	return zeroAddress as TAddressSmol;
 }
@@ -94,7 +94,7 @@ export function truncateHex(address: string | undefined, size: number): string {
 		if (size === 0) {
 			return zeroAddress;
 		}
-		return `${zeroAddress.slice(2, size)}...${zeroAddress.slice(-size)}`;
+		return `0x${zeroAddress.slice(2, size)}...${zeroAddress.slice(-size)}`;
 	}
 
 	if (address !== undefined) {
@@ -104,10 +104,10 @@ export function truncateHex(address: string | undefined, size: number): string {
 		if (address.length <= size * 2 + 4) {
 			return address;
 		}
-		return `${address.slice(2, size)}...${address.slice(-size)}`;
+		return `0x${address.slice(2, size + 2)}...${address.slice(-size)}`;
 	}
 	if (size === 0) {
 		return zeroAddress;
 	}
-	return `${zeroAddress.slice(2, size)}...${zeroAddress.slice(-size)}`;
+	return `0x${zeroAddress.slice(2, size)}...${zeroAddress.slice(-size)}`;
 }

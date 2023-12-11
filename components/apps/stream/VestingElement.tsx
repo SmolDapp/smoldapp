@@ -6,7 +6,6 @@ import {useIntervalEffect} from '@react-hookz/web';
 import {YVESTING_SIMPLE_ABI} from '@utils/abi/yVestingSimple.abi';
 import {claimFromVesting} from '@utils/actions';
 import {toAddress} from '@utils/tools.address';
-import {Button} from '@yearn-finance/web-lib/components/Button';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {toBigInt, toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
@@ -14,6 +13,7 @@ import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
 import {defaultTxStatus} from '@yearn-finance/web-lib/utils/web3/transaction';
 import {Counter} from '@common/Counter';
 import {ImageWithFallback} from '@common/ImageWithFallback';
+import {Button} from '@common/Primitives/Button';
 
 import type {ReactElement} from 'react';
 import type {TStreamArgs} from './useUserStreams';
