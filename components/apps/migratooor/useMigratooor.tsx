@@ -2,8 +2,8 @@ import React, {createContext, useContext, useEffect, useMemo, useState} from 're
 import {scrollToTargetAdjusted} from 'utils/animations';
 import {HEADER_HEIGHT} from 'utils/constants';
 import {useUpdateEffect} from '@react-hookz/web';
+import {toAddress} from '@utils/tools.address';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
-import {toAddress} from '@yearn-finance/web-lib/utils/address';
 
 import type {Dispatch, SetStateAction} from 'react';
 import type {TAddress, TDict} from '@yearn-finance/web-lib/types';

@@ -4,8 +4,8 @@ import {decodeAsset} from 'utils/decodeAsset';
 import {retrieveENSNameFromNode} from 'utils/tools.ens';
 import {getAbiItem, parseAbi} from 'viem';
 import {erc721ABI} from 'wagmi';
+import {toAddress} from '@utils/tools.address';
 import {multicall} from '@wagmi/core';
-import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import {getClient} from '@yearn-finance/web-lib/utils/wagmi/utils';
 

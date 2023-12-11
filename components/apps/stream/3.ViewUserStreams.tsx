@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {IconSpinner} from '@icons/IconSpinner';
+import {isZeroAddress, toAddress} from '@utils/tools.address';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
-import {isZeroAddress, toAddress} from '@yearn-finance/web-lib/utils/address';
 import AddressInput, {defaultInputAddressLike} from '@common/AddressInput';
 
 import {useUserStreams} from './useUserStreams';
@@ -28,7 +28,7 @@ function ViewUserStreams(): ReactElement {
 				<div className={'relative col-span-12 flex flex-col p-4 text-neutral-900 md:p-6'}>
 					<div className={'w-full md:w-3/4'}>
 						<b>{'Wow! Digital bearer assets flying through cyberspace every single second.'}</b>
-						<p className={'text-sm text-neutral-500'}>
+						<p className={'text-neutral-500 text-sm'}>
 							{'Feel free to claim your tokens whenever and your stream will keep streaming.'}
 						</p>
 					</div>
@@ -55,11 +55,11 @@ function ViewUserStreams(): ReactElement {
 						</form>
 					</div>
 
-					<div className={'box-0 mt-4 gap-6 divide-y divide-primary-200/60 md:mt-6'}>
+					<div className={'box-0 divide-primary-200/60 mt-4 gap-6 divide-y md:mt-6'}>
 						{isFetching ? (
 							<div className={'col-span-12 flex min-h-[200px] flex-col items-center justify-center p-4'}>
 								<IconSpinner />
-								<p className={'mt-6 text-center text-sm text-neutral-500'}>
+								<p className={'text-neutral-500 mt-6 text-center text-sm'}>
 									{
 										'Just a second anon, an intern is racing through the digital ether to fetch your streams.'
 									}
@@ -78,7 +78,7 @@ function ViewUserStreams(): ReactElement {
 										fill={'currentcolor'}
 									/>
 								</svg>
-								<p className={'mt-6 text-center text-sm text-neutral-500'}>
+								<p className={'text-neutral-500 mt-6 text-center text-sm'}>
 									{
 										'Oh no. Looks like you don’t have any streams yet. Feel free to set one up. Could be fun?'
 									}

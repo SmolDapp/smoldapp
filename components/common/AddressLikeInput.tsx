@@ -5,8 +5,8 @@ import IconWarning from 'components/icons/IconWarning';
 import {checkENSValidity} from 'utils/tools.ens';
 import {checkLensValidity} from 'utils/tools.lens';
 import {useUpdateEffect} from '@react-hookz/web';
+import {isZeroAddress, toAddress} from '@utils/tools.address';
 import {IconLoader} from '@yearn-finance/web-lib/icons/IconLoader';
-import {isZeroAddress, toAddress} from '@yearn-finance/web-lib/utils/address';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
 
 import type {ReactElement} from 'react';

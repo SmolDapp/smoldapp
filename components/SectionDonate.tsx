@@ -8,10 +8,10 @@ import {LogoDisperse} from '@icons/LogoDisperse';
 import {useDeepCompareEffect, useDeepCompareMemo, useUpdateEffect} from '@react-hookz/web';
 import {transferERC20, transferEther} from '@utils/actions';
 import handleInputChangeEventValue from '@utils/handleInputChangeEventValue';
+import {isZeroAddress, toAddress} from '@utils/tools.address';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
-import {isZeroAddress, toAddress} from '@yearn-finance/web-lib/utils/address';
 import {ETH_TOKEN_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
 import {type TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
@@ -422,17 +422,3 @@ function SectionDonate(): ReactElement {
 	);
 }
 export default SectionDonate;
-
-// Hey ser,
-
-// Just got off a team call re Bagel. The general sentiment is that we’re feeling fairly stretched thin and want to focus on the work and projects we have rather than take on new ones.
-
-// It doesn’t feel good to say yes to more work with an uneasy feeling of under delivering on it.
-
-// Transparently (I’m sure Major will message about this separately) but dev time is our main bottle neck currently, however we think it’s the right thing to make a team decision about this.
-
-// I’m sure it’s not the answer you were hoping for, but I hope our reasoning makes sense.
-
-// Hello sers
-// Draper already notified Pickle about this, but Mom will not take back Bagel and on the dev side we just don't have the capacity to do this without rugging our time on the rest of Yearn's projects.
-// I am also not comfortable to work on something I am not 100% sure or excited about, and even if I can see the benefits of such project, the current timeline and the way isn't the right one for me

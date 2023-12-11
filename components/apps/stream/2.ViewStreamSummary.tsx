@@ -5,11 +5,11 @@ import {IconChevronBoth} from '@icons/IconChevronBoth';
 import {useIntervalEffect} from '@react-hookz/web';
 import {useStream} from '@stream/useStream';
 import {approveERC20, deployVestingContract, isApprovedERC20} from '@utils/actions';
+import {toAddress} from '@utils/tools.address';
 import {AddressLike} from '@yearn-finance/web-lib/components/AddressLike';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
-import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
 import {defaultTxStatus} from '@yearn-finance/web-lib/utils/web3/transaction';
@@ -228,7 +228,7 @@ function ViewStreamSummary(): ReactElement {
 				<div className={'relative col-span-12 flex flex-col p-4 text-neutral-900 md:p-6'}>
 					<div className={'w-full md:w-3/4'}>
 						<b>{'Let’s practice safe streaming'}</b>
-						<p className={'text-sm text-neutral-500'}>
+						<p className={'text-neutral-500 text-sm'}>
 							{'Before we set up your stream let’s take a moment to check all the details are correct.'}
 						</p>
 					</div>
@@ -299,14 +299,14 @@ function ViewStreamSummary(): ReactElement {
 								<div className={'absolute right-4 top-4'}>
 									<IconChevronBoth
 										className={
-											'h-4 w-4 text-neutral-500 transition-colors group-hover:text-neutral-900'
+											'text-neutral-500 h-4 w-4 transition-colors group-hover:text-neutral-900'
 										}
 									/>
 								</div>
 							</summary>
 							<div className={'p-4 pt-0'}>
 								<small className={'ml-1 pb-1 text-left'}>{'Params'}</small>
-								<div className={'rounded-md bg-primary-100 p-4 opacity-80'}>
+								<div className={'bg-primary-100 rounded-md p-4 opacity-80'}>
 									<dl className={'mb-2 flex flex-col justify-between md:mb-0 md:flex-row'}>
 										<dt className={'text-xs font-medium text-neutral-900'}>{'Token'}</dt>
 										<dd className={'font-number truncate text-xs text-neutral-900'}>

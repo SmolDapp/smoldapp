@@ -4,15 +4,6 @@ const plugin = require('tailwindcss/plugin');
 const defaultTheme = require('tailwindcss/defaultTheme');
 const colors = require('tailwindcss/colors');
 
-function withOpacityValue(variable) {
-	return ({opacityValue}) => {
-		if (opacityValue === undefined) {
-			return `hsl(var(${variable}))`;
-		}
-		return `hsl(var(${variable}) / ${opacityValue})`;
-	};
-}
-
 module.exports = {
 	content: [
 		'./components/**/*.{js,ts,jsx,tsx}',
@@ -32,50 +23,22 @@ module.exports = {
 			white: 'rgb(255, 255, 255)',
 			transparent: 'transparent',
 			inherit: 'inherit',
-			primary: {
-				0: '#FFFFFF',
-				50: '#ebf4f3',
-				100: '#d7eae6',
-				200: '#b0d5cd',
-				300: '#88bfb5',
-				400: '#61aa9c',
-				500: '#399583',
-				600: '#2e7769',
-				700: '#22594f',
-				800: '#173c34',
-				900: '#0b1e1a'
-			},
-			orange: {
-				50: '#fff7ed',
-				100: '#ffedd5',
-				200: '#fed7aa',
-				300: '#fdba74',
-				400: '#fb923c',
-				500: '#f97316',
-				600: '#ea580c',
-				700: '#c2410c',
-				800: '#9a3412',
-				900: '#7c2d12',
-				950: '#431407'
-			},
+			primary: '#FFD915',
 			neutral: {
 				0: '#FFFFFF',
-				50: '#F4F6FC',
-				100: '#F8F9FD',
-				200: '#F1F5FF',
-				300: '#D3D9E2',
-				400: '#ADB1BD',
-				500: withOpacityValue('--color-neutral-500'),
-				600: withOpacityValue('--color-neutral-600'),
-				700: withOpacityValue('--color-neutral-700'),
-				800: withOpacityValue('--color-neutral-800'),
-				900: '#242833'
+				// 50: '', unavailable
+				// 100: '', unavailable
+				200: '#F7F7F7',
+				300: '#F3F3F3',
+				400: '#DCDDDD',
+				// 500: '', unavailable
+				600: '#ADB1BD',
+				700: '#474F59',
+				800: '#272B30',
+				900: '#060B11'
 			},
-			pink: colors.pink,
 			red: colors.rose,
-			green: colors.emerald,
-			blue: colors.blue,
-			teal: colors.teal
+			green: colors.emerald
 		},
 		extend: {
 			fontFamily: {

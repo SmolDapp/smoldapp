@@ -5,7 +5,7 @@ import {IconCircleCheck} from 'components/icons/IconCircleCheck';
 import {useWallet} from 'contexts/useWallet';
 import axios from 'axios';
 import {useMountEffect, useThrottledCallback} from '@react-hookz/web';
-import {toAddress} from '@yearn-finance/web-lib/utils/address';
+import {toAddress} from '@utils/tools.address';
 
 import type {TTokenListItem, TTokenListSummary} from 'pages/tokenlistooor';
 import type {ReactElement} from 'react';
@@ -129,7 +129,7 @@ function TokenListsSelector(): ReactElement {
 										target={'_blank'}
 										rel={'noopener noreferrer'}
 										className={
-											'cursor-pointer font-mono text-xs text-neutral-500 transition-colors hover:text-neutral-900'
+											'text-neutral-500 cursor-pointer font-mono text-xs transition-colors hover:text-neutral-900'
 										}>
 										{`${list.URI.replace(
 											'https://raw.githubusercontent.com/Migratooor/tokenLists/main/lists/',

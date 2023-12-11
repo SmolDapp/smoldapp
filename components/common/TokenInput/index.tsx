@@ -4,7 +4,7 @@ import handleInputChangeEventValue from 'utils/handleInputChangeEventValue';
 import {useAnimate} from 'framer-motion';
 import {IconCircleCross} from '@icons/IconCircleCross';
 import {useClickOutside} from '@react-hookz/web';
-import {toAddress} from '@yearn-finance/web-lib/utils/address';
+import {toAddress} from '@utils/tools.address';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
 import {toBigInt, toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';

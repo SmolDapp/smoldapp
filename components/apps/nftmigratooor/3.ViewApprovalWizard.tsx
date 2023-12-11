@@ -6,10 +6,10 @@ import {useSafeAppsSDK} from '@gnosis.pm/safe-apps-react-sdk';
 import ApprovalWizardItem from '@nftmigratooor/ApprovalWizardItem';
 import {useNFTMigratooor} from '@nftmigratooor/useNFTMigratooor';
 import {useUpdateEffect} from '@react-hookz/web';
+import {toAddress} from '@utils/tools.address';
 import {erc721ABI, multicall} from '@wagmi/core';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
-import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {decodeAsBoolean} from '@yearn-finance/web-lib/utils/decoder';
 import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import {defaultTxStatus} from '@yearn-finance/web-lib/utils/web3/transaction';
@@ -518,7 +518,7 @@ function ViewApprovalWizard(): ReactElement {
 					}>
 					<div className={'mb-6 w-full'}>
 						<b>{'Review and proceed'}</b>
-						<p className={'text-sm text-neutral-500'}>
+						<p className={'text-neutral-500 text-sm'}>
 							{
 								'This is a multiple steps process. If you are sending multiple NFTs from the same collection, you will need to approve the collection to transfer them, otherwise you will just need to transfer each NFT individually.'
 							}

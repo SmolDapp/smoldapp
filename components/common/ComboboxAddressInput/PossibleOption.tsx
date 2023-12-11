@@ -2,7 +2,7 @@ import React, {useMemo} from 'react';
 import useWallet from 'contexts/useWallet';
 import {Combobox} from '@headlessui/react';
 import {IconCircleCheck} from '@icons/IconCircleCheck';
-import {toAddress} from '@yearn-finance/web-lib/utils/address';
+import {toAddress} from '@utils/tools.address';
 import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
 import {ImageWithFallback} from '@common/ImageWithFallback';
 
@@ -33,7 +33,7 @@ function Option(props: TToken): ReactElement {
 						{`- ${formatAmount(getBalance(toAddress(props.address))?.normalized, 6, 6)} ${props.symbol}`}
 					</small>
 				</div>
-				<small className={'font-number text-xs text-neutral-500'}>{toAddress(props.address)}</small>
+				<small className={'font-number text-neutral-500 text-xs'}>{toAddress(props.address)}</small>
 			</div>
 		</div>
 	);
