@@ -16,6 +16,8 @@ type TCurtainElement = {
 	trigger: ReactElement;
 };
 export function InfoCurtain(props: TCurtainElement): ReactElement {
+	//The useIsMounted `@react-hookz/web` is not working properly with this component, so we use this workaround to
+	// prevent the Dialog.Root from rendering on the server.
 	const [isMounted, set_isMounted] = useState<boolean>(false);
 	useEffect(() => set_isMounted(true), []);
 
