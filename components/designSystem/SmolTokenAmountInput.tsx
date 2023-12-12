@@ -1,29 +1,29 @@
-import React, {useCallback, useRef, useState} from 'react';
+import React, {useState} from 'react';
+import {useBalancesCurtain} from 'contexts/useBalancesCurtain';
+import useWallet from 'contexts/useWallet';
 import {IconChevron} from '@icons/IconChevron';
-import {useAsyncAbortable} from '@react-hookz/web';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
+import {parseUnits, toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import {ImageWithFallback} from '@common/ImageWithFallback';
 
 import type {ReactElement} from 'react';
-import type {TAddress} from '@yearn-finance/web-lib/types';
 import type {TToken} from '@utils/types/types';
 
 type TTokenAmountInputLike = {
 	amount: string | undefined;
-	label: string;
+	selectedToken: TToken | undefined;
 	isValid: boolean | 'undetermined';
 	error?: string | undefined;
 };
 
 export const defaultTokenInputLike = {
-	amount: undefined,
-	label: '',
+	amount: '',
+	selectedToken: undefined,
 	isValid: false
 };
 
 type TTokenAmountInput = {
 	showPercentButtons?: boolean;
-	tokens: TToken[];
 };
 
 const percentIntervals = [25, 50, 75, 100];
@@ -31,53 +31,57 @@ const percentIntervals = [25, 50, 75, 100];
 export function SmolTokenAmountInput({showPercentButtons = false}: TTokenAmountInput): ReactElement {
 	const [, set_isFocused] = useState<boolean>(false);
 	const [value, set_value] = useState<TTokenAmountInputLike>(defaultTokenInputLike);
-	const currentAmount = useRef<TAddress | undefined>(defaultTokenInputLike.amount);
 
-	const [selectedToken] = useState<TToken | undefined>(undefined);
+	const {onOpenCurtain} = useBalancesCurtain();
 
-	const [{status}, actions] = useAsyncAbortable(
-		async (signal, input: string): Promise<void> =>
-			new Promise<void>(async (resolve, reject): Promise<void> => {
-				if (signal.aborted) {
-					console.warn('aborted');
-					reject(new Error('Aborted!'));
-				} else {
-					currentAmount.current = undefined;
+	const {getBalance} = useWallet();
 
-					if (input === '') {
-						set_value(defaultTokenInputLike);
-						return resolve();
-					}
+	const {selectedToken} = value;
 
-					if (+input > 0) {
-						set_value({amount: input, label: input, isValid: 'undetermined'});
-						return resolve();
-					}
-					currentAmount.current = undefined;
+	const selectedTokenBalance = selectedToken
+		? getBalance(selectedToken.address)
+		: {
+				raw: 0n,
+				normalized: 0
+			};
 
-					set_value({amount: undefined, label: input, isValid: false, error: 'Token amount should be > 0'});
-					resolve();
-				}
-			}),
-		undefined
-	);
+	const logoAltSrc = `${process.env.SMOL_ASSETS_URL}/token/${selectedToken?.chainID}/${selectedToken?.address}/logo-32.png`;
 
-	const onChange = useCallback(
-		(label: string): void => {
-			actions.abort();
-			actions.execute(label);
-		},
-		[actions]
-	);
+	const onChange = (amount: string): void => {
+		if (amount === '') {
+			return set_value(prev => ({...defaultTokenInputLike, selectedToken: prev.selectedToken}));
+		}
+
+		if (+amount > 0) {
+			const inputBigInt =
+				amount && selectedToken?.decimals ? parseUnits(amount, selectedToken.decimals) : toBigInt(0);
+
+			if (inputBigInt > selectedTokenBalance.raw) {
+				return set_value(prev => ({...prev, amount, isValid: false, error: 'Insufficient Balance'}));
+			}
+			return set_value(prev => ({...prev, amount, isValid: true, error: undefined}));
+		}
+
+		set_value(prev => ({
+			...prev,
+			amount: undefined,
+			isValid: false,
+			error: 'The amount is invalid'
+		}));
+	};
+
+	const onClickMax = (): void => {
+		set_value(prev => ({
+			...prev,
+			amount: selectedTokenBalance.normalized.toString(),
+			isValid: true,
+			error: undefined
+		}));
+	};
 
 	return (
 		<div className={'relative h-full w-full rounded-lg p-[1px]'}>
-			<div
-				className={cl(
-					'absolute inset-0 z-0 rounded-[9px]',
-					status === 'loading' ? 'borderPulse' : 'bg-neutral-300'
-				)}
-			/>
+			<div className={'absolute inset-0 z-0 rounded-[9px] bg-neutral-300'} />
 			<label
 				className={cl(
 					'h-20 w-[444px] z-20 relative',
@@ -97,7 +101,7 @@ export function SmolTokenAmountInput({showPercentButtons = false}: TTokenAmountI
 						autoComplete={'off'}
 						autoCorrect={'off'}
 						spellCheck={'false'}
-						value={currentAmount.current}
+						value={value.amount}
 						onChange={e => onChange(e.target.value)}
 						onFocus={() => set_isFocused(true)}
 						onBlur={() => set_isFocused(false)}
@@ -115,11 +119,21 @@ export function SmolTokenAmountInput({showPercentButtons = false}: TTokenAmountI
 									</button>
 								))}
 							</div>
+						) : selectedTokenBalance.normalized ? (
+							<p>
+								{'You have '}
+								{selectedTokenBalance.normalized}
+							</p>
 						) : (
-							<p>{'You have 42000.696969'}</p>
+							<p>{'No token selected'}</p>
 						)}
 
-						<button className={'rounded-md px-2 py-1 transition-colors hover:bg-neutral-200'}>
+						<button
+							className={
+								'rounded-md px-2 py-1 transition-colors hover:bg-neutral-200 disabled:cursor-not-allowed disabled:opacity-40'
+							}
+							onClick={onClickMax}
+							disabled={!selectedToken}>
 							{'MAX'}
 						</button>
 					</div>
@@ -128,17 +142,18 @@ export function SmolTokenAmountInput({showPercentButtons = false}: TTokenAmountI
 					className={cl(
 						'flex items-center gap-4 rounded-lg p-4 max-w-[176px] w-full',
 						'bg-neutral-200 hover:bg-neutral-300 transition-colors'
-					)}>
+					)}
+					onClick={() =>
+						onOpenCurtain(selectedToken => set_value(prev => ({...prev, amount: '', selectedToken})))
+					}>
 					<div className={'flex w-full max-w-[116px] gap-2'}>
 						<div className={'h-6 w-6'}>
 							<ImageWithFallback
-								alt={selectedToken?.name || ''}
-								unoptimized={!selectedToken?.logoURI?.includes('assets.smold.app') || true}
-								src={
-									selectedToken?.logoURI?.includes('assets.smold.app')
-										? `${process.env.SMOL_ASSETS_URL}/token/${selectedToken.chainID}/${selectedToken.address}/logo-32.png`
-										: selectedToken?.logoURI || ''
-								}
+								alt={selectedToken?.symbol || ''}
+								unoptimized
+								src={selectedToken?.logoURI || logoAltSrc}
+								altSrc={logoAltSrc}
+								quality={90}
 								width={24}
 								height={24}
 							/>

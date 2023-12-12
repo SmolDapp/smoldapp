@@ -453,4 +453,10 @@ export const AddressBookCurtainContextApp = ({children}: {children: React.ReactE
 	);
 };
 
-export const useAddressBookCurtain = (): TAddressBookCurtainProps => useContext(AddressBookCurtainContext);
+export const useAddressBookCurtain = (): TAddressBookCurtainProps => {
+	const ctx = useContext(AddressBookCurtainContext);
+	if (!ctx) {
+		throw new Error('AddressBookCurtainContext not found');
+	}
+	return ctx;
+};

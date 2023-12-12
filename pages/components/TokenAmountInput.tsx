@@ -1,13 +1,11 @@
 import {useEffect} from 'react';
 import {SmolTokenAmountInput} from 'components/designSystem/SmolTokenAmountInput';
-import {useTokensWithBalance} from 'hooks/useTokensWithBalance';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 
 import type {ReactElement} from 'react';
 
 export default function TokenAmountInput(): ReactElement {
 	const {address, isActive, onConnect} = useWeb3();
-	const tokensWithBalance = useTokensWithBalance();
 
 	useEffect((): void => {
 		if (!isActive && !address) {
@@ -19,7 +17,7 @@ export default function TokenAmountInput(): ReactElement {
 	return (
 		<div className={'fixed inset-0 flex items-center justify-center'}>
 			<div className={'flex items-center justify-center rounded-lg bg-neutral-0 p-4'}>
-				<SmolTokenAmountInput tokens={tokensWithBalance} />
+				<SmolTokenAmountInput />
 			</div>
 		</div>
 	);
