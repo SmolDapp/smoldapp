@@ -29,7 +29,6 @@ type TTokenAmountInput = {
 const percentIntervals = [25, 50, 75, 100];
 
 export function SmolTokenAmountInput({showPercentButtons = false}: TTokenAmountInput): ReactElement {
-	const [, set_isFocused] = useState<boolean>(false);
 	const [value, set_value] = useState<TTokenAmountInputLike>(defaultTokenInputLike);
 
 	const {onOpenCurtain} = useBalancesCurtain();
@@ -103,8 +102,9 @@ export function SmolTokenAmountInput({showPercentButtons = false}: TTokenAmountI
 						spellCheck={'false'}
 						value={value.amount}
 						onChange={e => onChange(e.target.value)}
-						onFocus={() => set_isFocused(true)}
-						onBlur={() => set_isFocused(false)}
+						max={selectedTokenBalance.normalized}
+						min={0}
+						step={1}
 					/>
 					<div className={'flex items-center justify-between text-xs text-[#ADB1BD]'}>
 						{value.error ? (
