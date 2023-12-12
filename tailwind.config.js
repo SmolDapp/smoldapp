@@ -24,6 +24,7 @@ module.exports = {
 			transparent: 'transparent',
 			inherit: 'inherit',
 			primary: '#FFD915',
+			primaryHover: '#FFE043',
 			neutral: {
 				0: '#FFFFFF',
 				// 50: '', unavailable
