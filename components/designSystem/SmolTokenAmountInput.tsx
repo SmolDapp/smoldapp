@@ -106,9 +106,9 @@ export function SmolTokenAmountInput({showPercentButtons = false}: TTokenAmountI
 						onFocus={() => set_isFocused(true)}
 						onBlur={() => set_isFocused(false)}
 					/>
-					<div className={'flex items-center justify-between text-xs text-[#ADB1BD] '}>
+					<div className={'flex items-center justify-between text-xs text-[#ADB1BD]'}>
 						{value.error ? (
-							<p className={cl('transition-all', 'text-red-500')}>{value.error}</p>
+							<p className={'text-red'}>{value.error}</p>
 						) : showPercentButtons ? (
 							<div className={'flex gap-1 '}>
 								{percentIntervals.map(percent => (
