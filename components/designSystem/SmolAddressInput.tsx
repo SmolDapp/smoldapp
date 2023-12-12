@@ -188,24 +188,28 @@ export function SmolAddressInput(): ReactElement {
 		return undefined;
 	}, [addressBookEntry, isFocused, value.source]);
 
+	const borderColor = useMemo((): string => {
+		if (status === 'loading') {
+			return 'border-neutral-600';
+		}
+		if (!isFocused && value.error) {
+			return 'border-red-500';
+		}
+		if (isFocused && value.isValid === true && hasTyped) {
+			return 'border-green-500';
+		}
+		if (isFocused && value.isValid === false && hasTyped) {
+			return 'border-red-500';
+		}
+		if (isFocused) {
+			return 'border-neutral-600';
+		}
+		return 'border-neutral-200';
+	}, [hasTyped, isFocused, status, value.error, value.isValid]);
+
 	return (
 		<div className={'group relative h-full w-full max-w-[442px] rounded-lg p-[1px]'}>
-			<div
-				className={cl(
-					'absolute inset-0 z-0 rounded-[9px] transition-colors',
-					status === 'loading'
-						? 'bg-neutral-600'
-						: !isFocused && value.error
-						  ? 'bg-red-500'
-						  : isFocused && value.isValid === true && hasTyped
-						    ? 'bg-green-500'
-						    : isFocused && value.isValid === false && hasTyped
-						      ? 'bg-red-500'
-						      : isFocused
-						        ? 'bg-neutral-600'
-						        : 'bg-neutral-200'
-				)}
-			/>
+			<div className={cl('absolute inset-0 z-0 rounded-[9px] transition-colors', borderColor)} />
 			<label
 				className={cl(
 					'h-20 z-20 relative',
