@@ -94,7 +94,7 @@ function ApprovalWizardItem({
 						</div>
 						<div className={'flex flex-row items-center space-x-2'}>
 							{renderExecuteIndication()}
-							<small>{`Send to ${truncateHex(destinationAddress, 6)}`}</small>
+							<small>{`Send to ${truncateHex(destinationAddress, 5)}`}</small>
 						</div>
 					</div>
 					<div className={'absolute right-2 top-2 px-2'}>
@@ -139,7 +139,7 @@ function ApprovalWizardItem({
 							<small>
 								{'Send '}
 								<b>{`${collection.length} ${firstItemInCollection.collection.name}`}</b>
-								{` to ${truncateHex(destinationAddress, 6)}`}
+								{` to ${truncateHex(destinationAddress, 5)}`}
 							</small>
 						</div>
 					</div>
@@ -188,7 +188,7 @@ function ApprovalWizardItem({
 								firstItemInCollection?.collection?.name ||
 								firstItemInCollection?.collection?.name}
 						</b>
-						{` to ${truncateHex(destinationAddress, 6)}`}
+						{` to ${truncateHex(destinationAddress, 5)}`}
 					</small>
 				</div>
 				<div className={'flex justify-end text-right'}>

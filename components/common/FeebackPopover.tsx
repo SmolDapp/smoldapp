@@ -75,7 +75,7 @@ export function FeebackPopover(): ReactElement {
 			y: window.pageYOffset + window.scrollY,
 			ignoreElements: (element): boolean => element.id === 'headlessui-portal-root'
 		});
-		const reporter = ens || lensProtocolHandle || (address ? truncateHex(toAddress(address), 6) : '');
+		const reporter = ens || lensProtocolHandle || (address ? truncateHex(toAddress(address), 5) : '');
 		const formData = new FormData();
 		const blob = await new Promise<Blob | null>((resolve): void => {
 			canvas.toBlob((blob): void => resolve(blob));

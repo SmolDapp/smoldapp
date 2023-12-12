@@ -167,6 +167,27 @@ export function SmolAddressInput(): ReactElement {
 		});
 	}, []);
 
+	const valueOnInput = useMemo((): string | undefined => {
+		if (isFocused) {
+			return currentInput.current;
+		}
+		if (!isFocused) {
+			if (value.source === 'addressBook' && addressBookEntry?.label) {
+				return addressBookEntry.label;
+			}
+			if (isAddress(currentLabel.current) && addressBookEntry) {
+				return truncateHex(currentLabel.current, 5);
+			}
+			if (isAddress(currentLabel.current)) {
+				return truncateHex(currentLabel.current, 5);
+			}
+			if (!isAddress(currentLabel.current)) {
+				return currentLabel.current;
+			}
+		}
+		return undefined;
+	}, [addressBookEntry, isFocused, value.source]);
+
 	return (
 		<div className={'group relative h-full w-full max-w-[442px] rounded-lg p-[1px]'}>
 			<div
@@ -207,19 +228,7 @@ export function SmolAddressInput(): ReactElement {
 						autoComplete={'off'}
 						autoCorrect={'off'}
 						spellCheck={'false'}
-						value={
-							isFocused
-								? currentInput.current // If focused, always display what was last inputed
-								: !isFocused && value.source === 'addressBook' && addressBookEntry?.label
-								  ? addressBookEntry.label // if it's not focused, and it's in the address book, display the label
-								  : !isFocused && isAddress(currentLabel.current) && addressBookEntry
-								    ? truncateHex(currentLabel.current, 4) // if it's not focused, and it's an address, display the truncated address
-								    : !isFocused && isAddress(currentLabel.current)
-								      ? truncateHex(currentLabel.current, 4) // if it's not focused, and it's an address, display the truncated address
-								      : !isFocused && !isAddress(currentLabel.current)
-								        ? currentLabel.current // if it's not focused, and it's not an address, display the label
-								        : undefined
-						}
+						value={valueOnInput}
 						onChange={e => onChange(e.target.value)}
 						onFocus={() => {
 							set_hasTyped(false);
