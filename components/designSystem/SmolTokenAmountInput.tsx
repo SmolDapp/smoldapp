@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {useBalancesCurtain} from 'contexts/useBalancesCurtain';
 import useWallet from 'contexts/useWallet';
 import {IconChevron} from '@icons/IconChevron';
@@ -16,10 +16,10 @@ type TTokenAmountInputLike = {
 	error?: string | undefined;
 };
 
-export const defaultTokenInputLike = {
+export const defaultTokenInputLike: TTokenAmountInputLike = {
 	amount: '',
 	selectedToken: undefined,
-	isValid: false
+	isValid: 'undetermined'
 };
 
 type TTokenAmountInput = {
@@ -29,6 +29,8 @@ type TTokenAmountInput = {
 const percentIntervals = [25, 50, 75, 100];
 
 export function SmolTokenAmountInput({showPercentButtons = false}: TTokenAmountInput): ReactElement {
+	const [isFocused, set_isFocused] = useState<boolean>(false);
+
 	const [value, set_value] = useState<TTokenAmountInputLike>(defaultTokenInputLike);
 
 	const {onOpenCurtain} = useBalancesCurtain();
@@ -78,31 +80,40 @@ export function SmolTokenAmountInput({showPercentButtons = false}: TTokenAmountI
 		}));
 	};
 
+	const getBorderColor = useCallback((): string => {
+		if (isFocused) {
+			return 'border-neutral-600';
+		}
+		if (value.isValid === false) {
+			return 'border-red';
+		}
+		return 'border-neutral-400';
+	}, [isFocused, value.isValid]);
+
 	return (
-		<div className={'relative h-full w-full rounded-lg p-[1px]'}>
-			<div className={'absolute inset-0 z-0 rounded-[9px] bg-neutral-300'} />
+		<div className={'relative h-full w-full rounded-lg'}>
 			<label
 				className={cl(
-					'h-20 w-[444px] z-20 relative',
+					'h-20 w-[444px] z-20 relative border transition-all',
 					'flex flex-row items-center cursor-text',
-					'p-2 group bg-neutral-0 rounded-lg'
+					'focus:placeholder:text-neutral-300 placeholder:transition-colors',
+					'p-2 group bg-neutral-0 rounded-lg',
+					getBorderColor()
 				)}>
 				<div className={'relative w-full pr-2'}>
 					<input
 						className={cl(
 							'w-full border-none bg-transparent p-0 text-xl transition-all',
 							'text-neutral-900 placeholder:text-neutral-400 focus:placeholder:text-neutral-400/30',
-							'placeholder:transition-colors overflow-hidden',
-							'y-2'
+							'placeholder:transition-colors overflow-hidden'
 						)}
 						type={'number'}
 						placeholder={'0.00'}
-						autoComplete={'off'}
-						autoCorrect={'off'}
-						spellCheck={'false'}
 						value={value.amount}
 						onChange={e => onChange(e.target.value)}
 						max={selectedTokenBalance.normalized}
+						onFocus={() => set_isFocused(true)}
+						onBlur={() => set_isFocused(false)}
 						min={0}
 						step={1}
 					/>
@@ -120,10 +131,12 @@ export function SmolTokenAmountInput({showPercentButtons = false}: TTokenAmountI
 								))}
 							</div>
 						) : selectedTokenBalance.normalized ? (
-							<p>
-								{'You have '}
-								{selectedTokenBalance.normalized}
-							</p>
+							<button onClick={onClickMax}>
+								<p>
+									{'You have '}
+									{selectedTokenBalance.normalized}
+								</p>
+							</button>
 						) : (
 							<p>{'No token selected'}</p>
 						)}
@@ -146,24 +159,22 @@ export function SmolTokenAmountInput({showPercentButtons = false}: TTokenAmountI
 					onClick={() =>
 						onOpenCurtain(selectedToken => set_value(prev => ({...prev, amount: '', selectedToken})))
 					}>
-					<div className={'flex w-full max-w-[116px] gap-2'}>
-						<div className={'h-6 w-6'}>
-							<ImageWithFallback
-								alt={selectedToken?.symbol || ''}
-								unoptimized
-								src={selectedToken?.logoURI || logoAltSrc}
-								altSrc={logoAltSrc}
-								quality={90}
-								width={24}
-								height={24}
-							/>
-						</div>
+					<div className={'flex w-full max-w-[116px] items-center gap-2'}>
+						<ImageWithFallback
+							alt={selectedToken?.symbol || ''}
+							unoptimized
+							src={selectedToken?.logoURI || logoAltSrc}
+							altSrc={logoAltSrc}
+							quality={90}
+							width={32}
+							height={32}
+						/>
 						<p className={cl('truncate', selectedToken?.symbol ? 'font-bold' : '')}>
 							{selectedToken?.symbol || 'Select'}
 						</p>
 					</div>
 
-					<IconChevron className={'h-4 w-4 text-neutral-900'} />
+					<IconChevron className={'h-4 w-4 text-neutral-600'} />
 				</button>
 			</label>
 		</div>
