@@ -151,19 +151,6 @@
 	}
 }
 
-.borderPulse {
-	animation: borderPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-@keyframes borderPulse {
-	0%,
-	100% {
-		@apply bg-neutral-400;
-	}
-	50% {
-		@apply bg-neutral-200;
-	}
-}
-
 .box-0 {
 	@apply bg-neutral-0 border border-neutral-200/60 rounded-md shadow-sm;
 	&.hover {
