@@ -208,9 +208,9 @@ export function SectionSafeAddressInput(): ReactElement {
 				)}>
 				<div
 					className={
-						'flex flex-row whitespace-pre rounded-md border border-red-200 !bg-red-200/60 p-2 text-xs font-bold text-red-600'
+						'flex flex-row whitespace-pre rounded-md border border-red !bg-red/60 p-2 text-xs font-bold text-red'
 					}>
-					<IconWarning className={'mr-2 h-4 w-4 text-red-600'} />
+					<IconWarning className={'mr-2 h-4 w-4 text-red'} />
 					{
 						'Uh oh, this doesn’t appear to be a Safe address.\nPlease check you typed the correct address as we couldn’t find a Safe for this address.'
 					}

@@ -24,6 +24,7 @@ module.exports = {
 			transparent: 'transparent',
 			inherit: 'inherit',
 			primary: '#FFD915',
+			primaryHover: '#FFE043',
 			neutral: {
 				0: '#FFFFFF',
 				// 50: '', unavailable
@@ -37,8 +38,8 @@ module.exports = {
 				800: '#272B30',
 				900: '#060B11'
 			},
-			red: colors.rose,
-			green: colors.emerald
+			red: '#D42600',
+			green: '#0C9000'
 		},
 		extend: {
 			fontFamily: {

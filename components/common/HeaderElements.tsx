@@ -224,7 +224,7 @@ export function WalletSelector(): ReactElement {
 			return lensProtocolHandle;
 		}
 		if (address) {
-			return truncateHex(address, 6);
+			return truncateHex(address, 5);
 		}
 		return undefined;
 	}, [ens, lensProtocolHandle, address]);

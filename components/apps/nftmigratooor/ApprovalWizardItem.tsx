@@ -30,26 +30,26 @@ function ApprovalWizardItem({
 
 	function renderApprovalIndication(): ReactElement {
 		if (collectionStatus?.approval === 'Approved' || collectionApprovalStatus === 'Approved') {
-			return <IconCircleCheck className={'h-4 w-4 text-[#16a34a]'} />;
+			return <IconCircleCheck className={'h-4 w-4 text-green'} />;
 		}
 		if (collectionStatus?.approval === 'Approving') {
 			return <IconSpinner />;
 		}
 		if (collectionStatus?.approval === 'Error') {
-			return <IconCircleCross className={'h-4 w-4 text-[#e11d48]'} />;
+			return <IconCircleCross className={'h-4 w-4 text-red'} />;
 		}
 		return <div className={'h-4 w-4 rounded-full bg-neutral-300'} />;
 	}
 
 	function renderExecuteIndication(): ReactElement {
 		if (collectionStatus?.execute === 'Executed') {
-			return <IconCircleCheck className={'h-4 w-4 text-[#16a34a]'} />;
+			return <IconCircleCheck className={'h-4 w-4 text-green'} />;
 		}
 		if (collectionStatus?.execute === 'Executing') {
 			return <IconSpinner />;
 		}
 		if (collectionStatus?.execute === 'Error') {
-			return <IconCircleCross className={'h-4 w-4 text-[#e11d48]'} />;
+			return <IconCircleCross className={'h-4 w-4 text-red'} />;
 		}
 		return <div className={'h-4 w-4 rounded-full bg-neutral-300'} />;
 	}
@@ -94,7 +94,7 @@ function ApprovalWizardItem({
 						</div>
 						<div className={'flex flex-row items-center space-x-2'}>
 							{renderExecuteIndication()}
-							<small>{`Send to ${truncateHex(destinationAddress, 6)}`}</small>
+							<small>{`Send to ${truncateHex(destinationAddress, 5)}`}</small>
 						</div>
 					</div>
 					<div className={'absolute right-2 top-2 px-2'}>
@@ -139,7 +139,7 @@ function ApprovalWizardItem({
 							<small>
 								{'Send '}
 								<b>{`${collection.length} ${firstItemInCollection.collection.name}`}</b>
-								{` to ${truncateHex(destinationAddress, 6)}`}
+								{` to ${truncateHex(destinationAddress, 5)}`}
 							</small>
 						</div>
 					</div>
@@ -188,7 +188,7 @@ function ApprovalWizardItem({
 								firstItemInCollection?.collection?.name ||
 								firstItemInCollection?.collection?.name}
 						</b>
-						{` to ${truncateHex(destinationAddress, 6)}`}
+						{` to ${truncateHex(destinationAddress, 5)}`}
 					</small>
 				</div>
 				<div className={'flex justify-end text-right'}>

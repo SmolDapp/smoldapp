@@ -123,7 +123,7 @@ function TokenInput({
 										opacity: toBigInt(value?.raw) > balanceOf.raw ? 1 : 0,
 										pointerEvents: toBigInt(value?.raw) > balanceOf.raw ? 'auto' : 'none'
 									}}
-									className={'absolute inset-0 h-4 w-4 text-red-600 transition-opacity'}
+									className={'absolute inset-0 h-4 w-4 text-red transition-opacity'}
 								/>
 							)}
 						</span>
