@@ -213,13 +213,13 @@ export function AddressLikeInput({
 					<div className={'pointer-events-none relative h-full w-4'}>
 						<IconCircleCheck
 							className={cl(
-								'absolute h-4 w-4 text-[#16a34a] transition-opacity',
+								'absolute h-4 w-4 text-green transition-opacity',
 								status === 'valid' ? 'opacity-100' : 'opacity-0'
 							)}
 						/>
 						<IconCircleCross
 							className={cl(
-								'absolute h-4 w-4 text-[#e11d48] transition-opacity',
+								'absolute h-4 w-4 text-red transition-opacity',
 								status === 'invalid' ? 'opacity-100' : 'opacity-0'
 							)}
 						/>

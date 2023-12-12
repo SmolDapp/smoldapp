@@ -23,7 +23,7 @@ export function TemplateButton(props: {
 				<small className={'whitespace-break-spaces'}>{props.description}</small>
 			</div>
 			<IconCircleCheck
-				className={`absolute right-4 top-4 h-4 w-4 text-[#16a34a] transition-opacity ${
+				className={`absolute right-4 top-4 h-4 w-4 text-green transition-opacity ${
 					props.isSelected ? 'opacity-100' : 'opacity-0'
 				}`}
 			/>

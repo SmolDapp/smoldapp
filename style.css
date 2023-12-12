@@ -130,18 +130,6 @@
 	}
 }
 
-.loader-900 {
-	width: 8px;
-	height: 8px;
-	border-radius: 50%;
-	background-color: #000000;
-	box-shadow:
-		16px 0 #000000,
-		-16px 0 #000000;
-	position: relative;
-	animation: flash 1s ease-out infinite alternate;
-}
-
 @keyframes flash {
 	0% {
 		background-color: #aaaaaa;

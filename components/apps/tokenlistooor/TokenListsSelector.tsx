@@ -107,7 +107,7 @@ function TokenListsSelector(): ReactElement {
 									<b>{list.name}</b>
 									{selected.find((selectedList): boolean => selectedList.name === list.name) ? (
 										<div className={'flex h-6 items-center justify-end p-2 text-xs'}>
-											<IconCircleCheck className={'h-4 w-4 text-[#16a34a]'} />
+											<IconCircleCheck className={'h-4 w-4 text-green'} />
 										</div>
 									) : (
 										<SmallButton

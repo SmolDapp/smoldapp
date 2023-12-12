@@ -40,10 +40,10 @@ function MigrateItem({row}: {row: TMigrateElement}): ReactElement {
 			return <IconSpinner className={'h-4 w-4'} />;
 		}
 		if (row.status === 'success') {
-			return <IconCircleCheck className={'h-4 w-4 text-[#16a34a]'} />;
+			return <IconCircleCheck className={'h-4 w-4 text-green'} />;
 		}
 		if (row.status === 'error') {
-			return <IconCircleCross className={'h-4 w-4 text-[#e11d48]'} />;
+			return <IconCircleCross className={'h-4 w-4 text-red'} />;
 		}
 		return <div className={'h-4 w-4 rounded-full border border-neutral-200 bg-neutral-300'} />;
 	}

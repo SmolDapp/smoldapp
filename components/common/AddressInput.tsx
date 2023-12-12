@@ -109,12 +109,12 @@ function AddressInput({value, onChangeValue, ...props}: TAddressInput): ReactEle
 				<span className={status === 'invalid' || status === 'warning' ? 'tooltip' : 'pointer-events-none'}>
 					<div className={'pointer-events-none relative h-4 w-4'}>
 						<IconCircleCheck
-							className={`absolute h-4 w-4 text-[#16a34a] transition-opacity ${
+							className={`absolute h-4 w-4 text-green transition-opacity ${
 								status === 'valid' ? 'opacity-100' : 'opacity-0'
 							}`}
 						/>
 						<IconCircleCross
-							className={`absolute h-4 w-4 text-[#e11d48] transition-opacity ${
+							className={`absolute h-4 w-4 text-red transition-opacity ${
 								status === 'invalid' ? 'opacity-100' : 'opacity-0'
 							}`}
 						/>

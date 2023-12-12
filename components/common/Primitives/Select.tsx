@@ -91,7 +91,7 @@ export const SelectItem = forwardRef<
 		{...props}>
 		<span className={'absolute right-2 flex h-3.5 w-3.5 items-center justify-center'}>
 			<SelectPrimitive.ItemIndicator>
-				<IconCircleCheck className={' h-3 w-3 text-green-600'} />
+				<IconCircleCheck className={' h-3 w-3 text-green'} />
 			</SelectPrimitive.ItemIndicator>
 		</span>
 
