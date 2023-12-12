@@ -72,7 +72,7 @@ export function notifyDisperse(props: {
 				(receiver, index): string =>
 					`\t\t\t\t\t\t\t- [${truncateHex(
 						receiver,
-						4
+						5
 					)}](${explorerBaseURI}/address/${receiver}) received ${formatAmount(
 						toNormalizedBN(props.amounts[index], decimals).normalized,
 						6,
@@ -103,9 +103,9 @@ export function notifyMigrate(props: {
 	axios.post('/api/notify', {
 		messages: [
 			'*🚀 MIGRATOOOR*',
-			`\t\t\t\t\t\t[${truncateHex(props.from, 4)}](${explorerBaseURI}/address/${
+			`\t\t\t\t\t\t[${truncateHex(props.from, 5)}](${explorerBaseURI}/address/${
 				props.from
-			}) is migrating tokens to [${truncateHex(props.to, 4)}](${explorerBaseURI}/address/${props.to}):`,
+			}) is migrating tokens to [${truncateHex(props.to, 5)}](${explorerBaseURI}/address/${props.to}):`,
 			...props.tokensMigrated.map(({address, symbol, amount, decimals}, index): string => {
 				const txHashLink =
 					props.type === 'EOA'

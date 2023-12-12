@@ -72,19 +72,19 @@ function ApprovalWizard({onSuccess, allowance}: TApprovalWizardProps): ReactElem
 			return <div className={'h-4 w-4 rounded-full border border-neutral-200 bg-neutral-300'} />;
 		}
 		if (allowance >= totalToDisperse) {
-			return <IconCircleCheck className={'h-4 w-4 text-[#16a34a]'} />;
+			return <IconCircleCheck className={'h-4 w-4 text-green'} />;
 		}
 		if (approvalStatus.pending) {
 			return <IconSpinner className={'h-4 w-4'} />;
 		}
 		if (approvalStatus.success) {
-			return <IconCircleCheck className={'h-4 w-4 text-[#16a34a]'} />;
+			return <IconCircleCheck className={'h-4 w-4 text-green'} />;
 		}
 		if (approvalStatus.error) {
-			return <IconCircleCross className={'h-4 w-4 text-[#e11d48]'} />;
+			return <IconCircleCross className={'h-4 w-4 text-red'} />;
 		}
 		if (totalToDisperse > getBalance(toAddress(configuration.tokenToSend?.address)).raw) {
-			return <IconCircleCross className={'h-4 w-4 text-[#e11d48]'} />;
+			return <IconCircleCross className={'h-4 w-4 text-red'} />;
 		}
 
 		return <div className={'h-4 w-4 rounded-full border border-neutral-200 bg-neutral-300'} />;
@@ -414,16 +414,16 @@ function SpendingWizard(props: TSpendingWizardProps): ReactElement {
 
 	function renderStatusIndicator(): ReactElement {
 		if (isDispersed) {
-			return <IconCircleCheck className={'h-4 w-4 text-[#16a34a]'} />;
+			return <IconCircleCheck className={'h-4 w-4 text-green'} />;
 		}
 		if (disperseStatus.pending) {
 			return <IconSpinner className={'h-4 w-4'} />;
 		}
 		if (disperseStatus.success) {
-			return <IconCircleCheck className={'h-4 w-4 text-[#16a34a]'} />;
+			return <IconCircleCheck className={'h-4 w-4 text-green'} />;
 		}
 		if (disperseStatus.error) {
-			return <IconCircleCross className={'h-4 w-4 text-[#e11d48]'} />;
+			return <IconCircleCross className={'h-4 w-4 text-red'} />;
 		}
 		return <div className={'h-4 w-4 rounded-full border border-neutral-200 bg-neutral-300'} />;
 	}

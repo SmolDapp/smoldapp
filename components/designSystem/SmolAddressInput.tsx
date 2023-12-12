@@ -3,10 +3,13 @@ import {useAddressBookCurtain} from 'contexts/useAddressBookCurtain';
 import {getEnsName} from 'viem/ens';
 import {IconAppAddressBook} from '@icons/IconApps';
 import {IconChevron} from '@icons/IconChevron';
+import {IconCircleCheck} from '@icons/IconCircleCheck';
+import {IconCircleCross} from '@icons/IconCircleCross';
 import {useAsyncAbortable} from '@react-hookz/web';
 import {isAddress, toAddress, truncateHex} from '@utils/tools.address';
 import {checkENSValidity} from '@utils/tools.ens';
 import {getPublicClient} from '@wagmi/core';
+import {IconLoader} from '@yearn-finance/web-lib/icons/IconLoader';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
 
 import type {TAddressBookEntry} from 'contexts/useAddressBookCurtain';
@@ -30,7 +33,7 @@ export const defaultInputAddressLike: TInputAddressLike = {
 export function SmolAddressInput(): ReactElement {
 	const {onOpenCurtain, getAddressBookEntry} = useAddressBookCurtain();
 	const [isFocused, set_isFocused] = useState<boolean>(false);
-	const [hasTyped, set_hasTyped] = useState<boolean>(false);
+	const [isCheckingValidity, set_isCheckingValidity] = useState<boolean>(false);
 	const [value, set_value] = useState<TInputAddressLike>(defaultInputAddressLike);
 	const currentAddress = useRef<TAddress | undefined>(defaultInputAddressLike.address);
 	const currentLabel = useRef<string>(defaultInputAddressLike.label);
@@ -42,7 +45,7 @@ export function SmolAddressInput(): ReactElement {
 		[getAddressBookEntry, value]
 	);
 
-	const [{status}, actions] = useAsyncAbortable(
+	const [, actions] = useAsyncAbortable(
 		async (signal, input: string): Promise<void> =>
 			new Promise<void>(async (resolve, reject): Promise<void> => {
 				if (signal.aborted) {
@@ -79,12 +82,14 @@ export function SmolAddressInput(): ReactElement {
 					 ** Check if the input is an ENS name
 					 **********************************************************/
 					if (input.endsWith('.eth') && input.length > 4) {
+						set_isCheckingValidity(true);
 						set_value({address: undefined, label: input, isValid: 'undetermined', source: 'typed'});
 						const [address, isValid] = await checkENSValidity(input);
 						if (signal.aborted) {
 							reject(new Error('Aborted!'));
 						}
 						if (currentLabel.current === input && isAddress(address)) {
+							set_isCheckingValidity(false);
 							const fromAddressBook = getAddressBookEntry({label: input, address: toAddress(address)});
 							if (fromAddressBook) {
 								currentLabel.current = fromAddressBook.label || fromAddressBook.ens || input;
@@ -101,6 +106,7 @@ export function SmolAddressInput(): ReactElement {
 							currentLabel.current = input;
 							set_value({address, label: input, isValid, source: 'typed'});
 						} else {
+							set_isCheckingValidity(false);
 							set_value({
 								address: undefined,
 								label: input,
@@ -120,6 +126,7 @@ export function SmolAddressInput(): ReactElement {
 						if (signal.aborted) {
 							reject(new Error('Aborted!'));
 						}
+						set_isCheckingValidity(true);
 						set_value({address: toAddress(input), label: input, isValid: true, source: 'typed'});
 						const client = getPublicClient({chainId: 1});
 						const ensName = await getEnsName(client, {address: toAddress(input)});
@@ -127,6 +134,7 @@ export function SmolAddressInput(): ReactElement {
 							reject(new Error('Aborted!'));
 						}
 						currentLabel.current = ensName || input;
+						set_isCheckingValidity(false);
 						set_value({address: toAddress(input), label: ensName || input, isValid: true, source: 'typed'});
 						return resolve();
 					}
@@ -147,7 +155,7 @@ export function SmolAddressInput(): ReactElement {
 
 	const onChange = useCallback(
 		(label: string): void => {
-			set_hasTyped(true);
+			set_isCheckingValidity(false);
 			currentInput.current = label;
 			actions.abort();
 			actions.execute(label);
@@ -167,36 +175,92 @@ export function SmolAddressInput(): ReactElement {
 		});
 	}, []);
 
+	const getInputValue = useCallback((): string | undefined => {
+		if (isFocused) {
+			return currentInput.current;
+		}
+		if (!isFocused) {
+			if (value.source === 'addressBook' && addressBookEntry?.label) {
+				return addressBookEntry.label;
+			}
+			if (isAddress(currentLabel.current) && addressBookEntry) {
+				return truncateHex(currentLabel.current, 5);
+			}
+			if (isAddress(currentLabel.current)) {
+				return truncateHex(currentLabel.current, 5);
+			}
+			if (!isAddress(currentLabel.current)) {
+				return currentLabel.current;
+			}
+		}
+		return undefined;
+	}, [addressBookEntry, isFocused, value.source, currentInput, currentLabel]);
+
+	const getBorderColor = useCallback((): string => {
+		if (isFocused) {
+			return 'border-neutral-600';
+		}
+		if (value.isValid === false) {
+			return 'border-red';
+		}
+		return 'border-neutral-400';
+	}, [isFocused, value.isValid]);
+
+	const getHasStatusIcon = useCallback((): boolean => {
+		if (!currentInput.current) {
+			return false;
+		}
+		if (!isFocused) {
+			return false;
+		}
+		if (value.isValid === true || value.isValid === false || isCheckingValidity) {
+			return true;
+		}
+		return false;
+	}, [isFocused, value.isValid, isCheckingValidity]);
+
 	return (
-		<div className={'group relative h-full w-full max-w-[442px] rounded-lg p-[1px]'}>
-			<div
-				className={cl(
-					'absolute inset-0 z-0 rounded-[9px] transition-colors',
-					status === 'loading'
-						? 'bg-neutral-600'
-						: !isFocused && value.error
-						  ? 'bg-red-500'
-						  : isFocused && value.isValid === true && hasTyped
-						    ? 'bg-green-500'
-						    : isFocused && value.isValid === false && hasTyped
-						      ? 'bg-red-500'
-						      : isFocused
-						        ? 'bg-neutral-600'
-						        : 'bg-neutral-200'
-				)}
-			/>
+		<div className={'group relative h-full w-full max-w-[444px] rounded-lg'}>
 			<label
 				className={cl(
 					'h-20 z-20 relative',
 					'flex flex-row justify-between items-center cursor-text',
 					'p-2 pl-4 group bg-neutral-0 rounded-lg',
-					'overflow-y-hidden'
+					'overflow-hidden border',
+					getBorderColor()
 				)}>
-				<div className={'relative w-full pr-4'}>
+				<div className={'relative w-full pr-2 transition-all'}>
+					<div
+						className={cl(
+							'absolute flex flex-row gap-2 items-center transition-all right-2 z-10',
+							'pointer-events-none h-full'
+						)}>
+						{getHasStatusIcon() ? (
+							<div className={'pointer-events-none relative h-4 w-4 min-w-[16px]'}>
+								<IconCircleCheck
+									className={`absolute h-4 w-4 text-green transition-opacity ${
+										!isCheckingValidity && value.isValid === true ? 'opacity-100' : 'opacity-0'
+									}`}
+								/>
+								<IconCircleCross
+									className={`absolute h-4 w-4 text-red transition-opacity ${
+										!isCheckingValidity && value.isValid === false ? 'opacity-100' : 'opacity-0'
+									}`}
+								/>
+								<div className={'absolute inset-0 flex items-center justify-center'}>
+									<IconLoader
+										className={`h-4 w-4 animate-spin text-neutral-900 transition-opacity ${
+											isCheckingValidity ? 'opacity-100' : 'opacity-0'
+										}`}
+									/>
+								</div>
+							</div>
+						) : null}
+					</div>
 					<input
 						ref={inputRef}
 						className={cl(
-							'w-full border-none bg-transparent p-0 text-xl transition-all',
+							'w-full border-none bg-transparent p-0 text-xl transition-all pr-6',
 							'text-neutral-900 placeholder:text-neutral-600 caret-neutral-700',
 							'focus:placeholder:text-neutral-300 placeholder:transition-colors',
 							!currentLabel.current ? 'translate-y-2' : 'translate-y-0',
@@ -207,22 +271,9 @@ export function SmolAddressInput(): ReactElement {
 						autoComplete={'off'}
 						autoCorrect={'off'}
 						spellCheck={'false'}
-						value={
-							isFocused
-								? currentInput.current // If focused, always display what was last inputed
-								: !isFocused && value.source === 'addressBook' && addressBookEntry?.label
-								  ? addressBookEntry.label // if it's not focused, and it's in the address book, display the label
-								  : !isFocused && isAddress(currentLabel.current) && addressBookEntry
-								    ? truncateHex(currentLabel.current, 4) // if it's not focused, and it's an address, display the truncated address
-								    : !isFocused && isAddress(currentLabel.current)
-								      ? truncateHex(currentLabel.current, 4) // if it's not focused, and it's an address, display the truncated address
-								      : !isFocused && !isAddress(currentLabel.current)
-								        ? currentLabel.current // if it's not focused, and it's not an address, display the label
-								        : undefined
-						}
+						value={getInputValue()}
 						onChange={e => onChange(e.target.value)}
 						onFocus={() => {
-							set_hasTyped(false);
 							set_isFocused(true);
 							setTimeout(() => {
 								if (inputRef.current) {
@@ -241,26 +292,28 @@ export function SmolAddressInput(): ReactElement {
 
 					<p
 						className={cl(
-							'text-xs transition-all',
+							'text-xs transition-all ',
 							isFocused ? 'opacity-0' : 'opacity-100',
 							isFocused ? 'translate-y-8' : 'translate-y-0',
 							isFocused ? 'pointer-events-none' : 'pointer-events-auto',
-							value.error ? 'text-red-500' : 'text-neutral-600'
+							value.error ? 'text-red' : 'text-neutral-600'
 						)}>
 						{(isAddress(value?.address) && toAddress(value.address)) || value.error || ''}
 						{/* Adding &nbsp; to make sure we have an element here */}
 						&nbsp;
 					</p>
 				</div>
-				<button
-					onClick={() => onOpenCurtain(selectedEntry => onSelectItem(selectedEntry))}
-					className={cl(
-						'flex items-center gap-4 rounded-lg p-4',
-						'bg-neutral-200 hover:bg-neutral-300 transition-colors'
-					)}>
-					<IconAppAddressBook className={'h-8 w-8 text-neutral-600'} />
-					<IconChevron className={'h-4 w-4 text-neutral-900'} />
-				</button>
+				<div className={'w-fit flex-1'}>
+					<button
+						onClick={() => onOpenCurtain(selectedEntry => onSelectItem(selectedEntry))}
+						className={cl(
+							'flex items-center gap-4 rounded-lg p-4',
+							'bg-neutral-200 hover:bg-neutral-300 transition-colors'
+						)}>
+						<IconAppAddressBook className={'h-8 w-8 text-neutral-600'} />
+						<IconChevron className={'h-4 w-4 text-neutral-600'} />
+					</button>
+				</div>
 			</label>
 		</div>
 	);

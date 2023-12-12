@@ -50,7 +50,7 @@ export function safeAddress(props: {
 		return props.addrOverride;
 	}
 	if (!isZeroAddress(props.address)) {
-		return truncateHex(props.address, 6);
+		return truncateHex(props.address, 5);
 	}
 	if (!props.address) {
 		return props.placeholder || '';

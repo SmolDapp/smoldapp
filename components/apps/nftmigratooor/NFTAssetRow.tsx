@@ -105,7 +105,7 @@ const NFTAsset = memo(function NFTAsset(props: TNFTAssetProps): ReactElement {
 							className={
 								'text-neutral-500 flex cursor-pointer flex-row items-center space-x-2 transition-colors hover:text-neutral-900 hover:underline'
 							}>
-							<p className={'font-mono text-xs'}>{truncateHex(nft.collection.address, 6)}</p>
+							<p className={'font-mono text-xs'}>{truncateHex(nft.collection.address, 5)}</p>
 							<IconLinkOut className={'h-3 w-3'} />
 						</Link>
 					</div>
