@@ -292,17 +292,17 @@ export function ConnectProfile(): ReactElement {
 	return (
 		<section
 			className={cl(
-				'h-[145px] rounded-t-lg bg-primary',
+				'h-[145px] rounded-t-lg bg-neutral-0',
 				'px-10 pb-6 pt-5',
 				'flex flex-col justify-center items-center'
 			)}>
-			<div className={'mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-neutral-0/60'}>
-				<IconWallet className={'h-6 w-6 text-neutral-600'} />
+			<div className={'mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-neutral-300'}>
+				<IconWallet className={'h-6 w-6 text-neutral-700'} />
 			</div>
 			<div className={'w-full'}>
 				<button
 					onClick={onConnect}
-					className={'h-8 w-full rounded-lg bg-neutral-0 transition-colors hover:bg-neutral-200'}>
+					className={'h-8 w-full rounded-lg bg-primary text-xs transition-colors hover:bg-neutral-200'}>
 					{'Connect Wallet'}
 				</button>
 			</div>

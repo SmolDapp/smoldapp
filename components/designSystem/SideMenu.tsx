@@ -30,7 +30,12 @@ function NavItem(props: TNavItemProps): ReactElement {
 						'group hover:bg-neutral-300',
 						props.isSelected ? 'bg-neutral-300' : 'hover:bg-neutral-300'
 					)}>
-					{cloneElement(props.icon, {className: 'h-4 w-4 text-neutral-600'})}
+					{cloneElement(props.icon, {
+						className: cl(
+							'h-4 w-4',
+							props.isSelected ? 'text-neutral-900' : 'text-neutral-600 group-hover:text-neutral-900'
+						)
+					})}
 					<p
 						className={cl(
 							'transition-colors',
