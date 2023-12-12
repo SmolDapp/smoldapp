@@ -302,7 +302,7 @@ export function ConnectProfile(): ReactElement {
 			<div className={'w-full'}>
 				<button
 					onClick={onConnect}
-					className={'h-8 w-full rounded-lg bg-primary text-xs transition-colors hover:bg-neutral-200'}>
+					className={'h-8 w-full rounded-lg bg-primary text-xs transition-colors hover:bg-primaryHover'}>
 					{'Connect Wallet'}
 				</button>
 			</div>

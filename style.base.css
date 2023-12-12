@@ -271,7 +271,7 @@ select:focus {
 			@apply bg-neutral-600 opacity-40;
 		}
 		&:not(:disabled):not([aria-busy='true']):hover {
-			@apply bg-primary/90;
+			@apply bg-primaryHover;
 		}
 	}
 	&[aria-busy='true'] {
