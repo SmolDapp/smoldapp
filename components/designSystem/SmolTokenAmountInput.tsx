@@ -4,6 +4,7 @@ import useWallet from 'contexts/useWallet';
 import {IconChevron} from '@icons/IconChevron';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
 import {parseUnits, toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
+import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
 import {ImageWithFallback} from '@common/ImageWithFallback';
 
 import type {ReactElement} from 'react';
@@ -134,7 +135,7 @@ export function SmolTokenAmountInput({showPercentButtons = false}: TTokenAmountI
 							<button onClick={onClickMax}>
 								<p>
 									{'You have '}
-									{selectedTokenBalance.normalized}
+									{formatAmount(selectedTokenBalance.normalized, 0, 6)}
 								</p>
 							</button>
 						) : (
