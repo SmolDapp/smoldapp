@@ -311,7 +311,7 @@ export function SmolAddressInput(): ReactElement {
 							'bg-neutral-200 hover:bg-neutral-300 transition-colors'
 						)}>
 						<IconAppAddressBook className={'h-8 w-8 text-neutral-600'} />
-						<IconChevron className={'h-4 w-4 text-neutral-900'} />
+						<IconChevron className={'h-4 w-4 text-neutral-600'} />
 					</button>
 				</div>
 			</label>
