@@ -2,6 +2,7 @@ import React, {useCallback, useState} from 'react';
 import {useBalancesCurtain} from 'contexts/useBalancesCurtain';
 import useWallet from 'contexts/useWallet';
 import {IconChevron} from '@icons/IconChevron';
+import {percentOf} from '@utils/tools.math';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
 import {parseUnits, toBigInt, toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
@@ -27,7 +28,7 @@ type TTokenAmountInput = {
 	showPercentButtons?: boolean;
 };
 
-const percentIntervals = [25, 50, 75, 100];
+const percentIntervals = [25, 50, 75];
 
 export function SmolTokenAmountInput({showPercentButtons = false}: TTokenAmountInput): ReactElement {
 	const [isFocused, set_isFocused] = useState<boolean>(false);
@@ -67,10 +68,18 @@ export function SmolTokenAmountInput({showPercentButtons = false}: TTokenAmountI
 		}));
 	};
 
-	const onClickMax = (): void => {
+	const onSetFractional = (percentage: number): void => {
+		if (percentage === 100) {
+			return set_value(prev => ({
+				...prev,
+				amount: selectedTokenBalance.normalized.toString(),
+				isValid: true,
+				error: undefined
+			}));
+		}
 		set_value(prev => ({
 			...prev,
-			amount: selectedTokenBalance.normalized.toString(),
+			amount: percentOf(+selectedTokenBalance.normalized, percentage).toString(),
 			isValid: true,
 			error: undefined
 		}));
@@ -120,14 +129,17 @@ export function SmolTokenAmountInput({showPercentButtons = false}: TTokenAmountI
 							<div className={'flex gap-1 '}>
 								{percentIntervals.map(percent => (
 									<button
-										className={'bg-neutral-100 px-1 py-0.5 transition-colors hover:bg-neutral-200'}>
+										className={
+											'rounded-full bg-neutral-200 px-2 py-0.5 transition-colors hover:bg-neutral-300'
+										}
+										onClick={() => onSetFractional(percent)}>
 										{percent}
 										{'%'}
 									</button>
 								))}
 							</div>
 						) : selectedTokenBalance.normalized ? (
-							<button onClick={onClickMax}>
+							<button onClick={() => onSetFractional(100)}>
 								<p>
 									{'You have '}
 									{formatAmount(selectedTokenBalance.normalized, 0, 6)}
@@ -141,7 +153,7 @@ export function SmolTokenAmountInput({showPercentButtons = false}: TTokenAmountI
 							className={
 								'rounded-md px-2 py-1 transition-colors hover:bg-neutral-200 disabled:cursor-not-allowed disabled:opacity-40'
 							}
-							onClick={onClickMax}
+							onClick={() => onSetFractional(100)}
 							disabled={!selectedToken}>
 							{'MAX'}
 						</button>
