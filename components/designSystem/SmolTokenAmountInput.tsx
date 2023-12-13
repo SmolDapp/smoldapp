@@ -3,7 +3,7 @@ import {useBalancesCurtain} from 'contexts/useBalancesCurtain';
 import useWallet from 'contexts/useWallet';
 import {IconChevron} from '@icons/IconChevron';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
-import {parseUnits, toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
+import {parseUnits, toBigInt, toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
 import {ImageWithFallback} from '@common/ImageWithFallback';
 
@@ -40,12 +40,7 @@ export function SmolTokenAmountInput({showPercentButtons = false}: TTokenAmountI
 
 	const {selectedToken} = value;
 
-	const selectedTokenBalance = selectedToken
-		? getBalance(selectedToken.address)
-		: {
-				raw: 0n,
-				normalized: 0
-			};
+	const selectedTokenBalance = selectedToken ? getBalance(selectedToken.address) : toNormalizedBN(0);
 
 	const logoAltSrc = `${process.env.SMOL_ASSETS_URL}/token/${selectedToken?.chainID}/${selectedToken?.address}/logo-32.png`;
 
