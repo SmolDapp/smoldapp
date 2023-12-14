@@ -19,7 +19,7 @@ export type TAddressBookEntryReducer =
 
 function AddressBookPage(): ReactElement {
 	const {listCachedEntries, updateEntry} = useAddressBook();
-	const [shouldOpenCurtain, set_shouldOpenCurtain] = useState(false);
+	const [curtainStatus, set_curtainStatus] = useState({isOpen: false, isEditing: false});
 	const [searchValue, set_searchValue] = useState('');
 
 	const entryReducer = (state: TAddressBookEntry, action: TAddressBookEntryReducer): TAddressBookEntry => {
@@ -55,7 +55,7 @@ function AddressBookPage(): ReactElement {
 				/>
 				<div className={'mt-2'}>
 					<button
-						onClick={() => set_shouldOpenCurtain(true)}
+						onClick={() => set_curtainStatus({isOpen: true, isEditing: true})}
 						className={cl(
 							'rounded-lg px-3 py-1 text-xs',
 							'bg-neutral-200 text-neutral-700 transition-colors hover:bg-neutral-300'
@@ -66,11 +66,11 @@ function AddressBookPage(): ReactElement {
 				<div className={'mt-2'}>
 					{listCachedEntries().map(entry => (
 						<AddressBookEntry
-							key={entry.address}
+							key={`${entry.address}${entry.id}`}
 							entry={entry}
 							onSelect={selected => {
 								dispatch({type: 'SET_SELECTED_ENTRY', payload: selected});
-								set_shouldOpenCurtain(true);
+								set_curtainStatus({isOpen: true, isEditing: false});
 							}}
 						/>
 					))}
@@ -79,10 +79,11 @@ function AddressBookPage(): ReactElement {
 			<AddressBookCurtain
 				selectedEntry={selectedEntry}
 				dispatch={dispatch}
-				isOpen={shouldOpenCurtain}
-				onOpenChange={isOpen => {
-					set_shouldOpenCurtain(isOpen);
-					if (!isOpen) {
+				isOpen={curtainStatus.isOpen}
+				isEditing={curtainStatus.isEditing}
+				onOpenChange={status => {
+					set_curtainStatus(status);
+					if (!status.isOpen) {
 						dispatch({
 							type: 'SET_SELECTED_ENTRY',
 							payload: {address: undefined, label: '', slugifiedLabel: '', chains: [], isFavorite: false}

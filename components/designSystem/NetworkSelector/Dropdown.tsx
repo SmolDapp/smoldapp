@@ -7,10 +7,15 @@ import {supportedNetworks} from '@utils/tools.chains';
 import {IconChevronBottom} from '@yearn-finance/web-lib/icons/IconChevronBottom';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
 
-import type {ReactElement} from 'react';
+import type {InputHTMLAttributes, ReactElement} from 'react';
 import type {TNDict} from '@yearn-finance/web-lib/types';
 
-export function NetworkDropdownSelector(props: {value: number[]; onChange: (value: number[]) => void}): ReactElement {
+export function NetworkDropdownSelector(
+	props: {
+		value: number[];
+		onChange: (value: number[]) => void;
+	} & Omit<InputHTMLAttributes<HTMLInputElement>, 'value' | 'onChange'>
+): ReactElement {
 	/**************************************************************************
 	 * If some networks are passed as props, we want to use them. As we are
 	 * using a TNDict to store the selected networks, we need to convert the
@@ -49,20 +54,28 @@ export function NetworkDropdownSelector(props: {value: number[]; onChange: (valu
 					props.onChange(Object.keys(selectedNetworks).map(Number));
 				}
 			}}>
-			<DropdownMenu.Trigger asChild>
+			<DropdownMenu.Trigger
+				disabled={props.disabled}
+				className={'group w-full rounded-lg'}>
 				<div
 					className={cl(
-						'w-full rounded-lg bg-transparent py-3 pl-4 pr-8 relative text-xs group',
+						'w-full rounded-lg py-3 pl-4 pr-8 relative text-xs group',
 						selectedNetworksName ? 'text-neutral-900' : 'text-neutral-600',
 						'placeholder:text-neutral-600 caret-neutral-700',
-						'focus:placeholder:text-neutral-300 placeholder:transition-colors',
-						'focus:border-neutral-600 border border-neutral-400',
-						'cursor-pointer'
+						'group-focus-within:placeholder:text-neutral-300 placeholder:transition-colors',
+						'border border-neutral-400',
+						'cursor-pointer text-left',
+						props.disabled
+							? 'bg-neutral-300 cursor-default'
+							: 'bg-neutral-0 group-focus-within:border-neutral-600'
 					)}>
 					<p>{selectedNetworksName || 'Select chains'}</p>
 					<span className={'absolute inset-y-0 right-2 flex h-full items-center justify-center'}>
 						<IconChevronBottom
-							className={'h-4 w-4 text-neutral-600 transition-colors group-hover:text-neutral-900'}
+							className={cl(
+								'h-4 w-4 text-neutral-600 transition-colors',
+								props.disabled ? '' : 'group-hover:text-neutral-900'
+							)}
 						/>
 					</span>
 				</div>

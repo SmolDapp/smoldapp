@@ -1,6 +1,7 @@
 'use client';
 
 import React, {createContext, useCallback, useContext, useMemo, useState} from 'react';
+import assert from 'assert';
 import {AddressSelectorCurtain} from 'components/designSystem/Curtains/AddressSelectorCurtain';
 import {useAsyncTrigger} from 'hooks/useAsyncTrigger';
 import setupIndexedDB, {useIndexedDBStore} from 'use-indexeddb';
@@ -90,7 +91,6 @@ export const WithAddressBook = ({children}: {children: React.ReactElement}): Rea
 
 	const listCachedEntries = useCallback((): TAddressBookEntry[] => {
 		entryNonce;
-		console.log('HELLLO', entryNonce);
 		return cachedEntries;
 	}, [cachedEntries, entryNonce]);
 
@@ -111,8 +111,11 @@ export const WithAddressBook = ({children}: {children: React.ReactElement}): Rea
 				if (foundByAddress) {
 					return foundByAddress;
 				}
-				const foundByLabel = await getOneByKey('slugifiedLabel', slugify(props.label || ''));
-				return foundByLabel || undefined;
+				if (props.label) {
+					const foundByLabel = await getOneByKey('slugifiedLabel', slugify(props.label || ''));
+					return foundByLabel || undefined;
+				}
+				return undefined;
 			} catch (error) {
 				return undefined;
 			}
@@ -145,10 +148,10 @@ export const WithAddressBook = ({children}: {children: React.ReactElement}): Rea
 			try {
 				const existingEntry = await getEntry({address: entry.address});
 				if (existingEntry) {
-					console.warn('Updating entry', existingEntry.label);
 					update({...existingEntry, ...entry});
 					set_entryNonce(nonce => nonce + 1);
 				} else {
+					assert(isAddress(entry.address));
 					add({
 						...entry,
 						slugifiedLabel: slugify(entry.label),
@@ -200,7 +203,7 @@ export const WithAddressBook = ({children}: {children: React.ReactElement}): Rea
 			},
 			onCloseCurtain: (): void => set_shouldOpenCurtain(false)
 		}),
-		[shouldOpenCurtain, listEntries, listCachedEntries, getEntry, getCachedEntry, updateEntry]
+		[shouldOpenCurtain, listEntries, listCachedEntries, getEntry, getCachedEntry, updateEntry, deleteEntry]
 	);
 
 	return (

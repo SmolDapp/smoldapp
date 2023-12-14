@@ -266,12 +266,15 @@ select:focus {
 	@apply animate-pulse rounded-full bg-neutral-400;
 }
 
+.withRing:focus-visible {
+	@apply ring-2 ring-primary ring-offset-2;
+}
 .button {
-	@apply cursor-pointer px-5 flex justify-center items-center h-14 text-base transition-all relative;
-	border-radius: var(--default-rounded);
+	@apply cursor-pointer px-5 flex justify-center items-center h-14 text-base transition-all relative rounded-lg;
+	@apply withRing;
 
 	&[data-variant='filled'] {
-		@apply text-neutral-900 bg-primary font-normal rounded-lg border border-transparent;
+		@apply text-neutral-900 bg-primary font-normal border border-transparent;
 		&:disabled {
 			@apply bg-neutral-600 opacity-40;
 		}

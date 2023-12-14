@@ -6,7 +6,7 @@ import * as Dialog from '@radix-ui/react-dialog';
 
 export function CloseCurtainButton(): ReactElement {
 	return (
-		<Dialog.Close className={'group -mr-2 -mt-2 p-2'}>
+		<Dialog.Close className={'withRing group -mr-1 -mt-1 rounded p-1'}>
 			<IconCross className={'h-4 w-4 text-neutral-600 transition-colors group-hover:text-neutral-900'} />
 			<span className={'sr-only'}>{'Close'}</span>
 		</Dialog.Close>
