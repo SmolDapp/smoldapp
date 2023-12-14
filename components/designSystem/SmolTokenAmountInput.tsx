@@ -45,8 +45,6 @@ export function SmolTokenAmountInput({showPercentButtons = false, onSetValue, va
 
 	const selectedTokenBalance = token ? getBalance(token.address) : toNormalizedBN(0);
 
-	const logoAltSrc = `${process.env.SMOL_ASSETS_URL}/token/${token?.chainID}/${token?.address}/logo-32.png`;
-
 	const onChange = (amount: string): void => {
 		if (amount === '') {
 			return onSetValue({amount: '', isValid: 'undetermined', error: undefined});
@@ -167,8 +165,7 @@ export function SmolTokenAmountInput({showPercentButtons = false, onSetValue, va
 						<ImageWithFallback
 							alt={token?.symbol || ''}
 							unoptimized
-							src={token?.logoURI || logoAltSrc}
-							altSrc={logoAltSrc}
+							src={token?.logoURI || ''}
 							quality={90}
 							width={32}
 							height={32}
