@@ -1,5 +1,4 @@
 import React, {Fragment, useState} from 'react';
-import SectionDonate from 'components/SectionDonate';
 import {useTokenList} from 'contexts/useTokenList';
 import useWallet from 'contexts/useWallet';
 import {useDeepCompareEffect, useDeepCompareMemo} from '@react-hookz/web';
@@ -100,9 +99,7 @@ function Index(): ReactElement {
 	return (
 		<Fragment>
 			<div>
-				<section className={'z-10 mx-auto mt-10 grid w-full max-w-5xl'}>
-					<SectionDonate />
-				</section>
+				<section className={'z-10 mx-auto mt-10 grid w-full max-w-5xl'}></section>
 			</div>
 
 			<div>

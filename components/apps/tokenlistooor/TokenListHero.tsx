@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import {Button} from 'components/Primitives/Button';
 import dayjs, {extend} from 'dayjs';
 import dayjsDuration from 'dayjs/plugin/duration.js';
 import relativeTime from 'dayjs/plugin/relativeTime.js';
@@ -7,7 +8,6 @@ import weekday from 'dayjs/plugin/weekday.js';
 import {useTimer} from 'hooks/useTimer';
 import {IconSocialGithub} from '@yearn-finance/web-lib/icons/IconSocialGithub';
 import {copyToClipboard} from '@yearn-finance/web-lib/utils/helpers';
-import {Button} from '@common/Primitives/Button';
 
 import type {TTokenListSummary} from 'pages/tokenlistooor';
 import type {ReactElement} from 'react';

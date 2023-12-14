@@ -1,6 +1,6 @@
 import {Fragment} from 'react';
 import {SmolAddressInput} from 'components/designSystem/SmolAddressInput';
-import {Button} from '@common/Primitives/Button';
+import {Button} from 'components/Primitives/Button';
 
 import type {ReactElement} from 'react';
 

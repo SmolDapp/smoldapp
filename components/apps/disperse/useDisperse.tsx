@@ -1,59 +1,39 @@
-import React, {createContext, useContext, useEffect, useMemo, useState} from 'react';
-import {useUpdateEffect} from '@react-hookz/web';
-import {scrollToTargetAdjusted} from '@utils/animations';
-import {HEADER_HEIGHT} from '@utils/constants';
-import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
-import {ETH_TOKEN_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
-import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
+import React, {createContext, useContext, useMemo, useReducer, useState} from 'react';
 
-import type {Dispatch, SetStateAction} from 'react';
+import type {Dispatch} from 'react';
 import type {TAddress} from '@yearn-finance/web-lib/types';
 import type {TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import type {TToken} from '@utils/types/types';
 
-export enum Step {
-	TOSEND = 'destination',
-	SELECTOR = 'selector',
-	CONFIRMATION = 'confirmation'
-}
-
-export type TDisperseElement = {
+export type TDisperseReceiver = {
 	address: TAddress | undefined;
-	label: string;
 	amount: TNormalizedBN | undefined;
+	label: string;
 	UUID: string;
 };
 
-export type TSelected = {
-	tokenToDisperse: TToken;
-	currentStep: Step;
-	disperseArray: TDisperseElement[];
-	isDispersed: boolean;
-	set_currentStep: Dispatch<SetStateAction<Step>>;
-	set_tokenToDisperse: Dispatch<SetStateAction<TToken>>;
-	set_disperseArray: Dispatch<SetStateAction<TDisperseElement[]>>;
-	onResetDisperse: () => void;
-};
-const {wrappedToken: mainnetToken} = getNetwork(1).contracts;
-const defaultProps: TSelected = {
-	tokenToDisperse: {
-		address: ETH_TOKEN_ADDRESS,
-		chainID: 1,
-		name: mainnetToken?.coinName || 'Ether',
-		symbol: mainnetToken?.coinSymbol || 'ETH',
-		decimals: mainnetToken?.decimals || 18,
-		logoURI: `${process.env.SMOL_ASSETS_URL}/token/1/${ETH_TOKEN_ADDRESS}/logo-128.png`
-	},
-	currentStep: Step.TOSEND,
-	disperseArray: [],
-	isDispersed: false,
-	set_tokenToDisperse: (): void => undefined,
-	set_currentStep: (): void => undefined,
-	set_disperseArray: (): void => undefined,
-	onResetDisperse: (): void => undefined
+export type TDisperseConfiguration = {
+	tokenToSend: TToken | undefined;
+	receivers: TDisperseReceiver[];
 };
 
-export function newVoidRow(): TDisperseElement {
+export type TDisperseActions =
+	| {type: 'SET_TOKEN_TO_SEND'; payload: TToken | undefined}
+	| {type: 'SET_RECEIVERS'; payload: TDisperseReceiver[]}
+	| {type: 'ADD_RECEIVERS'; payload: TDisperseReceiver[]}
+	| {type: 'ADD_SIBLING_RECEIVER_FROM_UUID'; payload: string}
+	| {type: 'DEL_RECEIVER_BY_UUID'; payload: string}
+	| {type: 'UPD_RECEIVER_BY_UUID'; payload: TDisperseReceiver}
+	| {type: 'RESET'; payload: undefined};
+
+export type TDisperse = {
+	configuration: TDisperseConfiguration;
+	dispatchConfiguration: Dispatch<TDisperseActions>;
+	isDispersed: boolean;
+	onResetDisperse: () => void;
+};
+
+export function newVoidRow(): TDisperseReceiver {
 	return {
 		address: undefined,
 		label: '',
@@ -62,85 +42,81 @@ export function newVoidRow(): TDisperseElement {
 	};
 }
 
-const DisperseContext = createContext<TSelected>(defaultProps);
-export const DisperseContextApp = ({children}: {children: React.ReactElement}): React.ReactElement => {
-	const {address, isActive, isWalletSafe, isWalletLedger, onConnect} = useWeb3();
-	const [currentStep, set_currentStep] = useState<Step>(Step.TOSEND);
-	const [tokenToDisperse, set_tokenToDisperse] = useState<TToken>(defaultProps.tokenToDisperse);
+const defaultProps: TDisperse = {
+	isDispersed: false,
+	dispatchConfiguration: (): void => undefined,
+	onResetDisperse: (): void => undefined,
+	configuration: {
+		tokenToSend: undefined,
+		receivers: [newVoidRow(), newVoidRow()]
+	}
+};
 
-	const [disperseArray, set_disperseArray] = useState<TDisperseElement[]>([]);
+const configurationReducer = (state: TDisperseConfiguration, action: TDisperseActions): TDisperseConfiguration => {
+	switch (action.type) {
+		case 'SET_TOKEN_TO_SEND':
+			return {...state, tokenToSend: action.payload};
+		case 'SET_RECEIVERS':
+			return {...state, receivers: action.payload};
+		case 'ADD_RECEIVERS':
+			return {...state, receivers: [...state.receivers, ...action.payload]};
+		case 'ADD_SIBLING_RECEIVER_FROM_UUID':
+			return {
+				...state,
+				receivers: state.receivers.reduce((acc, row): TDisperseReceiver[] => {
+					if (row.UUID === action.payload) {
+						return [...acc, row, newVoidRow()];
+					}
+					return [...acc, row];
+				}, [] as TDisperseReceiver[])
+			};
+		case 'DEL_RECEIVER_BY_UUID':
+			if (state.receivers.length === 1) {
+				return {...state, receivers: [newVoidRow()]};
+			}
+			return {
+				...state,
+				receivers: state.receivers.filter((receiver): boolean => receiver.UUID !== action.payload)
+			};
+		case 'UPD_RECEIVER_BY_UUID':
+			return {
+				...state,
+				receivers: state.receivers.map((receiver): TDisperseReceiver => {
+					if (action.payload.UUID === receiver.UUID) {
+						return action.payload;
+					}
+					return receiver;
+				})
+			};
+		case 'RESET':
+			return {tokenToSend: undefined, receivers: [newVoidRow()]};
+	}
+};
+
+const DisperseContext = createContext<TDisperse>(defaultProps);
+export const DisperseContextApp = ({children}: {children: React.ReactElement}): React.ReactElement => {
 	const [isDispersed, set_isDispersed] = useState<boolean>(false);
+	const [configuration, dispatch] = useReducer(configurationReducer, defaultProps.configuration);
 
 	const onResetDisperse = (): void => {
 		set_isDispersed(true);
 		setTimeout((): void => {
-			set_currentStep(Step.TOSEND);
-			set_tokenToDisperse(defaultProps.tokenToDisperse);
-			set_disperseArray([newVoidRow(), newVoidRow()]);
+			dispatch({type: 'RESET', payload: undefined});
 			set_isDispersed(false);
 		}, 5000);
 	};
 
-	/**********************************************************************************************
-	 ** This effect is used to directly ask the user to connect its wallet if it's not connected
-	 **********************************************************************************************/
-	useEffect((): void => {
-		if (!isActive && !address) {
-			onConnect();
-			return;
-		}
-	}, [address, isActive, onConnect]);
-
-	/**********************************************************************************************
-	 ** This effect is used to handle some UI transitions and sections jumps. Once the current step
-	 ** changes, we need to scroll to the correct section.
-	 ** This effect is ignored on mount but will be triggered on every update to set the correct
-	 ** scroll position.
-	 **********************************************************************************************/
-	useUpdateEffect((): void => {
-		setTimeout((): void => {
-			let currentStepContainer;
-			const scalooor = document?.getElementById('scalooor');
-
-			if (currentStep === Step.TOSEND) {
-				currentStepContainer = document?.getElementById('tokenToSend');
-			} else if (currentStep === Step.SELECTOR) {
-				currentStepContainer = document?.getElementById('selector');
-			} else if (currentStep === Step.CONFIRMATION) {
-				currentStepContainer = document?.getElementById('tldr');
-			}
-			const currentElementHeight = currentStepContainer?.offsetHeight;
-			if (scalooor?.style) {
-				scalooor.style.height = `calc(100vh - ${currentElementHeight}px - ${HEADER_HEIGHT}px + 36px)`;
-			}
-			if (currentStepContainer) {
-				scrollToTargetAdjusted(currentStepContainer);
-			}
-		}, 0);
-	}, [currentStep, isWalletLedger, isWalletSafe]);
-
 	const contextValue = useMemo(
-		(): TSelected => ({
-			currentStep,
-			set_currentStep,
-			tokenToDisperse,
-			set_tokenToDisperse,
-			disperseArray,
-			set_disperseArray,
+		(): TDisperse => ({
+			configuration,
+			dispatchConfiguration: dispatch,
 			isDispersed,
 			onResetDisperse
 		}),
-		[currentStep, disperseArray, isDispersed, tokenToDisperse]
+		[configuration, isDispersed]
 	);
 
-	return (
-		<DisperseContext.Provider value={contextValue}>
-			<div className={'mx-auto w-full'}>
-				{children}
-				<div id={'scalooor'} />
-			</div>
-		</DisperseContext.Provider>
-	);
+	return <DisperseContext.Provider value={contextValue}>{children}</DisperseContext.Provider>;
 };
 
-export const useDisperse = (): TSelected => useContext(DisperseContext);
+export const useDisperse = (): TDisperse => useContext(DisperseContext);

@@ -1,7 +1,7 @@
 import React, {Fragment} from 'react';
 import {DefaultSeo} from 'next-seo';
-import {Migrate} from 'components/sections/Migrate';
-import {MigrateContextApp} from 'components/sections/Migrate/useMigrate';
+import {Migrate} from 'components/apps/Migrate';
+import {MigrateContextApp} from 'components/apps/Migrate/useMigrate';
 
 import type {ReactElement} from 'react';
 

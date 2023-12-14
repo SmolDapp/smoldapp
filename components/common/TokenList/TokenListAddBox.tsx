@@ -1,4 +1,6 @@
 import React, {useCallback, useMemo, useRef, useState} from 'react';
+import {defaultInputAddressLike} from 'components/designSystem/SmolAddressInput';
+import {Button} from 'components/Primitives/Button';
 import axios from 'axios';
 import {IconCircleCheck} from '@icons/IconCircleCheck';
 import {IconCircleCross} from '@icons/IconCircleCross';
@@ -7,10 +9,9 @@ import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {IconLoader} from '@yearn-finance/web-lib/icons/IconLoader';
 import {decodeAsBigInt, decodeAsNumber, decodeAsString} from '@yearn-finance/web-lib/utils/decoder';
 import {toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
-import AddressInput, {defaultInputAddressLike} from '@common/AddressInput';
-import {Button} from '@common/Primitives/Button';
+import AddressInput from '@common/AddressInput';
 
-import type {TInputAddressLike} from '@common/AddressInput';
+import type {TInputAddressLike} from 'components/designSystem/SmolAddressInput';
 import type {TToken, TTokenList} from '@utils/types/types';
 
 type TValue = {

@@ -254,11 +254,16 @@ select:focus {
 	animation: fadeOut 100ms ease-in;
 }
 
+.DropdownMenuContent {
+	width: var(--radix-dropdown-menu-trigger-width);
+	max-height: var(--radix-dropdown-menu-content-available-height);
+}
+
 .skeleton-lg {
-	@apply animate-pulse rounded-lg bg-neutral-300;
+	@apply animate-pulse rounded-lg bg-neutral-400;
 }
 .skeleton-full {
-	@apply animate-pulse rounded-full bg-neutral-300;
+	@apply animate-pulse rounded-full bg-neutral-400;
 }
 
 .button {

@@ -1,7 +1,7 @@
 import {useEffect, useRef, useState} from 'react';
 import {ImageWithFallback} from 'components/common/ImageWithFallback';
-import SmallButton from 'components/common/SmallButton';
 import {IconCircleCheck} from 'components/icons/IconCircleCheck';
+import {Button} from 'components/Primitives/Button';
 import {useWallet} from 'contexts/useWallet';
 import axios from 'axios';
 import {useMountEffect, useThrottledCallback} from '@react-hookz/web';
@@ -110,7 +110,7 @@ function TokenListsSelector(): ReactElement {
 											<IconCircleCheck className={'h-4 w-4 text-green'} />
 										</div>
 									) : (
-										<SmallButton
+										<Button
 											onClick={async (): Promise<void> => {
 												set_isRefreshing((s): TDict<boolean> => ({...s, [list.name]: true}));
 												await refreshWithList(tokenListTokensRef.current);
@@ -120,7 +120,7 @@ function TokenListsSelector(): ReactElement {
 											isBusy={isRefreshing[list.name]}
 											className={'h-6 p-2 text-xs'}>
 											{'Load'}
-										</SmallButton>
+										</Button>
 									)}
 								</div>
 								<div className={'w-full max-w-[240px] truncate md:max-w-xs'}>

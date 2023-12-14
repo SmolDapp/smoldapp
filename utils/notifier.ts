@@ -8,7 +8,6 @@ import {EIP3770_PREFIX} from './eip-3770';
 
 import type {Hex} from 'viem';
 import type {TAddress} from '@yearn-finance/web-lib/types';
-import type {TSelectedElement} from '@migratooor/useMigratooor';
 import type {TToken} from './types/types';
 
 const safeBaseURI = 'https://app.safe.global/transactions/tx?safe=';

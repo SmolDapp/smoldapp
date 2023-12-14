@@ -2,6 +2,7 @@ import React, {useMemo, useState} from 'react';
 import Link from 'next/link';
 import {useRouter} from 'next/router';
 import {DefaultSeo} from 'next-seo';
+import {Button} from 'components/Primitives/Button';
 import {extend} from 'dayjs';
 import dayjsDuration from 'dayjs/plugin/duration.js';
 import relativeTime from 'dayjs/plugin/relativeTime.js';
@@ -13,7 +14,6 @@ import {useMountEffect} from '@react-hookz/web';
 import {IconSocialGithub} from '@yearn-finance/web-lib/icons/IconSocialGithub';
 import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 import {ImageWithFallback} from '@common/ImageWithFallback';
-import {Button} from '@common/Primitives/Button';
 
 import type {Variants} from 'framer-motion';
 import type {GetServerSidePropsResult, NextPageContext} from 'next';

@@ -1,5 +1,5 @@
 import React, {useCallback, useMemo, useRef, useState} from 'react';
-import {useAddressBookCurtain} from 'contexts/useAddressBookCurtain';
+import {useAddressBook} from 'contexts/useAddressBook';
 import {getEnsName} from 'viem/ens';
 import {IconAppAddressBook} from '@icons/IconApps';
 import {IconChevron} from '@icons/IconChevron';
@@ -12,7 +12,7 @@ import {getPublicClient} from '@wagmi/core';
 import {IconLoader} from '@yearn-finance/web-lib/icons/IconLoader';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
 
-import type {TAddressBookEntry} from 'contexts/useAddressBookCurtain';
+import type {TAddressBookEntry} from 'contexts/useAddressBook';
 import type {ReactElement} from 'react';
 import type {TAddress} from '@yearn-finance/web-lib/types';
 
@@ -20,7 +20,7 @@ export type TInputAddressLike = {
 	address: TAddress | undefined;
 	label: string;
 	isValid: boolean | 'undetermined';
-	source?: 'typed' | 'addressBook';
+	source?: 'typed' | 'addressBook' | 'defaultValue';
 	error?: string;
 };
 export const defaultInputAddressLike: TInputAddressLike = {
@@ -31,7 +31,7 @@ export const defaultInputAddressLike: TInputAddressLike = {
 };
 
 export function SmolAddressInput(): ReactElement {
-	const {onOpenCurtain, getAddressBookEntry} = useAddressBookCurtain();
+	const {onOpenCurtain, getEntry, getCachedEntry} = useAddressBook();
 	const [isFocused, set_isFocused] = useState<boolean>(false);
 	const [isCheckingValidity, set_isCheckingValidity] = useState<boolean>(false);
 	const [value, set_value] = useState<TInputAddressLike>(defaultInputAddressLike);
@@ -40,9 +40,8 @@ export function SmolAddressInput(): ReactElement {
 	const currentInput = useRef<string>(defaultInputAddressLike.label);
 	const inputRef = useRef<HTMLInputElement>(null);
 	const addressBookEntry = useMemo(
-		(): TAddressBookEntry | undefined =>
-			getAddressBookEntry({address: toAddress(value.address), label: value.label}),
-		[getAddressBookEntry, value]
+		(): TAddressBookEntry | undefined => getCachedEntry({address: toAddress(value.address), label: value.label}),
+		[getCachedEntry, value]
 	);
 
 	const [, actions] = useAsyncAbortable(
@@ -62,7 +61,7 @@ export function SmolAddressInput(): ReactElement {
 					/**********************************************************
 					 ** Check if the input is an address from the address book
 					 **********************************************************/
-					const fromAddressBook = getAddressBookEntry({label: input, address: toAddress(input)});
+					const fromAddressBook = await getEntry({label: input, address: toAddress(input)});
 					if (fromAddressBook) {
 						currentAddress.current = toAddress(fromAddressBook.address);
 						if (signal.aborted) {
@@ -90,7 +89,7 @@ export function SmolAddressInput(): ReactElement {
 						}
 						if (currentLabel.current === input && isAddress(address)) {
 							set_isCheckingValidity(false);
-							const fromAddressBook = getAddressBookEntry({label: input, address: toAddress(address)});
+							const fromAddressBook = await getEntry({label: input, address: toAddress(address)});
 							if (fromAddressBook) {
 								currentLabel.current = fromAddressBook.label || fromAddressBook.ens || input;
 								set_value({

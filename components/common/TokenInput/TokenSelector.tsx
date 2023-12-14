@@ -1,10 +1,11 @@
 import React from 'react';
+import {SelectContent, SelectItem, SelectTrigger} from 'components/Primitives/Select';
 import useWallet from 'contexts/useWallet';
+import * as SelectPrimitive from '@radix-ui/react-select';
 import {toAddress} from '@utils/tools.address';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
 import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
 import {ImageWithFallback} from '@common/ImageWithFallback';
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@common/Primitives/Select';
 
 import type {ReactElement} from 'react';
 import type {TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
@@ -82,7 +83,7 @@ type TMultipleTokenSelector = {
 };
 export function MultipleTokenSelector({token, tokens, onChangeToken}: TMultipleTokenSelector): ReactElement {
 	return (
-		<Select
+		<SelectPrimitive.Root
 			onValueChange={e => {
 				const newToken = (tokens || []).find((item): boolean => item.address === e);
 				if (newToken && onChangeToken) {
@@ -95,9 +96,9 @@ export function MultipleTokenSelector({token, tokens, onChangeToken}: TMultipleT
 					'bg-neutral-0 border border-neutral-200 transition-colors',
 					'data-[state=open]:border-primary-500'
 				)}>
-				<SelectValue placeholder={<PlaceholderOption />}>
+				<SelectPrimitive.Value placeholder={<PlaceholderOption />}>
 					{token ? <SelectTokenOption token={token} /> : <PlaceholderOption />}
-				</SelectValue>
+				</SelectPrimitive.Value>
 			</SelectTrigger>
 			<SelectContent>
 				{(tokens || []).map(
@@ -110,6 +111,6 @@ export function MultipleTokenSelector({token, tokens, onChangeToken}: TMultipleT
 					)
 				)}
 			</SelectContent>
-		</Select>
+		</SelectPrimitive.Root>
 	);
 }
