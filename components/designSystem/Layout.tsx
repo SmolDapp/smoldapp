@@ -1,6 +1,5 @@
 import {type ReactElement, type ReactNode} from 'react';
 import {AddressBookCurtainContextApp} from 'contexts/useAddressBookCurtain';
-import {BalancesCurtainContextApp} from 'contexts/useBalancesCurtain';
 import {AnimatePresence, motion} from 'framer-motion';
 import {IconQuestionMark} from '@icons/IconQuestionMark';
 import {appWrapperVariants} from '@utils/animations';
@@ -91,22 +90,20 @@ export default function Layout(props: AppProps): ReactElement {
 							'relative col-main mb-10 min-h-app w-full overflow-x-hidden rounded-lg bg-neutral-0'
 						}>
 						<AddressBookCurtainContextApp>
-							<BalancesCurtainContextApp>
-								<App
-									title={appName}
-									description={appDescription}>
-									<motion.div
-										initial={{scale: 0.9, opacity: 0}}
-										animate={{scale: 1, opacity: 1}}
-										transition={{
-											delay: router.isReady ? 0.2 : 0.4,
-											duration: 0.6,
-											ease: 'easeInOut'
-										}}>
-										{getLayout(<Component {...props} />, router)}
-									</motion.div>
-								</App>
-							</BalancesCurtainContextApp>
+							<App
+								title={appName}
+								description={appDescription}>
+								<motion.div
+									initial={{scale: 0.9, opacity: 0}}
+									animate={{scale: 1, opacity: 1}}
+									transition={{
+										delay: router.isReady ? 0.2 : 0.4,
+										duration: 0.6,
+										ease: 'easeInOut'
+									}}>
+									{getLayout(<Component {...props} />, router)}
+								</motion.div>
+							</App>
 						</AddressBookCurtainContextApp>
 					</motion.main>
 				</AnimatePresence>

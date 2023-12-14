@@ -11,78 +11,76 @@ import {ImageWithFallback} from '@common/ImageWithFallback';
 import type {ReactElement} from 'react';
 import type {TToken} from '@utils/types/types';
 
-type TTokenAmountInputLike = {
+export type TSendInputElement = {
 	amount: string | undefined;
-	selectedToken: TToken | undefined;
+	token: TToken | undefined;
 	isValid: boolean | 'undetermined';
 	error?: string | undefined;
+	UUID: string;
 };
 
-export const defaultTokenInputLike: TTokenAmountInputLike = {
-	amount: '',
-	selectedToken: undefined,
-	isValid: 'undetermined'
+export const defaultTokenInputLike: TSendInputElement = {
+	amount: undefined,
+	isValid: 'undetermined',
+	token: undefined,
+	UUID: crypto.randomUUID()
 };
 
 type TTokenAmountInput = {
 	showPercentButtons?: boolean;
+	onSetValue: (value: Partial<TSendInputElement>) => void;
+	value: TSendInputElement;
 };
 
 const percentIntervals = [25, 50, 75];
 
-export function SmolTokenAmountInput({showPercentButtons = false}: TTokenAmountInput): ReactElement {
+export function SmolTokenAmountInput({showPercentButtons = false, onSetValue, value}: TTokenAmountInput): ReactElement {
 	const [isFocused, set_isFocused] = useState<boolean>(false);
-
-	const [value, set_value] = useState<TTokenAmountInputLike>(defaultTokenInputLike);
 
 	const {onOpenCurtain} = useBalancesCurtain();
 
 	const {getBalance} = useWallet();
 
-	const {selectedToken} = value;
+	const {token} = value;
 
-	const selectedTokenBalance = selectedToken ? getBalance(selectedToken.address) : toNormalizedBN(0);
+	const selectedTokenBalance = token ? getBalance(token.address) : toNormalizedBN(0);
 
-	const logoAltSrc = `${process.env.SMOL_ASSETS_URL}/token/${selectedToken?.chainID}/${selectedToken?.address}/logo-32.png`;
+	const logoAltSrc = `${process.env.SMOL_ASSETS_URL}/token/${token?.chainID}/${token?.address}/logo-32.png`;
 
 	const onChange = (amount: string): void => {
 		if (amount === '') {
-			return set_value(prev => ({...defaultTokenInputLike, selectedToken: prev.selectedToken}));
+			return onSetValue({amount: '', isValid: 'undetermined', error: undefined});
 		}
 
 		if (+amount > 0) {
-			const inputBigInt =
-				amount && selectedToken?.decimals ? parseUnits(amount, selectedToken.decimals) : toBigInt(0);
+			const inputBigInt = amount && token?.decimals ? parseUnits(amount, token.decimals) : toBigInt(0);
 
 			if (inputBigInt > selectedTokenBalance.raw) {
-				return set_value(prev => ({...prev, amount, isValid: false, error: 'Insufficient Balance'}));
+				return onSetValue({amount, isValid: false, error: 'Insufficient Balance'});
 			}
-			return set_value(prev => ({...prev, amount, isValid: true, error: undefined}));
+			return onSetValue({amount, isValid: true, error: undefined});
 		}
 
-		set_value(prev => ({
-			...prev,
+		onSetValue({
 			amount: undefined,
 			isValid: false,
 			error: 'The amount is invalid'
-		}));
+		});
 	};
 
 	const onSetFractional = (percentage: number): void => {
 		if (percentage === 100) {
-			return set_value(prev => ({
-				...prev,
+			return onSetValue({
 				amount: selectedTokenBalance.normalized.toString(),
 				isValid: true,
 				error: undefined
-			}));
+			});
 		}
-		set_value(prev => ({
-			...prev,
+		onSetValue({
 			amount: percentOf(+selectedTokenBalance.normalized, percentage).toString(),
 			isValid: true,
 			error: undefined
-		}));
+		});
 	};
 
 	const getBorderColor = useCallback((): string => {
@@ -96,7 +94,7 @@ export function SmolTokenAmountInput({showPercentButtons = false}: TTokenAmountI
 	}, [isFocused, value.isValid]);
 
 	return (
-		<div className={'relative h-full w-full rounded-lg'}>
+		<div className={'relative h-full rounded-lg'}>
 			<label
 				className={cl(
 					'h-20 w-[444px] z-20 relative border transition-all',
@@ -154,7 +152,7 @@ export function SmolTokenAmountInput({showPercentButtons = false}: TTokenAmountI
 								'rounded-md px-2 py-1 transition-colors hover:bg-neutral-200 disabled:cursor-not-allowed disabled:opacity-40'
 							}
 							onClick={() => onSetFractional(100)}
-							disabled={!selectedToken}>
+							disabled={!token}>
 							{'MAX'}
 						</button>
 					</div>
@@ -164,22 +162,18 @@ export function SmolTokenAmountInput({showPercentButtons = false}: TTokenAmountI
 						'flex items-center gap-4 rounded-lg p-4 max-w-[176px] w-full',
 						'bg-neutral-200 hover:bg-neutral-300 transition-colors'
 					)}
-					onClick={() =>
-						onOpenCurtain(selectedToken => set_value(prev => ({...prev, amount: '', selectedToken})))
-					}>
+					onClick={() => onOpenCurtain(token => onSetValue({amount: '', token}))}>
 					<div className={'flex w-full max-w-[116px] items-center gap-2'}>
 						<ImageWithFallback
-							alt={selectedToken?.symbol || ''}
+							alt={token?.symbol || ''}
 							unoptimized
-							src={selectedToken?.logoURI || logoAltSrc}
+							src={token?.logoURI || logoAltSrc}
 							altSrc={logoAltSrc}
 							quality={90}
 							width={32}
 							height={32}
 						/>
-						<p className={cl('truncate', selectedToken?.symbol ? 'font-bold' : '')}>
-							{selectedToken?.symbol || 'Select'}
-						</p>
+						<p className={cl('truncate', token?.symbol ? 'font-bold' : '')}>{token?.symbol || 'Select'}</p>
 					</div>
 
 					<IconChevron className={'h-4 w-4 text-neutral-600'} />

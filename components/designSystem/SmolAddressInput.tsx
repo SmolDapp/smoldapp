@@ -30,11 +30,16 @@ export const defaultInputAddressLike: TInputAddressLike = {
 	source: 'typed'
 };
 
-export function SmolAddressInput(): ReactElement {
+type TAddressInput = {
+	onSetValue: (value: TInputAddressLike) => void;
+	value: TInputAddressLike;
+};
+
+export function SmolAddressInput({onSetValue, value}: TAddressInput): ReactElement {
 	const {onOpenCurtain, getAddressBookEntry} = useAddressBookCurtain();
 	const [isFocused, set_isFocused] = useState<boolean>(false);
 	const [isCheckingValidity, set_isCheckingValidity] = useState<boolean>(false);
-	const [value, set_value] = useState<TInputAddressLike>(defaultInputAddressLike);
+
 	const currentAddress = useRef<TAddress | undefined>(defaultInputAddressLike.address);
 	const currentLabel = useRef<string>(defaultInputAddressLike.label);
 	const currentInput = useRef<string>(defaultInputAddressLike.label);
@@ -55,7 +60,7 @@ export function SmolAddressInput(): ReactElement {
 					currentAddress.current = undefined;
 
 					if (input === '') {
-						set_value(defaultInputAddressLike);
+						onSetValue(defaultInputAddressLike);
 						return resolve();
 					}
 
@@ -69,7 +74,7 @@ export function SmolAddressInput(): ReactElement {
 							reject(new Error('Aborted!'));
 						}
 						currentLabel.current = fromAddressBook.label || fromAddressBook.ens || input;
-						set_value({
+						onSetValue({
 							address: toAddress(fromAddressBook.address),
 							label: fromAddressBook.label,
 							isValid: true,
@@ -83,7 +88,7 @@ export function SmolAddressInput(): ReactElement {
 					 **********************************************************/
 					if (input.endsWith('.eth') && input.length > 4) {
 						set_isCheckingValidity(true);
-						set_value({address: undefined, label: input, isValid: 'undetermined', source: 'typed'});
+						onSetValue({address: undefined, label: input, isValid: 'undetermined', source: 'typed'});
 						const [address, isValid] = await checkENSValidity(input);
 						if (signal.aborted) {
 							reject(new Error('Aborted!'));
@@ -93,7 +98,7 @@ export function SmolAddressInput(): ReactElement {
 							const fromAddressBook = getAddressBookEntry({label: input, address: toAddress(address)});
 							if (fromAddressBook) {
 								currentLabel.current = fromAddressBook.label || fromAddressBook.ens || input;
-								set_value({
+								onSetValue({
 									address: toAddress(fromAddressBook.address),
 									label: fromAddressBook.label || fromAddressBook.ens || input,
 									isValid: true,
@@ -104,10 +109,10 @@ export function SmolAddressInput(): ReactElement {
 
 							currentAddress.current = address;
 							currentLabel.current = input;
-							set_value({address, label: input, isValid, source: 'typed'});
+							onSetValue({address, label: input, isValid, source: 'typed'});
 						} else {
 							set_isCheckingValidity(false);
-							set_value({
+							onSetValue({
 								address: undefined,
 								label: input,
 								isValid: false,
@@ -127,7 +132,7 @@ export function SmolAddressInput(): ReactElement {
 							reject(new Error('Aborted!'));
 						}
 						set_isCheckingValidity(true);
-						set_value({address: toAddress(input), label: input, isValid: true, source: 'typed'});
+						onSetValue({address: toAddress(input), label: input, isValid: true, source: 'typed'});
 						const client = getPublicClient({chainId: 1});
 						const ensName = await getEnsName(client, {address: toAddress(input)});
 						if (signal.aborted) {
@@ -135,12 +140,17 @@ export function SmolAddressInput(): ReactElement {
 						}
 						currentLabel.current = ensName || input;
 						set_isCheckingValidity(false);
-						set_value({address: toAddress(input), label: ensName || input, isValid: true, source: 'typed'});
+						onSetValue({
+							address: toAddress(input),
+							label: ensName || input,
+							isValid: true,
+							source: 'typed'
+						});
 						return resolve();
 					}
 
 					currentAddress.current = undefined;
-					set_value({
+					onSetValue({
 						address: undefined,
 						label: input,
 						isValid: input.startsWith('0x') && input.length === 42 ? false : 'undetermined',
@@ -167,7 +177,7 @@ export function SmolAddressInput(): ReactElement {
 		currentInput.current = item.label || item.ens || toAddress(item.address);
 		currentLabel.current = item.label || item.ens || toAddress(item.address);
 		currentAddress.current = toAddress(item.address);
-		set_value({
+		onSetValue({
 			address: toAddress(item.address),
 			label: item.label || item.ens || toAddress(item.address),
 			isValid: true,

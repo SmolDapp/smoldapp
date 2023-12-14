@@ -11,6 +11,7 @@ import {ImageWithFallback} from '@common/ImageWithFallback';
 import {CurtainContent} from '@common/Primitives/Curtain';
 
 import type {ReactElement} from 'react';
+import type {TAddress} from '@utils/tools.address';
 import type {TToken} from '@utils/types/types';
 
 export type TSelectCallback = (item: TToken) => void;
@@ -27,17 +28,26 @@ const defaultProps: TBalancesCurtainProps = {
 	onCloseCurtain: (): void => undefined
 };
 
-function Token({token, onSelect}: {token: TToken; onSelect: (token: TToken) => void}): ReactElement {
+function Token({
+	token,
+	isDisabled,
+	onSelect
+}: {
+	token: TToken;
+	isDisabled: boolean;
+	onSelect: (token: TToken) => void;
+}): ReactElement {
 	return (
-		<div
-			role={'button'}
+		<button
 			onClick={() => {
 				onSelect(token);
 			}}
 			className={cl(
 				'mb-2 flex flex-row items-center justify-between rounded-lg p-4 w-full',
-				'bg-neutral-200 hover:bg-neutral-300 transition-colors'
-			)}>
+				'bg-neutral-200 hover:bg-neutral-300 transition-colors',
+				'disabled:cursor-not-allowed disabled:hover:bg-neutral-200 disabled:opacity-20'
+			)}
+			disabled={isDisabled}>
 			<div className={'flex gap-2'}>
 				<ImageWithFallback
 					alt={token.symbol}
@@ -50,15 +60,16 @@ function Token({token, onSelect}: {token: TToken; onSelect: (token: TToken) => v
 				/>
 				<b className={'text-left text-base'}>{token.symbol}</b>
 			</div>
-		</div>
+		</button>
 	);
 }
 
-function AddressBookCurtain(props: {
+function BalancesCurtain(props: {
 	isOpen: boolean;
 	tokensWithBalance: TToken[];
 	onOpenChange: (isOpen: boolean) => void;
 	onSelect: TSelectCallback | undefined;
+	selectedTokenAddresses?: TAddress[];
 }): ReactElement {
 	const [searchValue, set_searchValue] = useState('');
 
@@ -125,6 +136,7 @@ function AddressBookCurtain(props: {
 										<Token
 											key={token.address}
 											token={token}
+											isDisabled={props.selectedTokenAddresses?.includes(token.address) || false}
 											onSelect={selected => {
 												props.onSelect?.(selected);
 												props.onOpenChange(false);
@@ -142,7 +154,19 @@ function AddressBookCurtain(props: {
 }
 
 const BalancesCurtainContext = createContext<TBalancesCurtainProps>(defaultProps);
-export const BalancesCurtainContextApp = ({children}: {children: React.ReactElement}): React.ReactElement => {
+
+type TBalancesCurtainContextAppProps = {
+	children: React.ReactElement;
+	/******************************************************************************
+	 ** If provided, tokens with such addresses will be disabled
+	 *****************************************************************************/
+	selectedTokenAddresses?: TAddress[];
+};
+
+export const BalancesCurtainContextApp = ({
+	children,
+	selectedTokenAddresses
+}: TBalancesCurtainContextAppProps): React.ReactElement => {
 	const [shouldOpenCurtain, set_shouldOpenCurtain] = useState(false);
 	const [currentCallbackFunction, set_currentCallbackFunction] = useState<TSelectCallback | undefined>(undefined);
 
@@ -167,9 +191,10 @@ export const BalancesCurtainContextApp = ({children}: {children: React.ReactElem
 	return (
 		<BalancesCurtainContext.Provider value={contextValue}>
 			{children}
-			<AddressBookCurtain
+			<BalancesCurtain
 				isOpen={shouldOpenCurtain}
 				tokensWithBalance={tokensWithBalance}
+				selectedTokenAddresses={selectedTokenAddresses}
 				onOpenChange={set_shouldOpenCurtain}
 				onSelect={currentCallbackFunction}
 			/>
