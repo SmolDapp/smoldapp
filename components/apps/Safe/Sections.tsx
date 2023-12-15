@@ -23,7 +23,7 @@ import {CALL_INIT_SIGNATURE, decodeArgInitializers, retrieveSafeTxHash, SINGLETO
 import type {TInputAddressLike} from 'components/designSystem/SmolAddressInput';
 import type {ReactElement} from 'react';
 import type {Hex} from 'viem';
-import type {TAddress} from '@yearn-finance/web-lib/types';
+import type {TAddress} from '@utils/tools.address';
 import type {TOwners} from './types';
 
 export function SectionDisplayOwners(): ReactElement {

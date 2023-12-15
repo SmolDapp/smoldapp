@@ -25,7 +25,7 @@ import {
 
 import type {ReactElement} from 'react';
 import type {Hex} from 'viem';
-import type {TAddress} from '@yearn-finance/web-lib/types';
+import type {TAddress} from '@utils/tools.address';
 
 type TComputeAddress = {
 	argInitializers: string;

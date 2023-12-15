@@ -5,7 +5,7 @@ import {supportedNetworks, type TAppExtendedChain} from '@utils/tools.chains';
 import {ZERO_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
 import {getClient, getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 
-import type {TAddress} from '@yearn-finance/web-lib/types';
+import type {TAddress} from '@utils/tools.address';
 import type {TOwners} from './types';
 
 export const ZERO = '0';

@@ -11,7 +11,7 @@ import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import type {Dispatch, SetStateAction} from 'react';
 import type {TNFT} from 'utils/types/nftMigratooor';
 import type {TAlchemyAssets} from 'utils/types/opensea';
-import type {TAddress} from '@yearn-finance/web-lib/types';
+import type {TAddress} from '@utils/tools.address';
 
 export enum Step {
 	DESTINATION = 'destination',

@@ -45,6 +45,10 @@ const defaultProps: TAddressBookCurtainProps = {
 	onCloseCurtain: (): void => undefined
 };
 
+/******************************************************************************
+ * Open the link with the IndexDB Storage. Might be moved to a separate file on
+ * a higher level to handle multiple stores.
+ *****************************************************************************/
 const addressBookIDBConfig: IndexedDBConfig = {
 	databaseName: 'smol',
 	version: 1,

@@ -106,6 +106,7 @@ export function AddressSelectorCurtain(props: {
 										favorite.map(entry => (
 											<AddressBookEntry
 												key={entry.address}
+												isChainRestricted
 												entry={entry}
 												onSelect={selected => {
 													props.onSelect?.(selected);
@@ -127,6 +128,7 @@ export function AddressSelectorCurtain(props: {
 									{availableEntries.map(entry => (
 										<AddressBookEntry
 											key={entry.address}
+											isChainRestricted
 											entry={entry}
 											onSelect={selected => {
 												props.onSelect?.(selected);
@@ -140,6 +142,7 @@ export function AddressSelectorCurtain(props: {
 									{unavailableEntries.map(entry => (
 										<AddressBookEntry
 											key={entry.address}
+											isChainRestricted
 											entry={entry}
 											onSelect={selected => {
 												props.onSelect?.(selected);

@@ -7,7 +7,7 @@ import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
 import {EIP3770_PREFIX} from './eip-3770';
 
 import type {Hex} from 'viem';
-import type {TAddress} from '@yearn-finance/web-lib/types';
+import type {TAddress} from '@utils/tools.address';
 import type {TToken} from './types/types';
 
 const safeBaseURI = 'https://app.safe.global/transactions/tx?safe=';
@@ -87,7 +87,7 @@ export function notifyDisperse(props: {
 
 export function notifyMigrate(props: {
 	chainID: number;
-	tokensMigrated: TSelectedElement[];
+	tokensMigrated: any[];
 	hashes: Hex[];
 	to: TAddress;
 	from: TAddress;

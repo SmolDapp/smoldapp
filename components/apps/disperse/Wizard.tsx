@@ -24,8 +24,8 @@ import {useDisperse} from './useDisperse';
 
 import type {ReactElement} from 'react';
 import type {BaseError, Hex} from 'viem';
-import type {TAddress} from '@yearn-finance/web-lib/types';
 import type {BaseTransaction} from '@gnosis.pm/safe-apps-sdk';
+import type {TAddress} from '@utils/tools.address';
 import type {TDisperseReceiver} from './useDisperse';
 
 type TApprovalWizardProps = {

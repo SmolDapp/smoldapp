@@ -117,6 +117,7 @@ export function AddressBookEntryAddress(props: {
 export function AddressBookEntry(props: {
 	entry: TAddressBookEntry;
 	onSelect: (entry: TAddressBookEntry) => void;
+	isChainRestricted?: boolean;
 }): ReactElement {
 	const {chainID} = useChainID();
 	const {updateEntry} = useAddressBook();
@@ -131,8 +132,8 @@ export function AddressBookEntry(props: {
 	});
 
 	useEffect((): void => {
-		if (ensName) {
-			// updateEntry({...props.entry, ens: ensName});
+		if (ensName && !props.entry.ens) {
+			updateEntry({...props.entry, ens: ensName});
 		}
 	}, [ensName, props.entry, updateEntry]);
 
@@ -145,7 +146,9 @@ export function AddressBookEntry(props: {
 			className={cl(
 				'mb-2 flex flex-row items-center justify-between rounded-lg p-4 w-full',
 				'bg-neutral-200 hover:bg-neutral-300 transition-colors',
-				props.entry.chains.includes(chainID) ? '' : 'opacity-40 hover:opacity-100 transition-opacity'
+				props.isChainRestricted && !props.entry.chains.includes(chainID)
+					? 'opacity-40 hover:opacity-100 transition-opacity'
+					: ''
 			)}>
 			<div className={'relative flex w-full gap-2'}>
 				<AddressBookEntryAvatar

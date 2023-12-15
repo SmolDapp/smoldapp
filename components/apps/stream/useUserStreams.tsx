@@ -8,7 +8,7 @@ import {getClient} from '@yearn-finance/web-lib/utils/wagmi/utils';
 import {getVestingContracts} from './constants';
 
 import type {TInputAddressLike} from 'components/designSystem/SmolAddressInput';
-import type {TAddress} from '@yearn-finance/web-lib/types';
+import type {TAddress} from '@utils/tools.address';
 
 export type TStreamArgs = {
 	funder: TAddress;

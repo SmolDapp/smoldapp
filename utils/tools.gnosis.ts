@@ -4,8 +4,8 @@ import {ETH_TOKEN_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
 
 import type {AbiCoder} from 'web3-eth-abi';
 import type {AbiItem} from 'web3-utils';
-import type {TAddress} from '@yearn-finance/web-lib/types';
 import type {BaseTransaction} from '@gnosis.pm/safe-apps-sdk';
+import type {TAddress} from '@utils/tools.address';
 
 const ERC20ABI_TRANSFER: AbiItem = {
 	constant: false,

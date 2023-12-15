@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import {DefaultSeo} from 'next-seo';
 import {Migrate} from 'components/apps/Migrate';
-import {MigratooorContextApp} from '@migratooor/useMigratooor';
+import {MigrateContextApp} from 'components/apps/Migrate/useMigrate';
 
 import type {ReactElement} from 'react';
 
@@ -36,7 +36,7 @@ function MigratePage(): ReactElement {
 
 export default function WrapperMigrate(): ReactElement {
 	return (
-		<MigratooorContextApp>
+		<MigrateContextApp>
 			<>
 				<DefaultSeo
 					title={'Migratooor - SmolDapp'}
@@ -66,6 +66,6 @@ export default function WrapperMigrate(): ReactElement {
 				/>
 				<MigratePage />
 			</>
-		</MigratooorContextApp>
+		</MigrateContextApp>
 	);
 }

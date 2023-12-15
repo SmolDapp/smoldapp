@@ -12,7 +12,7 @@ import {cl} from '@yearn-finance/web-lib/utils/cl';
 import {defaultInputAddressLike} from './SmolAddressInput';
 
 import type {InputHTMLAttributes, ReactElement} from 'react';
-import type {TAddress} from '@yearn-finance/web-lib/types';
+import type {TAddress} from '@utils/tools.address';
 import type {TInputAddressLike} from './SmolAddressInput';
 
 export function SmolAddressInputSimple(
@@ -224,7 +224,7 @@ export function SmolAddressInputSimple(
 							'w-full border-none bg-transparent p-0 text-xl transition-all pr-6',
 							'text-neutral-900 placeholder:text-neutral-600 caret-neutral-700',
 							'focus:placeholder:text-neutral-300 placeholder:transition-colors',
-							'disabled:bg-neutral-300',
+							'disabled:bg-neutral-300 transition-colors',
 							!currentLabel.current ? 'translate-y-2' : 'translate-y-0',
 							isFocused ? 'translate-y-2' : 'translate-y-0'
 						)}

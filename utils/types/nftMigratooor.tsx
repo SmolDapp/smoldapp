@@ -1,5 +1,5 @@
 import type {TransactionReceipt} from 'viem';
-import type {TAddress} from '@yearn-finance/web-lib/types';
+import type {TAddress} from '@utils/tools.address';
 
 export type TApprovalStatus = 'Approved' | 'Not Approved';
 

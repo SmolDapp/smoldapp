@@ -33,7 +33,7 @@ import {
 } from './utils';
 
 import type {ReactElement} from 'react';
-import type {TAddress} from '@yearn-finance/web-lib/types';
+import type {TAddress} from '@utils/tools.address';
 import type {TAppExtendedChain} from '@utils/tools.chains';
 import type {Chain} from '@wagmi/core';
 

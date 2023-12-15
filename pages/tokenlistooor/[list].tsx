@@ -2,6 +2,7 @@ import React, {useMemo, useState} from 'react';
 import Link from 'next/link';
 import {useRouter} from 'next/router';
 import {DefaultSeo} from 'next-seo';
+import {MigrateContextApp} from 'components/apps/Migrate/useMigrate';
 import {Button} from 'components/Primitives/Button';
 import {extend} from 'dayjs';
 import dayjsDuration from 'dayjs/plugin/duration.js';
@@ -9,7 +10,6 @@ import relativeTime from 'dayjs/plugin/relativeTime.js';
 import weekday from 'dayjs/plugin/weekday.js';
 import {SUPPORTED_CHAIN_IDS} from 'utils/constants';
 import {motion} from 'framer-motion';
-import {MigratooorContextApp} from '@migratooor/useMigratooor';
 import {useMountEffect} from '@react-hookz/web';
 import {IconSocialGithub} from '@yearn-finance/web-lib/icons/IconSocialGithub';
 import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
@@ -408,7 +408,7 @@ function List({list}: {list: TTokenListItem}): ReactElement {
 
 export default function Wrapper({list}: {list: TTokenListItem}): ReactElement {
 	return (
-		<MigratooorContextApp>
+		<MigrateContextApp>
 			<>
 				<DefaultSeo
 					title={`${list.name} tokenList - SmolDapp`}
@@ -438,7 +438,7 @@ export default function Wrapper({list}: {list: TTokenListItem}): ReactElement {
 				/>
 				<List list={list} />
 			</>
-		</MigratooorContextApp>
+		</MigrateContextApp>
 	);
 }
 

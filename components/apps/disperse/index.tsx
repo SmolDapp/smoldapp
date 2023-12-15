@@ -13,8 +13,8 @@ import {DisperseWizard} from './Wizard';
 
 import type {TDisperseConfiguration} from 'components/apps/Disperse/useDisperse';
 import type {ReactElement} from 'react';
-import type {TAddress} from '@yearn-finance/web-lib/types';
 import type {TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
+import type {TAddress} from '@utils/tools.address';
 import type {TToken} from '@utils/types/types';
 
 function AmountToSendInput(props: {

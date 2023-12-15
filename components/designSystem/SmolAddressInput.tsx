@@ -14,7 +14,7 @@ import {cl} from '@yearn-finance/web-lib/utils/cl';
 
 import type {TAddressBookEntry} from 'contexts/useAddressBook';
 import type {ReactElement} from 'react';
-import type {TAddress} from '@yearn-finance/web-lib/types';
+import type {TAddress} from '@utils/tools.address';
 
 export type TInputAddressLike = {
 	address: TAddress | undefined;
