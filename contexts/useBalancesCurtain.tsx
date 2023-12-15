@@ -5,10 +5,13 @@ import {CloseCurtainButton} from 'components/designSystem/Curtain';
 import {useTokensWithBalance} from 'hooks/useTokensWithBalance';
 import * as Dialog from '@radix-ui/react-dialog';
 import {useDeepCompareMemo} from '@react-hookz/web';
-import {toAddress} from '@utils/tools.address';
+import {toAddress, truncateHex} from '@utils/tools.address';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
+import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
 import {ImageWithFallback} from '@common/ImageWithFallback';
 import {CurtainContent} from '@common/Primitives/Curtain';
+
+import useWallet from './useWallet';
 
 import type {ReactElement} from 'react';
 import type {TAddress} from '@utils/tools.address';
@@ -37,6 +40,9 @@ function Token({
 	isDisabled: boolean;
 	onSelect: (token: TToken) => void;
 }): ReactElement {
+	const {getBalance} = useWallet();
+	const tokenBalance = getBalance(token.address);
+
 	return (
 		<button
 			onClick={() => {
@@ -48,17 +54,24 @@ function Token({
 				'disabled:cursor-not-allowed disabled:hover:bg-neutral-200 disabled:opacity-20'
 			)}
 			disabled={isDisabled}>
-			<div className={'flex gap-2'}>
+			<div className={'flex items-center gap-2'}>
 				<ImageWithFallback
 					alt={token.symbol}
 					unoptimized
 					src={token.logoURI || ''}
 					altSrc={`${process.env.SMOL_ASSETS_URL}/token/${token.chainID}/${token.address}/logo-32.png`}
 					quality={90}
-					width={24}
-					height={24}
+					width={32}
+					height={32}
 				/>
-				<b className={'text-left text-base'}>{token.symbol}</b>
+				<div className={'text-left'}>
+					<b className={'text-left text-base'}>{token.symbol}</b>
+					<p className={'text-xs text-neutral-600'}>{truncateHex(token.address, 5)}</p>
+				</div>
+			</div>
+			<div className={'text-right'}>
+				<b className={'text-left text-base'}>{formatAmount(tokenBalance.normalized, 0, 6)}</b>
+				<p className={'text-xs text-neutral-600'}>{'$420.69'}</p>
 			</div>
 		</button>
 	);

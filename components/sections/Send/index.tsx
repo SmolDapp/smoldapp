@@ -30,8 +30,10 @@ function SendTokenRow({input}: {input: TSendInputElement}): ReactElement {
 				value={input}
 			/>
 			{configuration.inputs.length > 1 && (
-				<button onClick={onRemoveInput}>
-					<IconCross className={'h-4 w-4 text-neutral-600 transition-colors hover:text-neutral-700'} />
+				<button
+					className={'-m-1 p-1 text-neutral-600 transition-colors hover:text-neutral-700'}
+					onClick={onRemoveInput}>
+					<IconCross className={'h-4 w-4'} />
 				</button>
 			)}
 		</div>
@@ -75,7 +77,7 @@ export function Send(): ReactElement {
 			<div className={'mb-4 '}>
 				<button
 					className={cl(
-						'rounded-lg bg-neutral-200 px-3 py-1 text-neutral-700 transition-colors hover:bg-neutral-300',
+						'rounded-lg bg-neutral-200 px-3 py-1 text-neutral-700 transition-colors hover:bg-neutral-300 text-xs',
 						'disabled:cursor-not-allowed disabled:hover:bg-neutral-200 disabled:opacity-20'
 					)}
 					onClick={onAddToken}

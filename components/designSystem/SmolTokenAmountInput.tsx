@@ -60,7 +60,7 @@ export function SmolTokenAmountInput({showPercentButtons = false, onSetValue, va
 		}
 
 		onSetValue({
-			amount: undefined,
+			amount: '0',
 			isValid: false,
 			error: 'The amount is invalid'
 		});
@@ -135,7 +135,9 @@ export function SmolTokenAmountInput({showPercentButtons = false, onSetValue, va
 								))}
 							</div>
 						) : selectedTokenBalance.normalized ? (
-							<button onClick={() => onSetFractional(100)}>
+							<button
+								onClick={() => onSetFractional(100)}
+								disabled={!token || selectedTokenBalance.raw === 0n}>
 								<p>
 									{'You have '}
 									{formatAmount(selectedTokenBalance.normalized, 0, 6)}
@@ -150,7 +152,7 @@ export function SmolTokenAmountInput({showPercentButtons = false, onSetValue, va
 								'rounded-md px-2 py-1 transition-colors hover:bg-neutral-200 disabled:cursor-not-allowed disabled:opacity-40'
 							}
 							onClick={() => onSetFractional(100)}
-							disabled={!token}>
+							disabled={!token || selectedTokenBalance.raw === 0n}>
 							{'MAX'}
 						</button>
 					</div>
@@ -170,7 +172,9 @@ export function SmolTokenAmountInput({showPercentButtons = false, onSetValue, va
 							width={32}
 							height={32}
 						/>
-						<p className={cl('truncate', token?.symbol ? 'font-bold' : '')}>{token?.symbol || 'Select'}</p>
+						<p className={cl('truncate font-bold ', token?.symbol ? '' : 'text-neutral-600')}>
+							{token?.symbol || 'Select'}
+						</p>
 					</div>
 
 					<IconChevron className={'h-4 w-4 text-neutral-600'} />
