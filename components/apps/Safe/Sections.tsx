@@ -1,6 +1,6 @@
 import React, {useCallback, useState} from 'react';
 import assert from 'assert';
-import ChainStatus from 'components/apps/Safe/ChainStatus';
+import ChainStatus from 'components/apps/safe/ChainStatus';
 import {defaultInputAddressLike} from 'components/designSystem/SmolAddressInput';
 import {Button} from 'components/Primitives/Button';
 import IconSquareMinus from '@icons/IconSquareMinus';

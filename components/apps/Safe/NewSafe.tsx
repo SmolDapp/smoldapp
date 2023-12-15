@@ -6,8 +6,8 @@ import {
 	SectionSeedInput,
 	SectionSuffixInput,
 	SectionThresholdInput
-} from 'components/apps/Safe/Sections';
-import {useMultiSafe} from 'components/apps/Safe/useSafe';
+} from 'components/apps/safe/Sections';
+import {useMultiSafe} from 'components/apps/safe/useSafe';
 import IconWarning from 'components/icons/IconWarning';
 import {Button} from 'components/Primitives/Button';
 import {concat, encodePacked, getContractAddress, hexToBigInt, keccak256, toHex} from 'viem';

@@ -1,5 +1,5 @@
 import React, {Fragment, memo, useState} from 'react';
-import NewSafe from 'components/apps/Safe/NewSafe';
+import NewSafe from 'components/apps/safe/NewSafe';
 import IconSquarePlus from 'components/icons/IconSquarePlus';
 import {IconClone} from '@icons/IconClone';
 import {useUpdateEffect} from '@react-hookz/web';

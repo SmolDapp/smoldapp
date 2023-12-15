@@ -1,7 +1,7 @@
 import {useCallback, useEffect, useState} from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import {useMultiSafe} from 'components/apps/Safe/useSafe';
+import {useMultiSafe} from 'components/apps/safe/useSafe';
 import {Button} from 'components/Primitives/Button';
 import DISPERSE_ABI from 'utils/abi/disperse.abi';
 import GNOSIS_SAFE_PROXY_FACTORY from 'utils/abi/gnosisSafeProxyFactory.abi';

@@ -1,8 +1,8 @@
 import React, {Fragment} from 'react';
 import Link from 'next/link';
 import {DefaultSeo} from 'next-seo';
-import MultiSafe from 'components/apps/Safe';
-import {MultiSafeContextApp} from 'components/apps/Safe/useSafe';
+import MultiSafe from 'components/apps/safe';
+import {MultiSafeContextApp} from 'components/apps/safe/useSafe';
 
 import type {ReactElement} from 'react';
 

@@ -1,5 +1,5 @@
 import assert from 'assert';
-import {SINGLETON_L2} from 'components/apps/Safe/utils';
+import {SINGLETON_L2} from 'components/apps/safe/utils';
 import DISPERSE_ABI from 'utils/abi/disperse.abi';
 import {
 	erc20ABI,

@@ -1,8 +1,8 @@
 import React from 'react';
 import Link from 'next/link';
 import {DefaultSeo} from 'next-seo';
-import {Migrate} from 'components/apps/Migrate';
-import {MigrateContextApp} from 'components/apps/Migrate/useMigrate';
+import {Migrate} from 'components/apps/migrate';
+import {MigrateContextApp} from 'components/apps/migrate/useMigrate';
 
 import type {ReactElement} from 'react';
 

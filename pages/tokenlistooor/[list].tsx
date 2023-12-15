@@ -2,7 +2,7 @@ import React, {useMemo, useState} from 'react';
 import Link from 'next/link';
 import {useRouter} from 'next/router';
 import {DefaultSeo} from 'next-seo';
-import {MigrateContextApp} from 'components/apps/Migrate/useMigrate';
+import {MigrateContextApp} from 'components/apps/migrate/useMigrate';
 import {Button} from 'components/Primitives/Button';
 import {extend} from 'dayjs';
 import dayjsDuration from 'dayjs/plugin/duration.js';
