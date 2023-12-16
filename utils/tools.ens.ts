@@ -3,7 +3,7 @@ import {isAddress, toHex} from 'viem';
 import {toAddress} from '@utils/tools.address';
 import {fetchEnsAddress} from '@wagmi/core';
 
-import type {TAddress} from '@yearn-finance/web-lib/types';
+import type {TAddress} from '@utils/tools.address';
 
 export async function retrieveENSNameFromNode(tokenId: bigint): Promise<string> {
 	const labelHash = toHex(tokenId, {size: 32});
@@ -20,11 +20,15 @@ export async function retrieveENSNameFromNode(tokenId: bigint): Promise<string> 
 }
 
 export async function checkENSValidity(ens: string): Promise<[TAddress, boolean]> {
-	const resolvedAddress = await fetchEnsAddress({name: ens, chainId: 1});
-	if (resolvedAddress) {
-		if (isAddress(resolvedAddress)) {
-			return [toAddress(resolvedAddress), true];
+	try {
+		const resolvedAddress = await fetchEnsAddress({name: ens, chainId: 1});
+		if (resolvedAddress) {
+			if (isAddress(resolvedAddress)) {
+				return [toAddress(resolvedAddress), true];
+			}
 		}
+		return [toAddress(), false];
+	} catch (error) {
+		return [toAddress(), false];
 	}
-	return [toAddress(), false];
 }

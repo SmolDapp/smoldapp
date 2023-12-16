@@ -1,5 +1,5 @@
 import assert from 'assert';
-import {SINGLETON_L2} from 'components/sections/Safe/utils';
+import {SINGLETON_L2} from 'components/apps/safe/utils';
 import DISPERSE_ABI from 'utils/abi/disperse.abi';
 import {
 	erc20ABI,
@@ -25,9 +25,9 @@ import {YVESTING_SIMPLE_ABI} from './abi/yVestingSimple.abi';
 
 import type {BaseError, Hex} from 'viem';
 import type {Connector} from 'wagmi';
-import type {TAddress} from '@yearn-finance/web-lib/types';
 import type {TWriteTransaction} from '@yearn-finance/web-lib/utils/wagmi/provider';
 import type {TTxResponse} from '@yearn-finance/web-lib/utils/web3/transaction';
+import type {TAddress} from '@utils/tools.address';
 
 //Because USDT do not return a boolean on approve, we need to use this ABI
 const ALTERNATE_ERC20_APPROVE_ABI = [

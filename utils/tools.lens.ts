@@ -2,7 +2,7 @@ import {isAddress} from 'viem';
 import {toAddress} from '@utils/tools.address';
 import {lensProtocolFetcher} from '@yearn-finance/web-lib/utils/fetchers';
 
-import type {TAddress} from '@yearn-finance/web-lib/types';
+import type {TAddress} from '@utils/tools.address';
 
 type THandleFromAddress = {defaultProfile: {handle: string}};
 async function getHandleFromAddress(address: TAddress): Promise<string> {

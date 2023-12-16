@@ -1,4 +1,5 @@
 import React, {Fragment, useCallback, useMemo, useState} from 'react';
+import {Button} from 'components/Primitives/Button';
 import {differenceInDays, differenceInMonths, differenceInSeconds, getUnixTime, isAfter, isBefore} from 'date-fns';
 import {erc20ABI, useContractRead} from 'wagmi';
 import {IconChevronBoth} from '@icons/IconChevronBoth';
@@ -13,7 +14,6 @@ import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
 import {defaultTxStatus} from '@yearn-finance/web-lib/utils/web3/transaction';
 import {Counter} from '@common/Counter';
-import {Button} from '@common/Primitives/Button';
 
 import {getDefaultVestingContract} from './constants';
 import {SuccessModal} from './successModal';

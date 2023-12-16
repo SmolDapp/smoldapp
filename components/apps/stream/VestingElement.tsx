@@ -1,4 +1,5 @@
 import React, {Fragment, useCallback, useMemo, useState} from 'react';
+import {Button} from 'components/Primitives/Button';
 import {useTokenList} from 'contexts/useTokenList';
 import {addSeconds, differenceInSeconds, format} from 'date-fns';
 import {erc20ABI, useContractReads} from 'wagmi';
@@ -13,7 +14,6 @@ import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
 import {defaultTxStatus} from '@yearn-finance/web-lib/utils/web3/transaction';
 import {Counter} from '@common/Counter';
 import {ImageWithFallback} from '@common/ImageWithFallback';
-import {Button} from '@common/Primitives/Button';
 
 import type {ReactElement} from 'react';
 import type {TStreamArgs} from './useUserStreams';

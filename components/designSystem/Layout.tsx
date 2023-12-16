@@ -1,13 +1,12 @@
 import {type ReactElement, type ReactNode} from 'react';
-import {AddressBookCurtainContextApp} from 'contexts/useAddressBookCurtain';
+import {WithAddressBook} from 'contexts/useAddressBook';
 import {AnimatePresence, motion} from 'framer-motion';
 import {IconQuestionMark} from '@icons/IconQuestionMark';
 import {appWrapperVariants} from '@utils/animations';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
 
-import {InfoCurtain} from './Curtain';
-import {NavProfile} from './Profile';
 import {SideMenu} from './SideMenu';
+import {InfoCurtain} from './Curtains/InfoCurtain';
 
 import type {NextComponentType} from 'next';
 import type {AppProps} from 'next/app';
@@ -46,16 +45,6 @@ function App(props: TAppProp): ReactElement {
 	);
 }
 
-function Nav(): ReactElement {
-	return (
-		<>
-			<NavProfile />
-			<div className={'h-0.5 w-full bg-neutral-200'} />
-			<SideMenu />
-		</>
-	);
-}
-
 type TComponent = NextComponentType & {
 	AppName: string;
 	AppDescription: string;
@@ -75,7 +64,7 @@ export default function Layout(props: AppProps): ReactElement {
 					animate={{scale: 1, opacity: 1}}
 					transition={{duration: 0.6, ease: 'easeInOut'}}
 					className={'sticky top-10 z-20 col-sidebar flex h-app flex-col rounded-lg bg-neutral-0'}>
-					<Nav />
+					<SideMenu />
 				</motion.nav>
 
 				<AnimatePresence mode={'wait'}>
@@ -89,7 +78,7 @@ export default function Layout(props: AppProps): ReactElement {
 						className={
 							'relative col-main mb-10 min-h-app w-full overflow-x-hidden rounded-lg bg-neutral-0'
 						}>
-						<AddressBookCurtainContextApp>
+						<WithAddressBook>
 							<App
 								title={appName}
 								description={appDescription}>
@@ -104,7 +93,7 @@ export default function Layout(props: AppProps): ReactElement {
 									{getLayout(<Component {...props} />, router)}
 								</motion.div>
 							</App>
-						</AddressBookCurtainContextApp>
+						</WithAddressBook>
 					</motion.main>
 				</AnimatePresence>
 			</div>

@@ -11,7 +11,7 @@ import {getClient} from '@yearn-finance/web-lib/utils/wagmi/utils';
 
 import type {TNFT} from 'utils/types/nftMigratooor';
 import type {ContractFunctionConfig} from 'viem';
-import type {TAddress} from '@yearn-finance/web-lib/types';
+import type {TAddress} from '@utils/tools.address';
 
 type TNFTLogged = {
 	id: string;

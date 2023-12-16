@@ -1,12 +1,12 @@
 import React, {Fragment} from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import {Button} from 'components/Primitives/Button';
 import {LogoDisperse} from '@icons/LogoDisperse';
 import {LogoMigrate} from '@icons/LogoMigrate';
 import {LogoMultiSafe} from '@icons/LogoMultiSafe';
 import LogoNFTMigratooor from '@nftmigratooor/Logo';
 import LogoTokenlistooor from '@tokenlistooor/Logo';
-import {Button} from '@common/Primitives/Button';
 
 import type {ReactElement} from 'react';
 

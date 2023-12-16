@@ -5,7 +5,7 @@ import Link from 'next/link';
 import * as Tooltip from '@radix-ui/react-tooltip';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
 
-import {TooltipContent} from './Primitives/Tooltip';
+import {TooltipContent} from '../Primitives/Tooltip';
 
 import type {ReactElement} from 'react';
 
