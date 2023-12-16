@@ -22,10 +22,10 @@ export function NetworkDropdownSelector(
 	 * array of networks into a TNDict.
 	 *************************************************************************/
 	const [selectedNetworks, set_selectedNetworks] = useState<TNDict<boolean>>(
-		props.value.reduce((acc, networkId) => {
+		props.value.reduce((acc: TNDict<boolean>, networkId) => {
 			acc[networkId] = true;
 			return acc;
-		}, {} as TNDict<boolean>)
+		}, {})
 	);
 
 	/**************************************************************************
@@ -86,10 +86,10 @@ export function NetworkDropdownSelector(
 						checked={areAllSelected}
 						onCheckedChange={() => {
 							set_selectedNetworks(
-								supportedNetworks.reduce((acc, network) => {
+								supportedNetworks.reduce((acc: TNDict<boolean>, network) => {
 									acc[network.id] = areAllSelected ? false : true;
 									return acc;
-								}, {} as TNDict<boolean>)
+								}, {})
 							);
 						}}>
 						{'Select all'}

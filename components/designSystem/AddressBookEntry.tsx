@@ -132,7 +132,7 @@ export function AddressBookEntry(props: {
 	});
 
 	useEffect((): void => {
-		if (ensName && !props.entry.ens) {
+		if ((ensName && !props.entry.ens) || (ensName && props.entry.ens !== ensName)) {
 			updateEntry({...props.entry, ens: ensName});
 		}
 	}, [ensName, props.entry, updateEntry]);

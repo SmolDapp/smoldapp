@@ -1,6 +1,6 @@
 import {type ReactElement} from 'react';
+import {useIsMounted} from 'hooks/useIsMounted';
 import {useBalance} from 'wagmi';
-import {useIsMounted} from '@react-hookz/web';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
@@ -13,7 +13,7 @@ export function CoinBalance(): ReactElement {
 	const currentChain = getNetwork(chainID || 1).nativeCurrency;
 	const {data: balance} = useBalance({chainId: chainID || 1, address});
 
-	if (!isMounted()) {
+	if (!isMounted) {
 		return (
 			<div>
 				<small>{'Coin'}</small>

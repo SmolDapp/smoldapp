@@ -119,4 +119,10 @@ export const DisperseContextApp = ({children}: {children: React.ReactElement}): 
 	return <DisperseContext.Provider value={contextValue}>{children}</DisperseContext.Provider>;
 };
 
-export const useDisperse = (): TDisperse => useContext(DisperseContext);
+export const useDisperse = (): TDisperse => {
+	const ctx = useContext(DisperseContext);
+	if (!ctx) {
+		throw new Error('DisperseContext not found');
+	}
+	return ctx;
+};

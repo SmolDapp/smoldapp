@@ -153,6 +153,29 @@ export function SmolAddressInputSimple(
 		return undefined;
 	}, [isFocused, currentInput, currentLabel]);
 
+	const getOnFocus = useCallback((): void => {
+		set_isFocused(true);
+		setTimeout(() => {
+			if (inputRef.current) {
+				const end = currentInput.current.length;
+				inputRef.current.setSelectionRange(0, end);
+				inputRef.current.scrollLeft = inputRef.current.scrollWidth;
+				inputRef.current.focus();
+			}
+		}, 0);
+	}, [inputRef, currentInput]);
+
+	const getOnBlur = useCallback((): void => {
+		if (value.label.endsWith('.eth')) {
+			currentInput.current = currentLabel.current;
+		} else if (!value.label.startsWith('0x')) {
+			currentInput.current = currentLabel.current;
+		} else {
+			currentInput.current = currentAddress.current || '';
+		}
+		set_isFocused(false);
+	}, [value.label]);
+
 	const getBorderColor = useCallback((): string => {
 		if (isFocused) {
 			return 'border-neutral-600';
@@ -235,27 +258,8 @@ export function SmolAddressInputSimple(
 						spellCheck={'false'}
 						value={getInputValue()}
 						onChange={e => onChangeTrigger(e.target.value)}
-						onFocus={() => {
-							set_isFocused(true);
-							setTimeout(() => {
-								if (inputRef.current) {
-									const end = currentInput.current.length;
-									inputRef.current.setSelectionRange(0, end);
-									inputRef.current.scrollLeft = inputRef.current.scrollWidth;
-									inputRef.current.focus();
-								}
-							}, 0);
-						}}
-						onBlur={() => {
-							if (value.label.endsWith('.eth')) {
-								currentInput.current = currentLabel.current;
-							} else if (!value.label.startsWith('0x')) {
-								currentInput.current = currentLabel.current;
-							} else {
-								currentInput.current = currentAddress.current || '';
-							}
-							set_isFocused(false);
-						}}
+						onFocus={getOnFocus}
+						onBlur={getOnBlur}
 						{...rest}
 					/>
 
