@@ -7,7 +7,7 @@ import {cl} from '@yearn-finance/web-lib/utils/cl';
 
 import type {ReactElement} from 'react';
 
-export function DropdownMenuContent({sideOffset = 4, ...props}): ReactElement {
+export function DropdownMenuContent({sideOffset = 4, ...props}: any): ReactElement {
 	return (
 		<Content
 			sideOffset={sideOffset}
@@ -24,7 +24,7 @@ export function DropdownMenuContent({sideOffset = 4, ...props}): ReactElement {
 	);
 }
 
-export function DropdownMenuCheckboxItem({...props}): ReactElement {
+export function DropdownMenuCheckboxItem({...props}: any): ReactElement {
 	return (
 		<CheckboxItem
 			className={cl(
@@ -56,7 +56,7 @@ export function DropdownMenuCheckboxItem({...props}): ReactElement {
 	);
 }
 
-export function DropdownMenuSeparator({...props}): ReactElement {
+export function DropdownMenuSeparator({...props}: any): ReactElement {
 	return (
 		<Separator
 			style={{width: 'calc(100% - 16px)'}}
