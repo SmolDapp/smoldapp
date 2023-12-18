@@ -11,24 +11,24 @@ import {cl} from '@yearn-finance/web-lib/utils/cl';
 
 import {defaultInputAddressLike} from './SmolAddressInput';
 
-import type {InputHTMLAttributes, ReactElement} from 'react';
+import type {InputHTMLAttributes, ReactElement, RefObject} from 'react';
 import type {TAddress} from '@utils/tools.address';
 import type {TInputAddressLike} from './SmolAddressInput';
 
 export function SmolAddressInputSimple(
 	props: {
+		inputRef: RefObject<HTMLInputElement>;
 		value: TInputAddressLike;
 		onChange: (value: TInputAddressLike) => void;
 	} & Omit<InputHTMLAttributes<HTMLInputElement>, 'value' | 'onChange'>
 ): ReactElement {
-	const {value, onChange, ...rest} = props;
+	const {value, onChange, inputRef, ...rest} = props;
 	const [isFocused, set_isFocused] = useState<boolean>(false);
 	const [isCheckingValidity, set_isCheckingValidity] = useState<boolean>(false);
 	const [, set_nonce] = useState<number>(0);
 	const currentAddress = useRef<TAddress | undefined>(defaultInputAddressLike.address);
 	const currentLabel = useRef<string>(defaultInputAddressLike.label);
 	const currentInput = useRef<string>(defaultInputAddressLike.label);
-	const inputRef = useRef<HTMLInputElement>(null);
 
 	useUpdateEffect(() => {
 		if (value.source === 'defaultValue') {

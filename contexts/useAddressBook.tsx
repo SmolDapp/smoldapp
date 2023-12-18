@@ -152,7 +152,7 @@ export const WithAddressBook = ({children}: {children: React.ReactElement}): Rea
 			try {
 				const existingEntry = await getEntry({address: entry.address});
 				if (existingEntry) {
-					update({...existingEntry, ...entry});
+					update({...existingEntry, ...entry, slugifiedLabel: slugify(entry.label)});
 					set_entryNonce(nonce => nonce + 1);
 				} else {
 					assert(isAddress(entry.address));

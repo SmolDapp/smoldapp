@@ -1,6 +1,6 @@
 'use client';
 
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {useRouter} from 'next/router';
 import {CloseCurtainButton} from 'components/designSystem/Curtains/InfoCurtain';
 import {Button} from 'components/Primitives/Button';
@@ -107,26 +107,54 @@ function ActionButtons(props: {
 		</div>
 	);
 }
+
 function NameInput(props: {
 	selectedEntry: TAddressBookEntry;
 	dispatch: Dispatch<TAddressBookEntryReducer>;
 	onEdit: (shouldEdit: boolean) => void;
 	isEditMode: boolean;
+	onChange: VoidFunction;
 }): ReactElement {
+	const {getCachedEntry} = useAddressBook();
 	const labelRef = useRef<HTMLDivElement>(null);
+	const inputRef = useRef<HTMLInputElement>(null);
+	const {onChange, selectedEntry} = props;
 
-	const errorMessage = useMemo((): string | undefined => {
-		if (props.selectedEntry.label.startsWith('0x')) {
+	useEffect(() => {
+		const entry = getCachedEntry({label: selectedEntry.label});
+		if (entry !== undefined && entry.id !== selectedEntry.id) {
+			inputRef.current?.setCustomValidity('This name is already used in your address book');
+			onChange();
+		} else {
+			inputRef.current?.setCustomValidity('');
+			onChange();
+		}
+	}, [selectedEntry.label, getCachedEntry, selectedEntry.id, onChange]);
+
+	const getErrorMessage = useCallback((): string | undefined => {
+		if (selectedEntry.label.startsWith('0x')) {
 			return 'The name cannot starts with `0x`';
 		}
-		if (props.selectedEntry.label.includes('.')) {
+		if (selectedEntry.label.includes('.')) {
 			return 'The name cannot contains `.`';
 		}
-		if (props.selectedEntry.label.length > 22) {
+		if (selectedEntry.label.length > 22) {
 			return 'The name cannot be longer than 22 characters';
 		}
+		if (inputRef.current?.validity.patternMismatch) {
+			return 'The string must not start with `0x` and must not contain `.`';
+		}
+		if (inputRef.current?.validity.tooShort) {
+			return 'The name must be at least 1 character long';
+		}
+		if (inputRef.current?.validity.tooLong) {
+			return 'The name cannot be longer than 22 characters';
+		}
+		if (inputRef.current?.validationMessage) {
+			return inputRef.current?.validationMessage;
+		}
 		return undefined;
-	}, [props.selectedEntry.label]);
+	}, [selectedEntry.label, inputRef]);
 
 	return (
 		<div
@@ -139,9 +167,10 @@ function NameInput(props: {
 				<label htmlFor={'name'}>
 					<small className={'pl-1'}>{'Name'}</small>
 				</label>
-				<small className={'pr-1 text-red'}>{errorMessage}</small>
+				<small className={'pr-1 text-red'}>{getErrorMessage()}</small>
 			</div>
 			<TextInput
+				inputRef={inputRef}
 				disabled={!props.isEditMode}
 				id={'name'}
 				pattern={'^(?!0x)[^.]*$'}
@@ -150,16 +179,17 @@ function NameInput(props: {
 				minLength={1}
 				maxLength={22}
 				aria-invalid={
-					props.selectedEntry.label.startsWith('0x') ||
-					props.selectedEntry.label.includes('.') ||
-					props.selectedEntry.label.length > 22
+					selectedEntry.label.startsWith('0x') ||
+					selectedEntry.label.includes('.') ||
+					selectedEntry.label.length > 22
 				}
-				value={props.selectedEntry.label}
+				value={selectedEntry.label}
 				onChange={label => props.dispatch({type: 'SET_LABEL', payload: label})}
 			/>
 		</div>
 	);
 }
+
 function AddressInput(props: {
 	selectedEntry: TAddressBookEntry;
 	dispatch: Dispatch<TAddressBookEntryReducer>;
@@ -167,9 +197,12 @@ function AddressInput(props: {
 	isEditMode: boolean;
 	onChangeAddressLike: (addressLike: TInputAddressLike) => void;
 	addressLike: TInputAddressLike;
+	onChange: VoidFunction;
 }): ReactElement {
+	const inputRef = useRef<HTMLInputElement>(null);
 	const addressRef = useRef<HTMLDivElement>(null);
-	const {onChangeAddressLike, selectedEntry} = props;
+	const {onChangeAddressLike, onChange, selectedEntry} = props;
+	const {getCachedEntry} = useAddressBook();
 
 	useEffect(() => {
 		onChangeAddressLike({
@@ -183,6 +216,36 @@ function AddressInput(props: {
 		});
 	}, [onChangeAddressLike, selectedEntry.address, selectedEntry.ens]);
 
+	useEffect(() => {
+		const entry = getCachedEntry({address: props.addressLike.address});
+		if (entry !== undefined && entry.id !== props.selectedEntry.id) {
+			inputRef.current?.setCustomValidity('This address is already in your address book');
+			onChange();
+		} else if (inputRef.current?.validationMessage === 'This address is already in your address book') {
+			inputRef.current?.setCustomValidity('');
+			onChange();
+		}
+	}, [props.addressLike, getCachedEntry, props.selectedEntry.id, onChange]);
+
+	const getErrorMessage = useCallback((): string | undefined => {
+		if (props.addressLike.isValid === 'undetermined') {
+			return undefined;
+		}
+		if (inputRef.current?.validity.patternMismatch) {
+			return 'The string must not start with `0x` and must not contain `.`';
+		}
+		if (inputRef.current?.validity.tooShort) {
+			return 'The name must be at least 1 character long';
+		}
+		if (inputRef.current?.validity.tooLong) {
+			return 'The name cannot be longer than 22 characters';
+		}
+		if (inputRef.current?.validationMessage) {
+			return inputRef.current?.validationMessage;
+		}
+		return undefined;
+	}, [props.addressLike.isValid, inputRef]);
+
 	return (
 		<div
 			ref={addressRef}
@@ -190,16 +253,24 @@ function AddressInput(props: {
 				props.onEdit(true);
 				setTimeout(() => addressRef.current?.focus(), 0);
 			}}>
-			<label htmlFor={'address'}>
-				<small className={'pl-1'}>{'Address'}</small>
-			</label>
+			<div className={'flex items-center justify-between'}>
+				<label htmlFor={'address'}>
+					<small className={'pl-1'}>{'Address'}</small>
+				</label>
+				<small className={'pr-1 text-red'}>{getErrorMessage()}</small>
+			</div>
+
 			<SmolAddressInputSimple
+				id={'address'}
+				inputRef={inputRef}
 				disabled={!props.isEditMode}
 				required
 				tabIndex={0}
 				value={props.addressLike}
-				onChange={onChangeAddressLike}
-				id={'address'}
+				onChange={v => {
+					onChange();
+					onChangeAddressLike(v);
+				}}
 			/>
 		</div>
 	);
@@ -235,6 +306,8 @@ export function AddressBookCurtain(props: {
 }): ReactElement {
 	const router = useRouter();
 	const {updateEntry} = useAddressBook();
+	const formRef = useRef<HTMLFormElement>(null);
+	const [, set_nonce] = useState<number>(0);
 	const [isEditMode, set_isEditMode] = useState<boolean>(props.isEditing);
 	const [addressLike, set_addressLike] = useState<TInputAddressLike>({
 		address: props.selectedEntry.address,
@@ -247,10 +320,7 @@ export function AddressBookCurtain(props: {
 		source: 'defaultValue'
 	});
 
-	useEffect(() => {
-		set_isEditMode(props.isEditing);
-	}, [props.isEditing]);
-
+	const onFormUpdate = useCallback(() => set_nonce(n => n + 1), []);
 	const onFormSubmit = useCallback(
 		async (event: React.FormEvent<HTMLFormElement>) => {
 			event.preventDefault();
@@ -275,10 +345,17 @@ export function AddressBookCurtain(props: {
 		[addressLike, isEditMode, props, router, updateEntry]
 	);
 
+	useEffect(() => set_isEditMode(props.isEditing), [props.isEditing]);
+
 	return (
 		<Dialog.Root
 			open={props.isOpen}
-			onOpenChange={isOpen => props.onOpenChange({isOpen, isEditing: isEditMode})}>
+			onOpenChange={isOpen => {
+				if (!isOpen) {
+					formRef.current?.reset();
+				}
+				props.onOpenChange({isOpen, isEditing: isEditMode});
+			}}>
 			<CurtainContent className={'focus:!border-green'}>
 				<aside
 					style={{boxShadow: '-8px 0px 20px 0px rgba(36, 40, 51, 0.08)'}}
@@ -301,16 +378,19 @@ export function AddressBookCurtain(props: {
 					</div>
 
 					<form
+						ref={formRef}
 						onSubmit={onFormSubmit}
 						className={'flex h-full flex-col gap-4'}>
 						<NameInput
 							{...props}
+							onChange={onFormUpdate}
 							onEdit={set_isEditMode}
 							isEditMode={isEditMode}
 						/>
 
 						<AddressInput
 							{...props}
+							onChange={onFormUpdate}
 							addressLike={addressLike}
 							onChangeAddressLike={set_addressLike}
 							onEdit={set_isEditMode}
@@ -326,12 +406,7 @@ export function AddressBookCurtain(props: {
 						<Button
 							tabIndex={0}
 							type={'submit'}
-							isDisabled={
-								addressLike.isValid !== true ||
-								props.selectedEntry.label === '' ||
-								props.selectedEntry.label.startsWith('0x') ||
-								props.selectedEntry.label.includes('.')
-							}
+							isDisabled={!(formRef.current?.checkValidity() ?? true)}
 							className={'!h-10 w-1/2'}>
 							{isEditMode ? (props.selectedEntry.id === undefined ? 'Add' : 'Update') : 'Send'}
 						</Button>
