@@ -52,7 +52,6 @@ export function SmolAddressInputSimple(
 				if (signal.aborted) {
 					reject(new Error('Aborted!'));
 				} else {
-					console.log(input);
 					currentLabel.current = input;
 					currentAddress.current = undefined;
 
