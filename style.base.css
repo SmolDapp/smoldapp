@@ -290,3 +290,10 @@ select:focus {
 		@apply cursor-not-allowed;
 	}
 }
+
+.input {
+	@apply w-full border-neutral-400 rounded-lg bg-transparent py-3 px-4 text-base;
+	@apply text-neutral-900 placeholder:text-neutral-600 caret-neutral-700;
+	@apply focus:placeholder:text-neutral-300 placeholder:transition-colors;
+	@apply focus:border-neutral-600 disabled:bg-neutral-300 transition-colors;
+}

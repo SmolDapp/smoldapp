@@ -1,6 +1,6 @@
 'use client';
 
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {useRouter} from 'next/router';
 import {CloseCurtainButton} from 'components/designSystem/Curtains/InfoCurtain';
 import {Button} from 'components/Primitives/Button';
@@ -12,7 +12,7 @@ import {IconEdit} from '@icons/IconEdit';
 import {IconHeart, IconHeartFilled} from '@icons/IconHeart';
 import {IconTrash} from '@icons/IconTrash';
 import * as Dialog from '@radix-ui/react-dialog';
-import {safeAddress, toAddress} from '@utils/tools.address';
+import {isAddress, safeAddress, toAddress} from '@utils/tools.address';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
 
 import {AddressBookEntryAvatar} from '../AddressBookEntry';
@@ -113,22 +113,51 @@ function NameInput(props: {
 	onEdit: (shouldEdit: boolean) => void;
 	isEditMode: boolean;
 }): ReactElement {
-	const labelRef = useRef<HTMLLabelElement>(null);
+	const labelRef = useRef<HTMLDivElement>(null);
+
+	const errorMessage = useMemo((): string | undefined => {
+		if (props.selectedEntry.label.startsWith('0x')) {
+			return 'The name cannot starts with `0x`';
+		}
+		if (props.selectedEntry.label.includes('.')) {
+			return 'The name cannot contains `.`';
+		}
+		if (props.selectedEntry.label.length > 22) {
+			return 'The name cannot be longer than 22 characters';
+		}
+		return undefined;
+	}, [props.selectedEntry.label]);
+
 	return (
-		<label
+		<div
 			ref={labelRef}
 			onDoubleClick={() => {
 				props.onEdit(true);
 				setTimeout(() => labelRef.current?.focus(), 0);
 			}}>
-			<small className={'pl-1'}>{'Name'}</small>
+			<div className={'flex items-center justify-between'}>
+				<label htmlFor={'name'}>
+					<small className={'pl-1'}>{'Name'}</small>
+				</label>
+				<small className={'pr-1 text-red'}>{errorMessage}</small>
+			</div>
 			<TextInput
 				disabled={!props.isEditMode}
+				id={'name'}
+				pattern={'^(?!0x)[^.]*$'}
+				title={"The string must not start with '0x' and must not contain '.'"}
 				tabIndex={0}
+				minLength={1}
+				maxLength={22}
+				aria-invalid={
+					props.selectedEntry.label.startsWith('0x') ||
+					props.selectedEntry.label.includes('.') ||
+					props.selectedEntry.label.length > 22
+				}
 				value={props.selectedEntry.label}
 				onChange={label => props.dispatch({type: 'SET_LABEL', payload: label})}
 			/>
-		</label>
+		</div>
 	);
 }
 function AddressInput(props: {
@@ -139,7 +168,7 @@ function AddressInput(props: {
 	onChangeAddressLike: (addressLike: TInputAddressLike) => void;
 	addressLike: TInputAddressLike;
 }): ReactElement {
-	const addressRef = useRef<HTMLLabelElement>(null);
+	const addressRef = useRef<HTMLDivElement>(null);
 	const {onChangeAddressLike, selectedEntry} = props;
 
 	useEffect(() => {
@@ -147,33 +176,35 @@ function AddressInput(props: {
 			address: selectedEntry.address,
 			label: safeAddress({
 				address: selectedEntry.address,
-				ens: selectedEntry.ens,
-				addrOverride: selectedEntry.address?.substring(0, 6),
-				placeholder: selectedEntry.address?.substring(0, 6)
+				ens: selectedEntry.ens
 			}),
-			isValid: 'undetermined',
+			isValid: isAddress(selectedEntry.address) ? true : 'undetermined',
 			source: 'defaultValue'
 		});
 	}, [onChangeAddressLike, selectedEntry.address, selectedEntry.ens]);
 
 	return (
-		<label
+		<div
 			ref={addressRef}
 			onDoubleClick={() => {
 				props.onEdit(true);
 				setTimeout(() => addressRef.current?.focus(), 0);
 			}}>
-			<small className={'pl-1'}>{'Address'}</small>
+			<label htmlFor={'address'}>
+				<small className={'pl-1'}>{'Address'}</small>
+			</label>
 			<SmolAddressInputSimple
 				disabled={!props.isEditMode}
 				required
 				tabIndex={0}
 				value={props.addressLike}
 				onChange={onChangeAddressLike}
+				id={'address'}
 			/>
-		</label>
+		</div>
 	);
 }
+
 function ChainsInput(props: {
 	selectedEntry: TAddressBookEntry;
 	dispatch: Dispatch<TAddressBookEntryReducer>;
@@ -212,7 +243,7 @@ export function AddressBookCurtain(props: {
 			ens: props.selectedEntry.ens,
 			addrOverride: props.selectedEntry.address?.substring(0, 6)
 		}),
-		isValid: 'undetermined',
+		isValid: isAddress(props.selectedEntry.address) ? true : 'undetermined',
 		source: 'defaultValue'
 	});
 
@@ -295,6 +326,12 @@ export function AddressBookCurtain(props: {
 						<Button
 							tabIndex={0}
 							type={'submit'}
+							isDisabled={
+								addressLike.isValid !== true ||
+								props.selectedEntry.label === '' ||
+								props.selectedEntry.label.startsWith('0x') ||
+								props.selectedEntry.label.includes('.')
+							}
 							className={'!h-10 w-1/2'}>
 							{isEditMode ? (props.selectedEntry.id === undefined ? 'Add' : 'Update') : 'Send'}
 						</Button>

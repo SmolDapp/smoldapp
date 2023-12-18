@@ -77,11 +77,12 @@ export function SmolAddressInputSimple(
 							onChange({address, label: input, isValid, source: 'typed'});
 						} else {
 							set_isCheckingValidity(false);
+							inputRef.current?.setCustomValidity('This ENS name is invalid');
 							onChange({
 								address: undefined,
 								label: input,
 								isValid: false,
-								error: 'This ENS name looks invalid',
+								error: 'This ENS name is invalid',
 								source: 'typed'
 							});
 						}
@@ -115,11 +116,12 @@ export function SmolAddressInputSimple(
 					}
 
 					currentAddress.current = undefined;
+					inputRef.current?.setCustomValidity('This address is invalid');
 					onChange({
 						address: undefined,
 						label: input,
 						isValid: input.startsWith('0x') && input.length === 42 ? false : 'undetermined',
-						error: 'This address looks invalid',
+						error: 'This address is invalid',
 						source: 'typed'
 					});
 					resolve();
@@ -131,6 +133,7 @@ export function SmolAddressInputSimple(
 	const onChangeTrigger = useCallback(
 		(label: string): void => {
 			set_isCheckingValidity(false);
+			inputRef.current?.setCustomValidity('');
 			currentInput.current = label;
 			actions.abort();
 			actions.execute(label);
@@ -248,8 +251,7 @@ export function SmolAddressInputSimple(
 							'text-neutral-900 placeholder:text-neutral-600 caret-neutral-700',
 							'focus:placeholder:text-neutral-300 placeholder:transition-colors',
 							'disabled:bg-neutral-300 transition-colors',
-							!currentLabel.current ? 'translate-y-2' : 'translate-y-0',
-							isFocused ? 'translate-y-2' : 'translate-y-0'
+							!currentLabel.current || isFocused ? 'translate-y-2' : 'translate-y-0'
 						)}
 						type={'text'}
 						placeholder={'0x...'}
@@ -258,6 +260,7 @@ export function SmolAddressInputSimple(
 						spellCheck={'false'}
 						value={getInputValue()}
 						onChange={e => onChangeTrigger(e.target.value)}
+						aria-invalid={!isFocused && value.isValid === false}
 						onFocus={getOnFocus}
 						onBlur={getOnBlur}
 						{...rest}
