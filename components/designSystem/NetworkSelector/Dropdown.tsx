@@ -80,33 +80,31 @@ export function NetworkDropdownSelector(
 					</span>
 				</div>
 			</DropdownMenu.Trigger>
-			<DropdownMenu.Portal>
-				<DropdownMenuContent>
+			<DropdownMenuContent>
+				<DropdownMenuCheckboxItem
+					checked={areAllSelected}
+					onCheckedChange={() => {
+						set_selectedNetworks(
+							supportedNetworks.reduce((acc: TNDict<boolean>, network) => {
+								acc[network.id] = areAllSelected ? false : true;
+								return acc;
+							}, {})
+						);
+					}}>
+					{'Select all'}
+				</DropdownMenuCheckboxItem>
+				<DropdownMenuSeparator />
+				{supportedNetworks.map(network => (
 					<DropdownMenuCheckboxItem
-						checked={areAllSelected}
-						onCheckedChange={() => {
-							set_selectedNetworks(
-								supportedNetworks.reduce((acc: TNDict<boolean>, network) => {
-									acc[network.id] = areAllSelected ? false : true;
-									return acc;
-								}, {})
-							);
-						}}>
-						{'Select all'}
+						key={network.id}
+						checked={selectedNetworks[network.id]}
+						onCheckedChange={() =>
+							set_selectedNetworks(prev => ({...prev, [network.id]: !prev[network.id]}))
+						}>
+						{network.name}
 					</DropdownMenuCheckboxItem>
-					<DropdownMenuSeparator />
-					{supportedNetworks.map(network => (
-						<DropdownMenuCheckboxItem
-							key={network.id}
-							checked={selectedNetworks[network.id]}
-							onCheckedChange={() =>
-								set_selectedNetworks(prev => ({...prev, [network.id]: !prev[network.id]}))
-							}>
-							{network.name}
-						</DropdownMenuCheckboxItem>
-					))}
-				</DropdownMenuContent>
-			</DropdownMenu.Portal>
+				))}
+			</DropdownMenuContent>
 		</DropdownMenu.Root>
 	);
 }
