@@ -6,9 +6,9 @@ import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
 
 import {EIP3770_PREFIX} from './eip-3770';
 
+import type {TSendInputElement} from 'components/designSystem/SmolTokenAmountInput';
 import type {Hex} from 'viem';
 import type {TAddress} from '@yearn-finance/web-lib/types';
-import type {TSelectedElement} from '@migratooor/useMigratooor';
 import type {TToken} from './types/types';
 
 const safeBaseURI = 'https://app.safe.global/transactions/tx?safe=';
@@ -88,7 +88,7 @@ export function notifyDisperse(props: {
 
 export function notifyMigrate(props: {
 	chainID: number;
-	tokensMigrated: TSelectedElement[];
+	tokensMigrated: TSendInputElement[];
 	hashes: Hex[];
 	to: TAddress;
 	from: TAddress;
@@ -106,7 +106,8 @@ export function notifyMigrate(props: {
 			`\t\t\t\t\t\t[${truncateHex(props.from, 5)}](${explorerBaseURI}/address/${
 				props.from
 			}) is migrating tokens to [${truncateHex(props.to, 5)}](${explorerBaseURI}/address/${props.to}):`,
-			...props.tokensMigrated.map(({address, symbol, amount, decimals}, index): string => {
+			...props.tokensMigrated.map(({token, amount}, index): string => {
+				const {address, symbol, decimals} = token || {};
 				const txHashLink =
 					props.type === 'EOA'
 						? `${explorerBaseURI}/tx/${props.hashes[index]}`

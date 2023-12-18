@@ -7,6 +7,7 @@ import {cl} from '@yearn-finance/web-lib/utils/cl';
 import {Button} from '@common/Primitives/Button';
 
 import {useSend} from './useSend';
+import {SendWizard} from './Wizard';
 
 import type {TInputAddressLike} from 'components/designSystem/SmolAddressInput';
 import type {TSendInputElement} from 'components/designSystem/SmolTokenAmountInput';
@@ -90,6 +91,7 @@ export function Send(): ReactElement {
 					<b>{'Send'}</b>
 				</Button>
 			</div>
+			<SendWizard />
 		</Fragment>
 	);
 }

@@ -1,6 +1,7 @@
 import React, {createContext, useContext, useMemo, useReducer} from 'react';
 import {defaultInputAddressLike} from 'components/designSystem/SmolAddressInput';
 import {optionalRenderProps} from '@utils/react/optionalRenderProps';
+import {toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 
 import type {TInputAddressLike} from 'components/designSystem/SmolAddressInput';
 import type {TSendInputElement} from 'components/designSystem/SmolTokenAmountInput';
@@ -26,9 +27,10 @@ export type TSend = {
 
 export function getNewInput(): TSendInputElement {
 	return {
-		amount: undefined,
+		amount: toNormalizedBN(0),
 		isValid: 'undetermined',
 		token: undefined,
+		status: 'none',
 		UUID: crypto.randomUUID()
 	};
 }

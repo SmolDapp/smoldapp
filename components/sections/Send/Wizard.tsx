@@ -1,11 +1,9 @@
-import React, {Fragment, useCallback, useMemo, useState} from 'react';
+import React, {Fragment, useCallback, useState} from 'react';
 import {useWallet} from 'contexts/useWallet';
 import {transferERC20, transferEther} from 'utils/actions';
+import {notifyMigrate} from 'utils/notifier';
 import {getTransferTransaction} from 'utils/tools.gnosis';
 import {useSafeAppsSDK} from '@gnosis.pm/safe-apps-react-sdk';
-import {IconCircleCheck} from '@icons/IconCircleCheck';
-import {IconCircleCross} from '@icons/IconCircleCross';
-import {IconSpinner} from '@icons/IconSpinner';
 import {isZeroAddress, toAddress} from '@utils/tools.address';
 import {toast} from '@yearn-finance/web-lib/components/yToast';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
@@ -13,78 +11,26 @@ import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
 import {ETH_TOKEN_ADDRESS, ZERO_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
 import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
-import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
 import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 import {defaultTxStatus, type TTxResponse} from '@yearn-finance/web-lib/utils/web3/transaction';
 import {SuccessModal} from '@common/ConfirmationModal';
 import {Button} from '@common/Primitives/Button';
 
-import {useMigrate} from './useMigrate';
+import {useSend} from './useSend';
 
+import type {TSendInputElement} from 'components/designSystem/SmolTokenAmountInput';
 import type {ReactElement} from 'react';
 import type {BaseError, Hex} from 'viem';
 import type {TAddress, TDict} from '@yearn-finance/web-lib/types';
 import type {TBalanceData} from '@yearn-finance/web-lib/types/hooks';
+import type {TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import type {BaseTransaction} from '@gnosis.pm/safe-apps-sdk';
-import type {TMigrateElement} from './useMigrate';
+import type {TModify, TToken} from '@utils/types/types';
 
-function MigrateItem({row}: {row: TMigrateElement}): ReactElement {
-	const {configuration} = useMigrate();
-
-	function renderStatusIndicator(): ReactElement {
-		if (!configuration.receiver) {
-			return <div className={'h-4 w-4 rounded-full border border-neutral-200 bg-neutral-300'} />;
-		}
-		if (row.status === 'pending') {
-			return <IconSpinner className={'h-4 w-4'} />;
-		}
-		if (row.status === 'success') {
-			return <IconCircleCheck className={'h-4 w-4 text-green'} />;
-		}
-		if (row.status === 'error') {
-			return <IconCircleCross className={'h-4 w-4 text-red'} />;
-		}
-		return <div className={'h-4 w-4 rounded-full border border-neutral-200 bg-neutral-300'} />;
-	}
-
-	return (
-		<div className={'flex w-full flex-row items-center space-x-3 md:flex-row md:items-start'}>
-			<div className={'pt-0.5'}>{renderStatusIndicator()}</div>
-			<div className={'flex w-full flex-col'}>
-				<div className={'text-left text-sm'}>
-					{'Sending '}
-					<span
-						suppressHydrationWarning
-						className={'font-number font-bold'}>
-						{formatAmount(formatAmount(Number(row.amount?.normalized)), 6, row.decimals || 18)}
-					</span>
-					{` ${row?.symbol || 'Tokens'} to `}
-					<span className={'font-number inline-flex'}>
-						{toAddress(configuration.receiver?.label) === ZERO_ADDRESS ? (
-							<div className={'font-number'}>
-								<span className={'font-bold'}>{configuration.receiver?.label || ''}</span>
-								<span className={'text-xxs'}>{` (${toAddress(configuration.receiver?.address)})`}</span>
-							</div>
-						) : (
-							<div className={'font-number'}>
-								<span className={'font-bold'}>{toAddress(row.address)}</span>
-							</div>
-						)}
-					</span>
-				</div>
-			</div>
-		</div>
-	);
-}
+type TInputWithTokens = TModify<TSendInputElement, {token: TToken}>;
 
 function SpendingWizard(props: {onHandleMigration: VoidFunction}): ReactElement {
-	const {configuration} = useMigrate();
-
-	const validTokens = useMemo((): TMigrateElement[] => {
-		return Object.values(configuration.tokens).filter(
-			(row): boolean => toBigInt(row.amount?.raw) !== 0n && !isZeroAddress(row.address)
-		);
-	}, [configuration.tokens]);
+	const {configuration} = useSend();
 
 	if (!configuration.receiver || isZeroAddress(configuration.receiver.address)) {
 		return (
@@ -119,43 +65,27 @@ function SpendingWizard(props: {onHandleMigration: VoidFunction}): ReactElement 
 					'border border-primary-200 rounded-md',
 					'group transition-colors hover:bg-neutral-100 disabled:cursor-default disabled:hover:bg-neutral-0'
 				)}>
-				{validTokens
-					.sort((a, b): number => {
-						if (a.address === ETH_TOKEN_ADDRESS) {
-							return 1;
-						}
-						if (b.address === ETH_TOKEN_ADDRESS) {
-							return -1;
-						}
-						return 0;
-					})
-					.map(
-						(row): ReactElement => (
-							<MigrateItem
-								key={row.address}
-								row={row}
-							/>
-						)
-					)}
+				{'Button'}
 			</button>
 		</Fragment>
 	);
 }
 
-export function MigrateWizard(): ReactElement {
+export function SendWizard(): ReactElement {
+	const {address} = useWeb3();
 	const {safeChainID} = useChainID();
-	const {configuration, dispatchConfiguration} = useMigrate();
+	const {configuration, dispatchConfiguration} = useSend();
 	const {balances, refresh, balancesNonce} = useWallet();
 	const {isWalletSafe, provider} = useWeb3();
 	const {sdk} = useSafeAppsSDK();
 	const [migrateStatus, set_migrateStatus] = useState(defaultTxStatus);
 
 	const onUpdateStatus = useCallback(
-		(tokenAddress: TAddress, status: 'pending' | 'success' | 'error' | 'none'): void => {
+		(UUID: string, status: 'pending' | 'success' | 'error' | 'none'): void => {
 			dispatchConfiguration({
-				type: 'SET_STATUS',
+				type: 'SET_VALUE',
 				payload: {
-					tokenAddress,
+					UUID,
 					status
 				}
 			});
@@ -200,14 +130,14 @@ export function MigrateWizard(): ReactElement {
 	 ** function will perform the migration for all the selected tokens, one at a time.
 	 **********************************************************************************************/
 	const onMigrateERC20 = useCallback(
-		async (token: TMigrateElement): Promise<TTxResponse> => {
+		async (token: TToken, amount: TNormalizedBN): Promise<TTxResponse> => {
 			onUpdateStatus(token.address, 'pending');
 			const result = await transferERC20({
 				connector: provider,
 				chainID: safeChainID,
 				contractAddress: token.address,
 				receiverAddress: configuration.receiver?.address,
-				amount: toBigInt(token.amount?.raw)
+				amount: toBigInt(amount.raw)
 			});
 			if (result.isSuccessful) {
 				onUpdateStatus(token.address, 'success');
@@ -227,15 +157,15 @@ export function MigrateWizard(): ReactElement {
 	 **********************************************************************************************/
 	const onMigrateETH = useCallback(async (): Promise<TTxResponse> => {
 		onUpdateStatus(ETH_TOKEN_ADDRESS, 'pending');
+		const ethAmountRaw = configuration.inputs.find(input => input.token?.address === ETH_TOKEN_ADDRESS)?.amount
+			?.raw;
 
-		const isSendingBalance =
-			toBigInt(configuration.tokens[ETH_TOKEN_ADDRESS]?.amount?.raw) >=
-			toBigInt(balances[ETH_TOKEN_ADDRESS]?.raw);
+		const isSendingBalance = toBigInt(ethAmountRaw) >= toBigInt(balances[ETH_TOKEN_ADDRESS]?.raw);
 		const result = await transferEther({
 			connector: provider,
 			chainID: safeChainID,
 			receiverAddress: configuration.receiver?.address,
-			amount: toBigInt(configuration.tokens[ETH_TOKEN_ADDRESS]?.amount?.raw),
+			amount: toBigInt(ethAmountRaw),
 			shouldAdjustForGas: isSendingBalance
 		});
 		if (result.isSuccessful) {
@@ -248,8 +178,8 @@ export function MigrateWizard(): ReactElement {
 		return result;
 	}, [
 		balances,
+		configuration.inputs,
 		configuration.receiver?.address,
-		configuration.tokens,
 		handleSuccessCallback,
 		onUpdateStatus,
 		provider,
@@ -262,21 +192,21 @@ export function MigrateWizard(): ReactElement {
 	 ** Safe.
 	 **********************************************************************************************/
 	const onMigrateSelectedForGnosis = useCallback(
-		async (allSelected: TMigrateElement[]): Promise<void> => {
+		async (allSelected: TInputWithTokens[]): Promise<void> => {
 			const transactions: BaseTransaction[] = [];
-			const migratedTokens: TMigrateElement[] = [];
-			for (const token of allSelected) {
-				const amount = toBigInt(token?.amount?.raw);
+			const migratedTokens: TSendInputElement[] = [];
+			for (const input of allSelected) {
+				const amount = toBigInt(input.amount.raw);
 				if (amount === 0n) {
 					continue;
 				}
 				const newTransactionForBatch = getTransferTransaction(
 					amount.toString(),
-					token.address,
+					input.token.address,
 					toAddress(configuration.receiver?.address)
 				);
 				transactions.push(newTransactionForBatch);
-				migratedTokens.push(token);
+				migratedTokens.push(input);
 			}
 			try {
 				const {safeTxHash} = await sdk.txs.send({txs: transactions});
@@ -286,14 +216,14 @@ export function MigrateWizard(): ReactElement {
 					type: 'success',
 					content: 'Your transaction has been created! You can now sign and execute it!'
 				});
-				// notifyMigrate({
-				// 	chainID: safeChainID,
-				// 	to: toAddress(configuration.receiver?.address),
-				// 	tokensMigrated: migratedTokens,
-				// 	hashes: migratedTokens.map((): Hex => safeTxHash as Hex),
-				// 	type: 'SAFE',
-				// 	from: toAddress(address)
-				// });
+				notifyMigrate({
+					chainID: safeChainID,
+					to: toAddress(configuration.receiver?.address),
+					tokensMigrated: migratedTokens,
+					hashes: migratedTokens.map((): Hex => safeTxHash as Hex),
+					type: 'SAFE',
+					from: toAddress(address)
+				});
 			} catch (error) {
 				set_migrateStatus({...defaultTxStatus, success: false});
 				toast({
@@ -302,7 +232,7 @@ export function MigrateWizard(): ReactElement {
 				});
 			}
 		},
-		[configuration.receiver?.address, sdk.txs]
+		[configuration.receiver?.address, sdk.txs, safeChainID, address]
 	);
 
 	/**********************************************************************************************
@@ -314,37 +244,39 @@ export function MigrateWizard(): ReactElement {
 		set_migrateStatus({...defaultTxStatus, pending: true});
 
 		let areAllSuccess = true;
-		const allSelected = Object.values(configuration.tokens).filter(
-			(token): boolean => token.isSelected && token.status !== 'success'
+		const allSelected = configuration.inputs.filter(
+			(input): input is TInputWithTokens => !!input.token && input.status !== 'success'
 		);
+
 		if (isWalletSafe) {
 			return onMigrateSelectedForGnosis(allSelected);
 		}
 
-		const migratedTokens: TMigrateElement[] = [];
+		const migratedTokens: TSendInputElement[] = [];
 		const hashMessage: Hex[] = [];
 		let shouldMigrateETH = false;
-		for (const token of allSelected) {
-			if (token.address === ETH_TOKEN_ADDRESS) {
+		for (const input of allSelected) {
+			if (input.token.address === ETH_TOKEN_ADDRESS) {
 				//Migrate ETH at the end
 				shouldMigrateETH = true;
 				continue;
 			}
-			const result = await onMigrateERC20(token);
+			const result = await onMigrateERC20(input.token, input.amount);
 			if (result.isSuccessful && result.receipt) {
-				migratedTokens.push(token);
+				migratedTokens.push(input);
 				hashMessage.push(result.receipt.transactionHash);
 			} else {
 				areAllSuccess = false;
 			}
 		}
+		const ethToken = configuration.inputs.find(input => input.token?.address === ETH_TOKEN_ADDRESS);
+		const ethAmountRaw = ethToken?.amount?.raw;
 
-		const willMigrateEth =
-			shouldMigrateETH || toBigInt(configuration.tokens?.[ETH_TOKEN_ADDRESS]?.amount?.raw) > 0n;
+		const willMigrateEth = shouldMigrateETH || toBigInt(ethAmountRaw) > 0n;
 		if (willMigrateEth) {
 			const result = await onMigrateETH();
 			if (result.isSuccessful && result.receipt) {
-				migratedTokens.push(configuration.tokens?.[ETH_TOKEN_ADDRESS]);
+				ethToken && migratedTokens.push(ethToken);
 				hashMessage.push(result.receipt.transactionHash);
 			} else {
 				areAllSuccess = false;
@@ -357,8 +289,26 @@ export function MigrateWizard(): ReactElement {
 			} else {
 				set_migrateStatus(defaultTxStatus);
 			}
+
+			notifyMigrate({
+				chainID: safeChainID,
+				to: toAddress(configuration.receiver?.address),
+				tokensMigrated: migratedTokens,
+				hashes: hashMessage,
+				type: 'EOA',
+				from: toAddress(address)
+			});
 		}
-	}, [configuration.tokens, isWalletSafe, onMigrateSelectedForGnosis, onMigrateERC20, onMigrateETH]);
+	}, [
+		configuration.inputs,
+		configuration.receiver?.address,
+		isWalletSafe,
+		onMigrateSelectedForGnosis,
+		onMigrateERC20,
+		onMigrateETH,
+		safeChainID,
+		address
+	]);
 
 	return (
 		<div className={'col-span-12 mt-4'}>
@@ -372,7 +322,7 @@ export function MigrateWizard(): ReactElement {
 						isBusy={migrateStatus.pending}
 						isDisabled={
 							isZeroAddress(configuration.receiver?.address) ||
-							Object.values(configuration.tokens).length === 0
+							configuration.inputs.map(input => !!input.token).length === 0
 						}
 						onClick={onHandleMigration}
 						className={'!h-11 w-fit !font-medium'}>
