@@ -52,6 +52,7 @@ export function SmolAddressInputSimple(
 				if (signal.aborted) {
 					reject(new Error('Aborted!'));
 				} else {
+					console.log(input);
 					currentLabel.current = input;
 					currentAddress.current = undefined;
 
@@ -170,7 +171,7 @@ export function SmolAddressInputSimple(
 			currentInput.current = currentLabel.current;
 		} else if (!value.label.startsWith('0x')) {
 			currentInput.current = currentLabel.current;
-		} else {
+		} else if (isAddress(currentAddress.current)) {
 			currentInput.current = currentAddress.current || '';
 		}
 		set_isFocused(false);
@@ -258,8 +259,8 @@ export function SmolAddressInputSimple(
 						spellCheck={'false'}
 						value={getInputValue()}
 						onChange={e => onChangeTrigger(e.target.value)}
-						onFocus={() => getOnFocus()}
-						onBlur={() => getOnBlur()}
+						onFocus={getOnFocus}
+						onBlur={getOnBlur}
 						{...rest}
 					/>
 

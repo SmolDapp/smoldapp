@@ -140,20 +140,21 @@ function AddressInput(props: {
 	addressLike: TInputAddressLike;
 }): ReactElement {
 	const addressRef = useRef<HTMLLabelElement>(null);
+	const {onChangeAddressLike, selectedEntry} = props;
 
 	useEffect(() => {
-		props.onChangeAddressLike({
-			address: props.selectedEntry.address,
+		onChangeAddressLike({
+			address: selectedEntry.address,
 			label: safeAddress({
-				address: props.selectedEntry.address,
-				ens: props.selectedEntry.ens,
-				addrOverride: props.selectedEntry.address?.substring(0, 6),
-				placeholder: props.selectedEntry.address?.substring(0, 6)
+				address: selectedEntry.address,
+				ens: selectedEntry.ens,
+				addrOverride: selectedEntry.address?.substring(0, 6),
+				placeholder: selectedEntry.address?.substring(0, 6)
 			}),
 			isValid: 'undetermined',
 			source: 'defaultValue'
 		});
-	}, [props, props.selectedEntry.address, props.selectedEntry.ens]);
+	}, [onChangeAddressLike, selectedEntry.address, selectedEntry.ens]);
 
 	return (
 		<label
@@ -168,7 +169,7 @@ function AddressInput(props: {
 				required
 				tabIndex={0}
 				value={props.addressLike}
-				onChange={props.onChangeAddressLike}
+				onChange={onChangeAddressLike}
 			/>
 		</label>
 	);
