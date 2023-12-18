@@ -258,8 +258,8 @@ export function SmolAddressInputSimple(
 						spellCheck={'false'}
 						value={getInputValue()}
 						onChange={e => onChangeTrigger(e.target.value)}
-						onFocus={getOnFocus}
-						onBlur={getOnBlur}
+						onFocus={() => getOnFocus()}
+						onBlur={() => getOnBlur()}
 						{...rest}
 					/>
 

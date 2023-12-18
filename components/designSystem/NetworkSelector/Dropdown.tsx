@@ -97,6 +97,7 @@ export function NetworkDropdownSelector(
 					<DropdownMenuSeparator />
 					{supportedNetworks.map(network => (
 						<DropdownMenuCheckboxItem
+							key={network.id}
 							checked={selectedNetworks[network.id]}
 							onCheckedChange={() =>
 								set_selectedNetworks(prev => ({...prev, [network.id]: !prev[network.id]}))
