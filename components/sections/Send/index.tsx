@@ -1,10 +1,10 @@
-import {Fragment} from 'react';
 import {SmolAddressInput} from 'components/designSystem/SmolAddressInput';
 import {SmolTokenAmountInput} from 'components/designSystem/SmolTokenAmountInput';
 import {useBalancesCurtain} from 'contexts/useBalancesCurtain';
 import {IconCross} from '@icons/IconCross';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
 
+import {SendWarning} from './SendWarning';
 import {useSend} from './useSend';
 import {SendWizard} from './Wizard';
 
@@ -24,14 +24,16 @@ function SendTokenRow({input}: {input: TSendInputElement}): ReactElement {
 	};
 
 	return (
-		<div className={'flex items-center gap-4'}>
+		<div className={'relative'}>
 			<SmolTokenAmountInput
 				onSetValue={onSetValue}
 				value={input}
 			/>
 			{configuration.inputs.length > 1 && (
 				<button
-					className={'-m-1 p-1 text-neutral-600 transition-colors hover:text-neutral-700'}
+					className={
+						'absolute -right-10 top-1/2 -translate-y-1/2 p-2 text-neutral-600 transition-colors hover:text-neutral-700'
+					}
 					onClick={onRemoveInput}>
 					<IconCross className={'h-4 w-4'} />
 				</button>
@@ -56,7 +58,7 @@ export function Send(): ReactElement {
 	};
 
 	return (
-		<Fragment>
+		<div className={'w-full max-w-[444px]'}>
 			<div className={'mb-6'}>
 				<p className={'font-medium'}>{'Receiver'}</p>
 				<SmolAddressInput
@@ -85,8 +87,8 @@ export function Send(): ReactElement {
 					{'+Add token'}
 				</button>
 			</div>
-
+			<SendWarning />
 			<SendWizard />
-		</Fragment>
+		</div>
 	);
 }

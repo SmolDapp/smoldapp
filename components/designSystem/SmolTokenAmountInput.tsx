@@ -90,10 +90,10 @@ export function SmolTokenAmountInput({showPercentButtons = false, onSetValue, va
 	}, [isFocused, value.isValid]);
 
 	return (
-		<div className={'relative h-full rounded-lg'}>
+		<div className={'relative h-full w-full rounded-lg'}>
 			<label
 				className={cl(
-					'h-20 w-[444px] z-20 relative border transition-all',
+					'h-20 z-20 relative border transition-all',
 					'flex flex-row items-center cursor-text',
 					'focus:placeholder:text-neutral-300 placeholder:transition-colors',
 					'p-2 group bg-neutral-0 rounded-lg',

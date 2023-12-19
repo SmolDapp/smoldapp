@@ -9,7 +9,7 @@ import {toast} from '@yearn-finance/web-lib/components/yToast';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {ETH_TOKEN_ADDRESS, ZERO_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
-import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
+import {toBigInt, toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 import {defaultTxStatus, type TTxResponse} from '@yearn-finance/web-lib/utils/web3/transaction';
 import {SuccessModal} from '@common/ConfirmationModal';
@@ -275,7 +275,8 @@ export function SendWizard(): ReactElement {
 					isBusy={migrateStatus.pending}
 					isDisabled={
 						isZeroAddress(configuration.receiver?.address) ||
-						configuration.inputs.map(input => !!input.token).length === 0
+						configuration.inputs.filter(input => input.token && input.amount.raw !== toNormalizedBN(0).raw)
+							.length === 0
 					}
 					onClick={onHandleMigration}>
 					<b>{'Send'}</b>
