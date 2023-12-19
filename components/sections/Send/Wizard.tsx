@@ -1,4 +1,4 @@
-import React, {Fragment, useCallback, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {useWallet} from 'contexts/useWallet';
 import {transferERC20, transferEther} from 'utils/actions';
 import {notifyMigrate} from 'utils/notifier';
@@ -8,7 +8,6 @@ import {isZeroAddress, toAddress} from '@utils/tools.address';
 import {toast} from '@yearn-finance/web-lib/components/yToast';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
-import {cl} from '@yearn-finance/web-lib/utils/cl';
 import {ETH_TOKEN_ADDRESS, ZERO_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
 import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
@@ -28,48 +27,6 @@ import type {BaseTransaction} from '@gnosis.pm/safe-apps-sdk';
 import type {TModify, TToken} from '@utils/types/types';
 
 type TInputWithTokens = TModify<TSendInputElement, {token: TToken}>;
-
-function SpendingWizard(props: {onHandleMigration: VoidFunction}): ReactElement {
-	const {configuration} = useSend();
-
-	if (!configuration.receiver || isZeroAddress(configuration.receiver.address)) {
-		return (
-			<button
-				disabled
-				className={cl(
-					'mb-0 flex w-full flex-col justify-center space-y-1 bg-neutral-0 p-4 md:mb-2',
-					'border border-primary-200 rounded-md',
-					'group transition-colors hover:bg-neutral-100 disabled:cursor-default disabled:hover:bg-neutral-0'
-				)}>
-				<div className={'flex w-full flex-row items-center space-x-3 md:flex-row md:items-start'}>
-					<div className={'pt-0.5'}>
-						<div className={'h-4 w-4 rounded-full border border-neutral-200 bg-neutral-300'} />
-					</div>
-
-					<div className={'flex w-full flex-row items-center space-x-3 md:flex-row md:items-center'}>
-						<div className={'text-left text-sm text-neutral-900/40'}>
-							{'Please select a valid receiver for your tokens.'}
-						</div>
-					</div>
-				</div>
-			</button>
-		);
-	}
-
-	return (
-		<Fragment>
-			<button
-				onClick={props.onHandleMigration}
-				className={cl(
-					'mb-0 flex w-full flex-col justify-center space-y-1 bg-neutral-0 p-4 md:mb-2',
-					'border border-primary-200 rounded-md',
-					'group transition-colors hover:bg-neutral-100 disabled:cursor-default disabled:hover:bg-neutral-0'
-				)}>
-				{'Button'}
-			</button>
-		</Fragment>
-	);
-}
 
 export function SendWizard(): ReactElement {
 	const {address} = useWeb3();
@@ -311,38 +268,31 @@ export function SendWizard(): ReactElement {
 	]);
 
 	return (
-		<div className={'col-span-12 mt-4'}>
-			<small className={'pb-1 pl-1'}>{'Summary'}</small>
-
-			<div className={'bg-primary-100 rounded-md md:p-6'}>
-				<SpendingWizard onHandleMigration={onHandleMigration} />
-
-				<div className={'mt-4 flex w-full justify-end'}>
-					<Button
-						isBusy={migrateStatus.pending}
-						isDisabled={
-							isZeroAddress(configuration.receiver?.address) ||
-							configuration.inputs.map(input => !!input.token).length === 0
-						}
-						onClick={onHandleMigration}
-						className={'!h-11 w-fit !font-medium'}>
-						{'Confirm'}
-					</Button>
-				</div>
-
-				<SuccessModal
-					title={'It looks like a success!'}
-					content={
-						'Like a fancy bird, your tokens have migrated! They are moving to their new home, with their new friends.'
+		<>
+			<div className={'w-full max-w-[442px]'}>
+				<Button
+					className={'w-full'}
+					isBusy={migrateStatus.pending}
+					isDisabled={
+						isZeroAddress(configuration.receiver?.address) ||
+						configuration.inputs.map(input => !!input.token).length === 0
 					}
-					ctaLabel={'Close'}
-					isOpen={migrateStatus.success}
-					onClose={(): void => {
-						dispatchConfiguration({type: 'RESET', payload: undefined});
-						set_migrateStatus(defaultTxStatus);
-					}}
-				/>
+					onClick={onHandleMigration}>
+					<b>{'Send'}</b>
+				</Button>
 			</div>
-		</div>
+			<SuccessModal
+				title={'It looks like a success!'}
+				content={
+					'Like a fancy bird, your tokens have migrated! They are moving to their new home, with their new friends.'
+				}
+				ctaLabel={'Close'}
+				isOpen={migrateStatus.success}
+				onClose={(): void => {
+					dispatchConfiguration({type: 'RESET', payload: undefined});
+					set_migrateStatus(defaultTxStatus);
+				}}
+			/>
+		</>
 	);
 }

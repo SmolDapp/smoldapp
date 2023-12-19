@@ -4,7 +4,6 @@ import {SmolTokenAmountInput} from 'components/designSystem/SmolTokenAmountInput
 import {useBalancesCurtain} from 'contexts/useBalancesCurtain';
 import {IconCross} from '@icons/IconCross';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
-import {Button} from '@common/Primitives/Button';
 
 import {useSend} from './useSend';
 import {SendWizard} from './Wizard';
@@ -86,11 +85,7 @@ export function Send(): ReactElement {
 					{'+Add token'}
 				</button>
 			</div>
-			<div className={'w-full max-w-[442px]'}>
-				<Button className={'w-full'}>
-					<b>{'Send'}</b>
-				</Button>
-			</div>
+
 			<SendWizard />
 		</Fragment>
 	);
