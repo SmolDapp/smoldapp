@@ -49,12 +49,20 @@ export function SmolTokenAmountInput({showPercentButtons = false, onSetValue, va
 		}
 
 		if (+amount > 0) {
-			const inputBigInt = amount && token?.decimals ? parseUnits(amount, token.decimals) : toBigInt(0);
+			const inputBigInt = amount ? parseUnits(amount, token?.decimals || 18) : toBigInt(0);
 
 			if (inputBigInt > selectedTokenBalance.raw) {
-				return onSetValue({amount: toNormalizedBN(0), isValid: false, error: 'Insufficient Balance'});
+				return onSetValue({
+					amount: toNormalizedBN(inputBigInt, token?.decimals || 18),
+					isValid: false,
+					error: 'Insufficient Balance'
+				});
 			}
-			return onSetValue({amount: toNormalizedBN(0), isValid: true, error: undefined});
+			return onSetValue({
+				amount: toNormalizedBN(inputBigInt, token?.decimals || 18),
+				isValid: true,
+				error: undefined
+			});
 		}
 
 		onSetValue({
@@ -72,8 +80,12 @@ export function SmolTokenAmountInput({showPercentButtons = false, onSetValue, va
 				error: undefined
 			});
 		}
+
 		onSetValue({
-			amount: toNormalizedBN(percentOf(+selectedTokenBalance.normalized, percentage), token?.decimals),
+			amount: toNormalizedBN(
+				parseUnits(percentOf(+selectedTokenBalance.normalized, percentage), token?.decimals),
+				token?.decimals
+			),
 			isValid: true,
 			error: undefined
 		});
