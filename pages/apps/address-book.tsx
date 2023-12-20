@@ -137,6 +137,8 @@ function AddressBookPage(): ReactElement {
 	);
 }
 
+AddressBookPage.AppName = 'Address Book';
+AddressBookPage.AppDescription = 'Keep your friends close and your enemies closer';
 AddressBookPage.getLayout = function getLayout(page: ReactElement): ReactElement {
 	return <Fragment>{page}</Fragment>;
 };
