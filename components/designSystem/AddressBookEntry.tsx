@@ -6,7 +6,7 @@ import {TooltipContent} from 'components/Primitives/Tooltip';
 import {useAddressBook} from 'contexts/useAddressBook';
 import {useIsMounted} from 'hooks/useIsMounted';
 import {useEnsAvatar, useEnsName} from 'wagmi';
-import {IconHeartFilled} from '@icons/IconHeart';
+import {IconHeart, IconHeartFilled} from '@icons/IconHeart';
 import * as Tooltip from '@radix-ui/react-tooltip';
 import {useUpdateEffect} from '@react-hookz/web';
 import {getColorFromAdddress, isAddress, safeAddress, toAddress} from '@utils/tools.address';
@@ -15,8 +15,37 @@ import {cl} from '@yearn-finance/web-lib/utils/cl';
 import {copyToClipboard} from '@yearn-finance/web-lib/utils/helpers';
 
 import type {TAddressBookEntry} from 'contexts/useAddressBook';
-import type {ReactElement} from 'react';
+import type {MouseEventHandler, ReactElement} from 'react';
 import type {TAddress} from '@utils/tools.address';
+
+function EntryBookEntryFavorite(props: {
+	isFavorite: boolean;
+	onClick: MouseEventHandler<HTMLButtonElement>;
+}): ReactElement {
+	return (
+		<button
+			role={'switch'}
+			onClick={props.onClick}
+			className={'withRing -mr-1 -mt-1 rounded p-1'}>
+			<div className={'group relative flex h-4 w-4 items-center justify-center'}>
+				<IconHeart
+					className={cl(
+						'absolute h-4 w-4 transition-colors',
+						props.isFavorite
+							? 'text-transparent group-hover:text-neutral-400 hover:!text-neutral-600'
+							: 'text-transparent group-hover:text-neutral-600'
+					)}
+				/>
+				<IconHeartFilled
+					className={cl(
+						'absolute h-4 w-4 transition-colors',
+						props.isFavorite ? 'text-neutral-600' : 'text-transparent hover:!text-neutral-400'
+					)}
+				/>
+			</div>
+		</button>
+	);
+}
 
 export function AddressBookEntryAvatar(props: {
 	src: string | null | undefined;
@@ -144,7 +173,7 @@ export function AddressBookEntry(props: {
 				props.onSelect({...props.entry, ens: ensName || undefined});
 			}}
 			className={cl(
-				'mb-2 flex flex-row items-center justify-between rounded-lg p-4 w-full',
+				'mb-2 flex flex-row items-center justify-between rounded-lg p-4 w-full group',
 				'bg-neutral-200 hover:bg-neutral-300 transition-colors',
 				props.isChainRestricted && !props.entry.chains.includes(chainID)
 					? 'opacity-40 hover:opacity-100 transition-opacity'
@@ -161,12 +190,13 @@ export function AddressBookEntry(props: {
 					address={toAddress(props.entry.address)}
 					ens={ensName ? `${props.entry.label} (${ensName})` : props.entry.label}
 				/>
-				<div className={'pointer-events-none absolute inset-y-0 right-0 flex items-center'}>
-					<IconHeartFilled
-						className={cl(
-							'h-4 w-4 transition-colors',
-							props.entry.isFavorite ? 'text-neutral-600' : 'text-transparent'
-						)}
+				<div className={'absolute inset-y-0 right-0 flex items-center'}>
+					<EntryBookEntryFavorite
+						isFavorite={Boolean(props.entry.isFavorite)}
+						onClick={event => {
+							event.stopPropagation();
+							updateEntry({...props.entry, isFavorite: !props.entry.isFavorite});
+						}}
 					/>
 				</div>
 			</div>

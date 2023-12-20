@@ -173,6 +173,7 @@ function NameInput(props: {
 				inputRef={inputRef}
 				disabled={!props.isEditMode}
 				id={'name'}
+				placeholder={'Mom'}
 				pattern={'^(?!0x)[^.]*$'}
 				title={"The string must not start with '0x' and must not contain '.'"}
 				tabIndex={0}

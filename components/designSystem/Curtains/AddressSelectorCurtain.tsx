@@ -6,9 +6,9 @@ import {CurtainContent} from 'components/Primitives/Curtain';
 import {TextInput} from 'components/Primitives/TextInput';
 import {useAddressBook} from 'contexts/useAddressBook';
 import {useIsMounted} from 'hooks/useIsMounted';
+import {LayoutGroup, motion} from 'framer-motion';
 import * as Dialog from '@radix-ui/react-dialog';
 import {toAddress} from '@utils/tools.address';
-import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 
 import {AddressBookEntry} from '../AddressBookEntry';
 
@@ -22,7 +22,6 @@ export function AddressSelectorCurtain(props: {
 }): ReactElement {
 	const isMounted = useIsMounted();
 	const {listCachedEntries} = useAddressBook();
-	const {chainID} = useChainID();
 	const [searchValue, set_searchValue] = useState('');
 
 	/**************************************************************************
@@ -55,23 +54,21 @@ export function AddressSelectorCurtain(props: {
 	 * An entry is considered available if it is available on the current
 	 * chain.
 	 *************************************************************************/
-	const [favorite, availableEntries, unavailableEntries] = useMemo(() => {
+	const [favorite, availableEntries] = useMemo(() => {
 		const favorite = [];
 		const available = [];
-		const unavailable = [];
 		for (const entry of filteredEntries) {
-			if (entry.chains.includes(chainID)) {
-				if (entry.isFavorite) {
-					favorite.push(entry);
-				} else {
-					available.push(entry);
-				}
+			if (entry.isFavorite) {
+				favorite.push(entry);
 			} else {
-				unavailable.push(entry);
+				available.push(entry);
 			}
 		}
-		return [favorite, available, unavailable];
-	}, [chainID, filteredEntries]);
+		return [
+			favorite.sort((a, b) => a.label.localeCompare(b.label)),
+			available.sort((a, b) => a.label.localeCompare(b.label))
+		];
+	}, [filteredEntries]);
 
 	if (!isMounted) {
 		return <Fragment />;
@@ -101,55 +98,63 @@ export function AddressSelectorCurtain(props: {
 								</div>
 							) : (
 								<>
-									<small className={'mt-0'}>{'Favorite'}</small>
-									{favorite.length > 0 ? (
-										favorite.map(entry => (
-											<AddressBookEntry
-												key={entry.address}
-												isChainRestricted
-												entry={entry}
-												onSelect={selected => {
-													props.onSelect?.(selected);
-													props.onOpenChange(false);
-												}}
-											/>
-										))
-									) : searchValue !== '' ? (
-										<div
-											className={
-												'flex h-[72px] min-h-[72px] w-full items-center justify-center rounded-lg border border-dashed border-neutral-400'
-											}>
-											<p className={'text-center text-xs text-neutral-600'}>
-												{'No favorite yet.'}
-											</p>
-										</div>
-									) : null}
-									<small className={'mt-4'}>{'Available on this chain'}</small>
-									{availableEntries.map(entry => (
-										<AddressBookEntry
-											key={entry.address}
-											isChainRestricted
-											entry={entry}
-											onSelect={selected => {
-												props.onSelect?.(selected);
-												props.onOpenChange(false);
-											}}
-										/>
-									))}
-									{unavailableEntries.length > 0 ? (
-										<small className={'mt-4'}>{'Available on other chains'}</small>
-									) : null}
-									{unavailableEntries.map(entry => (
-										<AddressBookEntry
-											key={entry.address}
-											isChainRestricted
-											entry={entry}
-											onSelect={selected => {
-												props.onSelect?.(selected);
-												props.onOpenChange(false);
-											}}
-										/>
-									))}
+									<LayoutGroup>
+										<motion.div layout>
+											{favorite.length > 0 ? (
+												<motion.small
+													layout
+													className={'mt-0'}>
+													{'Favorite'}
+												</motion.small>
+											) : null}
+											{favorite.length > 0 ? (
+												favorite.map(entry => (
+													<motion.div
+														layout
+														initial={'initial'}
+														key={`${entry.address}${entry.id}`}>
+														<AddressBookEntry
+															entry={entry}
+															onSelect={selected => {
+																props.onSelect?.(selected);
+																props.onOpenChange(false);
+															}}
+														/>
+													</motion.div>
+												))
+											) : favorite.length === 0 && !searchValue ? (
+												<div
+													className={
+														'flex h-[72px] min-h-[72px] w-full items-center justify-center rounded-lg border border-dashed border-neutral-400'
+													}>
+													<p className={'text-center text-xs text-neutral-600'}>
+														{'No favorite yet.'}
+													</p>
+												</div>
+											) : null}
+											{availableEntries.length > 0 ? (
+												<motion.small
+													layout
+													className={'mt-4'}>
+													{'Contacts'}
+												</motion.small>
+											) : null}
+											{availableEntries.map(entry => (
+												<motion.div
+													layout
+													initial={'initial'}
+													key={`${entry.address}${entry.id}`}>
+													<AddressBookEntry
+														entry={entry}
+														onSelect={selected => {
+															props.onSelect?.(selected);
+															props.onOpenChange(false);
+														}}
+													/>
+												</motion.div>
+											))}
+										</motion.div>
+									</LayoutGroup>
 								</>
 							)}
 						</div>

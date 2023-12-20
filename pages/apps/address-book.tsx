@@ -1,8 +1,9 @@
-import {Fragment, useReducer, useState} from 'react';
+import {Fragment, useMemo, useReducer, useState} from 'react';
 import {AddressBookEntry} from 'components/designSystem/AddressBookEntry';
 import {AddressBookCurtain} from 'components/designSystem/Curtains/AddressBookCurtain';
 import {TextInput} from 'components/Primitives/TextInput';
 import {useAddressBook} from 'contexts/useAddressBook';
+import {LayoutGroup, motion} from 'framer-motion';
 import {toAddress} from '@utils/tools.address';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
 
@@ -46,10 +47,43 @@ function AddressBookPage(): ReactElement {
 		isFavorite: false
 	});
 
+	/**************************************************************************
+	 * Memo function that filters the entries in the address book based on
+	 * the search value.
+	 * Only entries the label or the address of which includes the search value
+	 * will be returned.
+	 *************************************************************************/
+	const filteredEntries = useMemo(() => {
+		return listCachedEntries().filter(
+			entry =>
+				entry.label.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase()) ||
+				toAddress(entry.address).toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())
+		);
+	}, [listCachedEntries, searchValue]);
+
+	/**************************************************************************
+	 * Memo function that sorts the entries in the address book, with the
+	 * following priority:
+	 * - favorite entries first
+	 * - alphabetical order
+	 *************************************************************************/
+	const entries = useMemo(() => {
+		return filteredEntries.sort((a, b) => {
+			if (a.isFavorite && !b.isFavorite) {
+				return -1;
+			}
+			if (!a.isFavorite && b.isFavorite) {
+				return 1;
+			}
+			return a.label.localeCompare(b.label);
+		});
+	}, [filteredEntries]);
+
 	return (
 		<Fragment>
 			<div className={'w-[444px]'}>
 				<TextInput
+					placeholder={'Search ...'}
 					value={searchValue}
 					onChange={set_searchValue}
 				/>
@@ -63,18 +97,26 @@ function AddressBookPage(): ReactElement {
 						{'+Add contact'}
 					</button>
 				</div>
-				<div className={'mt-2'}>
-					{listCachedEntries().map(entry => (
-						<AddressBookEntry
-							key={`${entry.address}${entry.id}`}
-							entry={entry}
-							onSelect={selected => {
-								dispatch({type: 'SET_SELECTED_ENTRY', payload: selected});
-								set_curtainStatus({isOpen: true, isEditing: false});
-							}}
-						/>
-					))}
-				</div>
+				<LayoutGroup>
+					<motion.div
+						layout
+						className={'mt-2'}>
+						{entries.map(entry => (
+							<motion.div
+								layout
+								initial={'initial'}
+								key={`${entry.address}${entry.id}`}>
+								<AddressBookEntry
+									entry={entry}
+									onSelect={selected => {
+										dispatch({type: 'SET_SELECTED_ENTRY', payload: selected});
+										set_curtainStatus({isOpen: true, isEditing: false});
+									}}
+								/>
+							</motion.div>
+						))}
+					</motion.div>
+				</LayoutGroup>
 			</div>
 			<AddressBookCurtain
 				selectedEntry={selectedEntry}
@@ -95,7 +137,6 @@ function AddressBookPage(): ReactElement {
 	);
 }
 
-AddressBookPage.AppDescription = 'Keep your friends close and your enemies closer';
 AddressBookPage.getLayout = function getLayout(page: ReactElement): ReactElement {
 	return <Fragment>{page}</Fragment>;
 };
