@@ -1,15 +1,13 @@
 import React, {useCallback, useState} from 'react';
 import {useWallet} from 'contexts/useWallet';
 import {transferERC20, transferEther} from 'utils/actions';
-import {notifyMigrate} from 'utils/notifier';
 import {getTransferTransaction} from 'utils/tools.gnosis';
 import {useSafeAppsSDK} from '@gnosis.pm/safe-apps-react-sdk';
 import {isZeroAddress, toAddress} from '@utils/tools.address';
 import {toast} from '@yearn-finance/web-lib/components/yToast';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
-import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {ETH_TOKEN_ADDRESS, ZERO_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
-import {toBigInt, toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
+import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 import {defaultTxStatus, type TTxResponse} from '@yearn-finance/web-lib/utils/web3/transaction';
 import {SuccessModal} from '@common/ConfirmationModal';
@@ -29,8 +27,8 @@ import type {TModify, TToken} from '@utils/types/types';
 type TInputWithTokens = TModify<TSendInputElement, {token: TToken}>;
 
 export function SendWizard(): ReactElement {
-	const {address} = useWeb3();
-	const {safeChainID} = useChainID();
+	const {chainID: safeChainID} = useWeb3();
+	//const {safeChainID} = useChainID();
 	const {configuration, dispatchConfiguration} = useSend();
 	const {balances, refresh, balancesNonce} = useWallet();
 	const {isWalletSafe, provider} = useWeb3();
@@ -89,6 +87,7 @@ export function SendWizard(): ReactElement {
 	const onMigrateERC20 = useCallback(
 		async (token: TToken, amount: TNormalizedBN): Promise<TTxResponse> => {
 			onUpdateStatus(token.address, 'pending');
+			console.log(safeChainID);
 			const result = await transferERC20({
 				connector: provider,
 				chainID: safeChainID,
@@ -114,8 +113,8 @@ export function SendWizard(): ReactElement {
 	 **********************************************************************************************/
 	const onMigrateETH = useCallback(async (): Promise<TTxResponse> => {
 		onUpdateStatus(ETH_TOKEN_ADDRESS, 'pending');
-		const ethAmountRaw = configuration.inputs.find(input => input.token?.address === ETH_TOKEN_ADDRESS)?.amount
-			?.raw;
+		const ethAmountRaw = configuration.inputs.find(input => input.token?.address === ETH_TOKEN_ADDRESS)
+			?.normalizedBigAmount?.raw;
 
 		const isSendingBalance = toBigInt(ethAmountRaw) >= toBigInt(balances[ETH_TOKEN_ADDRESS]?.raw);
 		const result = await transferEther({
@@ -153,7 +152,7 @@ export function SendWizard(): ReactElement {
 			const transactions: BaseTransaction[] = [];
 			const migratedTokens: TSendInputElement[] = [];
 			for (const input of allSelected) {
-				const amount = toBigInt(input.amount.raw);
+				const amount = toBigInt(input.normalizedBigAmount.raw);
 				if (amount === 0n) {
 					continue;
 				}
@@ -173,14 +172,14 @@ export function SendWizard(): ReactElement {
 					type: 'success',
 					content: 'Your transaction has been created! You can now sign and execute it!'
 				});
-				notifyMigrate({
-					chainID: safeChainID,
-					to: toAddress(configuration.receiver?.address),
-					tokensMigrated: migratedTokens,
-					hashes: migratedTokens.map((): Hex => safeTxHash as Hex),
-					type: 'SAFE',
-					from: toAddress(address)
-				});
+				// notifyMigrate({
+				// 	chainID: safeChainID,
+				// 	to: toAddress(configuration.receiver?.address),
+				// 	tokensMigrated: migratedTokens,
+				// 	hashes: migratedTokens.map((): Hex => safeTxHash as Hex),
+				// 	type: 'SAFE',
+				// 	from: toAddress(address)
+				// });
 			} catch (error) {
 				set_migrateStatus({...defaultTxStatus, success: false});
 				toast({
@@ -189,7 +188,7 @@ export function SendWizard(): ReactElement {
 				});
 			}
 		},
-		[configuration.receiver?.address, sdk.txs, safeChainID, address]
+		[configuration.receiver?.address, sdk.txs]
 	);
 
 	/**********************************************************************************************
@@ -218,7 +217,9 @@ export function SendWizard(): ReactElement {
 				shouldMigrateETH = true;
 				continue;
 			}
-			const result = await onMigrateERC20(input.token, input.amount);
+
+			const result = await onMigrateERC20(input.token, input.normalizedBigAmount);
+
 			if (result.isSuccessful && result.receipt) {
 				migratedTokens.push(input);
 				hashMessage.push(result.receipt.transactionHash);
@@ -227,7 +228,7 @@ export function SendWizard(): ReactElement {
 			}
 		}
 		const ethToken = configuration.inputs.find(input => input.token?.address === ETH_TOKEN_ADDRESS);
-		const ethAmountRaw = ethToken?.amount?.raw;
+		const ethAmountRaw = ethToken?.normalizedBigAmount?.raw;
 
 		const willMigrateEth = shouldMigrateETH || toBigInt(ethAmountRaw) > 0n;
 		if (willMigrateEth) {
@@ -247,25 +248,16 @@ export function SendWizard(): ReactElement {
 				set_migrateStatus(defaultTxStatus);
 			}
 
-			notifyMigrate({
-				chainID: safeChainID,
-				to: toAddress(configuration.receiver?.address),
-				tokensMigrated: migratedTokens,
-				hashes: hashMessage,
-				type: 'EOA',
-				from: toAddress(address)
-			});
+			// notifyMigrate({
+			// 	chainID: safeChainID,
+			// 	to: toAddress(configuration.receiver?.address),
+			// 	tokensMigrated: migratedTokens,
+			// 	hashes: hashMessage,
+			// 	type: 'EOA',
+			// 	from: toAddress(address)
+			// });
 		}
-	}, [
-		configuration.inputs,
-		configuration.receiver?.address,
-		isWalletSafe,
-		onMigrateSelectedForGnosis,
-		onMigrateERC20,
-		onMigrateETH,
-		safeChainID,
-		address
-	]);
+	}, [configuration.inputs, isWalletSafe, onMigrateSelectedForGnosis, onMigrateERC20, onMigrateETH]);
 
 	return (
 		<>
@@ -275,8 +267,9 @@ export function SendWizard(): ReactElement {
 					isBusy={migrateStatus.pending}
 					isDisabled={
 						isZeroAddress(configuration.receiver?.address) ||
-						configuration.inputs.filter(input => input.token && input.amount.raw !== toNormalizedBN(0).raw)
-							.length === 0
+						configuration.inputs.filter(
+							input => input.token && input.normalizedBigAmount.raw !== toBigInt(0)
+						).length === 0
 					}
 					onClick={onHandleMigration}>
 					<b>{'Send'}</b>

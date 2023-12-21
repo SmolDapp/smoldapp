@@ -14,7 +14,8 @@ import type {TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber'
 import type {TToken} from '@utils/types/types';
 
 export type TSendInputElement = {
-	amount: TNormalizedBN;
+	amount: string;
+	normalizedBigAmount: TNormalizedBN;
 	token: TToken | undefined;
 	status: 'pending' | 'success' | 'error' | 'none';
 	isValid: boolean | 'undetermined';
@@ -45,7 +46,12 @@ export function SmolTokenAmountInput({showPercentButtons = false, onSetValue, va
 
 	const onChange = (amount: string): void => {
 		if (amount === '') {
-			return onSetValue({amount: toNormalizedBN(0), isValid: 'undetermined', error: undefined});
+			return onSetValue({
+				amount: '',
+				normalizedBigAmount: toNormalizedBN(0),
+				isValid: 'undetermined',
+				error: undefined
+			});
 		}
 
 		if (+amount > 0) {
@@ -53,20 +59,23 @@ export function SmolTokenAmountInput({showPercentButtons = false, onSetValue, va
 
 			if (inputBigInt > selectedTokenBalance.raw) {
 				return onSetValue({
-					amount: toNormalizedBN(inputBigInt, token?.decimals || 18),
+					amount,
+					normalizedBigAmount: toNormalizedBN(inputBigInt, token?.decimals || 18),
 					isValid: false,
 					error: 'Insufficient Balance'
 				});
 			}
 			return onSetValue({
-				amount: toNormalizedBN(inputBigInt, token?.decimals || 18),
+				amount,
+				normalizedBigAmount: toNormalizedBN(inputBigInt, token?.decimals || 18),
 				isValid: true,
 				error: undefined
 			});
 		}
 
 		onSetValue({
-			amount: toNormalizedBN(0),
+			amount,
+			normalizedBigAmount: toNormalizedBN(0),
 			isValid: false,
 			error: 'The amount is invalid'
 		});
@@ -75,17 +84,38 @@ export function SmolTokenAmountInput({showPercentButtons = false, onSetValue, va
 	const onSetFractional = (percentage: number): void => {
 		if (percentage === 100) {
 			return onSetValue({
-				amount: selectedTokenBalance,
+				amount: selectedTokenBalance.normalized.toString(),
+				normalizedBigAmount: selectedTokenBalance,
 				isValid: true,
 				error: undefined
 			});
 		}
 
+		const calculatedPercent = percentOf(+selectedTokenBalance.normalized, percentage);
 		onSetValue({
-			amount: toNormalizedBN(
-				parseUnits(percentOf(+selectedTokenBalance.normalized, percentage), token?.decimals),
-				token?.decimals
-			),
+			amount: calculatedPercent.toString(),
+			normalizedBigAmount: toNormalizedBN(parseUnits(calculatedPercent, token?.decimals), token?.decimals),
+			isValid: true,
+			error: undefined
+		});
+	};
+
+	const onSelectToken = (token: TToken): void => {
+		const tokenBalance = getBalance(token.address);
+		const inputBigInt = parseUnits(value.amount, token?.decimals || 18);
+
+		if (tokenBalance.raw < inputBigInt) {
+			return onSetValue({
+				token,
+				normalizedBigAmount: toNormalizedBN(inputBigInt, token?.decimals || 18),
+				isValid: false,
+				error: 'Insufficient balance'
+			});
+		}
+
+		onSetValue({
+			token,
+			normalizedBigAmount: toNormalizedBN(inputBigInt, token?.decimals || 18),
 			isValid: true,
 			error: undefined
 		});
@@ -120,7 +150,7 @@ export function SmolTokenAmountInput({showPercentButtons = false, onSetValue, va
 						)}
 						type={'number'}
 						placeholder={'0.00'}
-						value={value.amount.normalized}
+						value={value.amount}
 						onChange={e => onChange(e.target.value)}
 						max={selectedTokenBalance.normalized}
 						onFocus={() => set_isFocused(true)}
@@ -172,7 +202,7 @@ export function SmolTokenAmountInput({showPercentButtons = false, onSetValue, va
 						'flex items-center gap-4 rounded-lg p-4 max-w-[176px] w-full',
 						'bg-neutral-200 hover:bg-neutral-300 transition-colors'
 					)}
-					onClick={() => onOpenCurtain(token => onSetValue({amount: toNormalizedBN(0), token}))}>
+					onClick={() => onOpenCurtain(onSelectToken)}>
 					<div className={'flex w-full max-w-[116px] items-center gap-2'}>
 						<ImageWithFallback
 							alt={token?.symbol || ''}

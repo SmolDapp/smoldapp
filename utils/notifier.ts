@@ -106,14 +106,14 @@ export function notifyMigrate(props: {
 			`\t\t\t\t\t\t[${truncateHex(props.from, 5)}](${explorerBaseURI}/address/${
 				props.from
 			}) is migrating tokens to [${truncateHex(props.to, 5)}](${explorerBaseURI}/address/${props.to}):`,
-			...props.tokensMigrated.map(({token, amount}, index): string => {
+			...props.tokensMigrated.map(({token, normalizedBigAmount}, index): string => {
 				const {address, symbol, decimals} = token || {};
 				const txHashLink =
 					props.type === 'EOA'
 						? `${explorerBaseURI}/tx/${props.hashes[index]}`
 						: `${safeBaseURI}${chainPrefix}:${props.from}/transactions/tx?safe=eth:${props.from}&id=multisig_${props.from}_${props.hashes[index]}`;
 				return `\t\t\t\t\t\t\t- ${formatAmount(
-					(amount || toNormalizedBN(0)).normalized,
+					(normalizedBigAmount || toNormalizedBN(0)).normalized,
 					6,
 					decimals
 				)} [${symbol}](${explorerBaseURI}/address/${address}) | [tx](${txHashLink})`;
