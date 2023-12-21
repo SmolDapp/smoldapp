@@ -2,6 +2,7 @@ import React, {useCallback, useState} from 'react';
 import {useWallet} from 'contexts/useWallet';
 import {transferERC20, transferEther} from 'utils/actions';
 import {getTransferTransaction} from 'utils/tools.gnosis';
+import {isAddressEqual} from 'viem';
 import {useSafeAppsSDK} from '@gnosis.pm/safe-apps-react-sdk';
 import {isZeroAddress, toAddress} from '@utils/tools.address';
 import {toast} from '@yearn-finance/web-lib/components/yToast';
@@ -20,11 +21,10 @@ import type {ReactElement} from 'react';
 import type {BaseError, Hex} from 'viem';
 import type {TAddress, TDict} from '@yearn-finance/web-lib/types';
 import type {TBalanceData} from '@yearn-finance/web-lib/types/hooks';
-import type {TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import type {BaseTransaction} from '@gnosis.pm/safe-apps-sdk';
 import type {TModify, TToken} from '@utils/types/types';
 
-type TInputWithTokens = TModify<TSendInputElement, {token: TToken}>;
+type TInputWithToken = TModify<TSendInputElement, {token: TToken}>;
 
 export function SendWizard(): ReactElement {
 	const {chainID: safeChainID} = useWeb3();
@@ -85,22 +85,25 @@ export function SendWizard(): ReactElement {
 	 ** function will perform the migration for all the selected tokens, one at a time.
 	 **********************************************************************************************/
 	const onMigrateERC20 = useCallback(
-		async (token: TToken, amount: TNormalizedBN): Promise<TTxResponse> => {
-			onUpdateStatus(token.address, 'pending');
-			console.log(safeChainID);
+		async (input: TInputWithToken): Promise<TTxResponse> => {
+			const tokenAddress = input.token.address;
+			const inputUUID = input.UUID;
+
+			onUpdateStatus(inputUUID, 'pending');
+
 			const result = await transferERC20({
 				connector: provider,
 				chainID: safeChainID,
-				contractAddress: token.address,
+				contractAddress: tokenAddress,
 				receiverAddress: configuration.receiver?.address,
-				amount: toBigInt(amount.raw)
+				amount: input.normalizedBigAmount.raw
 			});
 			if (result.isSuccessful) {
-				onUpdateStatus(token.address, 'success');
-				await handleSuccessCallback(token.address);
+				onUpdateStatus(inputUUID, 'success');
+				await handleSuccessCallback(tokenAddress);
 			}
 			if (result.error) {
-				onUpdateStatus(token.address, 'error');
+				onUpdateStatus(inputUUID, 'error');
 			}
 			return result;
 		},
@@ -111,36 +114,31 @@ export function SendWizard(): ReactElement {
 	 ** The onMigrateETH function is called when the user clicks the 'Migrate' button. This
 	 ** function will perform the migration for ETH coin.
 	 **********************************************************************************************/
-	const onMigrateETH = useCallback(async (): Promise<TTxResponse> => {
-		onUpdateStatus(ETH_TOKEN_ADDRESS, 'pending');
-		const ethAmountRaw = configuration.inputs.find(input => input.token?.address === ETH_TOKEN_ADDRESS)
-			?.normalizedBigAmount?.raw;
+	const onMigrateETH = useCallback(
+		async (input: TInputWithToken): Promise<TTxResponse> => {
+			const inputUUID = input.UUID;
+			onUpdateStatus(inputUUID, 'pending');
+			const ethAmountRaw = input.normalizedBigAmount.raw;
 
-		const isSendingBalance = toBigInt(ethAmountRaw) >= toBigInt(balances[ETH_TOKEN_ADDRESS]?.raw);
-		const result = await transferEther({
-			connector: provider,
-			chainID: safeChainID,
-			receiverAddress: configuration.receiver?.address,
-			amount: toBigInt(ethAmountRaw),
-			shouldAdjustForGas: isSendingBalance
-		});
-		if (result.isSuccessful) {
-			onUpdateStatus(ETH_TOKEN_ADDRESS, 'success');
-			await handleSuccessCallback(ZERO_ADDRESS);
-		}
-		if (result.error) {
-			onUpdateStatus(ETH_TOKEN_ADDRESS, 'error');
-		}
-		return result;
-	}, [
-		balances,
-		configuration.inputs,
-		configuration.receiver?.address,
-		handleSuccessCallback,
-		onUpdateStatus,
-		provider,
-		safeChainID
-	]);
+			const isSendingBalance = toBigInt(ethAmountRaw) >= toBigInt(balances[ETH_TOKEN_ADDRESS]?.raw);
+			const result = await transferEther({
+				connector: provider,
+				chainID: safeChainID,
+				receiverAddress: configuration.receiver?.address,
+				amount: toBigInt(ethAmountRaw),
+				shouldAdjustForGas: isSendingBalance
+			});
+			if (result.isSuccessful) {
+				onUpdateStatus(inputUUID, 'success');
+				await handleSuccessCallback(ZERO_ADDRESS);
+			}
+			if (result.error) {
+				onUpdateStatus(inputUUID, 'error');
+			}
+			return result;
+		},
+		[balances, configuration.receiver?.address, handleSuccessCallback, onUpdateStatus, provider, safeChainID]
+	);
 
 	/**********************************************************************************************
 	 ** The onMigrateSelectedForGnosis function is called when the user clicks the 'Migrate' button
@@ -148,7 +146,7 @@ export function SendWizard(): ReactElement {
 	 ** Safe.
 	 **********************************************************************************************/
 	const onMigrateSelectedForGnosis = useCallback(
-		async (allSelected: TInputWithTokens[]): Promise<void> => {
+		async (allSelected: TInputWithToken[]): Promise<void> => {
 			const transactions: BaseTransaction[] = [];
 			const migratedTokens: TSendInputElement[] = [];
 			for (const input of allSelected) {
@@ -201,24 +199,26 @@ export function SendWizard(): ReactElement {
 
 		let areAllSuccess = true;
 		const allSelected = configuration.inputs.filter(
-			(input): input is TInputWithTokens => !!input.token && input.status !== 'success'
+			(input): input is TInputWithToken => !!input.token && input.status !== 'success'
 		);
 
 		if (isWalletSafe) {
 			return onMigrateSelectedForGnosis(allSelected);
 		}
 
-		const migratedTokens: TSendInputElement[] = [];
+		const migratedTokens: TInputWithToken[] = [];
 		const hashMessage: Hex[] = [];
-		let shouldMigrateETH = false;
+
+		let ethToken: TInputWithToken | undefined = undefined;
+
 		for (const input of allSelected) {
-			if (input.token.address === ETH_TOKEN_ADDRESS) {
+			if (isAddressEqual(input.token.address, ETH_TOKEN_ADDRESS)) {
 				//Migrate ETH at the end
-				shouldMigrateETH = true;
+				ethToken = input;
 				continue;
 			}
 
-			const result = await onMigrateERC20(input.token, input.normalizedBigAmount);
+			const result = await onMigrateERC20(input);
 
 			if (result.isSuccessful && result.receipt) {
 				migratedTokens.push(input);
@@ -227,12 +227,11 @@ export function SendWizard(): ReactElement {
 				areAllSuccess = false;
 			}
 		}
-		const ethToken = configuration.inputs.find(input => input.token?.address === ETH_TOKEN_ADDRESS);
+
 		const ethAmountRaw = ethToken?.normalizedBigAmount?.raw;
 
-		const willMigrateEth = shouldMigrateETH || toBigInt(ethAmountRaw) > 0n;
-		if (willMigrateEth) {
-			const result = await onMigrateETH();
+		if (ethToken && toBigInt(ethAmountRaw) > 0n) {
+			const result = await onMigrateETH(ethToken);
 			if (result.isSuccessful && result.receipt) {
 				ethToken && migratedTokens.push(ethToken);
 				hashMessage.push(result.receipt.transactionHash);
@@ -241,23 +240,29 @@ export function SendWizard(): ReactElement {
 			}
 		}
 
-		if (migratedTokens.length > 0) {
-			if (areAllSuccess) {
-				set_migrateStatus({...defaultTxStatus, success: true});
-			} else {
-				set_migrateStatus(defaultTxStatus);
-			}
-
-			// notifyMigrate({
-			// 	chainID: safeChainID,
-			// 	to: toAddress(configuration.receiver?.address),
-			// 	tokensMigrated: migratedTokens,
-			// 	hashes: hashMessage,
-			// 	type: 'EOA',
-			// 	from: toAddress(address)
-			// });
+		if (areAllSuccess) {
+			set_migrateStatus({...defaultTxStatus, success: true});
+		} else {
+			set_migrateStatus(defaultTxStatus);
+			dispatchConfiguration({type: 'RESET', payload: undefined});
 		}
-	}, [configuration.inputs, isWalletSafe, onMigrateSelectedForGnosis, onMigrateERC20, onMigrateETH]);
+
+		// notifyMigrate({
+		// 	chainID: safeChainID,
+		// 	to: toAddress(configuration.receiver?.address),
+		// 	tokensMigrated: migratedTokens,
+		// 	hashes: hashMessage,
+		// 	type: 'EOA',
+		// 	from: toAddress(address)
+		// });
+	}, [
+		configuration.inputs,
+		isWalletSafe,
+		onMigrateSelectedForGnosis,
+		onMigrateERC20,
+		onMigrateETH,
+		dispatchConfiguration
+	]);
 
 	return (
 		<>

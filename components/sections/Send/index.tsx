@@ -1,7 +1,10 @@
 import {SmolAddressInput} from 'components/designSystem/SmolAddressInput';
 import {SmolTokenAmountInput} from 'components/designSystem/SmolTokenAmountInput';
 import {useBalancesCurtain} from 'contexts/useBalancesCurtain';
+import {IconCircleCheck} from '@icons/IconCircleCheck';
+import {IconCircleCross} from '@icons/IconCircleCross';
 import {IconCross} from '@icons/IconCross';
+import {IconSpinner} from '@icons/IconSpinner';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
 
 import {useSend} from './useSend';
@@ -22,21 +25,39 @@ function SendTokenRow({input}: {input: TSendInputElement}): ReactElement {
 		dispatchConfiguration({type: 'REMOVE_INPUT', payload: {UUID: input.UUID}});
 	};
 
+	const renderIcon = (): ReactElement | null => {
+		if (input.status === 'pending') {
+			return <IconSpinner className={'h-4 w-4'} />;
+		}
+		if (input.status === 'success') {
+			return <IconCircleCheck className={'h-4 w-4 text-green'} />;
+		}
+		if (input.status === 'error') {
+			return <IconCircleCross className={'h-4 w-4 text-red'} />;
+		}
+		return null;
+	};
+
+	const iconContainerStyle = 'absolute -right-10 top-1/2 -translate-y-1/2';
+
 	return (
 		<div className={'relative'}>
 			<SmolTokenAmountInput
 				onSetValue={onSetValue}
 				value={input}
 			/>
-			{configuration.inputs.length > 1 && (
+			{configuration.inputs.length > 1 && input.status === 'none' && (
 				<button
-					className={
-						'absolute -right-10 top-1/2 -translate-y-1/2 p-2 text-neutral-600 transition-colors hover:text-neutral-700'
-					}
+					className={cl(
+						iconContainerStyle,
+						'-right-11 p-1 text-neutral-600 transition-colors hover:text-neutral-700'
+					)}
 					onClick={onRemoveInput}>
 					<IconCross className={'h-4 w-4'} />
 				</button>
 			)}
+
+			<div className={iconContainerStyle}>{renderIcon()}</div>
 		</div>
 	);
 }
