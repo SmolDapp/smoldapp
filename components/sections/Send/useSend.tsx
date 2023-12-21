@@ -78,7 +78,7 @@ export const SendContextApp = ({
 				};
 			}
 			case 'RESET':
-				return {receiver: defaultInputAddressLike, inputs: []};
+				return {receiver: defaultInputAddressLike, inputs: [getNewInput()]};
 		}
 	};
 
