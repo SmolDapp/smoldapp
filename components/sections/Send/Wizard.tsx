@@ -264,18 +264,19 @@ export function SendWizard(): ReactElement {
 		dispatchConfiguration
 	]);
 
+	const isSendButtonDisabled =
+		isZeroAddress(configuration.receiver?.address) ||
+		configuration.inputs.filter(input => input.token && input.normalizedBigAmount.raw !== toBigInt(0)).length ===
+			0 ||
+		!configuration.inputs.every(input => input.isValid === true);
+
 	return (
 		<>
 			<div className={'w-full max-w-[442px]'}>
 				<Button
 					className={'w-full'}
 					isBusy={migrateStatus.pending}
-					isDisabled={
-						isZeroAddress(configuration.receiver?.address) ||
-						configuration.inputs.filter(
-							input => input.token && input.normalizedBigAmount.raw !== toBigInt(0)
-						).length === 0
-					}
+					isDisabled={isSendButtonDisabled}
 					onClick={onHandleMigration}>
 					<b>{'Send'}</b>
 				</Button>

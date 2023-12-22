@@ -47,10 +47,10 @@ export function SmolTokenAmountInput({showPercentButtons = false, onSetValue, va
 	const onChange = (amount: string): void => {
 		if (amount === '') {
 			return onSetValue({
-				amount: '',
+				amount,
 				normalizedBigAmount: toNormalizedBN(0),
-				isValid: 'undetermined',
-				error: undefined
+				isValid: false,
+				error: 'The amount is invalid'
 			});
 		}
 

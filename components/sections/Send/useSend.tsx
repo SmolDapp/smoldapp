@@ -27,7 +27,7 @@ export type TSend = {
 
 export function getNewInput(): TSendInputElement {
 	return {
-		amount: '0',
+		amount: '',
 		normalizedBigAmount: toNormalizedBN(0),
 		isValid: 'undetermined',
 		token: undefined,
