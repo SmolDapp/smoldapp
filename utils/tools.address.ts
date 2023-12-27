@@ -1,4 +1,5 @@
 import {getAddress, zeroAddress} from 'viem';
+import {getClient} from '@yearn-finance/web-lib/utils/wagmi/utils';
 
 export type TAddressSmol = '/^0x[0-9a-f]{40}$/i';
 export type TAddressWagmi = `0x${string}`;
@@ -130,4 +131,16 @@ export function getColorFromAdddress({address}: {address: TAddress}): string {
 		color += value.toString(16).padStart(2, '0');
 	}
 	return color;
+}
+
+export async function getIsSmartContract({address, chainId}: {address: TAddress; chainId: number}): Promise<boolean> {
+	const publicClient = getClient(chainId);
+	const bytecode = await publicClient.getBytecode({
+		address
+	});
+
+	if (bytecode === undefined) {
+		return false;
+	}
+	return true;
 }

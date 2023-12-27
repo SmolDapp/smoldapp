@@ -7,6 +7,7 @@ import {IconCross} from '@icons/IconCross';
 import {IconSpinner} from '@icons/IconSpinner';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
 
+import {SendWarning} from './SendWarning';
 import {useSend} from './useSend';
 import {SendWizard} from './Wizard';
 
@@ -107,7 +108,7 @@ export function Send(): ReactElement {
 					{'+Add token'}
 				</button>
 			</div>
-			{/* <SendWarning /> */}
+			<SendWarning />
 			<SendWizard />
 		</div>
 	);
