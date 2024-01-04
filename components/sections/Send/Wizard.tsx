@@ -1,4 +1,5 @@
 import React, {useCallback, useState} from 'react';
+import {Button} from 'components/Primitives/Button';
 import {useWallet} from 'contexts/useWallet';
 import {transferERC20, transferEther} from 'utils/actions';
 import {getTransferTransaction} from 'utils/tools.gnosis';
@@ -12,7 +13,6 @@ import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 import {defaultTxStatus, type TTxResponse} from '@yearn-finance/web-lib/utils/web3/transaction';
 import {SuccessModal} from '@common/ConfirmationModal';
-import {Button} from '@common/Primitives/Button';
 
 import {useSend} from './useSend';
 

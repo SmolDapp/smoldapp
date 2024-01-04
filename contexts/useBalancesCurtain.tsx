@@ -1,7 +1,8 @@
 'use client';
 
 import React, {createContext, useContext, useEffect, useState} from 'react';
-import {CloseCurtainButton} from 'components/designSystem/Curtain';
+import {CloseCurtainButton} from 'components/designSystem/Curtains/InfoCurtain';
+import {CurtainContent} from 'components/Primitives/Curtain';
 import {useTokensWithBalance} from 'hooks/useTokensWithBalance';
 import * as Dialog from '@radix-ui/react-dialog';
 import {useDeepCompareMemo} from '@react-hookz/web';
@@ -9,7 +10,6 @@ import {toAddress, truncateHex} from '@utils/tools.address';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
 import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
 import {ImageWithFallback} from '@common/ImageWithFallback';
-import {CurtainContent} from '@common/Primitives/Curtain';
 
 import useWallet from './useWallet';
 
