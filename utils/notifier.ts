@@ -8,7 +8,7 @@ import {EIP3770_PREFIX} from './eip-3770';
 
 import type {TSendInputElement} from 'components/designSystem/SmolTokenAmountInput';
 import type {Hex} from 'viem';
-import type {TAddress} from '@yearn-finance/web-lib/types';
+import type {TAddress} from '@utils/tools.address';
 import type {TToken} from './types/types';
 
 const safeBaseURI = 'https://app.safe.global/transactions/tx?safe=';

@@ -1,10 +1,10 @@
 import React, {memo, useCallback, useMemo} from 'react';
 import IconHeartBroken from 'components/icons/IconHeartBroken';
 import {IconSpinner} from 'components/icons/IconSpinner';
+import {Button} from 'components/Primitives/Button';
 import {isLensNFT} from 'utils/tools.lens';
 import NFTCollection from '@nftmigratooor/NFTCollection';
 import {useNFTMigratooor} from '@nftmigratooor/useNFTMigratooor';
-import {Button} from '@common/Primitives/Button';
 
 import type {ReactElement} from 'react';
 import type {TNFT} from 'utils/types/nftMigratooor';

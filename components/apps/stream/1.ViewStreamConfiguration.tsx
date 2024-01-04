@@ -1,5 +1,8 @@
 import React, {Fragment, useCallback, useMemo, useState} from 'react';
 import Link from 'next/link';
+import {Button} from 'components/Primitives/Button';
+import {DatePicker} from 'components/Primitives/DatePicker';
+import {TooltipContent} from 'components/Primitives/Tooltip';
 import {useTokenList} from 'contexts/useTokenList';
 import useWallet from 'contexts/useWallet';
 import {addMonths, addYears, isAfter} from 'date-fns';
@@ -18,9 +21,6 @@ import AddressInput from '@common/AddressInput';
 import {PopoverSettings} from '@common/PopoverSettings';
 import {PopoverSettingsItemExpert} from '@common/PopoverSettings.item.expert';
 import {PopoverSettingsItemTokenList} from '@common/PopoverSettings.item.tokenlist';
-import {Button} from '@common/Primitives/Button';
-import {DatePicker} from '@common/Primitives/DatePicker';
-import {TooltipContent} from '@common/Primitives/Tooltip';
 import TokenInput from '@common/TokenInput';
 import ViewSectionHeading from '@common/ViewSectionHeading';
 

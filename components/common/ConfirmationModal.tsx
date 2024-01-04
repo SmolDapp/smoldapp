@@ -1,9 +1,9 @@
 import {Fragment, useState} from 'react';
 import Confetti from 'react-dom-confetti';
+import {Button} from 'components/Primitives/Button';
 import {Dialog, Transition} from '@headlessui/react';
 import {useUpdateEffect} from '@react-hookz/web';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
-import {Button} from '@common/Primitives/Button';
 
 import type {ReactElement} from 'react';
 

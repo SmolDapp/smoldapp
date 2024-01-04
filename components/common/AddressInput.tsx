@@ -8,24 +8,13 @@ import {IconLoader} from '@yearn-finance/web-lib/icons/IconLoader';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
 import {ZERO_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
 
+import type {TInputAddressLike} from 'components/designSystem/SmolAddressInput';
 import type {ReactElement} from 'react';
-import type {TAddress} from '@yearn-finance/web-lib/types';
 
 export type TAddressInput = {
 	value: TInputAddressLike;
 	onChangeValue: (value: TInputAddressLike) => void;
 	inputClassName?: string;
-};
-export type TInputAddressLike = {
-	address: TAddress | undefined;
-	label: string;
-	isValid: boolean | 'undetermined';
-	error?: string;
-};
-export const defaultInputAddressLike: TInputAddressLike = {
-	address: undefined,
-	label: '',
-	isValid: false
 };
 
 function AddressInput({value, onChangeValue, ...props}: TAddressInput): ReactElement {

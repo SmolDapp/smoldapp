@@ -1,11 +1,12 @@
 import React, {useState} from 'react';
-import AddressInput, {defaultInputAddressLike} from 'components/common/AddressInput';
+import AddressInput from 'components/common/AddressInput';
+import {defaultInputAddressLike} from 'components/designSystem/SmolAddressInput';
+import {Button} from 'components/Primitives/Button';
 import {useNFTMigratooor} from '@nftmigratooor/useNFTMigratooor';
 import {isZeroAddress, toAddress} from '@utils/tools.address';
-import {Button} from '@common/Primitives/Button';
 import ViewSectionHeading from '@common/ViewSectionHeading';
 
-import type {TInputAddressLike} from 'components/common/AddressInput';
+import type {TInputAddressLike} from 'components/designSystem/SmolAddressInput';
 import type {ReactElement} from 'react';
 
 type TViewDestinationProps = {
