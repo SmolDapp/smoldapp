@@ -5,7 +5,7 @@ import {BalancesCurtainContextApp} from 'contexts/useBalancesCurtain';
 
 import type {ReactElement} from 'react';
 
-function SendPage(): ReactElement {
+export default function SendPage(): ReactElement {
 	return (
 		<SendContextApp>
 			{({configuration: {inputs}}) => (
@@ -23,5 +23,3 @@ SendPage.AppDescription = 'Deliver any of your tokens anywhere';
 SendPage.getLayout = function getLayout(page: ReactElement): ReactElement {
 	return <Fragment>{page}</Fragment>;
 };
-
-export default SendPage;

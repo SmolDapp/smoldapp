@@ -26,7 +26,7 @@ import type {TModify, TToken} from '@utils/types/types';
 
 type TInputWithToken = TModify<TSendInputElement, {token: TToken}>;
 
-export function SendWizard(): ReactElement {
+export function SendWizard({isReceiverERC20}: {isReceiverERC20: boolean}): ReactElement {
 	const {chainID: safeChainID} = useWeb3();
 	//const {safeChainID} = useChainID();
 	const {configuration, dispatchConfiguration} = useSend();
@@ -269,7 +269,8 @@ export function SendWizard(): ReactElement {
 		isNullAddress(configuration.receiver.address) ||
 		configuration.inputs.filter(input => input.token && input.normalizedBigAmount.raw !== toBigInt(0)).length ===
 			0 ||
-		!configuration.inputs.every(input => input.isValid === true);
+		!configuration.inputs.every(input => input.isValid === true) ||
+		isReceiverERC20;
 
 	return (
 		<>

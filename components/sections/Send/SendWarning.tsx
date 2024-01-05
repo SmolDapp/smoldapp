@@ -8,7 +8,7 @@ import {useSend} from './useSend';
 
 import type {ReactElement} from 'react';
 
-export function SendWarning(): ReactElement | null {
+export function SendWarning({isReceiverERC20}: {isReceiverERC20: boolean}): ReactElement | null {
 	const {configuration} = useSend();
 	const {safeChainID} = useChainID();
 
@@ -22,7 +22,7 @@ export function SendWarning(): ReactElement | null {
 				chainId: safeChainID
 			}));
 
-		if (isSmartContract) {
+		if (isSmartContract && !isReceiverERC20) {
 			return set_warningMessage(
 				'You are going to send tokens to smart contract that is not present in the Address Book'
 			);
@@ -32,8 +32,11 @@ export function SendWarning(): ReactElement | null {
 			return set_warningMessage('Impossible to sent tokens to null address');
 		}
 
+		if (isReceiverERC20) {
+			return set_warningMessage('Receiver is an ERC20 token');
+		}
 		return set_warningMessage(null);
-	}, [configuration.receiver.address, safeChainID]);
+	}, [configuration.receiver.address, isReceiverERC20, safeChainID]);
 
 	if (!warningMessage) {
 		return null;
