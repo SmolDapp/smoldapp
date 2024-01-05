@@ -1,7 +1,6 @@
 import {useState} from 'react';
 import {SmolAddressInput} from 'components/designSystem/SmolAddressInput';
 import {SmolTokenAmountInput} from 'components/designSystem/SmolTokenAmountInput';
-import {useBalancesCurtain} from 'contexts/useBalancesCurtain';
 import {useAsyncTrigger} from 'hooks/useAsyncTrigger';
 import {isAddressEqual} from 'viem';
 import {IconCircleCheck} from '@icons/IconCircleCheck';
@@ -69,7 +68,6 @@ function SendTokenRow({input}: {input: TSendInputElement}): ReactElement {
 
 export function Send(): ReactElement {
 	const {configuration, dispatchConfiguration} = useSend();
-	const {tokensWithBalance} = useBalancesCurtain();
 
 	const [tokenList, set_tokenList] = useState<TTokenListItem | undefined>(undefined);
 
@@ -115,12 +113,10 @@ export function Send(): ReactElement {
 			</div>
 			<div className={'mb-4 '}>
 				<button
-					className={cl(
-						'rounded-lg bg-neutral-200 px-3 py-1 text-neutral-700 transition-colors hover:bg-neutral-300 text-xs',
-						'disabled:cursor-not-allowed disabled:hover:bg-neutral-200 disabled:opacity-20'
-					)}
-					onClick={onAddToken}
-					disabled={tokensWithBalance.length === configuration.inputs.length}>
+					className={
+						'rounded-lg bg-neutral-200 px-3 py-1 text-xs text-neutral-700 transition-colors hover:bg-neutral-300'
+					}
+					onClick={onAddToken}>
 					{'+Add token'}
 				</button>
 			</div>
