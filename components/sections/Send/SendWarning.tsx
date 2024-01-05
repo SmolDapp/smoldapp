@@ -25,7 +25,9 @@ export function SendWarning({isReceiverERC20}: {isReceiverERC20: boolean}): Reac
 				chainId: safeChainID
 			}));
 
-		if (isSmartContract && !isReceiverERC20) {
+		const fromAddressBook = await getEntry({address: configuration.receiver.address});
+
+		if (isSmartContract && !fromAddressBook && !isReceiverERC20) {
 			return set_warningMessage(
 				'You are going to send tokens to smart contract that is not present in the Address Book'
 			);
@@ -39,7 +41,6 @@ export function SendWarning({isReceiverERC20}: {isReceiverERC20: boolean}): Reac
 			return set_warningMessage('Receiver is an ERC20 token');
 		}
 
-		const fromAddressBook = await getEntry({address: configuration.receiver.address});
 		if (configuration.receiver.address && !fromAddressBook) {
 			return set_warningMessage('Address is not present in the Address Book');
 		}
