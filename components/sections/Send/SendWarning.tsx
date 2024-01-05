@@ -1,4 +1,5 @@
 import {useState} from 'react';
+import {useAddressBook} from 'contexts/useAddressBook';
 import {useAsyncTrigger} from 'hooks/useAsyncTrigger';
 import {getIsSmartContract, isNullAddress} from '@utils/tools.address';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
@@ -13,6 +14,8 @@ export function SendWarning({isReceiverERC20}: {isReceiverERC20: boolean}): Reac
 	const {safeChainID} = useChainID();
 
 	const [warningMessage, set_warningMessage] = useState<string | null>(null);
+
+	const {getEntry} = useAddressBook();
 
 	useAsyncTrigger(async (): Promise<void> => {
 		const isSmartContract =
@@ -35,8 +38,18 @@ export function SendWarning({isReceiverERC20}: {isReceiverERC20: boolean}): Reac
 		if (isReceiverERC20) {
 			return set_warningMessage('Receiver is an ERC20 token');
 		}
+
+		const fromAddressBook = await getEntry({address: configuration.receiver.address});
+		if (configuration.receiver.address && !fromAddressBook) {
+			return set_warningMessage('Address is not present in the Address Book');
+		}
+
+		if (configuration.receiver.address && !fromAddressBook?.chains.includes(safeChainID)) {
+			return set_warningMessage('Address in the Address Book is related to different chain');
+		}
+
 		return set_warningMessage(null);
-	}, [configuration.receiver.address, isReceiverERC20, safeChainID]);
+	}, [configuration.receiver.address, getEntry, isReceiverERC20, safeChainID]);
 
 	if (!warningMessage) {
 		return null;
