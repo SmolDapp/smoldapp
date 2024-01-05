@@ -138,7 +138,7 @@ export function SmolTokenAmountInput({showPercentButtons = false, onSetValue, va
 					'h-20 z-20 relative border transition-all',
 					'flex flex-row items-center cursor-text',
 					'focus:placeholder:text-neutral-300 placeholder:transition-colors',
-					'p-2 group bg-neutral-0 rounded-lg',
+					'p-2 pl-4 group bg-neutral-0 rounded-lg',
 					getBorderColor()
 				)}>
 				<div className={'relative w-full pr-2'}>
