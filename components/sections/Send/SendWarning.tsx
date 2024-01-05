@@ -1,6 +1,6 @@
 import {useState} from 'react';
 import {useAsyncTrigger} from 'hooks/useAsyncTrigger';
-import {getIsSmartContract} from '@utils/tools.address';
+import {getIsSmartContract, isNullAddress} from '@utils/tools.address';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {Warning} from '@common/Primitives/Warning';
 
@@ -27,6 +27,11 @@ export function SendWarning(): ReactElement | null {
 				'You are going to send tokens to smart contract that is not present in the Address Book'
 			);
 		}
+
+		if (isNullAddress(configuration.receiver.address)) {
+			return set_warningMessage('Impossible to sent tokens to null address');
+		}
+
 		return set_warningMessage(null);
 	}, [configuration.receiver.address, safeChainID]);
 

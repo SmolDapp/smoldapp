@@ -5,7 +5,7 @@ import {transferERC20, transferEther} from 'utils/actions';
 import {getTransferTransaction} from 'utils/tools.gnosis';
 import {isAddressEqual} from 'viem';
 import {useSafeAppsSDK} from '@gnosis.pm/safe-apps-react-sdk';
-import {isZeroAddress, toAddress} from '@utils/tools.address';
+import {isNullAddress, isZeroAddress, toAddress} from '@utils/tools.address';
 import {toast} from '@yearn-finance/web-lib/components/yToast';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {ETH_TOKEN_ADDRESS, ZERO_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
@@ -266,6 +266,7 @@ export function SendWizard(): ReactElement {
 
 	const isSendButtonDisabled =
 		isZeroAddress(configuration.receiver?.address) ||
+		isNullAddress(configuration.receiver.address) ||
 		configuration.inputs.filter(input => input.token && input.normalizedBigAmount.raw !== toBigInt(0)).length ===
 			0 ||
 		!configuration.inputs.every(input => input.isValid === true);

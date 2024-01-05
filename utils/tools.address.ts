@@ -1,6 +1,8 @@
 import {getAddress, zeroAddress} from 'viem';
 import {getClient} from '@yearn-finance/web-lib/utils/wagmi/utils';
 
+import {NULL_ADDRESS} from './constants';
+
 export type TAddressSmol = '/^0x[0-9a-f]{40}$/i';
 export type TAddressWagmi = `0x${string}`;
 export type TAddress = TAddressWagmi;
@@ -83,6 +85,10 @@ function checksumAddress(address?: string | null | undefined): TAddressSmol {
  *****************************************************************************/
 export function isZeroAddress(address?: string): boolean {
 	return toAddress(address) === toAddress(zeroAddress);
+}
+
+export function isNullAddress(address?: string): boolean {
+	return toAddress(address) === NULL_ADDRESS;
 }
 
 /******************************************************************************
