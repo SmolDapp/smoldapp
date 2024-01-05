@@ -81,7 +81,7 @@ function AddressBookPage(): ReactElement {
 
 	return (
 		<Fragment>
-			<div className={'w-[444px]'}>
+			<div className={'w-full md:w-111'}>
 				<TextInput
 					placeholder={'Search ...'}
 					value={searchValue}

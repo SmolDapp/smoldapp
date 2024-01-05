@@ -34,7 +34,7 @@ function App(props: TAppProp): ReactElement {
 					}
 				/>
 			</div>
-			<section className={'-mt-2 w-full p-10 pt-0'}>
+			<section className={'-mt-9 w-full p-4 pt-0 md:-mt-2 md:p-10'}>
 				<div className={'mb-6'}>
 					<h1 className={'text-3xl font-bold text-neutral-900'}>{props.title}</h1>
 					<p className={'text-base text-neutral-600'}>{props.description}</p>
@@ -57,13 +57,16 @@ export default function Layout(props: AppProps): ReactElement {
 	const appDescription = (Component as TComponent).AppDescription || '';
 
 	return (
-		<div className={'mx-auto mt-10 w-full max-w-6xl pl-4 pr-8'}>
-			<div className={'grid w-full grid-cols-root space-x-4'}>
+		<div className={'layout'}>
+			<div className={'grid w-full grid-cols-root space-x-0 md:space-x-4'}>
 				<motion.nav
 					initial={{scale: 0.9, opacity: 0}}
 					animate={{scale: 1, opacity: 1}}
 					transition={{duration: 0.6, ease: 'easeInOut'}}
-					className={'sticky top-10 z-20 col-sidebar flex h-app flex-col rounded-lg bg-neutral-0'}>
+					className={cl(
+						'sticky top-10 z-20 col-sidebar h-app flex-col rounded-lg bg-neutral-0',
+						'hidden md:flex'
+					)}>
 					<SideMenu />
 				</motion.nav>
 
@@ -75,9 +78,10 @@ export default function Layout(props: AppProps): ReactElement {
 						animate={'animate'}
 						exit={'exit'}
 						initial={'initial'}
-						className={
-							'relative col-main mb-10 min-h-app w-full overflow-x-hidden rounded-lg bg-neutral-0'
-						}>
+						className={cl(
+							'relative mb-10 min-h-app w-full overflow-x-hidden rounded-lg bg-neutral-0',
+							'col-root md:col-main'
+						)}>
 						<WithAddressBook>
 							<App
 								title={appName}

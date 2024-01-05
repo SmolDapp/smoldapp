@@ -55,7 +55,8 @@ module.exports = {
 			width: {
 				inherit: 'inherit',
 				sidebar: '280px',
-				main: '1000px'
+				main: '1000px',
+				111: '444px'
 			},
 			maxWidth: {
 				'4xl': '888px',
@@ -63,6 +64,7 @@ module.exports = {
 				'6xl': '1280px'
 			},
 			fontSize: {
+				xxxs: ['9px', '16px'],
 				xxs: ['10px', '16px'],
 				xs: ['12px', '16px'],
 				sm: ['14px', '20px'],
@@ -77,7 +79,8 @@ module.exports = {
 			},
 			gridColumn: {
 				sidebar: 'span 7 / span 7',
-				main: 'span 25 / span 25'
+				main: 'span 25 / span 25',
+				root: 'span 32 / span 32'
 			}
 		}
 	},

@@ -15,7 +15,7 @@ h6 {
 	@apply text-base font-bold text-neutral-700;
 }
 small {
-	@apply text-xxs font-normal text-neutral-600 block;
+	@apply text-xxxs md:text-xxs font-normal text-neutral-600 block;
 }
 #__next {
 	@apply w-full h-full;
@@ -296,4 +296,9 @@ select:focus {
 	@apply text-neutral-900 placeholder:text-neutral-600 caret-neutral-700;
 	@apply focus:placeholder:text-neutral-300 placeholder:transition-colors;
 	@apply focus:border-neutral-600 disabled:bg-neutral-300 transition-colors;
+}
+
+.layout {
+	@apply mx-auto md:mt-10 w-full max-w-6xl md:pl-4 md:pr-8;
+	@apply mt-4 px-4;
 }

@@ -190,7 +190,7 @@ export function AddressBookEntry(props: {
 					address={toAddress(props.entry.address)}
 					ens={ensName ? `${props.entry.label} (${ensName})` : props.entry.label}
 				/>
-				<div className={'absolute inset-y-0 right-0 flex items-center'}>
+				<div className={'absolute inset-y-0 right-0 flex items-center pb-4 md:p-0'}>
 					<EntryBookEntryFavorite
 						isFavorite={Boolean(props.entry.isFavorite)}
 						onClick={event => {
