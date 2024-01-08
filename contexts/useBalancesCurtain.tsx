@@ -106,6 +106,7 @@ function BalancesCurtain(props: {
 		return props.tokensWithBalance.filter(
 			token =>
 				token.symbol.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase()) ||
+				token.name.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase()) ||
 				toAddress(token.address).toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())
 		);
 	}, [searchValue, props.tokensWithBalance]);
