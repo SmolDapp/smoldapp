@@ -2,6 +2,9 @@ import {getAddress, zeroAddress} from 'viem';
 import {getClient} from '@yearn-finance/web-lib/utils/wagmi/utils';
 
 import {ETH_ADDRESS} from './constants';
+import {supportedNetworks} from './tools.chains';
+
+import type {GetBytecodeReturnType} from 'viem';
 
 export type TAddressSmol = '/^0x[0-9a-f]{40}$/i';
 export type TAddressWagmi = `0x${string}`;
@@ -139,14 +142,27 @@ export function getColorFromAdddress({address}: {address: TAddress}): string {
 	return color;
 }
 
-export async function getIsSmartContract({address, chainId}: {address: TAddress; chainId: number}): Promise<boolean> {
-	const publicClient = getClient(chainId);
-	const bytecode = await publicClient.getBytecode({
-		address
-	});
+export async function getIsSmartContract({
+	address,
+	chainId,
+	checkAllNetworks = false
+}: {
+	address: TAddress;
+	chainId: number;
+	checkAllNetworks?: boolean;
+}): Promise<boolean> {
+	try {
+		const getBytecodeAsync = async (networkId: number): Promise<GetBytecodeReturnType> => {
+			const publicClient = getClient(networkId);
+			return publicClient.getBytecode({address});
+		};
 
-	if (bytecode === undefined) {
+		if (checkAllNetworks) {
+			const promisesArray = supportedNetworks.map(async network => getBytecodeAsync(network.id));
+			return Boolean(await Promise.any(promisesArray));
+		}
+		return Boolean(await getBytecodeAsync(chainId));
+	} catch (error) {
 		return false;
 	}
-	return true;
 }

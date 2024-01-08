@@ -19,7 +19,7 @@ export function SendWarning({isReceiverERC20}: {isReceiverERC20: boolean}): Reac
 
 	useAsyncTrigger(async (): Promise<void> => {
 		const isSmartContract =
-			configuration.receiver.address &&
+			!!configuration.receiver.address &&
 			(await getIsSmartContract({
 				address: configuration.receiver.address,
 				chainId: safeChainID
