@@ -45,9 +45,7 @@ function Token({
 
 	return (
 		<button
-			onClick={() => {
-				onSelect(token);
-			}}
+			onClick={() => onSelect(token)}
 			className={cl(
 				'mb-2 flex flex-row items-center justify-between rounded-lg p-4 w-full',
 				'bg-neutral-200 hover:bg-neutral-300 transition-colors',

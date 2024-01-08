@@ -1,8 +1,6 @@
-import {useState} from 'react';
 import {SmolAddressInput} from 'components/designSystem/SmolAddressInput';
 import {SmolTokenAmountInput} from 'components/designSystem/SmolTokenAmountInput';
-import {useAsyncTrigger} from 'hooks/useAsyncTrigger';
-import {isAddressEqual} from 'viem';
+import {useTokenList} from 'contexts/useTokenList';
 import {IconCircleCheck} from '@icons/IconCircleCheck';
 import {IconCircleCross} from '@icons/IconCircleCross';
 import {IconCross} from '@icons/IconCross';
@@ -15,7 +13,6 @@ import {SendWizard} from './Wizard';
 
 import type {TInputAddressLike} from 'components/designSystem/SmolAddressInput';
 import type {TSendInputElement} from 'components/designSystem/SmolTokenAmountInput';
-import type {TTokenListItem} from 'pages/tokenlistooor';
 import type {ReactElement} from 'react';
 
 function SendTokenRow({input}: {input: TSendInputElement}): ReactElement {
@@ -69,17 +66,9 @@ function SendTokenRow({input}: {input: TSendInputElement}): ReactElement {
 export function Send(): ReactElement {
 	const {configuration, dispatchConfiguration} = useSend();
 
-	const [tokenList, set_tokenList] = useState<TTokenListItem | undefined>(undefined);
+	const {tokenList} = useTokenList();
 
-	const isReceiverERC20 = !!tokenList?.tokens.find(
-		token => configuration.receiver.address && isAddressEqual(token.address, configuration.receiver.address)
-	);
-
-	useAsyncTrigger(async () => {
-		const listRes = await fetch('https://raw.githubusercontent.com/SmolDapp/tokenLists/main/lists/smolAssets.json');
-		const tokenListResponse = (await listRes.json()) as TTokenListItem;
-		set_tokenList(tokenListResponse);
-	}, []);
+	const isReceiverERC20 = Boolean(configuration.receiver.address && tokenList[configuration.receiver.address]);
 
 	const onAddToken = (): void => {
 		dispatchConfiguration({

@@ -5,7 +5,7 @@ import {toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 
 import type {TInputAddressLike} from 'components/designSystem/SmolAddressInput';
 import type {TSendInputElement} from 'components/designSystem/SmolTokenAmountInput';
-import type {Dispatch} from 'react';
+import type {Dispatch, ReactElement} from 'react';
 import type {TOptionalRenderProps} from '@utils/react/optionalRenderProps';
 
 export type TSendConfiguration = {
@@ -45,11 +45,7 @@ const defaultProps: TSend = {
 };
 
 const SendContext = createContext<TSend>(defaultProps);
-export const SendContextApp = ({
-	children
-}: {
-	children: TOptionalRenderProps<TSend, React.ReactElement>;
-}): React.ReactElement => {
+export const SendContextApp = ({children}: {children: TOptionalRenderProps<TSend, ReactElement>}): ReactElement => {
 	const configurationReducer = (state: TSendConfiguration, action: TSendActions): TSendConfiguration => {
 		switch (action.type) {
 			case 'SET_RECEIVER':

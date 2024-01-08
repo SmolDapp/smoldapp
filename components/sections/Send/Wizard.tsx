@@ -280,7 +280,7 @@ export function SendWizard({isReceiverERC20}: {isReceiverERC20: boolean}): React
 
 	return (
 		<>
-			<div className={'w-full max-w-[442px]'}>
+			<div className={'w-full md:max-w-[442px]'}>
 				<Button
 					className={'w-full'}
 					isBusy={migrateStatus.pending}
