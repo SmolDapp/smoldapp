@@ -1,12 +1,14 @@
 'use client';
 
-import React, {createContext, useContext, useEffect, useState} from 'react';
+import React, {createContext, useContext, useEffect, useMemo, useState} from 'react';
 import {CloseCurtainButton} from 'components/designSystem/Curtains/InfoCurtain';
 import {CurtainContent} from 'components/Primitives/Curtain';
 import {useTokensWithBalance} from 'hooks/useTokensWithBalance';
 import * as Dialog from '@radix-ui/react-dialog';
 import {useDeepCompareMemo} from '@react-hookz/web';
 import {toAddress, truncateHex} from '@utils/tools.address';
+import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
+import {IconLoader} from '@yearn-finance/web-lib/icons/IconLoader';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
 import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
 import {ImageWithFallback} from '@common/ImageWithFallback';
@@ -21,12 +23,14 @@ export type TSelectCallback = (item: TToken) => void;
 export type TBalancesCurtainProps = {
 	shouldOpenCurtain: boolean;
 	tokensWithBalance: TToken[];
+	isLoading: boolean;
 	onOpenCurtain: (callbackFn: TSelectCallback) => void;
 	onCloseCurtain: () => void;
 };
 const defaultProps: TBalancesCurtainProps = {
 	shouldOpenCurtain: false,
 	tokensWithBalance: [],
+	isLoading: false,
 	onOpenCurtain: (): void => undefined,
 	onCloseCurtain: (): void => undefined
 };
@@ -78,12 +82,13 @@ function Token({
 function BalancesCurtain(props: {
 	isOpen: boolean;
 	tokensWithBalance: TToken[];
+	isLoading: boolean;
 	onOpenChange: (isOpen: boolean) => void;
 	onSelect: TSelectCallback | undefined;
 	selectedTokenAddresses?: TAddress[];
 }): ReactElement {
 	const [searchValue, set_searchValue] = useState('');
-
+	const {address} = useWeb3();
 	/**************************************************************************
 	 * When the curtain is opened, we want to reset the search value.
 	 * This is to avoid preserving the state accross multiple openings.
@@ -108,6 +113,26 @@ function BalancesCurtain(props: {
 				toAddress(token.address).toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())
 		);
 	}, [searchValue, props.tokensWithBalance]);
+
+	const balancesTextLayout = useMemo(() => {
+		let balancesText = undefined;
+
+		if (filteredTokens.length === 0) {
+			balancesText = 'No tokens found';
+		}
+		if (!address) {
+			balancesText = 'No wallet connected';
+		}
+		if (balancesText) {
+			return (
+				<div>
+					<p className={'text-center text-xs text-neutral-600'}>{balancesText}</p>
+				</div>
+			);
+		}
+
+		return null;
+	}, [address, filteredTokens.length]);
 
 	return (
 		<Dialog.Root
@@ -137,26 +162,22 @@ function BalancesCurtain(props: {
 							value={searchValue}
 							onChange={e => set_searchValue(e.target.value)}
 						/>
-						<div className={'scrollable mb-8 flex flex-col pb-2'}>
-							{filteredTokens.length === 0 ? (
-								<div>
-									<p className={'text-center text-xs text-neutral-600'}>{'Token not found'}</p>
-								</div>
-							) : (
-								<>
-									{filteredTokens.map(token => (
-										<Token
-											key={token.address}
-											token={token}
-											isDisabled={props.selectedTokenAddresses?.includes(token.address) || false}
-											onSelect={selected => {
-												props.onSelect?.(selected);
-												props.onOpenChange(false);
-											}}
-										/>
-									))}
-								</>
-							)}
+						<div className={'scrollable mb-8 flex flex-col items-center pb-2'}>
+							{balancesTextLayout}
+
+							{address &&
+								filteredTokens.map(token => (
+									<Token
+										key={token.address}
+										token={token}
+										isDisabled={props.selectedTokenAddresses?.includes(token.address) || false}
+										onSelect={selected => {
+											props.onSelect?.(selected);
+											props.onOpenChange(false);
+										}}
+									/>
+								))}
+							{props.isLoading && <IconLoader className={'mt-2 h-4 w-4 animate-spin text-neutral-900'} />}
 						</div>
 					</div>
 				</aside>
@@ -182,7 +203,7 @@ export const BalancesCurtainContextApp = ({
 	const [shouldOpenCurtain, set_shouldOpenCurtain] = useState(false);
 	const [currentCallbackFunction, set_currentCallbackFunction] = useState<TSelectCallback | undefined>(undefined);
 
-	const tokensWithBalance = useTokensWithBalance();
+	const {tokensWithBalance, isLoading} = useTokensWithBalance();
 
 	/**************************************************************************
 	 * Context value that is passed to all children of this component.
@@ -191,13 +212,14 @@ export const BalancesCurtainContextApp = ({
 		(): TBalancesCurtainProps => ({
 			shouldOpenCurtain,
 			tokensWithBalance,
+			isLoading,
 			onOpenCurtain: (callbackFn): void => {
 				set_currentCallbackFunction(() => callbackFn);
 				set_shouldOpenCurtain(true);
 			},
 			onCloseCurtain: (): void => set_shouldOpenCurtain(false)
 		}),
-		[shouldOpenCurtain, tokensWithBalance]
+		[isLoading, shouldOpenCurtain, tokensWithBalance]
 	);
 
 	return (
@@ -206,6 +228,7 @@ export const BalancesCurtainContextApp = ({
 			<BalancesCurtain
 				isOpen={shouldOpenCurtain}
 				tokensWithBalance={tokensWithBalance}
+				isLoading={isLoading}
 				selectedTokenAddresses={selectedTokenAddresses}
 				onOpenChange={set_shouldOpenCurtain}
 				onSelect={currentCallbackFunction}

@@ -46,7 +46,7 @@ function AmountToSendInput(props: {
 
 const Disperse = memo(function Disperse(): ReactElement {
 	const {configuration, dispatchConfiguration} = useDisperse();
-	const tokensWithBalance = useTokensWithBalance();
+	const {tokensWithBalance} = useTokensWithBalance();
 
 	const checkAlreadyExists = useCallback(
 		(UUID: string, address: TAddress): boolean => {
