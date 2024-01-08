@@ -5,9 +5,11 @@ import {transferERC20, transferEther} from 'utils/actions';
 import {getTransferTransaction} from 'utils/tools.gnosis';
 import {isAddressEqual} from 'viem';
 import {useSafeAppsSDK} from '@gnosis.pm/safe-apps-react-sdk';
+import {notifySend} from '@utils/notifier';
 import {isNullAddress, isZeroAddress, toAddress} from '@utils/tools.address';
 import {toast} from '@yearn-finance/web-lib/components/yToast';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
+import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {ETH_TOKEN_ADDRESS, ZERO_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
 import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
@@ -27,8 +29,9 @@ import type {TModify, TToken} from '@utils/types/types';
 type TInputWithToken = TModify<TSendInputElement, {token: TToken}>;
 
 export function SendWizard({isReceiverERC20}: {isReceiverERC20: boolean}): ReactElement {
-	const {chainID: safeChainID} = useWeb3();
-	//const {safeChainID} = useChainID();
+	const {safeChainID} = useChainID();
+	const {address} = useWeb3();
+
 	const {configuration, dispatchConfiguration} = useSend();
 	const {balances, refresh, balancesNonce} = useWallet();
 	const {isWalletSafe, provider} = useWeb3();
@@ -170,14 +173,14 @@ export function SendWizard({isReceiverERC20}: {isReceiverERC20: boolean}): React
 					type: 'success',
 					content: 'Your transaction has been created! You can now sign and execute it!'
 				});
-				// notifyMigrate({
-				// 	chainID: safeChainID,
-				// 	to: toAddress(configuration.receiver?.address),
-				// 	tokensMigrated: migratedTokens,
-				// 	hashes: migratedTokens.map((): Hex => safeTxHash as Hex),
-				// 	type: 'SAFE',
-				// 	from: toAddress(address)
-				// });
+				notifySend({
+					chainID: safeChainID,
+					to: toAddress(configuration.receiver?.address),
+					tokensMigrated: migratedTokens,
+					hashes: migratedTokens.map((): Hex => safeTxHash as Hex),
+					type: 'SAFE',
+					from: toAddress(address)
+				});
 			} catch (error) {
 				set_migrateStatus({...defaultTxStatus, success: false});
 				toast({
@@ -186,7 +189,7 @@ export function SendWizard({isReceiverERC20}: {isReceiverERC20: boolean}): React
 				});
 			}
 		},
-		[configuration.receiver?.address, sdk.txs]
+		[address, configuration.receiver?.address, safeChainID, sdk.txs]
 	);
 
 	/**********************************************************************************************
@@ -247,17 +250,20 @@ export function SendWizard({isReceiverERC20}: {isReceiverERC20: boolean}): React
 			dispatchConfiguration({type: 'RESET', payload: undefined});
 		}
 
-		// notifyMigrate({
-		// 	chainID: safeChainID,
-		// 	to: toAddress(configuration.receiver?.address),
-		// 	tokensMigrated: migratedTokens,
-		// 	hashes: hashMessage,
-		// 	type: 'EOA',
-		// 	from: toAddress(address)
-		// });
+		notifySend({
+			chainID: safeChainID,
+			to: toAddress(configuration.receiver?.address),
+			tokensMigrated: migratedTokens,
+			hashes: hashMessage,
+			type: 'EOA',
+			from: toAddress(address)
+		});
 	}, [
 		configuration.inputs,
+		configuration.receiver?.address,
 		isWalletSafe,
+		safeChainID,
+		address,
 		onMigrateSelectedForGnosis,
 		onMigrateERC20,
 		onMigrateETH,

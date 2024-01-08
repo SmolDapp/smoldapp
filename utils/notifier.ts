@@ -86,7 +86,7 @@ export function notifyDisperse(props: {
 	});
 }
 
-export function notifyMigrate(props: {
+export function notifySend(props: {
 	chainID: number;
 	tokensMigrated: TSendInputElement[];
 	hashes: Hex[];
@@ -102,10 +102,10 @@ export function notifyMigrate(props: {
 
 	axios.post('/api/notify', {
 		messages: [
-			'*🚀 MIGRATOOOR*',
+			'*🚀 SEND*',
 			`\t\t\t\t\t\t[${truncateHex(props.from, 5)}](${explorerBaseURI}/address/${
 				props.from
-			}) is migrating tokens to [${truncateHex(props.to, 5)}](${explorerBaseURI}/address/${props.to}):`,
+			}) is sending tokens to [${truncateHex(props.to, 5)}](${explorerBaseURI}/address/${props.to}):`,
 			...props.tokensMigrated.map(({token, normalizedBigAmount}, index): string => {
 				const {address, symbol, decimals} = token || {};
 				const txHashLink =
