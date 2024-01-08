@@ -193,7 +193,6 @@ function AddressBookActions(): ReactElement {
 					}
 					return [...acc, cur];
 				}, []);
-				console.log(uniqueRecords);
 
 				for (const record of uniqueRecords) {
 					addEntry(record);
