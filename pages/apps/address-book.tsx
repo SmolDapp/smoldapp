@@ -253,10 +253,11 @@ function AddressBookActions(): ReactElement {
 		const clonedEntries = structuredClone(entries);
 		//Remove id and ens from the entries
 		const entriesWithoutId = clonedEntries.map(entry => {
-			const {id, ens, slugifiedLabel, ...rest} = entry;
+			const {id, ens, slugifiedLabel, numberOfInteractions, ...rest} = entry;
 			id;
 			ens;
 			slugifiedLabel;
+			numberOfInteractions;
 			return rest;
 		});
 		const csv = Papa.unparse(entriesWithoutId, {header: true});
