@@ -154,55 +154,26 @@ function AddressBookActions(): ReactElement {
 			}
 			const {result} = event.target;
 			const parsedCSV = Papa.parse(result, {header: true});
+			let records: TAddressBookEntry[] = [];
 
 			// If we are working with a safe file, we should get 3 columns.
 			const isProbablySafeFile = parsedCSV.meta.fields.length === 3;
 			if (isProbablySafeFile) {
 				const [addressLike, name, chainID] = parsedCSV.meta.fields;
-				const records = parsedCSV.data.map((item: unknown[]) => {
+				records = parsedCSV.data.map((item: unknown[]) => {
 					return {
 						address: item[addressLike] as TAddress,
 						label: item[name] as string,
 						chains: [item[chainID]] as number[]
 					};
 				});
-
-				// On theses records, we might have the same address multiple times.
-				// If that's the case, we want to merge the chains and only keep one entry.
-				const mergedRecords = records.reduce((acc: TAddressBookEntry[], cur: TAddressBookEntry) => {
-					const existingRecord = acc.find(item => item.address === cur.address);
-					if (existingRecord) {
-						existingRecord.chains = [...existingRecord.chains, ...cur.chains];
-						return acc;
-					}
-					return [...acc, cur];
-				}, []);
-
-				// The name should always be unique. We need to check if we have duplicates.
-				// If that's the case, we need to add a slice of the address to the name, but
-				// we still keep both entries.
-				const uniqueRecords = mergedRecords.reduce((acc: TAddressBookEntry[], cur: TAddressBookEntry) => {
-					const existingRecord = acc.find(item => item.label === cur.label);
-					if (existingRecord) {
-						const existingSlice = toAddress(existingRecord.address).slice(0, 6);
-						existingRecord.label = `${existingRecord.label} (${existingSlice})`;
-
-						const curSlice = toAddress(cur.address).slice(0, 6);
-						cur.label = `${cur.label} (${curSlice})`;
-						return [...acc, cur];
-					}
-					return [...acc, cur];
-				}, []);
-
-				for (const record of uniqueRecords) {
-					addEntry(record);
-				}
 			}
 
+			// If we are working with a smol file, we should get 4 columns.
 			const isProbablySmolFile = parsedCSV.meta.fields.length === 4;
 			if (isProbablySmolFile) {
 				const [addressLike, name, chains, isFavorite] = parsedCSV.meta.fields;
-				const records = parsedCSV.data.map((item: unknown[]) => {
+				records = parsedCSV.data.map((item: unknown[]) => {
 					const chainIDs = ((item[chains] as string) || '').split(',').map(chain => Number(chain));
 					const uniqueChainIDs = [...new Set(chainIDs)];
 					return {
@@ -212,37 +183,37 @@ function AddressBookActions(): ReactElement {
 						isFavorite: Boolean(item[isFavorite] as boolean)
 					};
 				});
+			}
 
-				// On theses records, we might have the same address multiple times.
-				// If that's the case, we want to merge the chains and only keep one entry.
-				const mergedRecords = records.reduce((acc: TAddressBookEntry[], cur: TAddressBookEntry) => {
-					const existingRecord = acc.find(item => item.address === cur.address);
-					if (existingRecord) {
-						existingRecord.chains = [...existingRecord.chains, ...cur.chains];
-						return acc;
-					}
-					return [...acc, cur];
-				}, []);
-
-				// The name should always be unique. We need to check if we have duplicates.
-				// If that's the case, we need to add a slice of the address to the name, but
-				// we still keep both entries.
-				const uniqueRecords = mergedRecords.reduce((acc: TAddressBookEntry[], cur: TAddressBookEntry) => {
-					const existingRecord = acc.find(item => item.label === cur.label);
-					if (existingRecord) {
-						const existingSlice = toAddress(existingRecord.address).slice(0, 6);
-						existingRecord.label = `${existingRecord.label} (${existingSlice})`;
-
-						const curSlice = toAddress(cur.address).slice(0, 6);
-						cur.label = `${cur.label} (${curSlice})`;
-						return [...acc, cur];
-					}
-					return [...acc, cur];
-				}, []);
-
-				for (const record of uniqueRecords) {
-					addEntry(record);
+			// On theses records, we might have the same address multiple times.
+			// If that's the case, we want to merge the chains and only keep one entry.
+			const mergedRecords = records.reduce((acc: TAddressBookEntry[], cur: TAddressBookEntry) => {
+				const existingRecord = acc.find(item => item.address === cur.address);
+				if (existingRecord) {
+					existingRecord.chains = [...existingRecord.chains, ...cur.chains];
+					return acc;
 				}
+				return [...acc, cur];
+			}, []);
+
+			// The name should always be unique. We need to check if we have duplicates.
+			// If that's the case, we need to add a slice of the address to the name, but
+			// we still keep both entries.
+			const uniqueRecords = mergedRecords.reduce((acc: TAddressBookEntry[], cur: TAddressBookEntry) => {
+				const existingRecord = acc.find(item => item.label === cur.label);
+				if (existingRecord) {
+					const existingSlice = toAddress(existingRecord.address).slice(0, 6);
+					existingRecord.label = `${existingRecord.label} (${existingSlice})`;
+
+					const curSlice = toAddress(cur.address).slice(0, 6);
+					cur.label = `${cur.label} (${curSlice})`;
+					return [...acc, cur];
+				}
+				return [...acc, cur];
+			}, []);
+
+			for (const record of uniqueRecords) {
+				addEntry(record);
 			}
 		};
 		reader.readAsBinaryString(file);
