@@ -18,6 +18,22 @@ import type {TAddressBookEntry} from 'contexts/useAddressBook';
 import type {MouseEventHandler, ReactElement} from 'react';
 import type {TAddress} from '@utils/tools.address';
 
+function pickTextColorBasedOnBgColorAdvanced(bgColor: string, lightColor: string, darkColor: string): string {
+	const color = bgColor.charAt(0) === '#' ? bgColor.substring(1, 7) : bgColor;
+	const r = parseInt(color.substring(0, 2), 16); // hexToR
+	const g = parseInt(color.substring(2, 4), 16); // hexToG
+	const b = parseInt(color.substring(4, 6), 16); // hexToB
+	const uicolors = [r / 255, g / 255, b / 255];
+	const c = uicolors.map(col => {
+		if (col <= 0.03928) {
+			return col / 12.92;
+		}
+		return Math.pow((col + 0.055) / 1.055, 2.4);
+	});
+	const L = 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+	return L > 0.179 ? darkColor : lightColor;
+}
+
 function EntryBookEntryFavorite(props: {
 	isFavorite: boolean;
 	onClick: MouseEventHandler<HTMLButtonElement>;
@@ -51,6 +67,7 @@ export function AddressBookEntryAvatar(props: {
 	src: string | null | undefined;
 	address: TAddress | undefined;
 	isLoading: boolean;
+	label?: string;
 	sizeClassname?: string;
 }): ReactElement {
 	const [imageSrc, set_imageSrc] = useState(props.src);
@@ -69,11 +86,18 @@ export function AddressBookEntryAvatar(props: {
 		return <div className={cl('rounded-full bg-neutral-200', sizeClassname)} />;
 	}
 	if (!hasAvatar || !imageSrc) {
+		const firstLetterOfLabel = props.label?.substring(0, 1);
+		const firstCharOfAddress = (props.address || '0x0')?.substring(2, 3);
 		return (
 			<div
 				style={{background: addressColor}}
-				className={cl('rounded-full', sizeClassname)}
-			/>
+				className={cl('rounded-full flex justify-center items-center', sizeClassname)}>
+				<b
+					className={'capitalize'}
+					style={{color: pickTextColorBasedOnBgColorAdvanced(addressColor, '#FFFFFF', '#000000')}}>
+					{firstLetterOfLabel || firstCharOfAddress}
+				</b>
+			</div>
 		);
 	}
 	return (
@@ -183,6 +207,7 @@ export function AddressBookEntry(props: {
 				<AddressBookEntryAvatar
 					isLoading={isLoadingAvatar}
 					address={toAddress(props.entry.address)}
+					label={props.entry.label}
 					src={avatar}
 					sizeClassname={'h-10 w-10 min-w-[40px]'}
 				/>

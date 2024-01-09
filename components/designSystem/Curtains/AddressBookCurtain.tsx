@@ -39,6 +39,7 @@ function EntryAvatarWrapper(props: {address: TAddress}): ReactElement {
 		<AddressBookEntryAvatar
 			isLoading={isLoadingAvatar}
 			address={toAddress(props.address)}
+			label={ensName || undefined}
 			src={avatar}
 			sizeClassname={'h-32 w-32 min-w-[128px]'}
 		/>
