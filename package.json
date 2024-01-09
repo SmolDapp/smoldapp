@@ -58,7 +58,8 @@
 		"uuid": "^9.0.1",
 		"viem": "^1.15.4",
 		"wagmi": "^1.4.3",
-		"web3-eth-abi": "^1.10.0"
+		"web3-eth-abi": "^1.10.0",
+		"sharp": "^0.33.1"
 	},
 	"devDependencies": {
 		"@commitlint/cli": "^18.4.1",
@@ -92,7 +93,6 @@
 		"postcss-nesting": "^12.0.1",
 		"prettier": "^3.0.3",
 		"sass": "^1.69.5",
-		"sharp": "^0.32.6",
 		"stylelint": "^15.11.0",
 		"stylelint-config-standard": "^34.0.0",
 		"ts-loader": "^9.5.0",
