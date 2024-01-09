@@ -72,7 +72,7 @@ export function AddressBookEntryAvatar(props: {
 	if (!hasAvatar || !imageSrc) {
 		const data = new Identicon(toAddress(props.address), {
 			background: [255, 255, 255, 0],
-			size: 40,
+			size: 128,
 			margin: 0.2
 		}).toString();
 		return (
@@ -84,8 +84,8 @@ export function AddressBookEntryAvatar(props: {
 				<Image
 					src={`data:image/png;base64,${data}`}
 					className={'h-full w-full rounded-full'}
-					width={40}
-					height={40}
+					width={128}
+					height={128}
 					alt={''}
 				/>
 			</div>

@@ -7,8 +7,10 @@ import {Button} from 'components/Primitives/Button';
 import {CurtainContent} from 'components/Primitives/Curtain';
 import {TextInput} from 'components/Primitives/TextInput';
 import {type TAddressBookEntry, useAddressBook} from 'contexts/useAddressBook';
+import {useAsyncTrigger} from 'hooks/useAsyncTrigger';
 import {useEnsAvatar, useEnsName} from 'wagmi';
 import {IconEdit} from '@icons/IconEdit';
+import {IconGears} from '@icons/IconGears';
 import {IconHeart, IconHeartFilled} from '@icons/IconHeart';
 import {IconTrash} from '@icons/IconTrash';
 import * as Dialog from '@radix-ui/react-dialog';
@@ -49,9 +51,14 @@ function EntryAvatarWrapper(props: {address: TAddress}): ReactElement {
 function FavoriteToggle(props: {isFavorite: boolean; onClick: () => void}): ReactElement {
 	return (
 		<button
+			tabIndex={2}
 			role={'switch'}
-			onClick={props.onClick}
-			className={'withRing -mr-1 -mt-1 rounded p-1'}>
+			onClick={e => {
+				e.stopPropagation();
+				e.preventDefault();
+				props.onClick();
+			}}
+			className={cl('rounded p-1', 'h-12 w-12 rounded-lg bg-neutral-300', 'flex justify-center items-center')}>
 			<div className={'group relative flex h-4 w-4 items-center justify-center'}>
 				<IconHeart
 					className={cl(
@@ -75,6 +82,7 @@ function FavoriteToggle(props: {isFavorite: boolean; onClick: () => void}): Reac
 function ActionButtons(props: {
 	selectedEntry: TAddressBookEntry;
 	dispatch: Dispatch<TAddressBookEntryReducer>;
+	isEditMode: boolean;
 	onOpenChange: (props: {isOpen: boolean; isEditing: boolean}) => void;
 	onEdit: Dispatch<SetStateAction<boolean>>;
 }): ReactElement {
@@ -85,36 +93,51 @@ function ActionButtons(props: {
 			deleteEntry(props.selectedEntry.address);
 		}
 		props.onOpenChange({isOpen: false, isEditing: false});
-	}, [deleteEntry, props]);
+	}, [props, deleteEntry]);
 
 	return (
 		<div className={'flex gap-2'}>
-			<FavoriteToggle
-				isFavorite={Boolean(props.selectedEntry.isFavorite)}
-				onClick={() => props.dispatch({type: 'SET_IS_FAVORITE', payload: !props.selectedEntry.isFavorite})}
-			/>
-
 			<button
-				className={'withRing -mr-1 -mt-1 rounded p-1'}
+				className={'withRing -m-1 rounded p-1'}
 				onClick={() => props.onEdit(isEditMode => !isEditMode)}>
-				<IconEdit className={'h-4 w-4 text-neutral-600 transition-colors hover:text-neutral-900'} />
+				<IconEdit
+					className={cl(
+						'h-4 w-4 transition-colors hover:text-neutral-900',
+						props.isEditMode ? 'text-neutral-900' : 'text-neutral-600'
+					)}
+				/>
 			</button>
 
-			<button
-				className={'withRing -mr-1 -mt-1 rounded p-1'}
-				onClick={onDelete}>
-				<IconTrash className={'h-4 w-4 text-neutral-600 transition-colors hover:text-neutral-900'} />
-			</button>
+			{props.isEditMode ? (
+				<div className={'h-4 w-4'}>
+					<NetworkDropdownSelector
+						disabled={!props.isEditMode}
+						value={props.selectedEntry.chains}
+						onChange={chains => {
+							props.dispatch({type: 'SET_CHAINS', payload: chains});
+						}}>
+						<IconGears
+							className={'mb-0.5 h-4 w-4 text-neutral-600 transition-colors hover:text-neutral-900'}
+						/>
+					</NetworkDropdownSelector>
+				</div>
+			) : (
+				<button
+					className={'withRing -m-1 rounded p-1'}
+					onClick={onDelete}>
+					<IconTrash className={'h-4 w-4 text-neutral-600 transition-colors hover:text-neutral-900'} />
+				</button>
+			)}
 		</div>
 	);
 }
 
 function NameInput(props: {
 	selectedEntry: TAddressBookEntry;
-	dispatch: Dispatch<TAddressBookEntryReducer>;
-	onEdit: (shouldEdit: boolean) => void;
 	isEditMode: boolean;
-	onChange: VoidFunction;
+	onEdit: (shouldEdit: boolean) => void;
+	onChange: (value: string) => void;
+	onRefresh?: VoidFunction;
 }): ReactElement {
 	const {getCachedEntry} = useAddressBook();
 	const labelRef = useRef<HTMLDivElement>(null);
@@ -123,14 +146,15 @@ function NameInput(props: {
 
 	useEffect(() => {
 		const entry = getCachedEntry({label: selectedEntry.label});
+		const currentCustomValidity = inputRef.current?.validationMessage;
 		if (entry !== undefined && entry.id !== selectedEntry.id) {
 			inputRef.current?.setCustomValidity('This name is already used in your address book');
-			onChange();
-		} else {
+			props.onRefresh?.();
+		} else if (currentCustomValidity !== '') {
 			inputRef.current?.setCustomValidity('');
-			onChange();
+			props.onRefresh?.();
 		}
-	}, [selectedEntry.label, getCachedEntry, selectedEntry.id, onChange]);
+	}, [selectedEntry.label, getCachedEntry, selectedEntry.id, onChange, props]);
 
 	const getErrorMessage = useCallback((): string | undefined => {
 		if (selectedEntry.label.startsWith('0x')) {
@@ -186,7 +210,7 @@ function NameInput(props: {
 					selectedEntry.label.length > 22
 				}
 				value={selectedEntry.label}
-				onChange={label => props.dispatch({type: 'SET_LABEL', payload: label})}
+				onChange={onChange}
 			/>
 		</div>
 	);
@@ -194,9 +218,8 @@ function NameInput(props: {
 
 function AddressInput(props: {
 	selectedEntry: TAddressBookEntry;
-	dispatch: Dispatch<TAddressBookEntryReducer>;
-	onEdit: (shouldEdit: boolean) => void;
 	isEditMode: boolean;
+	onEdit: (shouldEdit: boolean) => void;
 	onChangeAddressLike: (addressLike: TInputAddressLike) => void;
 	addressLike: TInputAddressLike;
 	onChange: VoidFunction;
@@ -220,14 +243,15 @@ function AddressInput(props: {
 
 	useEffect(() => {
 		const entry = getCachedEntry({address: props.addressLike.address});
+		const currentCustomValidity = inputRef.current?.validationMessage;
 		if (entry !== undefined && entry.id !== props.selectedEntry.id) {
 			inputRef.current?.setCustomValidity('This address is already in your address book');
 			onChange();
-		} else if (inputRef.current?.validationMessage === 'This address is already in your address book') {
+		} else if (currentCustomValidity !== '') {
 			inputRef.current?.setCustomValidity('');
 			onChange();
 		}
-	}, [props.addressLike, getCachedEntry, props.selectedEntry.id, onChange]);
+	}, [props.addressLike, getCachedEntry, props.selectedEntry.id, onChange, props]);
 
 	const getErrorMessage = useCallback((): string | undefined => {
 		if (props.addressLike.isValid === 'undetermined') {
@@ -267,7 +291,6 @@ function AddressInput(props: {
 				inputRef={inputRef}
 				disabled={!props.isEditMode}
 				required
-				tabIndex={0}
 				value={props.addressLike}
 				onChange={v => {
 					onChange();
@@ -275,27 +298,6 @@ function AddressInput(props: {
 				}}
 			/>
 		</div>
-	);
-}
-
-function ChainsInput(props: {
-	selectedEntry: TAddressBookEntry;
-	dispatch: Dispatch<TAddressBookEntryReducer>;
-	onEdit: (shouldEdit: boolean) => void;
-	isEditMode: boolean;
-}): ReactElement {
-	//Note: Cannot dynamic open the modal without heavy adaptation
-	return (
-		<label>
-			<small className={'pl-1'}>{'Chains'}</small>
-			<NetworkDropdownSelector
-				disabled={!props.isEditMode}
-				value={props.selectedEntry.chains}
-				onChange={chains => {
-					props.dispatch({type: 'SET_CHAINS', payload: chains});
-				}}
-			/>
-		</label>
 	);
 }
 
@@ -309,6 +311,7 @@ export function AddressBookCurtain(props: {
 	const router = useRouter();
 	const {updateEntry} = useAddressBook();
 	const formRef = useRef<HTMLFormElement>(null);
+	const [currentEntry, set_currentEntry] = useState<TAddressBookEntry>(props.selectedEntry);
 	const [, set_nonce] = useState<number>(0);
 	const [isEditMode, set_isEditMode] = useState<boolean>(props.isEditing);
 	const [addressLike, set_addressLike] = useState<TInputAddressLike>({
@@ -322,7 +325,6 @@ export function AddressBookCurtain(props: {
 		source: 'defaultValue'
 	});
 
-	const onFormUpdate = useCallback(() => set_nonce(n => n + 1), []);
 	const onFormSubmit = useCallback(
 		async (event: React.FormEvent<HTMLFormElement>) => {
 			event.preventDefault();
@@ -335,22 +337,37 @@ export function AddressBookCurtain(props: {
 				});
 			}
 			if (props.selectedEntry.id === undefined) {
-				updateEntry({...props.selectedEntry, address: addressLike.address});
+				updateEntry({...currentEntry, address: addressLike.address});
 				props.onOpenChange({isOpen: false, isEditing: false});
 			} else {
-				updateEntry({...props.selectedEntry, address: addressLike.address});
+				updateEntry({...currentEntry, address: addressLike.address});
 				set_isEditMode(false);
 				props.onOpenChange({isOpen: true, isEditing: false});
 			}
 			return;
 		},
-		[addressLike, isEditMode, props, router, updateEntry]
+		[isEditMode, props, addressLike.address, router, updateEntry, currentEntry]
 	);
 
+	const onResetAddressLike = useAsyncTrigger(async () => {
+		set_addressLike({
+			address: props.selectedEntry.address,
+			label: safeAddress({
+				address: props.selectedEntry.address,
+				ens: props.selectedEntry.ens,
+				addrOverride: props.selectedEntry.address?.substring(0, 6)
+			}),
+			isValid: isAddress(props.selectedEntry.address) ? true : 'undetermined',
+			source: 'defaultValue'
+		});
+	}, [props.selectedEntry.address, props.selectedEntry.ens]);
+
+	useEffect(() => set_currentEntry(props.selectedEntry), [props.selectedEntry]);
 	useEffect(() => set_isEditMode(props.isEditing), [props.isEditing]);
 
 	return (
 		<Dialog.Root
+			key={`${props.selectedEntry.id}`}
 			open={props.isOpen}
 			onOpenChange={isOpen => {
 				if (!isOpen) {
@@ -370,48 +387,85 @@ export function AddressBookCurtain(props: {
 					<div className={'mb-4 flex flex-row items-center justify-between'}>
 						<ActionButtons
 							{...props}
+							isEditMode={isEditMode}
 							onEdit={set_isEditMode}
 						/>
 						<CloseCurtainButton />
 					</div>
 
 					<div className={'flex items-center justify-center pb-6'}>
-						<EntryAvatarWrapper address={addressLike.address || toAddress(props.selectedEntry.address)} />
+						<EntryAvatarWrapper address={addressLike.address || toAddress(currentEntry.address)} />
 					</div>
 
 					<form
 						ref={formRef}
 						onSubmit={onFormSubmit}
-						className={'flex h-full flex-col gap-4'}>
-						<NameInput
-							{...props}
-							onChange={onFormUpdate}
-							onEdit={set_isEditMode}
-							isEditMode={isEditMode}
-						/>
+						className={'flex h-full flex-col gap-6'}>
+						<div className={'flex flex-row items-center space-x-0'}>
+							<div className={'w-full'}>
+								<NameInput
+									{...props}
+									selectedEntry={currentEntry}
+									isEditMode={isEditMode}
+									onRefresh={() => set_nonce(n => n + 1)}
+									onEdit={set_isEditMode}
+									onChange={(label: string) => {
+										set_currentEntry({...currentEntry, label});
+										set_nonce(n => n + 1);
+									}}
+								/>
+							</div>
+							<div className={'pl-2'}>
+								<small className={'pl-1'}>&nbsp;</small>
+								<div>
+									<FavoriteToggle
+										isFavorite={Boolean(currentEntry.isFavorite)}
+										onClick={() =>
+											props.dispatch({
+												type: 'SET_IS_FAVORITE',
+												payload: !currentEntry.isFavorite
+											})
+										}
+									/>
+								</div>
+							</div>
+						</div>
 
 						<AddressInput
 							{...props}
-							onChange={onFormUpdate}
+							selectedEntry={currentEntry}
 							addressLike={addressLike}
+							isEditMode={isEditMode}
+							onEdit={set_isEditMode}
+							onChange={() => set_nonce(n => n + 1)}
 							onChangeAddressLike={set_addressLike}
-							onEdit={set_isEditMode}
-							isEditMode={isEditMode}
 						/>
 
-						<ChainsInput
-							{...props}
-							onEdit={set_isEditMode}
-							isEditMode={isEditMode}
-						/>
-
-						<Button
-							tabIndex={0}
-							type={'submit'}
-							isDisabled={!(formRef.current?.checkValidity() ?? true)}
-							className={'!h-10 w-1/2'}>
-							{isEditMode ? (props.selectedEntry.id === undefined ? 'Add' : 'Update') : 'Send'}
-						</Button>
+						<div className={'flex flex-row items-center gap-2'}>
+							<Button
+								tabIndex={0}
+								type={'submit'}
+								isDisabled={!(formRef.current?.checkValidity() ?? true)}
+								className={'!h-10 w-1/2 font-medium'}>
+								{isEditMode ? (currentEntry.id === undefined ? 'Add' : 'Save') : 'Send'}
+							</Button>
+							{isEditMode ? (
+								<Button
+									onClick={async () => {
+										if (props.selectedEntry) {
+											set_currentEntry(props.selectedEntry);
+											onResetAddressLike();
+											set_nonce(n => n + 1);
+											set_isEditMode(false);
+										}
+									}}
+									type={'button'}
+									variant={'light'}
+									className={'!h-10 w-1/2'}>
+									{'Cancel'}
+								</Button>
+							) : null}
+						</div>
 					</form>
 				</aside>
 			</CurtainContent>

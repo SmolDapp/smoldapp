@@ -160,6 +160,7 @@ export const WithAddressBook = ({children}: {children: React.ReactElement}): Rea
 					const mergedChains = [...(existingEntry.chains || []), ...(entry.chains || [])];
 					const mergedTags = [...(existingEntry.tags || []), ...(entry.tags || [])];
 					const mergedFields = {...existingEntry, ...entry, chains: mergedChains, tags: mergedTags};
+					mergedFields.chains = [...new Set(mergedFields.chains)].filter(chain => chain !== 0);
 					update({...mergedFields, slugifiedLabel: slugify(mergedFields.label)});
 					set_entryNonce(nonce => nonce + 1);
 				} else {
@@ -192,6 +193,7 @@ export const WithAddressBook = ({children}: {children: React.ReactElement}): Rea
 					const mergedChains = [...(entry.chains || []), ...(existingEntry.chains || [])];
 					const mergedTags = [...(entry.tags || []), ...(existingEntry.tags || [])];
 					const mergedFields = {...entry, ...existingEntry, chains: mergedChains, tags: mergedTags};
+					mergedFields.chains = [...new Set(mergedFields.chains)].filter(chain => chain !== 0);
 					update({...mergedFields, slugifiedLabel: slugify(mergedFields.label)});
 					set_entryNonce(nonce => nonce + 1);
 				} else {

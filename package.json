@@ -21,7 +21,7 @@
 		"@headlessui/react": "^1.7.17",
 		"@popperjs/core": "^2.11.8",
 		"@radix-ui/react-dialog": "^1.0.5",
-		"@radix-ui/react-dropdown-menu": "2.0.5",
+		"@radix-ui/react-dropdown-menu": "^2.0.6",
 		"@radix-ui/react-popover": "^1.0.7",
 		"@radix-ui/react-select": "^2.0.0",
 		"@radix-ui/react-tooltip": "^1.0.7",
@@ -30,7 +30,7 @@
 		"@tailwindcss/forms": "^0.5.6",
 		"@vercel/analytics": "^1.1.0",
 		"@wagmi/core": "^1.4.3",
-		"@yearn-finance/web-lib": "^3.0.83",
+		"@yearn-finance/web-lib": "^3.0.85",
 		"axios": "^1.5.1",
 		"cmdk": "^0.2.0",
 		"date-fns": "^2.30.0",
@@ -50,6 +50,7 @@
 		"react-dom": "^18.2.0",
 		"react-dom-confetti": "^0.2.0",
 		"react-popper": "^2.3.0",
+		"sharp": "^0.33.1",
 		"swr": "^2.2.4",
 		"tailwindcss": "^3.3.3",
 		"tailwindcss-animate": "^1.0.7",
@@ -58,8 +59,7 @@
 		"uuid": "^9.0.1",
 		"viem": "^1.15.4",
 		"wagmi": "^1.4.3",
-		"web3-eth-abi": "^1.10.0",
-		"sharp": "^0.33.1"
+		"web3-eth-abi": "^1.10.0"
 	},
 	"devDependencies": {
 		"@commitlint/cli": "^18.4.1",
