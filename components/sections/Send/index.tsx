@@ -8,7 +8,7 @@ import {IconSpinner} from '@icons/IconSpinner';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
 
 import {SendWarning} from './SendWarning';
-import {useSend} from './useSend';
+import {useSendFlow} from './useSendFlow';
 import {SendWizard} from './Wizard';
 
 import type {TInputAddressLike} from 'components/designSystem/SmolAddressInput';
@@ -16,7 +16,7 @@ import type {TSendInputElement} from 'components/designSystem/SmolTokenAmountInp
 import type {ReactElement} from 'react';
 
 function SendTokenRow({input}: {input: TSendInputElement}): ReactElement {
-	const {configuration, dispatchConfiguration} = useSend();
+	const {configuration, dispatchConfiguration} = useSendFlow();
 
 	const onSetValue = (value: Partial<TSendInputElement>): void => {
 		dispatchConfiguration({type: 'SET_VALUE', payload: {...value, UUID: input.UUID}});
@@ -64,7 +64,7 @@ function SendTokenRow({input}: {input: TSendInputElement}): ReactElement {
 }
 
 export function Send(): ReactElement {
-	const {configuration, dispatchConfiguration} = useSend();
+	const {configuration, dispatchConfiguration} = useSendFlow();
 
 	const {tokenList} = useTokenList();
 

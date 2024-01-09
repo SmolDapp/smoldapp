@@ -16,7 +16,7 @@ import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 import {defaultTxStatus, type TTxResponse} from '@yearn-finance/web-lib/utils/web3/transaction';
 import {SuccessModal} from '@common/ConfirmationModal';
 
-import {useSend} from './useSend';
+import {useSendFlow} from './useSendFlow';
 
 import type {TSendInputElement} from 'components/designSystem/SmolTokenAmountInput';
 import type {ReactElement} from 'react';
@@ -32,7 +32,7 @@ export function SendWizard({isReceiverERC20}: {isReceiverERC20: boolean}): React
 	const {safeChainID} = useChainID();
 	const {address} = useWeb3();
 
-	const {configuration, dispatchConfiguration} = useSend();
+	const {configuration, dispatchConfiguration} = useSendFlow();
 	const {balances, refresh, balancesNonce} = useWallet();
 	const {isWalletSafe, provider} = useWeb3();
 	const {sdk} = useSafeAppsSDK();

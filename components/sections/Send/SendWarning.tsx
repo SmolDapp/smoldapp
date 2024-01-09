@@ -5,12 +5,12 @@ import {getIsSmartContract, isNullAddress} from '@utils/tools.address';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {Warning} from '@common/Primitives/Warning';
 
-import {useSend} from './useSend';
+import {useSendFlow} from './useSendFlow';
 
 import type {ReactElement} from 'react';
 
 export function SendWarning({isReceiverERC20}: {isReceiverERC20: boolean}): ReactElement | null {
-	const {configuration} = useSend();
+	const {configuration} = useSendFlow();
 	const {safeChainID} = useChainID();
 
 	const [warningMessage, set_warningMessage] = useState<string | null>(null);

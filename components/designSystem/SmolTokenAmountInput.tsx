@@ -1,5 +1,5 @@
 import React, {useCallback, useState} from 'react';
-import {getNewInput} from 'components/sections/Send/useSend';
+import {getNewInput} from 'components/sections/Send/useSendFlow';
 import {useBalancesCurtain} from 'contexts/useBalancesCurtain';
 import useWallet from 'contexts/useWallet';
 import {IconChevron} from '@icons/IconChevron';

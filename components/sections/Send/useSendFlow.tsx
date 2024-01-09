@@ -93,7 +93,7 @@ export const SendContextApp = ({children}: {children: TOptionalRenderProps<TSend
 	);
 };
 
-export const useSend = (): TSend => {
+export const useSendFlow = (): TSend => {
 	const ctx = useContext(SendContext);
 	if (!ctx) {
 		throw new Error('SendContext not found');
