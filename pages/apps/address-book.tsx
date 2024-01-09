@@ -176,9 +176,11 @@ function AddressBookActions(): ReactElement {
 				records = parsedCSV.data.map((item: unknown[]) => {
 					const chainIDs = ((item[chains] as string) || '').split(',').map(chain => Number(chain));
 					const uniqueChainIDs = [...new Set(chainIDs)];
+					const entryLabel = ((item[name] as string) || '').replaceAll('.', '-');
+
 					return {
 						address: item[addressLike] as TAddress,
-						label: item[name] as string,
+						label: entryLabel,
 						chains: uniqueChainIDs,
 						isFavorite: Boolean(item[isFavorite] as boolean)
 					};
