@@ -5,11 +5,12 @@ import Image from 'next/image';
 import {TooltipContent} from 'components/Primitives/Tooltip';
 import {useAddressBook} from 'contexts/useAddressBook';
 import {useIsMounted} from 'hooks/useIsMounted';
+import Identicon from 'identicon.js';
 import {useEnsAvatar, useEnsName} from 'wagmi';
 import {IconHeart, IconHeartFilled} from '@icons/IconHeart';
 import * as Tooltip from '@radix-ui/react-tooltip';
 import {useUpdateEffect} from '@react-hookz/web';
-import {getColorFromAdddress, isAddress, safeAddress, toAddress} from '@utils/tools.address';
+import {isAddress, safeAddress, toAddress} from '@utils/tools.address';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
 import {copyToClipboard} from '@yearn-finance/web-lib/utils/helpers';
@@ -17,22 +18,6 @@ import {copyToClipboard} from '@yearn-finance/web-lib/utils/helpers';
 import type {TAddressBookEntry} from 'contexts/useAddressBook';
 import type {MouseEventHandler, ReactElement} from 'react';
 import type {TAddress} from '@utils/tools.address';
-
-function pickTextColorBasedOnBgColorAdvanced(bgColor: string, lightColor: string, darkColor: string): string {
-	const color = bgColor.charAt(0) === '#' ? bgColor.substring(1, 7) : bgColor;
-	const r = parseInt(color.substring(0, 2), 16); // hexToR
-	const g = parseInt(color.substring(2, 4), 16); // hexToG
-	const b = parseInt(color.substring(4, 6), 16); // hexToB
-	const uicolors = [r / 255, g / 255, b / 255];
-	const c = uicolors.map(col => {
-		if (col <= 0.03928) {
-			return col / 12.92;
-		}
-		return Math.pow((col + 0.055) / 1.055, 2.4);
-	});
-	const L = 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
-	return L > 0.179 ? darkColor : lightColor;
-}
 
 function EntryBookEntryFavorite(props: {
 	isFavorite: boolean;
@@ -72,7 +57,6 @@ export function AddressBookEntryAvatar(props: {
 }): ReactElement {
 	const [imageSrc, set_imageSrc] = useState(props.src);
 	const hasAvatar = useMemo(() => imageSrc !== undefined, [imageSrc]);
-	const addressColor = useMemo(() => getColorFromAdddress({address: toAddress(props.address)}), [props.address]);
 	const sizeClassname = props.sizeClassname || 'h-8 w-8 min-w-[32px]';
 
 	useUpdateEffect((): void => {
@@ -86,17 +70,24 @@ export function AddressBookEntryAvatar(props: {
 		return <div className={cl('rounded-full bg-neutral-200', sizeClassname)} />;
 	}
 	if (!hasAvatar || !imageSrc) {
-		const firstLetterOfLabel = props.label?.substring(0, 1);
-		const firstCharOfAddress = (props.address || '0x0')?.substring(2, 3);
+		const data = new Identicon(toAddress(props.address), {
+			background: [255, 255, 255, 0],
+			size: 40,
+			margin: 0.2
+		}).toString();
 		return (
 			<div
-				style={{background: addressColor}}
-				className={cl('rounded-full flex justify-center items-center', sizeClassname)}>
-				<b
-					className={'capitalize'}
-					style={{color: pickTextColorBasedOnBgColorAdvanced(addressColor, '#FFFFFF', '#000000')}}>
-					{firstLetterOfLabel || firstCharOfAddress}
-				</b>
+				className={cl(
+					'rounded-full flex justify-center items-center border border-neutral-400',
+					sizeClassname
+				)}>
+				<Image
+					src={`data:image/png;base64,${data}`}
+					className={'h-full w-full rounded-full'}
+					width={40}
+					height={40}
+					alt={''}
+				/>
 			</div>
 		);
 	}
