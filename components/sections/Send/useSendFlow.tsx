@@ -1,6 +1,8 @@
 import React, {createContext, useContext, useMemo, useReducer} from 'react';
 import {defaultInputAddressLike} from 'components/designSystem/SmolAddressInput';
+import {useSyncUrlParams} from 'hooks/useSyncUrlParams';
 import {optionalRenderProps} from '@utils/react/optionalRenderProps';
+import {isString} from '@utils/types/typeGuards';
 import {toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 
 import type {TInputAddressLike} from 'components/designSystem/SmolAddressInput';
@@ -79,6 +81,17 @@ export const SendContextApp = ({children}: {children: TOptionalRenderProps<TSend
 	};
 
 	const [configuration, dispatch] = useReducer(configurationReducer, defaultProps.configuration);
+
+	/**
+	 * Update the url query on every change in the UI
+	 */
+	useSyncUrlParams({
+		to: configuration.receiver.address,
+		tokens: configuration.inputs.map(input => input.token?.address).filter(isString),
+		values: configuration.inputs
+			.map(input => (input.amount === '' ? undefined : input.normalizedBigAmount?.raw.toString()))
+			.filter(isString)
+	});
 
 	const contextValue = useMemo(
 		(): TSend => ({

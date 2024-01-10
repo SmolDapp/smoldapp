@@ -1,4 +1,4 @@
-import React, {useCallback, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {useAddressBook} from 'contexts/useAddressBook';
 import {getEnsName} from 'viem/ens';
 import {IconAppAddressBook} from '@icons/IconApps';
@@ -20,7 +20,7 @@ export type TInputAddressLike = {
 	address: TAddress | undefined;
 	label: string;
 	isValid: boolean | 'undetermined';
-	source?: 'typed' | 'addressBook' | 'defaultValue';
+	source?: 'typed' | 'addressBook' | 'defaultValue' | 'urlQuery';
 	error?: string;
 };
 export const defaultInputAddressLike: TInputAddressLike = {
@@ -33,9 +33,13 @@ export const defaultInputAddressLike: TInputAddressLike = {
 type TAddressInput = {
 	onSetValue: (value: TInputAddressLike) => void;
 	value: TInputAddressLike;
+	/**
+	 * Should be present if we want to make use of query params syncing
+	 */
+	initialValue?: string;
 };
 
-export function SmolAddressInput({onSetValue, value}: TAddressInput): ReactElement {
+export function SmolAddressInput({onSetValue, value, initialValue}: TAddressInput): ReactElement {
 	const {onOpenCurtain, getEntry, getCachedEntry} = useAddressBook();
 	const [isFocused, set_isFocused] = useState<boolean>(false);
 	const [isCheckingValidity, set_isCheckingValidity] = useState<boolean>(false);
@@ -171,6 +175,13 @@ export function SmolAddressInput({onSetValue, value}: TAddressInput): ReactEleme
 		},
 		[actions]
 	);
+
+	useEffect(() => {
+		if (!initialValue) {
+			return;
+		}
+		onChange(initialValue);
+	}, []);
 
 	const onSelectItem = useCallback((item: TAddressBookEntry): void => {
 		currentInput.current = item.label || item.ens || toAddress(item.address);
