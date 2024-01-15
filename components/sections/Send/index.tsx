@@ -1,4 +1,4 @@
-import {useEffect} from 'react';
+import {useCallback, useEffect} from 'react';
 import {SmolAddressInput} from 'components/designSystem/SmolAddressInput';
 import {SmolTokenAmountInput} from 'components/designSystem/SmolTokenAmountInput';
 import {useTokenList} from 'contexts/useTokenList';
@@ -6,7 +6,6 @@ import {IconCircleCheck} from '@icons/IconCircleCheck';
 import {IconCircleCross} from '@icons/IconCircleCross';
 import {IconCross} from '@icons/IconCross';
 import {IconSpinner} from '@icons/IconSpinner';
-import {isString} from '@utils/types/typeGuards';
 import {getStateFromUrlQuery} from '@utils/url/getStateFromUrlQuery';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
@@ -79,16 +78,15 @@ function SendTokenRow({
 
 export function Send({queryParams}: {queryParams: ParsedUrlQuery}): ReactElement {
 	const {configuration, dispatchConfiguration} = useSendFlow();
-
 	const {tokenList, getToken} = useTokenList();
 	const isReceiverERC20 = Boolean(configuration.receiver.address && tokenList[configuration.receiver.address]);
 
-	const onAddToken = (): void => {
+	const onAddToken = useCallback((): void => {
 		dispatchConfiguration({
 			type: 'ADD_INPUT',
 			payload: undefined
 		});
-	};
+	}, [dispatchConfiguration]);
 
 	const stateFromUrl = getStateFromUrlQuery(queryParams, ({string, array}) => ({
 		to: string('to'),
@@ -108,7 +106,7 @@ export function Send({queryParams}: {queryParams: ParsedUrlQuery}): ReactElement
 			return;
 		}
 		stateFromUrl.tokens.slice(1).forEach(() => onAddToken());
-	}, []);
+	}, [onAddToken, stateFromUrl.tokens]);
 
 	return (
 		<div className={'w-full max-w-[444px]'}>
@@ -117,7 +115,6 @@ export function Send({queryParams}: {queryParams: ParsedUrlQuery}): ReactElement
 				<SmolAddressInput
 					onSetValue={onSetRecipient}
 					value={configuration.receiver}
-					initialValue={isString(stateFromUrl?.to) ? stateFromUrl?.to : undefined}
 				/>
 			</div>
 			<div>

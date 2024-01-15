@@ -8,6 +8,9 @@ type TGetStringParamFromUrlQuery = TGetParamFromUrlQuery<string | undefined, str
 
 export function getStringParamFromUrlQuery(query: ParsedUrlQuery): TGetStringParamFromUrlQuery {
 	return (key: string, defaultValue?: string) => {
+		if (!query?.[key]) {
+			return defaultValue;
+		}
 		const param = query[key];
 		if (isString(param) && param.length > 0) {
 			return param;
@@ -20,6 +23,9 @@ type TGetArrayParamFromUrlQuery = TGetParamFromUrlQuery<[] | undefined, string[]
 
 export function getArrayParamFromUrlQuery(query: ParsedUrlQuery): TGetArrayParamFromUrlQuery {
 	return (key: string, defaultValue?: []) => {
+		if (!query?.[key]) {
+			return defaultValue;
+		}
 		const param = query[key];
 		if (Array.isArray(param)) {
 			return param;

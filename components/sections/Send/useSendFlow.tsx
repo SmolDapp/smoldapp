@@ -1,8 +1,10 @@
 import React, {createContext, useContext, useMemo, useReducer} from 'react';
+import {useSearchParams} from 'next/navigation';
 import {defaultInputAddressLike} from 'components/designSystem/SmolAddressInput';
-import {useSyncUrlParams} from 'hooks/useSyncUrlParams';
+import {useAsyncTrigger} from 'hooks/useAsyncTrigger';
 import {optionalRenderProps} from '@utils/react/optionalRenderProps';
-import {isString} from '@utils/types/typeGuards';
+import {isZeroAddress} from '@utils/tools.address';
+import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 
 import type {TInputAddressLike} from 'components/designSystem/SmolAddressInput';
@@ -16,6 +18,7 @@ export type TSendConfiguration = {
 };
 
 export type TSendActions =
+	| {type: 'SET_FROM_URL'; payload: TSendConfiguration}
 	| {type: 'SET_RECEIVER'; payload: TInputAddressLike}
 	| {type: 'ADD_INPUT'; payload: undefined}
 	| {type: 'REMOVE_INPUT'; payload: {UUID: string}}
@@ -48,8 +51,11 @@ const defaultProps: TSend = {
 
 const SendContext = createContext<TSend>(defaultProps);
 export const SendContextApp = ({children}: {children: TOptionalRenderProps<TSend, ReactElement>}): ReactElement => {
+	const searchParams = useSearchParams();
 	const configurationReducer = (state: TSendConfiguration, action: TSendActions): TSendConfiguration => {
 		switch (action.type) {
+			case 'SET_FROM_URL':
+				return state;
 			case 'SET_RECEIVER':
 				return {...state, receiver: action.payload};
 			case 'ADD_INPUT':
@@ -85,13 +91,47 @@ export const SendContextApp = ({children}: {children: TOptionalRenderProps<TSend
 	/**
 	 * Update the url query on every change in the UI
 	 */
-	useSyncUrlParams({
-		to: configuration.receiver.address,
-		tokens: configuration.inputs.map(input => input.token?.address).filter(isString),
-		values: configuration.inputs
-			.map(input => (input.amount === '' ? undefined : input.normalizedBigAmount?.raw.toString()))
-			.filter(isString)
-	});
+	useAsyncTrigger(async (): Promise<void> => {
+		const to = searchParams.get('to');
+		const tokens = searchParams.get('tokens')?.split(',') || [];
+		const values = searchParams.get('values')?.split(',') || [];
+		const isAddressValid = searchParams.has('to') && !isZeroAddress(toAddress(to));
+
+		if (!isAddressValid) {
+			return;
+		}
+		console.warn({to, tokens, values});
+		// dispatch({
+		// 	type: 'SET_FROM_URL',
+		// 	payload: {
+		// 		receiver: {
+		// 			address: toAddress(searchParams.get('to')),
+		// 			isValid: true,
+		// 			label: ''
+		// 		},
+		// 		inputs: tokens.map(
+		// 			(token, index): TSendInputElement => ({
+		// 				amount: values[index] ?? '',
+		// 				normalizedBigAmount: toNormalizedBN(values[index] ?? 0),
+		// 				isValid: true,
+		// 				token: {
+		// 					address: toAddress(token)
+		// 				},
+		// 				status: 'none',
+		// 				UUID: crypto.randomUUID()
+		// 			})
+		// 		)
+		// 	}
+		// });
+	}, [searchParams]);
+
+	// useSyncUrlParams({
+	// 	to: configuration.receiver.address,
+	// 	tokens: configuration.inputs.map(input => input.token?.address).filter(isString),
+	// 	values: configuration.inputs
+	// 		.map(input => (input.amount === '' ? undefined : input.normalizedBigAmount?.raw.toString()))
+	// 		.filter(isString)
+	// });
 
 	const contextValue = useMemo(
 		(): TSend => ({

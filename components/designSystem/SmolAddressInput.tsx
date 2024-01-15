@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useMemo, useRef, useState} from 'react';
 import {useAddressBook} from 'contexts/useAddressBook';
 import {getEnsName} from 'viem/ens';
 import {IconAppAddressBook} from '@icons/IconApps';
@@ -8,6 +8,7 @@ import {IconCircleCross} from '@icons/IconCircleCross';
 import {useAsyncAbortable} from '@react-hookz/web';
 import {isAddress, toAddress, truncateHex} from '@utils/tools.address';
 import {checkENSValidity} from '@utils/tools.ens';
+import {useQueryArg} from '@utils/url/useQueryArg';
 import {getPublicClient} from '@wagmi/core';
 import {IconLoader} from '@yearn-finance/web-lib/icons/IconLoader';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
@@ -33,13 +34,9 @@ export const defaultInputAddressLike: TInputAddressLike = {
 type TAddressInput = {
 	onSetValue: (value: TInputAddressLike) => void;
 	value: TInputAddressLike;
-	/**
-	 * Should be present if we want to make use of query params syncing
-	 */
-	initialValue?: string;
 };
 
-export function SmolAddressInput({onSetValue, value, initialValue}: TAddressInput): ReactElement {
+export function SmolAddressInput({onSetValue, value}: TAddressInput): ReactElement {
 	const {onOpenCurtain, getEntry, getCachedEntry} = useAddressBook();
 	const [isFocused, set_isFocused] = useState<boolean>(false);
 	const [isCheckingValidity, set_isCheckingValidity] = useState<boolean>(false);
@@ -73,6 +70,7 @@ export function SmolAddressInput({onSetValue, value, initialValue}: TAddressInpu
 					const fromAddressBook = await getEntry({label: input, address: toAddress(input)});
 					if (fromAddressBook) {
 						currentAddress.current = toAddress(fromAddressBook.address);
+						onUpdateQueryArgs(currentAddress.current);
 						if (signal.aborted) {
 							reject(new Error('Aborted!'));
 						}
@@ -111,6 +109,8 @@ export function SmolAddressInput({onSetValue, value, initialValue}: TAddressInpu
 							}
 
 							currentAddress.current = address;
+							onUpdateQueryArgs(currentAddress.current);
+
 							currentLabel.current = input;
 							onSetValue({address, label: input, isValid, source: 'typed'});
 						} else {
@@ -131,6 +131,8 @@ export function SmolAddressInput({onSetValue, value, initialValue}: TAddressInpu
 					 **********************************************************/
 					if (isAddress(input)) {
 						currentAddress.current = toAddress(input);
+						onUpdateQueryArgs(currentAddress.current);
+
 						if (signal.aborted) {
 							reject(new Error('Aborted!'));
 						}
@@ -153,6 +155,7 @@ export function SmolAddressInput({onSetValue, value, initialValue}: TAddressInpu
 					}
 
 					currentAddress.current = undefined;
+					onUpdateQueryArgs(undefined);
 					onSetValue({
 						address: undefined,
 						label: input,
@@ -176,24 +179,23 @@ export function SmolAddressInput({onSetValue, value, initialValue}: TAddressInpu
 		[actions]
 	);
 
-	useEffect(() => {
-		if (!initialValue) {
-			return;
-		}
-		onChange(initialValue);
-	}, []);
+	const [onUpdateQueryArgs] = useQueryArg({key: 'to', type: 'address', onChange: onChange});
 
-	const onSelectItem = useCallback((item: TAddressBookEntry): void => {
-		currentInput.current = item.label || item.ens || toAddress(item.address);
-		currentLabel.current = item.label || item.ens || toAddress(item.address);
-		currentAddress.current = toAddress(item.address);
-		onSetValue({
-			address: toAddress(item.address),
-			label: item.label || item.ens || toAddress(item.address),
-			isValid: true,
-			source: 'addressBook'
-		});
-	}, []);
+	const onSelectItem = useCallback(
+		(item: TAddressBookEntry): void => {
+			currentInput.current = item.label || item.ens || toAddress(item.address);
+			currentLabel.current = item.label || item.ens || toAddress(item.address);
+			currentAddress.current = toAddress(item.address);
+			onUpdateQueryArgs(currentAddress.current);
+			onSetValue({
+				address: toAddress(item.address),
+				label: item.label || item.ens || toAddress(item.address),
+				isValid: true,
+				source: 'addressBook'
+			});
+		},
+		[onSetValue, onUpdateQueryArgs]
+	);
 
 	const getInputValue = useCallback((): string | undefined => {
 		if (isFocused) {
