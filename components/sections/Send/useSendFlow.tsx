@@ -3,8 +3,6 @@ import {useSearchParams} from 'next/navigation';
 import {defaultInputAddressLike} from 'components/designSystem/SmolAddressInput';
 import {useAsyncTrigger} from 'hooks/useAsyncTrigger';
 import {optionalRenderProps} from '@utils/react/optionalRenderProps';
-import {isZeroAddress} from '@utils/tools.address';
-import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 
 import type {TInputAddressLike} from 'components/designSystem/SmolAddressInput';
@@ -88,50 +86,13 @@ export const SendContextApp = ({children}: {children: TOptionalRenderProps<TSend
 
 	const [configuration, dispatch] = useReducer(configurationReducer, defaultProps.configuration);
 
-	/**
-	 * Update the url query on every change in the UI
-	 */
+	// display the stuff we are getting from the url
 	useAsyncTrigger(async (): Promise<void> => {
 		const to = searchParams.get('to');
 		const tokens = searchParams.get('tokens')?.split(',') || [];
 		const values = searchParams.get('values')?.split(',') || [];
-		const isAddressValid = searchParams.has('to') && !isZeroAddress(toAddress(to));
-
-		if (!isAddressValid) {
-			return;
-		}
 		console.warn({to, tokens, values});
-		// dispatch({
-		// 	type: 'SET_FROM_URL',
-		// 	payload: {
-		// 		receiver: {
-		// 			address: toAddress(searchParams.get('to')),
-		// 			isValid: true,
-		// 			label: ''
-		// 		},
-		// 		inputs: tokens.map(
-		// 			(token, index): TSendInputElement => ({
-		// 				amount: values[index] ?? '',
-		// 				normalizedBigAmount: toNormalizedBN(values[index] ?? 0),
-		// 				isValid: true,
-		// 				token: {
-		// 					address: toAddress(token)
-		// 				},
-		// 				status: 'none',
-		// 				UUID: crypto.randomUUID()
-		// 			})
-		// 		)
-		// 	}
-		// });
 	}, [searchParams]);
-
-	// useSyncUrlParams({
-	// 	to: configuration.receiver.address,
-	// 	tokens: configuration.inputs.map(input => input.token?.address).filter(isString),
-	// 	values: configuration.inputs
-	// 		.map(input => (input.amount === '' ? undefined : input.normalizedBigAmount?.raw.toString()))
-	// 		.filter(isString)
-	// });
 
 	const contextValue = useMemo(
 		(): TSend => ({
