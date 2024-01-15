@@ -16,7 +16,6 @@ export type TSendConfiguration = {
 };
 
 export type TSendActions =
-	| {type: 'SET_FROM_URL'; payload: TSendConfiguration}
 	| {type: 'SET_RECEIVER'; payload: TInputAddressLike}
 	| {type: 'ADD_INPUT'; payload: undefined}
 	| {type: 'REMOVE_INPUT'; payload: {UUID: string}}
@@ -52,8 +51,6 @@ export const SendContextApp = ({children}: {children: TOptionalRenderProps<TSend
 	const searchParams = useSearchParams();
 	const configurationReducer = (state: TSendConfiguration, action: TSendActions): TSendConfiguration => {
 		switch (action.type) {
-			case 'SET_FROM_URL':
-				return state;
 			case 'SET_RECEIVER':
 				return {...state, receiver: action.payload};
 			case 'ADD_INPUT':
