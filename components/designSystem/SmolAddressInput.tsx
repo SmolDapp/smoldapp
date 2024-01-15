@@ -70,7 +70,7 @@ export function SmolAddressInput({onSetValue, value}: TAddressInput): ReactEleme
 					const fromAddressBook = await getEntry({label: input, address: toAddress(input)});
 					if (fromAddressBook) {
 						currentAddress.current = toAddress(fromAddressBook.address);
-						onUpdateQueryArgs(currentAddress.current);
+						onUpdateQueryTo(currentAddress.current);
 						if (signal.aborted) {
 							reject(new Error('Aborted!'));
 						}
@@ -109,7 +109,7 @@ export function SmolAddressInput({onSetValue, value}: TAddressInput): ReactEleme
 							}
 
 							currentAddress.current = address;
-							onUpdateQueryArgs(currentAddress.current);
+							onUpdateQueryTo(currentAddress.current);
 
 							currentLabel.current = input;
 							onSetValue({address, label: input, isValid, source: 'typed'});
@@ -131,7 +131,7 @@ export function SmolAddressInput({onSetValue, value}: TAddressInput): ReactEleme
 					 **********************************************************/
 					if (isAddress(input)) {
 						currentAddress.current = toAddress(input);
-						onUpdateQueryArgs(currentAddress.current);
+						onUpdateQueryTo(currentAddress.current);
 
 						if (signal.aborted) {
 							reject(new Error('Aborted!'));
@@ -155,7 +155,7 @@ export function SmolAddressInput({onSetValue, value}: TAddressInput): ReactEleme
 					}
 
 					currentAddress.current = undefined;
-					onUpdateQueryArgs(undefined);
+					onUpdateQueryTo(undefined);
 					onSetValue({
 						address: undefined,
 						label: input,
@@ -179,14 +179,14 @@ export function SmolAddressInput({onSetValue, value}: TAddressInput): ReactEleme
 		[actions]
 	);
 
-	const [onUpdateQueryArgs] = useQueryArg({key: 'to', type: 'address', onChange: onChange});
+	const onUpdateQueryTo = useQueryArg({key: 'to', type: 'address', onChange: onChange});
 
 	const onSelectItem = useCallback(
 		(item: TAddressBookEntry): void => {
 			currentInput.current = item.label || item.ens || toAddress(item.address);
 			currentLabel.current = item.label || item.ens || toAddress(item.address);
 			currentAddress.current = toAddress(item.address);
-			onUpdateQueryArgs(currentAddress.current);
+			onUpdateQueryTo(currentAddress.current);
 			onSetValue({
 				address: toAddress(item.address),
 				label: item.label || item.ens || toAddress(item.address),
@@ -194,7 +194,7 @@ export function SmolAddressInput({onSetValue, value}: TAddressInput): ReactEleme
 				source: 'addressBook'
 			});
 		},
-		[onSetValue, onUpdateQueryArgs]
+		[onSetValue, onUpdateQueryTo]
 	);
 
 	const getInputValue = useCallback((): string | undefined => {

@@ -9,7 +9,7 @@ export function useQueryArg<T>(props: {
 	key: string;
 	type: 'string' | 'address' | 'array' | 'number';
 	onChange: (value: string) => void;
-}): [(value: T) => Promise<void>] {
+}): (value: T) => Promise<void> {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const ran = useRef<boolean>(false);
@@ -18,11 +18,11 @@ export function useQueryArg<T>(props: {
 		if (ran.current) {
 			return;
 		}
-		if (!searchParams.has('to')) {
+		if (!searchParams.has(props.key)) {
 			return;
 		}
 		ran.current = true;
-		const to = searchParams.get('to')?.split(',') || [];
+		const to = searchParams.get(props.key)?.split(',') || [];
 		props.onChange(to[0]);
 	}, [searchParams, props.onChange, props]);
 
@@ -48,5 +48,5 @@ export function useQueryArg<T>(props: {
 		[props.key, props.type, router]
 	);
 
-	return [onUpdateQueryArgs];
+	return onUpdateQueryArgs;
 }
