@@ -1,4 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {useSendFlow} from 'components/sections/Send/useSendFlow';
 import {useAddressBook} from 'contexts/useAddressBook';
 import {getEnsName} from 'viem/ens';
 import {IconAppAddressBook} from '@icons/IconApps';
@@ -6,7 +7,7 @@ import {IconChevron} from '@icons/IconChevron';
 import {IconCircleCheck} from '@icons/IconCircleCheck';
 import {IconCircleCross} from '@icons/IconCircleCross';
 import {useAsyncAbortable} from '@react-hookz/web';
-import {isAddress, toAddress, truncateHex} from '@utils/tools.address';
+import {defaultInputAddressLike, isAddress, toAddress, truncateHex} from '@utils/tools.address';
 import {checkENSValidity} from '@utils/tools.ens';
 import {getPublicClient} from '@wagmi/core';
 import {IconLoader} from '@yearn-finance/web-lib/icons/IconLoader';
@@ -14,33 +15,16 @@ import {cl} from '@yearn-finance/web-lib/utils/cl';
 
 import type {TAddressBookEntry} from 'contexts/useAddressBook';
 import type {ReactElement} from 'react';
-import type {TAddress} from '@utils/tools.address';
-
-export type TInputAddressLike = {
-	address: TAddress | undefined;
-	label: string;
-	isValid: boolean | 'undetermined';
-	source?: 'typed' | 'addressBook' | 'defaultValue' | 'urlQuery';
-	error?: string;
-};
-export const defaultInputAddressLike: TInputAddressLike = {
-	address: undefined,
-	label: '',
-	isValid: 'undetermined',
-	source: 'typed'
-};
+import type {TAddress, TInputAddressLike} from '@utils/tools.address';
 
 type TAddressInput = {
 	onSetValue: (value: TInputAddressLike) => void;
 	value: TInputAddressLike;
-	/**
-	 * Should be present if we want to make use of query params syncing
-	 */
-	initialValue?: string;
 };
 
-export function SmolAddressInput({onSetValue, value, initialValue}: TAddressInput): ReactElement {
+export function SmolAddressInput({onSetValue, value}: TAddressInput): ReactElement {
 	const {onOpenCurtain, getEntry, getCachedEntry} = useAddressBook();
+	const {initialStateFromUrl} = useSendFlow();
 	const [isFocused, set_isFocused] = useState<boolean>(false);
 	const [isCheckingValidity, set_isCheckingValidity] = useState<boolean>(false);
 
@@ -177,11 +161,11 @@ export function SmolAddressInput({onSetValue, value, initialValue}: TAddressInpu
 	);
 
 	useEffect(() => {
-		if (!initialValue) {
+		if (!initialStateFromUrl?.to) {
 			return;
 		}
-		onChange(initialValue);
-	}, []);
+		onChange(initialStateFromUrl.to);
+	}, [initialStateFromUrl, initialStateFromUrl?.to, onChange]);
 
 	const onSelectItem = useCallback((item: TAddressBookEntry): void => {
 		currentInput.current = item.label || item.ens || toAddress(item.address);

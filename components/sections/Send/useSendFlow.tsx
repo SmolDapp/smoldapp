@@ -1,14 +1,17 @@
 import React, {createContext, useContext, useMemo, useReducer} from 'react';
-import {defaultInputAddressLike} from 'components/designSystem/SmolAddressInput';
 import {useSyncUrlParams} from 'hooks/useSyncUrlParams';
 import {optionalRenderProps} from '@utils/react/optionalRenderProps';
+import {defaultInputAddressLike} from '@utils/tools.address';
 import {isString} from '@utils/types/typeGuards';
 import {toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 
-import type {TInputAddressLike} from 'components/designSystem/SmolAddressInput';
+import {useSendQuery} from './useSendQuery';
+
 import type {TSendInputElement} from 'components/designSystem/SmolTokenAmountInput';
 import type {Dispatch, ReactElement} from 'react';
 import type {TOptionalRenderProps} from '@utils/react/optionalRenderProps';
+import type {TInputAddressLike} from '@utils/tools.address';
+import type {TPartialExhaustive} from '@utils/types/types';
 
 export type TSendConfiguration = {
 	receiver: TInputAddressLike;
@@ -22,8 +25,16 @@ export type TSendActions =
 	| {type: 'SET_VALUE'; payload: Partial<TSendInputElement>}
 	| {type: 'RESET'; payload: undefined};
 
+export type TSendQuery = TPartialExhaustive<{
+	to: string;
+	tokens: string[];
+	values: string[];
+}>;
+
 export type TSend = {
 	configuration: TSendConfiguration;
+	stateFromUrl: TSendQuery;
+	initialStateFromUrl: TSendQuery | null;
 	dispatchConfiguration: Dispatch<TSendActions>;
 };
 
@@ -43,6 +54,8 @@ const defaultProps: TSend = {
 		receiver: defaultInputAddressLike,
 		inputs: [getNewInput()]
 	},
+	stateFromUrl: {to: undefined, tokens: undefined, values: undefined},
+	initialStateFromUrl: null,
 	dispatchConfiguration: (): void => undefined
 };
 
@@ -82,6 +95,8 @@ export const SendContextApp = ({children}: {children: TOptionalRenderProps<TSend
 
 	const [configuration, dispatch] = useReducer(configurationReducer, defaultProps.configuration);
 
+	const {initialStateFromUrl, stateFromUrl} = useSendQuery();
+
 	/**
 	 * Update the url query on every change in the UI
 	 */
@@ -96,9 +111,11 @@ export const SendContextApp = ({children}: {children: TOptionalRenderProps<TSend
 	const contextValue = useMemo(
 		(): TSend => ({
 			configuration,
+			stateFromUrl,
+			initialStateFromUrl,
 			dispatchConfiguration: dispatch
 		}),
-		[configuration]
+		[configuration, stateFromUrl, initialStateFromUrl]
 	);
 
 	return (

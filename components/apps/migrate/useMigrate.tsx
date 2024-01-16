@@ -3,10 +3,10 @@ import {useUpdateEffect} from '@react-hookz/web';
 import {isZeroAddress} from '@utils/tools.address';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 
-import type {TInputAddressLike} from 'components/designSystem/SmolAddressInput';
 import type {Dispatch} from 'react';
 import type {TAddress, TDict} from '@yearn-finance/web-lib/types';
 import type {TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
+import type {TInputAddressLike} from '@utils/tools.address';
 import type {TToken} from '@utils/types/types';
 
 export type TMigrateElement = TToken & {

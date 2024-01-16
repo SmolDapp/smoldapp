@@ -1,16 +1,15 @@
 import React, {useEffect, useState} from 'react';
-import {defaultInputAddressLike} from 'components/designSystem/SmolAddressInput';
 import {Button} from 'components/Primitives/Button';
 import {IconSpinner} from '@icons/IconSpinner';
-import {isZeroAddress, toAddress} from '@utils/tools.address';
+import {defaultInputAddressLike, isZeroAddress, toAddress} from '@utils/tools.address';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import AddressInput from '@common/AddressInput';
 
 import {useUserStreams} from './useUserStreams';
 import {VestingElement} from './VestingElement';
 
-import type {TInputAddressLike} from 'components/designSystem/SmolAddressInput';
 import type {ReactElement} from 'react';
+import type {TInputAddressLike} from '@utils/tools.address';
 
 function ViewUserStreams(): ReactElement {
 	const {address, ens} = useWeb3();

@@ -1,13 +1,14 @@
 import React, {createContext, useContext, useEffect, useMemo, useReducer, useState} from 'react';
-import {defaultInputAddressLike, type TInputAddressLike} from 'components/designSystem/SmolAddressInput';
 import {isBefore} from 'date-fns';
 import {scrollToTargetAdjusted} from 'utils/animations';
 import {HEADER_HEIGHT} from 'utils/constants';
 import {useUpdateEffect} from '@react-hookz/web';
+import {defaultInputAddressLike} from '@utils/tools.address';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 
 import type {Dispatch, SetStateAction} from 'react';
 import type {TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
+import type {TInputAddressLike} from '@utils/tools.address';
 import type {TToken} from '@utils/types/types';
 
 export enum Step {

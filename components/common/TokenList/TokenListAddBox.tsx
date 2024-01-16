@@ -1,9 +1,9 @@
 import React, {useCallback, useMemo, useRef, useState} from 'react';
-import {defaultInputAddressLike} from 'components/designSystem/SmolAddressInput';
 import {Button} from 'components/Primitives/Button';
 import axios from 'axios';
 import {IconCircleCheck} from '@icons/IconCircleCheck';
 import {IconCircleCross} from '@icons/IconCircleCross';
+import {defaultInputAddressLike} from '@utils/tools.address';
 import {erc20ABI, readContracts} from '@wagmi/core';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {IconLoader} from '@yearn-finance/web-lib/icons/IconLoader';
@@ -11,7 +11,7 @@ import {decodeAsBigInt, decodeAsNumber, decodeAsString} from '@yearn-finance/web
 import {toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import AddressInput from '@common/AddressInput';
 
-import type {TInputAddressLike} from 'components/designSystem/SmolAddressInput';
+import type {TInputAddressLike} from '@utils/tools.address';
 import type {TToken, TTokenList} from '@utils/types/types';
 
 type TValue = {
