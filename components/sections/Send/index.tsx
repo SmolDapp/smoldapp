@@ -126,7 +126,7 @@ export function Send(): ReactElement {
 								amount: initialStateFromUrl?.values?.[index]
 									? toBigInt(initialStateFromUrl?.values[index])
 									: undefined,
-								token: stateFromUrl?.tokens?.[index]
+								token: initialStateFromUrl?.tokens?.[index]
 									? getToken(toAddress(stateFromUrl?.tokens?.[index]))
 									: undefined
 							}}
