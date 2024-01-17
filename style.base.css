@@ -33,6 +33,11 @@ input::placeholder {
 textarea::placeholder {
 	@apply text-neutral-400 not-italic;
 }
+input[type=file], /* FF, IE7+, chrome (except button) */
+input[type=file]::-webkit-file-upload-button {
+	/* chromes and blink button */
+	cursor: pointer;
+}
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
@@ -282,6 +287,15 @@ select:focus {
 			@apply bg-primaryHover;
 		}
 	}
+	&[data-variant='light'] {
+		@apply text-neutral-900 bg-neutral-300 font-normal border border-transparent;
+		&:disabled {
+			@apply opacity-40;
+		}
+		&:not(:disabled):not([aria-busy='true']):hover {
+			@apply bg-neutral-400;
+		}
+	}
 	&[aria-busy='true'] {
 		@apply cursor-wait;
 		color: transparent !important;
@@ -292,8 +306,9 @@ select:focus {
 }
 
 .input {
-	@apply w-full border-neutral-400 rounded-lg bg-transparent py-3 px-4 text-base;
+	@apply w-full rounded-lg bg-transparent py-3 px-4 text-base;
 	@apply text-neutral-900 placeholder:text-neutral-600 caret-neutral-700;
 	@apply focus:placeholder:text-neutral-300 placeholder:transition-colors;
 	@apply focus:border-neutral-600 disabled:bg-neutral-300 transition-colors;
+	@apply border-neutral-400 disabled:border-transparent;
 }

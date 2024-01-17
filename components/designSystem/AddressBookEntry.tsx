@@ -5,11 +5,12 @@ import Image from 'next/image';
 import {TooltipContent} from 'components/Primitives/Tooltip';
 import {useAddressBook} from 'contexts/useAddressBook';
 import {useIsMounted} from 'hooks/useIsMounted';
+import Identicon from 'identicon.js';
 import {useEnsAvatar, useEnsName} from 'wagmi';
 import {IconHeart, IconHeartFilled} from '@icons/IconHeart';
 import * as Tooltip from '@radix-ui/react-tooltip';
 import {useUpdateEffect} from '@react-hookz/web';
-import {getColorFromAdddress, isAddress, safeAddress, toAddress} from '@utils/tools.address';
+import {isAddress, safeAddress, toAddress} from '@utils/tools.address';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
 import {copyToClipboard} from '@yearn-finance/web-lib/utils/helpers';
@@ -51,11 +52,11 @@ export function AddressBookEntryAvatar(props: {
 	src: string | null | undefined;
 	address: TAddress | undefined;
 	isLoading: boolean;
+	label?: string;
 	sizeClassname?: string;
 }): ReactElement {
 	const [imageSrc, set_imageSrc] = useState(props.src);
 	const hasAvatar = useMemo(() => imageSrc !== undefined, [imageSrc]);
-	const addressColor = useMemo(() => getColorFromAdddress({address: toAddress(props.address)}), [props.address]);
 	const sizeClassname = props.sizeClassname || 'h-8 w-8 min-w-[32px]';
 
 	useUpdateEffect((): void => {
@@ -69,11 +70,25 @@ export function AddressBookEntryAvatar(props: {
 		return <div className={cl('rounded-full bg-neutral-200', sizeClassname)} />;
 	}
 	if (!hasAvatar || !imageSrc) {
+		const data = new Identicon(toAddress(props.address), {
+			background: [255, 255, 255, 0],
+			size: 128,
+			margin: 0.2
+		}).toString();
 		return (
 			<div
-				style={{background: addressColor}}
-				className={cl('rounded-full', sizeClassname)}
-			/>
+				className={cl(
+					'rounded-full flex justify-center items-center border border-neutral-400',
+					sizeClassname
+				)}>
+				<Image
+					src={`data:image/png;base64,${data}`}
+					className={'h-full w-full rounded-full'}
+					width={128}
+					height={128}
+					alt={''}
+				/>
+			</div>
 		);
 	}
 	return (
@@ -183,6 +198,7 @@ export function AddressBookEntry(props: {
 				<AddressBookEntryAvatar
 					isLoading={isLoadingAvatar}
 					address={toAddress(props.entry.address)}
+					label={props.entry.label}
 					src={avatar}
 					sizeClassname={'h-10 w-10 min-w-[40px]'}
 				/>
