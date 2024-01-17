@@ -1,5 +1,4 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {useSendFlow} from 'components/sections/Send/useSendFlow';
 import {useAddressBook} from 'contexts/useAddressBook';
 import {getEnsName} from 'viem/ens';
 import {IconAppAddressBook} from '@icons/IconApps';
@@ -20,11 +19,12 @@ import type {TAddress, TInputAddressLike} from '@utils/tools.address';
 type TAddressInput = {
 	onSetValue: (value: TInputAddressLike) => void;
 	value: TInputAddressLike;
+	initialStateFromUrl?: string | undefined;
 };
 
-export function SmolAddressInput({onSetValue, value}: TAddressInput): ReactElement {
+export function SmolAddressInput({onSetValue, value, initialStateFromUrl}: TAddressInput): ReactElement {
 	const {onOpenCurtain, getEntry, getCachedEntry} = useAddressBook();
-	const {initialStateFromUrl} = useSendFlow();
+
 	const [isFocused, set_isFocused] = useState<boolean>(false);
 	const [isCheckingValidity, set_isCheckingValidity] = useState<boolean>(false);
 
@@ -161,11 +161,11 @@ export function SmolAddressInput({onSetValue, value}: TAddressInput): ReactEleme
 	);
 
 	useEffect(() => {
-		if (!initialStateFromUrl?.to) {
+		if (!initialStateFromUrl) {
 			return;
 		}
-		onChange(initialStateFromUrl.to);
-	}, [initialStateFromUrl, initialStateFromUrl?.to, onChange]);
+		onChange(initialStateFromUrl);
+	}, [initialStateFromUrl, onChange]);
 
 	const onSelectItem = useCallback((item: TAddressBookEntry): void => {
 		currentInput.current = item.label || item.ens || toAddress(item.address);

@@ -13,6 +13,7 @@ import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
 
 import {SendWarning} from './SendWarning';
 import {useSendFlow} from './useSendFlow';
+import {useSendQueryManagement} from './useSendQuery';
 import {SendWizard} from './Wizard';
 
 import type {TSendInputElement} from 'components/designSystem/SmolTokenAmountInput';
@@ -76,7 +77,8 @@ function SendTokenRow({
 }
 
 export function Send(): ReactElement {
-	const {configuration, dispatchConfiguration, initialStateFromUrl, stateFromUrl} = useSendFlow();
+	const {configuration, dispatchConfiguration} = useSendFlow();
+	const {initialStateFromUrl, stateFromUrl} = useSendQueryManagement();
 
 	const {tokenList, getToken} = useTokenList();
 	const isReceiverERC20 = Boolean(configuration.receiver.address && tokenList[configuration.receiver.address]);
@@ -109,6 +111,7 @@ export function Send(): ReactElement {
 				<SmolAddressInput
 					onSetValue={onSetRecipient}
 					value={configuration.receiver}
+					initialStateFromUrl={initialStateFromUrl?.to}
 				/>
 			</div>
 			<div>

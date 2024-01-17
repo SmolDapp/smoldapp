@@ -1,11 +1,7 @@
 import React, {createContext, useContext, useMemo, useReducer} from 'react';
-import {useSyncUrlParams} from 'hooks/useSyncUrlParams';
 import {optionalRenderProps} from '@utils/react/optionalRenderProps';
 import {defaultInputAddressLike} from '@utils/tools.address';
-import {isString} from '@utils/types/typeGuards';
 import {toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
-
-import {useSendQuery} from './useSendQuery';
 
 import type {TSendInputElement} from 'components/designSystem/SmolTokenAmountInput';
 import type {Dispatch, ReactElement} from 'react';
@@ -33,8 +29,7 @@ export type TSendQuery = TPartialExhaustive<{
 
 export type TSend = {
 	configuration: TSendConfiguration;
-	stateFromUrl: TSendQuery;
-	initialStateFromUrl: TSendQuery | null;
+
 	dispatchConfiguration: Dispatch<TSendActions>;
 };
 
@@ -54,8 +49,7 @@ const defaultProps: TSend = {
 		receiver: defaultInputAddressLike,
 		inputs: [getNewInput()]
 	},
-	stateFromUrl: {to: undefined, tokens: undefined, values: undefined},
-	initialStateFromUrl: null,
+
 	dispatchConfiguration: (): void => undefined
 };
 
@@ -95,27 +89,12 @@ export const SendContextApp = ({children}: {children: TOptionalRenderProps<TSend
 
 	const [configuration, dispatch] = useReducer(configurationReducer, defaultProps.configuration);
 
-	const {initialStateFromUrl, stateFromUrl} = useSendQuery();
-
-	/**
-	 * Update the url query on every change in the UI
-	 */
-	useSyncUrlParams({
-		to: configuration.receiver.address,
-		tokens: configuration.inputs.map(input => input.token?.address).filter(isString),
-		values: configuration.inputs
-			.map(input => (input.amount === '' ? undefined : input.normalizedBigAmount?.raw.toString()))
-			.filter(isString)
-	});
-
 	const contextValue = useMemo(
 		(): TSend => ({
 			configuration,
-			stateFromUrl,
-			initialStateFromUrl,
 			dispatchConfiguration: dispatch
 		}),
-		[configuration, stateFromUrl, initialStateFromUrl]
+		[configuration]
 	);
 
 	return (
