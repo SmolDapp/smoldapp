@@ -6,6 +6,7 @@ import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
 
 import {EIP3770_PREFIX} from './eip-3770';
 
+import type {TSendInputElement} from 'components/designSystem/SmolTokenAmountInput';
 import type {Hex} from 'viem';
 import type {TAddress} from '@utils/tools.address';
 import type {TToken} from './types/types';
@@ -85,9 +86,9 @@ export function notifyDisperse(props: {
 	});
 }
 
-export function notifyMigrate(props: {
+export function notifySend(props: {
 	chainID: number;
-	tokensMigrated: any[];
+	tokensMigrated: TSendInputElement[];
 	hashes: Hex[];
 	to: TAddress;
 	from: TAddress;
@@ -101,17 +102,18 @@ export function notifyMigrate(props: {
 
 	axios.post('/api/notify', {
 		messages: [
-			'*🚀 MIGRATOOOR*',
+			'*🚀 SEND*',
 			`\t\t\t\t\t\t[${truncateHex(props.from, 5)}](${explorerBaseURI}/address/${
 				props.from
-			}) is migrating tokens to [${truncateHex(props.to, 5)}](${explorerBaseURI}/address/${props.to}):`,
-			...props.tokensMigrated.map(({address, symbol, amount, decimals}, index): string => {
+			}) is sending tokens to [${truncateHex(props.to, 5)}](${explorerBaseURI}/address/${props.to}):`,
+			...props.tokensMigrated.map(({token, normalizedBigAmount}, index): string => {
+				const {address, symbol, decimals} = token || {};
 				const txHashLink =
 					props.type === 'EOA'
 						? `${explorerBaseURI}/tx/${props.hashes[index]}`
 						: `${safeBaseURI}${chainPrefix}:${props.from}/transactions/tx?safe=eth:${props.from}&id=multisig_${props.from}_${props.hashes[index]}`;
 				return `\t\t\t\t\t\t\t- ${formatAmount(
-					(amount || toNormalizedBN(0)).normalized,
+					(normalizedBigAmount || toNormalizedBN(0)).normalized,
 					6,
 					decimals
 				)} [${symbol}](${explorerBaseURI}/address/${address}) | [tx](${txHashLink})`;

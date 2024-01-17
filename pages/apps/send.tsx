@@ -1,26 +1,20 @@
 import {Fragment} from 'react';
-import {SmolAddressInput} from 'components/designSystem/SmolAddressInput';
-import {Button} from 'components/Primitives/Button';
+import {Send} from 'components/sections/Send';
+import {SendContextApp} from 'components/sections/Send/useSendFlow';
+import {BalancesCurtainContextApp} from 'contexts/useBalancesCurtain';
 
 import type {ReactElement} from 'react';
 
-function SendPage(): ReactElement {
+export default function SendPage(): ReactElement {
 	return (
-		<Fragment>
-			<div className={'mb-6'}>
-				<p className={'font-medium'}>{'Receiver'}</p>
-				<SmolAddressInput />
-			</div>
-			<div className={'mb-4'}>
-				<p className={'font-medium'}>{'Token'}</p>
-				<SmolAddressInput />
-			</div>
-			<div className={'w-full max-w-[442px]'}>
-				<Button className={'w-full'}>
-					<b>{'Send'}</b>
-				</Button>
-			</div>
-		</Fragment>
+		<SendContextApp>
+			{({configuration: {inputs}}) => (
+				<BalancesCurtainContextApp
+					selectedTokenAddresses={inputs.map(input => input.token?.address).filter(Boolean)}>
+					<Send />
+				</BalancesCurtainContextApp>
+			)}
+		</SendContextApp>
 	);
 }
 
@@ -29,5 +23,3 @@ SendPage.AppDescription = 'Deliver any of your tokens anywhere';
 SendPage.getLayout = function getLayout(page: ReactElement): ReactElement {
 	return <Fragment>{page}</Fragment>;
 };
-
-export default SendPage;

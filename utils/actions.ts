@@ -1,6 +1,7 @@
 import assert from 'assert';
 import {SINGLETON_L2} from 'components/apps/safe/utils';
 import DISPERSE_ABI from 'utils/abi/disperse.abi';
+import {isAddressEqual} from 'viem';
 import {
 	erc20ABI,
 	erc721ABI,
@@ -20,10 +21,11 @@ import ERC1155_ABI from './abi/ERC1155.abi';
 import GNOSIS_SAFE_PROXY_FACTORY from './abi/gnosisSafeProxyFactory.abi';
 import {MULTICALL_ABI} from './abi/multicall3.abi';
 import NFT_MIGRATOOOR_ABI from './abi/NFTMigratooor.abi';
+import {usdtAbi, usdtAddress} from './abi/usdtAbi';
 import {YVESTING_FACTORY_ABI} from './abi/yVestingFactory.abi';
 import {YVESTING_SIMPLE_ABI} from './abi/yVestingSimple.abi';
 
-import type {BaseError, Hex} from 'viem';
+import type {Abi, BaseError, Hex} from 'viem';
 import type {Connector} from 'wagmi';
 import type {TWriteTransaction} from '@yearn-finance/web-lib/utils/wagmi/provider';
 import type {TTxResponse} from '@yearn-finance/web-lib/utils/web3/transaction';
@@ -257,7 +259,7 @@ export async function transferERC20(props: TTransferERC20): Promise<TTxResponse>
 
 	return await handleTx(props, {
 		address: props.contractAddress,
-		abi: erc20ABI,
+		abi: isAddressEqual(props.contractAddress, usdtAddress) ? (usdtAbi as Abi) : erc20ABI,
 		functionName: 'transfer',
 		args: [props.receiverAddress, props.amount]
 	});

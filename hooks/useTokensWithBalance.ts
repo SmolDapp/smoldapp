@@ -10,9 +10,9 @@ import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 import type {TDict} from '@yearn-finance/web-lib/types';
 import type {TToken} from '@utils/types/types';
 
-export function useTokensWithBalance(): TToken[] {
+export function useTokensWithBalance(): {tokensWithBalance: TToken[]; isLoading: boolean} {
 	const {safeChainID} = useChainID();
-	const {getBalance} = useWallet();
+	const {getBalance, isLoading} = useWallet();
 	const [allTokens, set_allTokens] = useState<TDict<TToken>>({});
 	const {tokenList} = useTokenList();
 
@@ -40,7 +40,7 @@ export function useTokensWithBalance(): TToken[] {
 		set_allTokens(possibleDestinationsTokens);
 	}, [tokenList, safeChainID]);
 
-	const filteredBalances = useDeepCompareMemo((): TToken[] => {
+	const tokensWithBalance = useDeepCompareMemo((): TToken[] => {
 		const withBalance = [];
 		for (const dest of Object.values(allTokens)) {
 			if (getBalance(dest.address).raw > 0n) {
@@ -50,5 +50,5 @@ export function useTokensWithBalance(): TToken[] {
 		return withBalance;
 	}, [allTokens, getBalance]);
 
-	return filteredBalances;
+	return {tokensWithBalance, isLoading};
 }

@@ -1,4 +1,10 @@
 import {getAddress, zeroAddress} from 'viem';
+import {getClient} from '@yearn-finance/web-lib/utils/wagmi/utils';
+
+import {ETH_ADDRESS} from './constants';
+import {supportedNetworks} from './tools.chains';
+
+import type {GetBytecodeReturnType} from 'viem';
 
 export type TAddressSmol = '/^0x[0-9a-f]{40}$/i';
 export type TAddressWagmi = `0x${string}`;
@@ -84,6 +90,10 @@ export function isZeroAddress(address?: string): boolean {
 	return toAddress(address) === toAddress(zeroAddress);
 }
 
+export function isNullAddress(address?: string): boolean {
+	return toAddress(address) === ETH_ADDRESS;
+}
+
 /******************************************************************************
  ** truncateHex is used to trucate a full hex string to a specific size with
  ** a ... in the middle. Ex: 0x1234567890abcdef1234567890abcdef12345678
@@ -130,4 +140,29 @@ export function getColorFromAdddress({address}: {address: TAddress}): string {
 		color += value.toString(16).padStart(2, '0');
 	}
 	return color;
+}
+
+export async function getIsSmartContract({
+	address,
+	chainId,
+	checkAllNetworks = false
+}: {
+	address: TAddress;
+	chainId: number;
+	checkAllNetworks?: boolean;
+}): Promise<boolean> {
+	try {
+		const getBytecodeAsync = async (networkId: number): Promise<GetBytecodeReturnType> => {
+			const publicClient = getClient(networkId);
+			return publicClient.getBytecode({address});
+		};
+
+		if (checkAllNetworks) {
+			const promisesArray = supportedNetworks.map(async network => getBytecodeAsync(network.id));
+			return Boolean(await Promise.any(promisesArray));
+		}
+		return Boolean(await getBytecodeAsync(chainId));
+	} catch (error) {
+		return false;
+	}
 }

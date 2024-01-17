@@ -51,7 +51,7 @@ function MigrateTokenRow(props: {index: number; token: TToken}): ReactElement {
 export function Migrate(): ReactElement {
 	const {configuration, dispatchConfiguration} = useMigrate();
 	const {isLoading} = useWallet();
-	const tokensWithBalance = useTokensWithBalance();
+	const {tokensWithBalance} = useTokensWithBalance();
 
 	return (
 		<section>

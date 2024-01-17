@@ -2,7 +2,6 @@ import React, {Fragment, useCallback, useMemo, useState} from 'react';
 import {Button} from 'components/Primitives/Button';
 import {useWallet} from 'contexts/useWallet';
 import {transferERC20, transferEther} from 'utils/actions';
-import {notifyMigrate} from 'utils/notifier';
 import {getTransferTransaction} from 'utils/tools.gnosis';
 import {useSafeAppsSDK} from '@gnosis.pm/safe-apps-react-sdk';
 import {IconCircleCheck} from '@icons/IconCircleCheck';
@@ -144,7 +143,6 @@ function SpendingWizard(props: {onHandleMigration: VoidFunction}): ReactElement 
 }
 
 export function MigrateWizard(): ReactElement {
-	const {address} = useWeb3();
 	const {safeChainID} = useChainID();
 	const {configuration, dispatchConfiguration} = useMigrate();
 	const {balances, refresh, balancesNonce} = useWallet();
@@ -288,14 +286,14 @@ export function MigrateWizard(): ReactElement {
 					type: 'success',
 					content: 'Your transaction has been created! You can now sign and execute it!'
 				});
-				notifyMigrate({
-					chainID: safeChainID,
-					to: toAddress(configuration.receiver?.address),
-					tokensMigrated: migratedTokens,
-					hashes: migratedTokens.map((): Hex => safeTxHash as Hex),
-					type: 'SAFE',
-					from: toAddress(address)
-				});
+				// notifyMigrate({
+				// 	chainID: safeChainID,
+				// 	to: toAddress(configuration.receiver?.address),
+				// 	tokensMigrated: migratedTokens,
+				// 	hashes: migratedTokens.map((): Hex => safeTxHash as Hex),
+				// 	type: 'SAFE',
+				// 	from: toAddress(address)
+				// });
 			} catch (error) {
 				set_migrateStatus({...defaultTxStatus, success: false});
 				toast({
@@ -304,7 +302,7 @@ export function MigrateWizard(): ReactElement {
 				});
 			}
 		},
-		[configuration.receiver?.address, sdk.txs, safeChainID, address]
+		[configuration.receiver?.address, sdk.txs]
 	);
 
 	/**********************************************************************************************
@@ -359,26 +357,8 @@ export function MigrateWizard(): ReactElement {
 			} else {
 				set_migrateStatus(defaultTxStatus);
 			}
-
-			notifyMigrate({
-				chainID: safeChainID,
-				to: toAddress(configuration.receiver?.address),
-				tokensMigrated: migratedTokens,
-				hashes: hashMessage,
-				type: 'EOA',
-				from: toAddress(address)
-			});
 		}
-	}, [
-		configuration.tokens,
-		configuration.receiver?.address,
-		isWalletSafe,
-		onMigrateSelectedForGnosis,
-		onMigrateERC20,
-		onMigrateETH,
-		safeChainID,
-		address
-	]);
+	}, [configuration.tokens, isWalletSafe, onMigrateSelectedForGnosis, onMigrateERC20, onMigrateETH]);
 
 	return (
 		<div className={'col-span-12 mt-4'}>
