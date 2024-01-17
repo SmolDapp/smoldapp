@@ -78,7 +78,7 @@ function SendTokenRow({
 
 export function Send(): ReactElement {
 	const {configuration, dispatchConfiguration} = useSendFlow();
-	const {initialStateFromUrl, stateFromUrl} = useSendQueryManagement();
+	const {initialStateFromUrl} = useSendQueryManagement();
 
 	const {tokenList, getToken} = useTokenList();
 	const isReceiverERC20 = Boolean(configuration.receiver.address && tokenList[configuration.receiver.address]);
@@ -104,6 +104,8 @@ export function Send(): ReactElement {
 		initialStateFromUrl.tokens.slice(1).forEach(() => onAddToken());
 	}, [initialStateFromUrl]);
 
+	console.warn(initialStateFromUrl);
+
 	return (
 		<div className={'w-full max-w-[444px]'}>
 			<div className={'mb-6'}>
@@ -127,7 +129,7 @@ export function Send(): ReactElement {
 									? toBigInt(initialStateFromUrl?.values[index])
 									: undefined,
 								token: initialStateFromUrl?.tokens?.[index]
-									? getToken(toAddress(stateFromUrl?.tokens?.[index]))
+									? getToken(toAddress(initialStateFromUrl?.tokens?.[index]))
 									: undefined
 							}}
 						/>
