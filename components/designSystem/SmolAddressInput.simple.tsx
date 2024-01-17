@@ -186,8 +186,11 @@ export function SmolAddressInputSimple(
 		if (value.isValid === false) {
 			return 'border-red';
 		}
-		return 'border-neutral-400';
-	}, [isFocused, value.isValid]);
+		if (rest.disabled) {
+			return 'border-transparent';
+		}
+		return 'border-neutral-400 disabled:border-transparent';
+	}, [isFocused, rest.disabled, value.isValid]);
 
 	const getHasStatusIcon = useCallback((): boolean => {
 		if (!currentInput.current) {
@@ -209,6 +212,7 @@ export function SmolAddressInputSimple(
 					'h-20 z-20 relative',
 					'flex flex-row justify-between items-center cursor-text',
 					'p-2 pl-4 group rounded-lg overflow-hidden border',
+					'transition-colors',
 					props.disabled ? 'bg-neutral-300 cursor-default' : 'bg-neutral-0',
 					getBorderColor()
 				)}>
@@ -250,7 +254,6 @@ export function SmolAddressInputSimple(
 							'w-full border-none bg-transparent p-0 text-xl transition-all pr-6',
 							'text-neutral-900 placeholder:text-neutral-600 caret-neutral-700',
 							'focus:placeholder:text-neutral-300 placeholder:transition-colors',
-							'disabled:bg-neutral-300 transition-colors',
 							!currentLabel.current || isFocused ? 'translate-y-2' : 'translate-y-0'
 						)}
 						type={'text'}
@@ -263,6 +266,7 @@ export function SmolAddressInputSimple(
 						aria-invalid={!isFocused && value.isValid === false}
 						onFocus={getOnFocus}
 						onBlur={getOnBlur}
+						tabIndex={props.tabIndex}
 						{...rest}
 					/>
 

@@ -16,6 +16,7 @@ type TAppProp = {
 	title: string;
 	description: string;
 	children: ReactNode;
+	action?: ReactNode;
 };
 function App(props: TAppProp): ReactElement {
 	return (
@@ -35,9 +36,12 @@ function App(props: TAppProp): ReactElement {
 				/>
 			</div>
 			<section className={'-mt-2 w-full p-10 pt-0'}>
-				<div className={'mb-6'}>
-					<h1 className={'text-3xl font-bold text-neutral-900'}>{props.title}</h1>
-					<p className={'text-base text-neutral-600'}>{props.description}</p>
+				<div className={'mb-6 flex w-full flex-row justify-between md:max-w-444'}>
+					<div>
+						<h1 className={'text-3xl font-bold text-neutral-900'}>{props.title}</h1>
+						<p className={'text-base text-neutral-600'}>{props.description}</p>
+					</div>
+					{props.action ? <div className={'mt-3'}>{props.action}</div> : null}
 				</div>
 				{props.children}
 			</section>
@@ -49,12 +53,14 @@ type TComponent = NextComponentType & {
 	AppName: string;
 	AppDescription: string;
 	getLayout: (p: ReactElement, router: NextRouter) => ReactElement;
+	getAction: () => ReactElement;
 };
 export default function Layout(props: AppProps): ReactElement {
 	const {Component, router} = props;
 	const getLayout = (Component as TComponent).getLayout || ((page: ReactElement): ReactElement => page);
 	const appName = (Component as TComponent).AppName || 'App';
 	const appDescription = (Component as TComponent).AppDescription || '';
+	const appAction = (Component as TComponent).getAction || (() => null);
 
 	return (
 		<div className={'mx-auto mt-10 w-full max-w-6xl pl-4 pr-8'}>
@@ -81,7 +87,8 @@ export default function Layout(props: AppProps): ReactElement {
 						<WithAddressBook>
 							<App
 								title={appName}
-								description={appDescription}>
+								description={appDescription}
+								action={appAction()}>
 								<motion.div
 									initial={{scale: 0.9, opacity: 0}}
 									animate={{scale: 1, opacity: 1}}
