@@ -13,9 +13,10 @@ export const DropdownMenuContent = forwardRef(
 		<Portal>
 			<Content
 				ref={ref}
+				align={'start'}
 				sideOffset={sideOffset}
 				className={cl(
-					'z-50 min-w-[8rem] overflow-hidden rounded-md border border-neutral-400 bg-neutral-0 p-1',
+					'z-50 min-w-[16rem] overflow-hidden rounded-md border border-neutral-400 bg-neutral-0 p-1',
 					'data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95',
 					'data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95',
 					'data-[side=bottom]:slide-in-from-top-2',

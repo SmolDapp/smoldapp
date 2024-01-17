@@ -13,6 +13,7 @@ export function ProfileBox(): ReactElement {
 			<AddressBookEntryAvatar
 				sizeClassname={'h-10 w-10 min-w-[40px]'}
 				isLoading={isLoadingAvatar || isConnecting}
+				label={ens || undefined}
 				address={address}
 				src={avatar}
 			/>

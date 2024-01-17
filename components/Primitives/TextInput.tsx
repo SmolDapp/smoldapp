@@ -9,7 +9,7 @@ export function TextInput(
 		inputRef?: RefObject<HTMLInputElement>;
 	} & Omit<InputHTMLAttributes<HTMLInputElement>, 'value' | 'onChange'>
 ): ReactElement {
-	const {value, onChange, ...rest} = props;
+	const {value, onChange, inputRef, ...rest} = props;
 	return (
 		<input
 			className={'input'}
@@ -19,7 +19,7 @@ export function TextInput(
 			spellCheck={'false'}
 			value={value}
 			onChange={e => onChange(e.target.value)}
-			ref={props.inputRef}
+			ref={inputRef}
 			{...rest}
 		/>
 	);
