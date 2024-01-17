@@ -104,8 +104,6 @@ export function Send(): ReactElement {
 		initialStateFromUrl.tokens.slice(1).forEach(() => onAddToken());
 	}, [initialStateFromUrl]);
 
-	console.warn(initialStateFromUrl);
-
 	return (
 		<div className={'w-full max-w-[444px]'}>
 			<div className={'mb-6'}>
