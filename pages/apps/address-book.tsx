@@ -6,6 +6,7 @@ import {useAddressBook} from 'contexts/useAddressBook';
 import Papa from 'papaparse';
 import {LayoutGroup, motion} from 'framer-motion';
 import {cl, toAddress} from '@builtbymom/web3/utils';
+import {IconEmptyAddressBook} from '@icons/IconEmptyAddressBook';
 import IconImport from '@icons/IconImport';
 import {IconPlus} from '@icons/IconPlus';
 
@@ -20,11 +21,22 @@ export type TAddressBookEntryReducer =
 	| {type: 'SET_CHAINS'; payload: number[]}
 	| {type: 'SET_IS_FAVORITE'; payload: boolean};
 
-type TAddressBookActions = {
-	onOpenCurtain: () => void;
-};
-function AddressBookActions(props: TAddressBookActions): ReactElement {
-	const {addEntry, listEntries} = useAddressBook();
+function AddContactButton(props: {onOpenCurtain: VoidFunction; label?: string}): ReactElement {
+	return (
+		<button
+			onClick={props.onOpenCurtain}
+			className={cl(
+				'rounded-lg p-2 text-xs flex flex-row items-center',
+				'bg-primary text-neutral-900 transition-colors hover:bg-primaryHover'
+			)}>
+			<IconPlus className={'mr-2 size-3 text-neutral-900'} />
+			{props.label || 'Add contact'}
+		</button>
+	);
+}
+
+function ImportContactsButton(props: {className?: string}): ReactElement {
+	const {addEntry} = useAddressBook();
 
 	const handleFileUpload = (e: ChangeEvent<HTMLInputElement>): void => {
 		if (!e.target.files) {
@@ -105,6 +117,32 @@ function AddressBookActions(props: TAddressBookActions): ReactElement {
 		reader.readAsBinaryString(file);
 	};
 
+	return (
+		<button
+			onClick={() => document.querySelector<HTMLInputElement>('#file-upload')?.click()}
+			className={cl(
+				props.className,
+				'rounded-lg p-2 text-xs flex flex-row items-center relative overflow-hidden',
+				'bg-neutral-300 text-neutral-900 transition-colors hover:bg-neutral-400'
+			)}>
+			<input
+				id={'file-upload'}
+				tabIndex={-1}
+				className={'absolute inset-0 !cursor-pointer opacity-0'}
+				type={'file'}
+				accept={'.csv'}
+				onClick={event => event.stopPropagation()}
+				onChange={handleFileUpload}
+			/>
+			<IconImport className={'mr-2 size-3 text-neutral-900'} />
+			{'Import Contacts'}
+		</button>
+	);
+}
+
+function ExportContactsButton(): ReactElement {
+	const {listEntries} = useAddressBook();
+
 	const downloadEntries = useCallback(async () => {
 		const entries = await listEntries();
 		const clonedEntries = structuredClone(entries);
@@ -132,52 +170,53 @@ function AddressBookActions(props: TAddressBookActions): ReactElement {
 	}, [listEntries]);
 
 	return (
+		<button
+			onClick={downloadEntries}
+			className={cl(
+				'rounded-lg p-2 text-xs flex flex-row items-center',
+				'bg-neutral-300 text-neutral-900 transition-colors hover:bg-neutral-400'
+			)}>
+			<IconImport className={'mr-2 size-3 rotate-180 text-neutral-900'} />
+			{'Download Contacts'}
+		</button>
+	);
+}
+
+function AddressBookActions(props: {onOpenCurtain: VoidFunction}): ReactElement {
+	return (
 		<div className={'flex flex-row space-x-2'}>
-			<button
-				onClick={props.onOpenCurtain}
-				className={cl(
-					'rounded-lg p-2 text-xs flex flex-row items-center',
-					'bg-primary text-neutral-900 transition-colors hover:bg-primaryHover'
-				)}>
-				<IconPlus className={'mr-2 size-3 text-neutral-900'} />
-				{'Add contact'}
-			</button>
+			<AddContactButton onOpenCurtain={props.onOpenCurtain} />
+			<ImportContactsButton />
+			<ExportContactsButton />
+		</div>
+	);
+}
 
-			<button
-				onClick={() => document.querySelector<HTMLInputElement>('#file-upload')?.click()}
-				className={cl(
-					'rounded-lg p-2 text-xs flex flex-row items-center relative overflow-hidden',
-					'bg-neutral-300 text-neutral-900 transition-colors hover:bg-neutral-400'
-				)}>
-				<input
-					id={'file-upload'}
-					tabIndex={-1}
-					className={'absolute inset-0 !cursor-pointer opacity-0'}
-					type={'file'}
-					accept={'.csv'}
-					onClick={event => event.stopPropagation()}
-					onChange={handleFileUpload}
-				/>
-				<IconImport className={'mr-2 size-3 text-neutral-900'} />
-				{'Import Contacts'}
-			</button>
-
-			<button
-				onClick={downloadEntries}
-				className={cl(
-					'rounded-lg p-2 text-xs flex flex-row items-center',
-					'bg-neutral-300 text-neutral-900 transition-colors hover:bg-neutral-400'
-				)}>
-				<IconImport className={'mr-2 size-3 rotate-180 text-neutral-900'} />
-				{'Download Contacts'}
-			</button>
+function EmptyAddressBook(props: {onOpenCurtain: VoidFunction}): ReactElement {
+	return (
+		<div className={'flex size-full flex-col items-center  rounded-lg bg-neutral-200 px-11 py-[72px]'}>
+			<div className={'mb-6 flex size-40 items-center justify-center rounded-full bg-neutral-0'}>
+				<IconEmptyAddressBook />
+			</div>
+			<div className={'flex flex-col items-center justify-center'}>
+				<p className={'text-center text-base text-neutral-600'}>
+					{'Your Address Book is empty. Add a contact manually or import your saved contacts'}
+				</p>
+				<div className={'flex flex-row gap-x-2 pt-6'}>
+					<AddContactButton onOpenCurtain={props.onOpenCurtain} />
+					<ImportContactsButton className={'!bg-neutral-0'} />
+				</div>
+			</div>
 		</div>
 	);
 }
 
 function AddressBookPage(): ReactElement {
 	const {listCachedEntries, updateEntry} = useAddressBook();
-	const [curtainStatus, set_curtainStatus] = useState({isOpen: false, isEditing: false});
+	const [curtainStatus, set_curtainStatus] = useState<{isOpen: boolean; isEditing: boolean; label?: string}>({
+		isOpen: false,
+		isEditing: false
+	});
 	const [searchValue, set_searchValue] = useState('');
 
 	const entryReducer = (state: TAddressBookEntry, action: TAddressBookEntryReducer): TAddressBookEntry => {
@@ -236,43 +275,82 @@ function AddressBookPage(): ReactElement {
 		});
 	}, [filteredEntries]);
 
+	const hasNoEntries = listCachedEntries().length === 0;
+	const hasNoFilteredEntry = entries.length === 0;
 	return (
 		<Fragment>
-			<div className={'w-108'}>
-				<div className={'my-4 grid gap-4'}>
-					<AddressBookActions onOpenCurtain={() => set_curtainStatus({isOpen: true, isEditing: true})} />
-					<TextInput
-						placeholder={'Search ...'}
-						value={searchValue}
-						onChange={set_searchValue}
-					/>
+			{hasNoEntries ? (
+				<div className={'w-444 md:h-content md:min-h-content'}>
+					<EmptyAddressBook onOpenCurtain={() => set_curtainStatus({isOpen: true, isEditing: true})} />
 				</div>
-				<LayoutGroup>
-					<motion.div
-						layout
-						className={'mt-2'}>
-						{entries.map(entry => (
-							<motion.div
-								layout
-								initial={'initial'}
-								key={`${entry.address}${entry.id}`}>
-								<AddressBookEntry
-									entry={entry}
-									onSelect={selected => {
-										dispatch({type: 'SET_SELECTED_ENTRY', payload: selected});
-										set_curtainStatus({isOpen: true, isEditing: false});
-									}}
-								/>
-							</motion.div>
-						))}
-					</motion.div>
-				</LayoutGroup>
-			</div>
+			) : (
+				<div className={'w-444'}>
+					<div className={'my-4 grid gap-4'}>
+						<AddressBookActions onOpenCurtain={() => set_curtainStatus({isOpen: true, isEditing: true})} />
+						<TextInput
+							placeholder={'Search ...'}
+							value={searchValue}
+							onChange={set_searchValue}
+						/>
+					</div>
+					<LayoutGroup>
+						<motion.div
+							layout
+							className={'mt-2'}>
+							{entries.map(entry => (
+								<motion.div
+									layout
+									initial={'initial'}
+									key={`${entry.address}${entry.id}`}>
+									<AddressBookEntry
+										entry={entry}
+										onSelect={selected => {
+											dispatch({type: 'SET_SELECTED_ENTRY', payload: selected});
+											set_curtainStatus({isOpen: true, isEditing: false});
+										}}
+									/>
+								</motion.div>
+							))}
+							{hasNoFilteredEntry && (
+								<div
+									className={
+										'flex flex-col items-center justify-center rounded-lg bg-neutral-200 px-11 py-[72px]'
+									}>
+									<div
+										className={
+											'mb-6 flex size-40 items-center justify-center rounded-full bg-neutral-0'
+										}>
+										<IconEmptyAddressBook />
+									</div>
+									<div className={'flex flex-col items-center justify-center'}>
+										<p className={'text-center text-base text-neutral-600'}>
+											{`We couldn't find any contact matching "${searchValue}".`}
+										</p>
+										<div className={'flex flex-row gap-x-2 pt-6'}>
+											<AddContactButton
+												label={`Add ${searchValue}`}
+												onOpenCurtain={() =>
+													set_curtainStatus({
+														isOpen: true,
+														isEditing: true,
+														label: searchValue
+													})
+												}
+											/>
+										</div>
+									</div>
+								</div>
+							)}
+						</motion.div>
+					</LayoutGroup>
+				</div>
+			)}
 			<AddressBookCurtain
 				selectedEntry={selectedEntry}
 				dispatch={dispatch}
 				isOpen={curtainStatus.isOpen}
 				isEditing={curtainStatus.isEditing}
+				initialLabel={curtainStatus.label}
 				onOpenChange={status => {
 					set_curtainStatus(status);
 					if (!status.isOpen) {

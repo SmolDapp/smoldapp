@@ -46,9 +46,11 @@ module.exports = {
 				mono: ['Source Code Pro', ...defaultTheme.fontFamily.mono]
 			},
 			height: {
+				content: '656px',
 				app: 'calc(100dvh - 80px)'
 			},
 			minHeight: {
+				content: '656px',
 				app: 'calc(100dvh - 80px)'
 			},
 			width: {

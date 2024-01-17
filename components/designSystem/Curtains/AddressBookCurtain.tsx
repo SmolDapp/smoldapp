@@ -226,7 +226,7 @@ function AddressInput(props: {
 			inputRef.current?.setCustomValidity('');
 			onChange();
 		}
-	}, [props.addressLike, getCachedEntry, props.selectedEntry.id, onChange, props]);
+	}, [props.addressLike, getCachedEntry, props.selectedEntry.id, onChange]);
 
 	const getErrorMessage = useCallback((): string | undefined => {
 		if (props.addressLike.isValid === 'undetermined') {
@@ -281,6 +281,7 @@ export function AddressBookCurtain(props: {
 	dispatch: Dispatch<TAddressBookEntryReducer>;
 	isOpen: boolean;
 	isEditing: boolean;
+	initialLabel?: string;
 	onOpenChange: (props: {isOpen: boolean; isEditing: boolean}) => void;
 }): ReactElement {
 	const router = useRouter();
@@ -299,6 +300,8 @@ export function AddressBookCurtain(props: {
 		isValid: isAddress(props.selectedEntry.address) ? true : 'undetermined',
 		source: 'defaultValue'
 	});
+
+	const onIncrementNonce = useCallback(() => set_nonce(n => n + 1), []);
 
 	const onFormSubmit = useCallback(
 		async (event: React.FormEvent<HTMLFormElement>) => {
@@ -339,6 +342,7 @@ export function AddressBookCurtain(props: {
 
 	useEffect(() => set_currentEntry(props.selectedEntry), [props.selectedEntry]);
 	useEffect(() => set_isEditMode(props.isEditing), [props.isEditing]);
+	useEffect(() => set_currentEntry({...currentEntry, label: props.initialLabel ?? ''}), [props.initialLabel]);
 
 	return (
 		<Dialog.Root
@@ -412,7 +416,7 @@ export function AddressBookCurtain(props: {
 							addressLike={addressLike}
 							isEditMode={isEditMode}
 							onEdit={set_isEditMode}
-							onChange={() => set_nonce(n => n + 1)}
+							onChange={onIncrementNonce}
 							onChangeAddressLike={set_addressLike}
 						/>
 
