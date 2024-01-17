@@ -8,12 +8,13 @@ import {Warning} from '@common/Primitives/Warning';
 import {useSendFlow} from './useSendFlow';
 
 import type {ReactElement} from 'react';
+import type {TWarningType} from '@common/Primitives/Warning';
 
-export function SendWarning({isReceiverERC20}: {isReceiverERC20: boolean}): ReactElement | null {
+export function SendStatus({isReceiverERC20}: {isReceiverERC20: boolean}): ReactElement | null {
 	const {configuration} = useSendFlow();
 	const {safeChainID} = useChainID();
 
-	const [warningMessage, set_warningMessage] = useState<string | null>(null);
+	const [status, set_status] = useState<{type: TWarningType; message: string} | null>(null);
 
 	const {getEntry} = useAddressBook();
 
@@ -28,37 +29,41 @@ export function SendWarning({isReceiverERC20}: {isReceiverERC20: boolean}): Reac
 		const fromAddressBook = await getEntry({address: configuration.receiver.address});
 
 		if (isSmartContract && !fromAddressBook && !isReceiverERC20) {
-			return set_warningMessage(
-				'You are going to send tokens to smart contract that is not present in the Address Book'
-			);
+			return set_status({
+				message: 'You are going to send tokens to smart contract that is not present in the Address Book',
+				type: 'warning'
+			});
 		}
 
 		if (isNullAddress(configuration.receiver.address)) {
-			return set_warningMessage('Impossible to sent tokens to null address');
+			return set_status({message: 'Impossible to sent tokens to null address', type: 'error'});
 		}
 
 		if (isReceiverERC20) {
-			return set_warningMessage('Receiver is an ERC20 token');
+			return set_status({message: 'Receiver is an ERC20 token', type: 'error'});
 		}
 
 		if (configuration.receiver.address && !fromAddressBook) {
-			return set_warningMessage('Address is not present in the Address Book');
+			return set_status({message: 'Address is not present in the Address Book', type: 'warning'});
 		}
 
 		if (configuration.receiver.address && !fromAddressBook?.chains.includes(safeChainID)) {
-			return set_warningMessage('Address in the Address Book is related to different chain');
+			return set_status({message: 'Address in the Address Book is related to different chain', type: 'warning'});
 		}
 
-		return set_warningMessage(null);
+		return set_status(null);
 	}, [configuration.receiver.address, getEntry, isReceiverERC20, safeChainID]);
 
-	if (!warningMessage) {
+	if (!status) {
 		return null;
 	}
 
 	return (
 		<div className={'mb-4'}>
-			<Warning message={warningMessage} />
+			<Warning
+				message={status?.message}
+				type={status.type}
+			/>
 		</div>
 	);
 }

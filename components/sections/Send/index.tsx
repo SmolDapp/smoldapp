@@ -7,7 +7,7 @@ import {IconCross} from '@icons/IconCross';
 import {IconSpinner} from '@icons/IconSpinner';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
 
-import {SendWarning} from './SendWarning';
+import {SendStatus} from './SendStatus';
 import {useSendFlow} from './useSendFlow';
 import {SendWizard} from './Wizard';
 
@@ -109,7 +109,7 @@ export function Send(): ReactElement {
 					{'+Add token'}
 				</button>
 			</div>
-			<SendWarning isReceiverERC20={isReceiverERC20} />
+			<SendStatus isReceiverERC20={isReceiverERC20} />
 			<SendWizard isReceiverERC20={isReceiverERC20} />
 		</div>
 	);
