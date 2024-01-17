@@ -273,8 +273,7 @@ export function SendWizard({isReceiverERC20}: {isReceiverERC20: boolean}): React
 	const isSendButtonDisabled =
 		isZeroAddress(configuration.receiver?.address) ||
 		isNullAddress(configuration.receiver.address) ||
-		configuration.inputs.filter(input => input.token && input.normalizedBigAmount.raw !== toBigInt(0)).length ===
-			0 ||
+		configuration.inputs.some(input => input.token && input.normalizedBigAmount.raw === toBigInt(0)) ||
 		!configuration.inputs.every(input => input.isValid === true) ||
 		isReceiverERC20;
 
