@@ -5,15 +5,9 @@ import {isNonNullable} from '@utils/types/typeGuards';
  *
  * It is a generic helper.
  */
-export function serializeSearchStateForUrl(
-	state: {[key: string]: unknown},
-	/**
-	 * These keys will always be serialized, even if they have a falsy value.
-	 */
-	forceSerializeKeys: string[] = []
-): string {
+export function serializeSearchStateForUrl(state: {[key: string]: unknown}): string {
 	const mappedStateEntries = Object.entries(state).map(([key, value]) => {
-		if (!value && !forceSerializeKeys.includes(key)) {
+		if (!value) {
 			return undefined;
 		}
 

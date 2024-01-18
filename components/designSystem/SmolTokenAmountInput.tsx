@@ -30,9 +30,6 @@ type TTokenAmountInput = {
 	showPercentButtons?: boolean;
 	onSetValue: (value: Partial<TSendInputElement>) => void;
 	value: TSendInputElement;
-	/**
-	 * Should be present if we want to make use of query params syncing
-	 */
 	initialValue?: Partial<{amount: bigint; token: TToken}>;
 };
 

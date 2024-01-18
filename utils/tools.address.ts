@@ -11,6 +11,21 @@ export type TAddressWagmi = `0x${string}`;
 export type TAddress = TAddressWagmi;
 export type TAddressLike = TAddressSmol | TAddressWagmi | string;
 
+export type TInputAddressLike = {
+	address: TAddress | undefined;
+	label: string;
+	isValid: boolean | 'undetermined';
+	source?: 'typed' | 'addressBook' | 'defaultValue';
+	error?: string;
+};
+
+export const defaultInputAddressLike: TInputAddressLike = {
+	address: undefined,
+	label: '',
+	isValid: 'undetermined',
+	source: 'typed'
+};
+
 /******************************************************************************
  ** toAddress - Wagmi only requires a 0xString as a valid address. To use our
  ** safest version, we need to convert it between types, and the other way

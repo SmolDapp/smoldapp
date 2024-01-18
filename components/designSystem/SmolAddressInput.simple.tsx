@@ -3,17 +3,14 @@ import {getEnsName} from 'viem/ens';
 import {IconCircleCheck} from '@icons/IconCircleCheck';
 import {IconCircleCross} from '@icons/IconCircleCross';
 import {useAsyncAbortable, useUpdateEffect} from '@react-hookz/web';
-import {isAddress, toAddress, truncateHex} from '@utils/tools.address';
+import {defaultInputAddressLike, isAddress, toAddress, truncateHex} from '@utils/tools.address';
 import {checkENSValidity} from '@utils/tools.ens';
 import {getPublicClient} from '@wagmi/core';
 import {IconLoader} from '@yearn-finance/web-lib/icons/IconLoader';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
 
-import {defaultInputAddressLike} from './SmolAddressInput';
-
 import type {InputHTMLAttributes, ReactElement, RefObject} from 'react';
-import type {TAddress} from '@utils/tools.address';
-import type {TInputAddressLike} from './SmolAddressInput';
+import type {TAddress, TInputAddressLike} from '@utils/tools.address';
 
 export function SmolAddressInputSimple(
 	props: {

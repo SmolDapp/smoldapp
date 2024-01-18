@@ -10,8 +10,8 @@ import TokenInput from '@common/TokenInput';
 import {useMigrate} from './useMigrate';
 import {MigrateWizard} from './Wizard';
 
-import type {TInputAddressLike} from 'components/designSystem/SmolAddressInput';
 import type {ReactElement} from 'react';
+import type {TInputAddressLike} from '@utils/tools.address';
 import type {TToken} from '@utils/types/types';
 
 function MigrateTokenRow(props: {index: number; token: TToken}): ReactElement {

@@ -1,4 +1,4 @@
-import {useEffect} from 'react';
+import {useCallback} from 'react';
 import {SmolAddressInput} from 'components/designSystem/SmolAddressInput';
 import {SmolTokenAmountInput} from 'components/designSystem/SmolTokenAmountInput';
 import {useTokenList} from 'contexts/useTokenList';
@@ -6,20 +6,19 @@ import {IconCircleCheck} from '@icons/IconCircleCheck';
 import {IconCircleCross} from '@icons/IconCircleCross';
 import {IconCross} from '@icons/IconCross';
 import {IconSpinner} from '@icons/IconSpinner';
-import {isString} from '@utils/types/typeGuards';
-import {getStateFromUrlQuery} from '@utils/url/getStateFromUrlQuery';
+import {useDeepCompareEffect} from '@react-hookz/web';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
 import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
 
 import {SendWarning} from './SendWarning';
 import {useSendFlow} from './useSendFlow';
+import {useSendQueryManagement} from './useSendQuery';
 import {SendWizard} from './Wizard';
 
-import type {TInputAddressLike} from 'components/designSystem/SmolAddressInput';
 import type {TSendInputElement} from 'components/designSystem/SmolTokenAmountInput';
-import type {ParsedUrlQuery} from 'querystring';
 import type {ReactElement} from 'react';
+import type {TInputAddressLike} from '@utils/tools.address';
 import type {TToken} from '@utils/types/types';
 
 function SendTokenRow({
@@ -77,24 +76,19 @@ function SendTokenRow({
 	);
 }
 
-export function Send({queryParams}: {queryParams: ParsedUrlQuery}): ReactElement {
+export function Send(): ReactElement {
 	const {configuration, dispatchConfiguration} = useSendFlow();
+	const {initialStateFromUrl} = useSendQueryManagement();
 
 	const {tokenList, getToken} = useTokenList();
 	const isReceiverERC20 = Boolean(configuration.receiver.address && tokenList[configuration.receiver.address]);
 
-	const onAddToken = (): void => {
+	const onAddToken = useCallback((): void => {
 		dispatchConfiguration({
 			type: 'ADD_INPUT',
 			payload: undefined
 		});
-	};
-
-	const stateFromUrl = getStateFromUrlQuery(queryParams, ({string, array}) => ({
-		to: string('to'),
-		tokens: array('tokens'),
-		values: array('values')
-	}));
+	}, [dispatchConfiguration]);
 
 	const onSetRecipient = (value: TInputAddressLike): void => {
 		dispatchConfiguration({type: 'SET_RECEIVER', payload: value});
@@ -103,12 +97,12 @@ export function Send({queryParams}: {queryParams: ParsedUrlQuery}): ReactElement
 	/**
 	 * Add missing token inputs if tokens are present in the url query
 	 */
-	useEffect(() => {
-		if (!stateFromUrl?.tokens || !Array.isArray(stateFromUrl.tokens)) {
+	useDeepCompareEffect(() => {
+		if (!initialStateFromUrl || !Array.isArray(initialStateFromUrl.tokens)) {
 			return;
 		}
-		stateFromUrl.tokens.slice(1).forEach(() => onAddToken());
-	}, []);
+		initialStateFromUrl.tokens.slice(1).forEach(() => onAddToken());
+	}, [initialStateFromUrl]);
 
 	return (
 		<div className={'w-full max-w-[444px]'}>
@@ -117,7 +111,7 @@ export function Send({queryParams}: {queryParams: ParsedUrlQuery}): ReactElement
 				<SmolAddressInput
 					onSetValue={onSetRecipient}
 					value={configuration.receiver}
-					initialValue={isString(stateFromUrl?.to) ? stateFromUrl?.to : undefined}
+					initialStateFromUrl={initialStateFromUrl?.to}
 				/>
 			</div>
 			<div>
@@ -129,11 +123,11 @@ export function Send({queryParams}: {queryParams: ParsedUrlQuery}): ReactElement
 						<SendTokenRow
 							input={input}
 							initialValue={{
-								amount: stateFromUrl?.values?.[index]
-									? toBigInt(stateFromUrl?.values[index])
+								amount: initialStateFromUrl?.values?.[index]
+									? toBigInt(initialStateFromUrl?.values[index])
 									: undefined,
-								token: stateFromUrl?.tokens?.[index]
-									? getToken(toAddress(stateFromUrl?.tokens?.[index]))
+								token: initialStateFromUrl?.tokens?.[index]
+									? getToken(toAddress(initialStateFromUrl?.tokens?.[index]))
 									: undefined
 							}}
 						/>

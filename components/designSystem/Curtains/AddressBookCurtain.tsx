@@ -21,8 +21,7 @@ import {SmolAddressInputSimple} from '../SmolAddressInput.simple';
 
 import type {TAddressBookEntryReducer} from 'pages/apps/address-book';
 import type {Dispatch, ReactElement, SetStateAction} from 'react';
-import type {TAddress} from '@utils/tools.address';
-import type {TInputAddressLike} from '../SmolAddressInput';
+import type {TAddress, TInputAddressLike} from '@utils/tools.address';
 
 function EntryAvatarWrapper(props: {address: TAddress}): ReactElement {
 	const {data: ensName} = useEnsName({

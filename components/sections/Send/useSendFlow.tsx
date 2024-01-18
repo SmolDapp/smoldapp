@@ -1,14 +1,13 @@
 import React, {createContext, useContext, useMemo, useReducer} from 'react';
-import {defaultInputAddressLike} from 'components/designSystem/SmolAddressInput';
-import {useSyncUrlParams} from 'hooks/useSyncUrlParams';
 import {optionalRenderProps} from '@utils/react/optionalRenderProps';
-import {isString} from '@utils/types/typeGuards';
+import {defaultInputAddressLike} from '@utils/tools.address';
 import {toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 
-import type {TInputAddressLike} from 'components/designSystem/SmolAddressInput';
 import type {TSendInputElement} from 'components/designSystem/SmolTokenAmountInput';
 import type {Dispatch, ReactElement} from 'react';
 import type {TOptionalRenderProps} from '@utils/react/optionalRenderProps';
+import type {TInputAddressLike} from '@utils/tools.address';
+import type {TPartialExhaustive} from '@utils/types/types';
 
 export type TSendConfiguration = {
 	receiver: TInputAddressLike;
@@ -22,8 +21,15 @@ export type TSendActions =
 	| {type: 'SET_VALUE'; payload: Partial<TSendInputElement>}
 	| {type: 'RESET'; payload: undefined};
 
+export type TSendQuery = TPartialExhaustive<{
+	to: string;
+	tokens: string[];
+	values: string[];
+}>;
+
 export type TSend = {
 	configuration: TSendConfiguration;
+
 	dispatchConfiguration: Dispatch<TSendActions>;
 };
 
@@ -43,6 +49,7 @@ const defaultProps: TSend = {
 		receiver: defaultInputAddressLike,
 		inputs: [getNewInput()]
 	},
+
 	dispatchConfiguration: (): void => undefined
 };
 
@@ -81,17 +88,6 @@ export const SendContextApp = ({children}: {children: TOptionalRenderProps<TSend
 	};
 
 	const [configuration, dispatch] = useReducer(configurationReducer, defaultProps.configuration);
-
-	/**
-	 * Update the url query on every change in the UI
-	 */
-	useSyncUrlParams({
-		to: configuration.receiver.address,
-		tokens: configuration.inputs.map(input => input.token?.address).filter(isString),
-		values: configuration.inputs
-			.map(input => (input.amount === '' ? undefined : input.normalizedBigAmount?.raw.toString()))
-			.filter(isString)
-	});
 
 	const contextValue = useMemo(
 		(): TSend => ({
