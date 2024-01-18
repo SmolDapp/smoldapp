@@ -3,16 +3,15 @@ import assert from 'assert';
 import ChainStatus from 'components/apps/safe/ChainStatus';
 import {defaultInputAddressLike} from 'components/designSystem/SmolAddressInput';
 import {Button} from 'components/Primitives/Button';
+import {cl, isZeroAddress, toAddress} from '@builtbymom/web3/utils';
 import IconSquareMinus from '@icons/IconSquareMinus';
 import IconSquarePlus from '@icons/IconSquarePlus';
 import IconWarning from '@icons/IconWarning';
-import {isZeroAddress, toAddress} from '@utils/tools.address';
 import {supportedNetworks, supportedTestNetworks} from '@utils/tools.chains';
 import {fetchTransaction} from '@wagmi/core';
 import {AddressLike} from '@yearn-finance/web-lib/components/AddressLike';
 import {Renderable} from '@yearn-finance/web-lib/components/Renderable';
 import {toast} from '@yearn-finance/web-lib/components/yToast';
-import {cl} from '@yearn-finance/web-lib/utils/cl';
 import AddressInput from '@common/AddressInput';
 import {AddressLikeInput} from '@common/AddressLikeInput';
 import {Label} from '@common/Label';
@@ -23,7 +22,7 @@ import {CALL_INIT_SIGNATURE, decodeArgInitializers, retrieveSafeTxHash, SINGLETO
 import type {TInputAddressLike} from 'components/designSystem/SmolAddressInput';
 import type {ReactElement} from 'react';
 import type {Hex} from 'viem';
-import type {TAddress} from '@utils/tools.address';
+import type {TAddress} from '@builtbymom/web3/types';
 import type {TOwners} from './types';
 
 export function SectionDisplayOwners(): ReactElement {
@@ -209,9 +208,9 @@ export function SectionSafeAddressInput(): ReactElement {
 				)}>
 				<div
 					className={
-						'flex flex-row whitespace-pre rounded-md border border-red !bg-red/60 p-2 text-xs font-bold text-red'
+						'border-red !bg-red/60 text-red flex flex-row whitespace-pre rounded-md border p-2 text-xs font-bold'
 					}>
-					<IconWarning className={'mr-2 h-4 w-4 text-red'} />
+					<IconWarning className={'text-red mr-2 h-4 w-4'} />
 					{
 						'Uh oh, this doesn’t appear to be a Safe address.\nPlease check you typed the correct address as we couldn’t find a Safe for this address.'
 					}
@@ -558,7 +557,7 @@ export function SectionSeedInput(props: {onChange?: VoidFunction}): ReactElement
 							'flex flex-row whitespace-pre rounded-md border p-2 text-xs font-bold',
 							'border-orange-200 !bg-orange-200/60 text-orange-600'
 						)}>
-						<IconWarning className={'text-orange-600 mr-2 h-4 w-4'} />
+						<IconWarning className={'mr-2 h-4 w-4 text-orange-600'} />
 						{'The more characters you add, the longer it will take to find a safe (it can be hours).'}
 					</div>
 				</div>

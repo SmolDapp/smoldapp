@@ -5,7 +5,7 @@ import {ImageWithFallback} from '@common/ImageWithFallback';
 import {TokenListAddBox} from '@common/TokenList/TokenListAddBox';
 
 import type {Dispatch, ReactElement, SetStateAction} from 'react';
-import type {TToken, TTokenList} from '@utils/types/types';
+import type {TToken, TTokenList} from '@builtbymom/web3/types';
 
 type TTokenListHandlerPopover = {
 	lists: TTokenList[];
@@ -40,7 +40,7 @@ function TokenListHandlerPopover({
 					leave={'ease-in duration-200'}
 					leaveFrom={'opacity-100'}
 					leaveTo={'opacity-0'}>
-					<div className={'fixed inset-0 bg-primary-900/40 backdrop-blur-sm transition-opacity'} />
+					<div className={'bg-primary-900/40 fixed inset-0 backdrop-blur-sm transition-opacity'} />
 				</Transition.Child>
 
 				<div className={'fixed inset-0 z-10 w-screen overflow-y-auto'}>
@@ -131,7 +131,7 @@ function TokenListHandlerPopover({
 																		</p>
 																		<span
 																			className={
-																				'font-number mt-2 block !font-mono text-xxs text-neutral-600 transition-colors md:text-xs'
+																				'font-number text-xxs mt-2 block !font-mono text-neutral-600 transition-colors md:text-xs'
 																			}>
 																			{eachList.uri ? (
 																				<a

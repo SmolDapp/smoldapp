@@ -1,9 +1,9 @@
 import {type ReactElement, type ReactNode} from 'react';
 import {WithAddressBook} from 'contexts/useAddressBook';
 import {AnimatePresence, motion} from 'framer-motion';
+import {cl} from '@builtbymom/web3/utils';
 import {IconQuestionMark} from '@icons/IconQuestionMark';
 import {appWrapperVariants} from '@utils/animations';
-import {cl} from '@yearn-finance/web-lib/utils/cl';
 
 import {SideMenu} from './SideMenu';
 import {InfoCurtain} from './Curtains/InfoCurtain';
@@ -36,7 +36,7 @@ function App(props: TAppProp): ReactElement {
 				/>
 			</div>
 			<section className={'-mt-2 w-full p-10 pt-0'}>
-				<div className={'mb-6 flex w-full flex-row justify-between md:max-w-444'}>
+				<div className={'md:max-w-444 mb-6 flex w-full flex-row justify-between'}>
 					<div>
 						<h1 className={'text-3xl font-bold text-neutral-900'}>{props.title}</h1>
 						<p className={'text-base text-neutral-600'}>{props.description}</p>
@@ -64,12 +64,12 @@ export default function Layout(props: AppProps): ReactElement {
 
 	return (
 		<div className={'mx-auto mt-10 w-full max-w-6xl pl-4 pr-8'}>
-			<div className={'grid w-full grid-cols-root space-x-4'}>
+			<div className={'grid-cols-root grid w-full space-x-4'}>
 				<motion.nav
 					initial={{scale: 0.9, opacity: 0}}
 					animate={{scale: 1, opacity: 1}}
 					transition={{duration: 0.6, ease: 'easeInOut'}}
-					className={'sticky top-10 z-20 col-sidebar flex h-app flex-col rounded-lg bg-neutral-0'}>
+					className={'col-sidebar h-app bg-neutral-0 sticky top-10 z-20 flex flex-col rounded-lg'}>
 					<SideMenu />
 				</motion.nav>
 
@@ -82,7 +82,7 @@ export default function Layout(props: AppProps): ReactElement {
 						exit={'exit'}
 						initial={'initial'}
 						className={
-							'relative col-main mb-10 min-h-app w-full overflow-x-hidden rounded-lg bg-neutral-0'
+							'col-main min-h-app bg-neutral-0 relative mb-10 w-full overflow-x-hidden rounded-lg'
 						}>
 						<WithAddressBook>
 							<App

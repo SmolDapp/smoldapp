@@ -5,9 +5,9 @@ import IconBug from 'components/icons/IconBug';
 import html2canvas from 'html2canvas';
 import {useAccount} from 'wagmi';
 import axios from 'axios';
+import {toAddress, truncateHex} from '@builtbymom/web3/utils';
 import {Popover as PopoverHeadlessUI, Portal, Transition} from '@headlessui/react';
 import {useLocalStorageValue} from '@react-hookz/web';
-import {toAddress, truncateHex} from '@utils/tools.address';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 
 import type {ReactElement} from 'react';
@@ -118,7 +118,7 @@ export function FeebackPopover(): ReactElement {
 						'bg-primary-500 fixed bottom-5 right-5 flex h-10 w-10 items-center justify-center rounded-full'
 					}
 					ref={set_referenceElement}>
-					<IconBug className={'h-4 w-4 text-neutral-0'} />
+					<IconBug className={'text-neutral-0 h-4 w-4'} />
 				</PopoverHeadlessUI.Button>
 				<PopoverHeadlessUI.Overlay className={'fixed inset-0 bg-black opacity-30'} />
 				<Transition
@@ -136,13 +136,13 @@ export function FeebackPopover(): ReactElement {
 						{({close}): ReactElement => (
 							<div
 								className={
-									'flex flex-col space-y-2 overflow-hidden rounded-md border border-neutral-300/50 bg-neutral-0 p-6 pb-3 shadow shadow-transparent'
+									'bg-neutral-0 flex flex-col space-y-2 overflow-hidden rounded-md border border-neutral-300/50 p-6 pb-3 shadow shadow-transparent'
 								}>
 								<select
 									name={'type'}
 									id={'type'}
 									className={
-										'hover:bg-neutral-100/40 cursor-pointer border border-neutral-300/50 bg-transparent text-xs transition-colors focus:border-neutral-300/50'
+										'cursor-pointer border border-neutral-300/50 bg-transparent text-xs transition-colors hover:bg-neutral-100/40 focus:border-neutral-300/50'
 									}
 									onChange={({target: {value}}): void => {
 										if (isRequestTypeKnown(value)) {
@@ -157,7 +157,7 @@ export function FeebackPopover(): ReactElement {
 									cols={30}
 									rows={4}
 									className={
-										'hover:bg-neutral-100/40 resize-none border border-neutral-300/50 bg-transparent p-2 text-xs transition-colors focus:border-neutral-300/50'
+										'resize-none border border-neutral-300/50 bg-transparent p-2 text-xs transition-colors hover:bg-neutral-100/40 focus:border-neutral-300/50'
 									}
 									onChange={({target: {value}}): void => set_description(value)}
 									placeholder={`Describe the ${type} in detail`}
@@ -165,7 +165,7 @@ export function FeebackPopover(): ReactElement {
 								<input
 									id={'telegramHandle'}
 									className={
-										'hover:bg-neutral-100/40 resize-none border border-neutral-300/50 bg-transparent p-2 text-xs transition-colors focus:border-neutral-300/50'
+										'resize-none border border-neutral-300/50 bg-transparent p-2 text-xs transition-colors hover:bg-neutral-100/40 focus:border-neutral-300/50'
 									}
 									onChange={({target: {value}}): void => set_telegramHandle(value)}
 									placeholder={'Your telegram handle'}
@@ -173,7 +173,7 @@ export function FeebackPopover(): ReactElement {
 								<button
 									disabled={!description || description.length < 10 || isSubmitDisabled}
 									className={
-										'relative h-8 cursor-pointer items-center justify-center border border-transparent bg-neutral-900 px-2 text-xs text-neutral-0 transition-all hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-40'
+										'text-neutral-0 relative h-8 cursor-pointer items-center justify-center border border-transparent bg-neutral-900 px-2 text-xs transition-all hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-40'
 									}
 									onClick={async (): Promise<void> => onSubmit(close)}>
 									{'Submit'}

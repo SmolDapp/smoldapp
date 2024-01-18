@@ -1,5 +1,5 @@
 import type {Dispatch} from 'react';
-import type {TAddress, TDict} from '@yearn-finance/web-lib/types';
+import type {TAddress, TDict} from '@builtbymom/web3/types';
 import type {FetchTransactionResult} from '@wagmi/core';
 
 export type TPriceFromGecko = TDict<{usd: number}>;

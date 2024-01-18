@@ -1,4 +1,4 @@
-import {cl} from '@yearn-finance/web-lib/utils/cl';
+import {cl} from '@builtbymom/web3/utils';
 
 import type {ReactElement} from 'react';
 

@@ -1,9 +1,7 @@
 import React, {createContext, useContext, useMemo, useReducer, useState} from 'react';
 
 import type {Dispatch} from 'react';
-import type {TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
-import type {TAddress} from '@utils/tools.address';
-import type {TToken} from '@utils/types/types';
+import type {TAddress, TNormalizedBN, TToken} from '@builtbymom/web3/types';
 
 export type TDisperseReceiver = {
 	address: TAddress | undefined;

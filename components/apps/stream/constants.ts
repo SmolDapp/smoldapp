@@ -1,7 +1,7 @@
-import {toAddress} from '@utils/tools.address';
+import {toAddress} from '@builtbymom/web3/utils';
 
-import type {TAddress, TDict} from '@yearn-finance/web-lib/types';
 import type {TChainContract} from '@yearn-finance/web-lib/utils/wagmi/utils';
+import type {TAddress, TDict} from '@builtbymom/web3/types';
 
 export const FACTORY_VESTING_CONTRACTS: TDict<TChainContract[]> = {
 	1: [

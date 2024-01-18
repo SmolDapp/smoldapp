@@ -4,8 +4,8 @@ import ViewFlowSelection from 'components/apps/stream/0.ViewFlowSelection';
 import ViewVestingConfiguration from 'components/apps/stream/1.ViewStreamConfiguration';
 import ViewVestingSummary from 'components/apps/stream/2.ViewStreamSummary';
 import ViewUserVestings from 'components/apps/stream/3.ViewUserStreams';
+import {cl} from '@builtbymom/web3/utils';
 import {Step, StreamContextApp, useStream} from '@stream/useStream';
-import {cl} from '@yearn-finance/web-lib/utils/cl';
 
 import type {ReactElement} from 'react';
 

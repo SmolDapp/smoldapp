@@ -1,9 +1,9 @@
 import {gql, request} from 'graphql-request';
 import {isAddress, toHex} from 'viem';
-import {toAddress} from '@utils/tools.address';
+import {toAddress} from '@builtbymom/web3/utils';
 import {fetchEnsAddress} from '@wagmi/core';
 
-import type {TAddress} from '@utils/tools.address';
+import type {TAddress} from '@builtbymom/web3/types';
 
 export async function retrieveENSNameFromNode(tokenId: bigint): Promise<string> {
 	const labelHash = toHex(tokenId, {size: 32});

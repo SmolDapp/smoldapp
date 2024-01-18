@@ -12,9 +12,9 @@ export function Label({title, tooltipMessage}: TLabelProps): ReactElement {
 			<small>{title}</small>
 			{tooltipMessage ? (
 				<span className={'tooltip'}>
-					<IconInfo className={'text-neutral-500 h-3 w-3 opacity-50'} />
+					<IconInfo className={'h-3 w-3 text-neutral-500 opacity-50'} />
 					<span className={'tooltipLight top-full mt-1'}>
-						<div className={'font-number bg-neutral-100 w-72 border border-neutral-300 p-1 px-2'}>
+						<div className={'font-number w-72 border border-neutral-300 bg-neutral-100 p-1 px-2'}>
 							<p className={'text-center text-xs text-neutral-900'}>{tooltipMessage}</p>
 						</div>
 					</span>

@@ -7,8 +7,8 @@ import DISPERSE_ABI from 'utils/abi/disperse.abi';
 import GNOSIS_SAFE_PROXY_FACTORY from 'utils/abi/gnosisSafeProxyFactory.abi';
 import {multicall} from 'utils/actions';
 import {encodeFunctionData, parseEther} from 'viem';
+import {toAddress} from '@builtbymom/web3/utils';
 import {EIP3770_PREFIX} from '@utils/eip-3770';
-import {toAddress} from '@utils/tools.address';
 import {
 	getNetwork as getWagmiNetwork,
 	prepareSendTransaction,
@@ -33,7 +33,7 @@ import {
 } from './utils';
 
 import type {ReactElement} from 'react';
-import type {TAddress} from '@utils/tools.address';
+import type {TAddress} from '@builtbymom/web3/types';
 import type {TAppExtendedChain} from '@utils/tools.chains';
 import type {Chain} from '@wagmi/core';
 
@@ -316,7 +316,7 @@ function ChainStatus({chain, singleton}: TChainStatusArgs): ReactElement {
 					<span className={'tooltipLight top-full mt-1'}>
 						<div
 							className={
-								'font-number bg-neutral-100 w-40 border border-neutral-300 p-1 px-2 text-center text-xxs text-neutral-900'
+								'font-number text-xxs w-40 border border-neutral-300 bg-neutral-100 p-1 px-2 text-center text-neutral-900'
 							}>
 							<p>{'The Safe was deployed using an un-cloneable legacy method. Soz 😕'}</p>
 						</div>

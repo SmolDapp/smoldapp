@@ -2,9 +2,9 @@
 
 import {Children} from 'react';
 import {DayPicker} from 'react-day-picker';
+import {cl} from '@builtbymom/web3/utils';
 import * as SelectPrimitive from '@radix-ui/react-select';
 import {IconChevronBottom} from '@yearn-finance/web-lib/icons/IconChevronBottom';
-import {cl} from '@yearn-finance/web-lib/utils/cl';
 
 import {SelectContent, SelectItem, SelectTrigger} from './Select';
 

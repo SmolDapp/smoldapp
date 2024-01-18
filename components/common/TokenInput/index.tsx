@@ -1,19 +1,21 @@
 import React, {useCallback, useEffect, useMemo, useRef} from 'react';
-import {useWallet} from 'contexts/useWallet';
-import handleInputChangeEventValue from 'utils/handleInputChangeEventValue';
 import {useAnimate} from 'framer-motion';
+import {useWallet} from '@builtbymom/web3/contexts/useWallet';
+import {
+	cl,
+	formatAmount,
+	handleInputChangeEventValue,
+	toAddress,
+	toBigInt,
+	toNormalizedBN
+} from '@builtbymom/web3/utils';
 import {IconCircleCross} from '@icons/IconCircleCross';
 import {useClickOutside} from '@react-hookz/web';
-import {toAddress} from '@utils/tools.address';
-import {cl} from '@yearn-finance/web-lib/utils/cl';
-import {toBigInt, toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
-import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
 
 import {MultipleTokenSelector, UniqueTokenSelector} from './TokenSelector';
 
 import type {ChangeEvent, ReactElement} from 'react';
-import type {TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
-import type {TToken} from '@utils/types/types';
+import type {TNormalizedBN, TToken} from '@builtbymom/web3/types';
 
 type TViewFromToken = {
 	token: TToken | undefined;
@@ -42,8 +44,8 @@ function TokenInput({
 	const {getBalance} = useWallet();
 
 	const balanceOf = useMemo((): TNormalizedBN => {
-		return getBalance(toAddress(token?.address));
-	}, [getBalance, token?.address]);
+		return getBalance({address: toAddress(token?.address), chainID: Number(token?.chainID)});
+	}, [getBalance, token?.address, token?.chainID]);
 
 	const onChangeAmount = useCallback(
 		(e: ChangeEvent<HTMLInputElement>): void => {
@@ -123,7 +125,7 @@ function TokenInput({
 										opacity: toBigInt(value?.raw) > balanceOf.raw ? 1 : 0,
 										pointerEvents: toBigInt(value?.raw) > balanceOf.raw ? 'auto' : 'none'
 									}}
-									className={'absolute inset-0 h-4 w-4 text-red transition-opacity'}
+									className={'text-red absolute inset-0 h-4 w-4 transition-opacity'}
 								/>
 							)}
 						</span>

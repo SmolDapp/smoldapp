@@ -7,17 +7,16 @@ import {useAddressBook} from 'contexts/useAddressBook';
 import {useIsMounted} from 'hooks/useIsMounted';
 import Identicon from 'identicon.js';
 import {useEnsAvatar, useEnsName} from 'wagmi';
+import {cl, isAddress, toAddress, toSafeAddress} from '@builtbymom/web3/utils';
 import {IconHeart, IconHeartFilled} from '@icons/IconHeart';
 import * as Tooltip from '@radix-ui/react-tooltip';
 import {useUpdateEffect} from '@react-hookz/web';
-import {isAddress, safeAddress, toAddress} from '@utils/tools.address';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
-import {cl} from '@yearn-finance/web-lib/utils/cl';
 import {copyToClipboard} from '@yearn-finance/web-lib/utils/helpers';
 
 import type {TAddressBookEntry} from 'contexts/useAddressBook';
 import type {MouseEventHandler, ReactElement} from 'react';
-import type {TAddress} from '@utils/tools.address';
+import type {TAddress} from '@builtbymom/web3/types';
 
 function EntryBookEntryFavorite(props: {
 	isFavorite: boolean;
@@ -125,13 +124,13 @@ export function AddressBookEntryAddress(props: {
 	return (
 		<div className={'grid w-full'}>
 			<b className={'text-left text-base'}>
-				{safeAddress({address: props.address, ens: props.ens, addrOverride: props.address?.substring(0, 6)})}
+				{toSafeAddress({address: props.address, ens: props.ens, addrOverride: props.address?.substring(0, 6)})}
 			</b>
 			<Tooltip.Provider delayDuration={250}>
 				<Tooltip.Root>
 					<Tooltip.Trigger className={'flex w-fit items-center'}>
 						<small className={'cursor-pointer hover:underline'}>
-							{props.shouldTruncateAddress ? safeAddress({address: props.address}) : props.address}
+							{props.shouldTruncateAddress ? toSafeAddress({address: props.address}) : props.address}
 						</small>
 					</Tooltip.Trigger>
 					<TooltipContent

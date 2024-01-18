@@ -4,14 +4,13 @@ import {decodeAsset} from 'utils/decodeAsset';
 import {retrieveENSNameFromNode} from 'utils/tools.ens';
 import {getAbiItem, parseAbi} from 'viem';
 import {erc721ABI} from 'wagmi';
-import {toAddress} from '@utils/tools.address';
+import {toAddress, toBigInt} from '@builtbymom/web3/utils';
 import {multicall} from '@wagmi/core';
-import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import {getClient} from '@yearn-finance/web-lib/utils/wagmi/utils';
 
 import type {TNFT} from 'utils/types/nftMigratooor';
 import type {ContractFunctionConfig} from 'viem';
-import type {TAddress} from '@utils/tools.address';
+import type {TAddress} from '@builtbymom/web3/types';
 
 type TNFTLogged = {
 	id: string;

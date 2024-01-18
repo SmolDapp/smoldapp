@@ -1,14 +1,13 @@
 import {useState} from 'react';
-import {useTokenList} from 'contexts/useTokenList';
-import useWallet from 'contexts/useWallet';
+import useWallet from '@builtbymom/web3/contexts/useWallet';
+import {useTokenList} from '@builtbymom/web3/contexts/WithTokenList';
+import {toAddress, toNormalizedBN} from '@builtbymom/web3/utils';
 import {useDeepCompareEffect, useDeepCompareMemo} from '@react-hookz/web';
-import {toAddress} from '@utils/tools.address';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {ETH_TOKEN_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
 import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 
-import type {TDict} from '@yearn-finance/web-lib/types';
-import type {TToken} from '@utils/types/types';
+import type {TDict, TToken} from '@builtbymom/web3/types';
 
 export function useTokensWithBalance(): {tokensWithBalance: TToken[]; isLoading: boolean} {
 	const {safeChainID} = useChainID();
@@ -26,6 +25,9 @@ export function useTokensWithBalance(): {tokensWithBalance: TToken[]; isLoading:
 				name: wrappedToken.coinName,
 				symbol: wrappedToken.coinSymbol,
 				decimals: wrappedToken.decimals,
+				value: 0,
+				price: toNormalizedBN(0),
+				balance: toNormalizedBN(0),
 				logoURI: `${process.env.SMOL_ASSETS_URL}/token/${safeChainID}/${ETH_TOKEN_ADDRESS}/logo-32.png`
 			};
 		}
@@ -43,7 +45,7 @@ export function useTokensWithBalance(): {tokensWithBalance: TToken[]; isLoading:
 	const tokensWithBalance = useDeepCompareMemo((): TToken[] => {
 		const withBalance = [];
 		for (const dest of Object.values(allTokens)) {
-			if (getBalance(dest.address).raw > 0n) {
+			if (getBalance({address: dest.address, chainID: dest.chainID}).raw > 0n) {
 				withBalance.push(dest);
 			}
 		}

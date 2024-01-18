@@ -1,17 +1,16 @@
 import React, {useCallback, useState} from 'react';
 import {Button} from 'components/Primitives/Button';
-import {useWallet} from 'contexts/useWallet';
 import {transferERC20, transferEther} from 'utils/actions';
 import {getTransferTransaction} from 'utils/tools.gnosis';
 import {isAddressEqual} from 'viem';
+import {useWallet} from '@builtbymom/web3/contexts/useWallet';
+import {isEthAddress, isZeroAddress, toAddress, toBigInt} from '@builtbymom/web3/utils';
 import {useSafeAppsSDK} from '@gnosis.pm/safe-apps-react-sdk';
 import {notifySend} from '@utils/notifier';
-import {isNullAddress, isZeroAddress, toAddress} from '@utils/tools.address';
 import {toast} from '@yearn-finance/web-lib/components/yToast';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {ETH_TOKEN_ADDRESS, ZERO_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
-import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 import {defaultTxStatus, type TTxResponse} from '@yearn-finance/web-lib/utils/web3/transaction';
 import {SuccessModal} from '@common/ConfirmationModal';
@@ -21,19 +20,18 @@ import {useSendFlow} from './useSendFlow';
 import type {TSendInputElement} from 'components/designSystem/SmolTokenAmountInput';
 import type {ReactElement} from 'react';
 import type {BaseError, Hex} from 'viem';
-import type {TAddress, TDict} from '@yearn-finance/web-lib/types';
-import type {TBalanceData} from '@yearn-finance/web-lib/types/hooks';
+import type {TUseBalancesTokens} from '@builtbymom/web3/hooks/useBalances.multichains';
+import type {TAddress, TChainTokens, TToken} from '@builtbymom/web3/types';
 import type {BaseTransaction} from '@gnosis.pm/safe-apps-sdk';
-import type {TModify, TToken} from '@utils/types/types';
+import type {TModify} from '@utils/types/types';
 
 type TInputWithToken = TModify<TSendInputElement, {token: TToken}>;
 
 export function SendWizard({isReceiverERC20}: {isReceiverERC20: boolean}): ReactElement {
 	const {safeChainID} = useChainID();
 	const {address} = useWeb3();
-
 	const {configuration, dispatchConfiguration} = useSendFlow();
-	const {balances, refresh, balancesNonce} = useWallet();
+	const {getToken, getBalance, onRefresh} = useWallet();
 	const {isWalletSafe, provider} = useWeb3();
 	const {sdk} = useSafeAppsSDK();
 	const [migrateStatus, set_migrateStatus] = useState(defaultTxStatus);
@@ -57,30 +55,32 @@ export function SendWizard({isReceiverERC20}: {isReceiverERC20: boolean}): React
 	 ** from the selected state.
 	 **********************************************************************************************/
 	const handleSuccessCallback = useCallback(
-		async (tokenAddress: TAddress): Promise<TDict<TBalanceData>> => {
+		async (tokenAddress: TAddress): Promise<TChainTokens> => {
 			const chainCoin = getNetwork(safeChainID).nativeCurrency;
-			const tokensToRefresh = [
+			const tokensToRefresh: TUseBalancesTokens[] = [
 				{
-					token: ETH_TOKEN_ADDRESS,
+					address: ETH_TOKEN_ADDRESS,
 					decimals: chainCoin?.decimals || 18,
 					symbol: chainCoin?.symbol || 'ETH',
-					name: chainCoin?.name || 'Ether'
+					name: chainCoin?.name || 'Ether',
+					chainID: safeChainID
 				}
 			];
+			const token = getToken({address: tokenAddress, chainID: safeChainID});
 			if (!isZeroAddress(tokenAddress)) {
 				tokensToRefresh.push({
-					token: tokenAddress,
-					decimals: balances[tokenAddress].decimals,
-					symbol: balances[tokenAddress].symbol,
-					name: balances[tokenAddress].name
+					address: tokenAddress,
+					decimals: token.decimals,
+					symbol: token.symbol,
+					name: token.name,
+					chainID: safeChainID
 				});
 			}
 
-			const updatedBalances = await refresh(tokensToRefresh);
-			balancesNonce; // Disable eslint warning
+			const updatedBalances = await onRefresh(tokensToRefresh);
 			return updatedBalances;
 		},
-		[balances, balancesNonce, safeChainID, refresh]
+		[safeChainID, getToken, onRefresh]
 	);
 
 	/**********************************************************************************************
@@ -123,7 +123,8 @@ export function SendWizard({isReceiverERC20}: {isReceiverERC20: boolean}): React
 			onUpdateStatus(inputUUID, 'pending');
 			const ethAmountRaw = input.normalizedBigAmount.raw;
 
-			const isSendingBalance = toBigInt(ethAmountRaw) >= toBigInt(balances[ETH_TOKEN_ADDRESS]?.raw);
+			const isSendingBalance =
+				toBigInt(ethAmountRaw) >= toBigInt(getBalance({address: ETH_TOKEN_ADDRESS, chainID: safeChainID})?.raw);
 			const result = await transferEther({
 				connector: provider,
 				chainID: safeChainID,
@@ -140,7 +141,7 @@ export function SendWizard({isReceiverERC20}: {isReceiverERC20: boolean}): React
 			}
 			return result;
 		},
-		[balances, configuration.receiver?.address, handleSuccessCallback, onUpdateStatus, provider, safeChainID]
+		[configuration.receiver?.address, getBalance, handleSuccessCallback, onUpdateStatus, provider, safeChainID]
 	);
 
 	/**********************************************************************************************
@@ -272,7 +273,7 @@ export function SendWizard({isReceiverERC20}: {isReceiverERC20: boolean}): React
 
 	const isSendButtonDisabled =
 		isZeroAddress(configuration.receiver?.address) ||
-		isNullAddress(configuration.receiver.address) ||
+		isEthAddress(configuration.receiver.address) ||
 		configuration.inputs.some(input => input.token && input.normalizedBigAmount.raw === toBigInt(0)) ||
 		!configuration.inputs.every(input => input.isValid === true) ||
 		isReceiverERC20;

@@ -8,7 +8,7 @@ import {useNFTMigratooor} from '@nftmigratooor/useNFTMigratooor';
 
 import type {ReactElement} from 'react';
 import type {TNFT} from 'utils/types/nftMigratooor';
-import type {TDict} from '@yearn-finance/web-lib/types';
+import type {TDict} from '@builtbymom/web3/types';
 
 const ViewTableOpenSea = memo(function ViewTableOpenSea({onProceed}: {onProceed: VoidFunction}): ReactElement {
 	const {nfts, isFetchingNFTs, selected, set_selected} = useNFTMigratooor();
@@ -131,7 +131,7 @@ const ViewTableOpenSea = memo(function ViewTableOpenSea({onProceed}: {onProceed:
 				<div className={'flex flex-row items-center justify-between p-4 text-neutral-900 md:p-6 md:pb-4'}>
 					<div className={'w-full md:w-3/4'}>
 						<b>{'Select the NFTs to migrate'}</b>
-						<p className={'text-neutral-500 text-sm'}>
+						<p className={'text-sm text-neutral-500'}>
 							{
 								'Select the NFTs you want to migrate to another wallet. Once you are ready, you will be asked to approve some collections and to directly transfer some NFTs.'
 							}
@@ -152,12 +152,12 @@ const ViewTableOpenSea = memo(function ViewTableOpenSea({onProceed}: {onProceed:
 				<div className={'grid gap-0 pt-4'}>
 					{isFetchingNFTs ? (
 						<div className={'flex h-48 flex-col items-center justify-center space-y-2'}>
-							<IconSpinner className={'text-neutral-500 h-4 w-4'} />
+							<IconSpinner className={'h-4 w-4 text-neutral-500'} />
 							<small>{'Retrieving your NFTs...'}</small>
 						</div>
 					) : Object.entries(groupedByCollection).length === 0 ? (
 						<div className={'flex h-48 flex-col items-center justify-center space-y-2'}>
-							<IconHeartBroken className={'text-neutral-500 h-4 w-4'} />
+							<IconHeartBroken className={'h-4 w-4 text-neutral-500'} />
 							<small>{'No NFTs found.'}</small>
 						</div>
 					) : (
@@ -179,7 +179,7 @@ const ViewTableOpenSea = memo(function ViewTableOpenSea({onProceed}: {onProceed:
 
 				<div
 					className={
-						'sticky inset-x-0 bottom-0 z-20 flex w-full max-w-5xl flex-row items-center justify-between rounded-b-md bg-primary p-4 text-neutral-0 md:relative md:px-6 md:py-4'
+						'bg-primary text-neutral-0 sticky inset-x-0 bottom-0 z-20 flex w-full max-w-5xl flex-row items-center justify-between rounded-b-md p-4 md:relative md:px-6 md:py-4'
 					}>
 					<div />
 					<div>

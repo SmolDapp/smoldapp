@@ -1,7 +1,7 @@
 'use client';
 
+import {cl} from '@builtbymom/web3/utils';
 import {Content} from '@radix-ui/react-dialog';
-import {cl} from '@yearn-finance/web-lib/utils/cl';
 
 import type {ReactElement} from 'react';
 import type {DialogContentProps} from '@radix-ui/react-dialog';

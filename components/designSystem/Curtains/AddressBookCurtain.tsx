@@ -7,15 +7,14 @@ import {Button} from 'components/Primitives/Button';
 import {CurtainContent} from 'components/Primitives/Curtain';
 import {TextInput} from 'components/Primitives/TextInput';
 import {type TAddressBookEntry, useAddressBook} from 'contexts/useAddressBook';
-import {useAsyncTrigger} from 'hooks/useAsyncTrigger';
 import {useEnsAvatar, useEnsName} from 'wagmi';
+import {useAsyncTrigger} from '@builtbymom/web3/hooks/useAsyncTrigger';
+import {cl, isAddress, toAddress, toSafeAddress} from '@builtbymom/web3/utils';
 import {IconEdit} from '@icons/IconEdit';
 import {IconGears} from '@icons/IconGears';
 import {IconHeart, IconHeartFilled} from '@icons/IconHeart';
 import {IconTrash} from '@icons/IconTrash';
 import * as Dialog from '@radix-ui/react-dialog';
-import {isAddress, safeAddress, toAddress} from '@utils/tools.address';
-import {cl} from '@yearn-finance/web-lib/utils/cl';
 
 import {AddressBookEntryAvatar} from '../AddressBookEntry';
 import {NetworkDropdownSelector} from '../NetworkSelector/Dropdown';
@@ -23,7 +22,7 @@ import {SmolAddressInputSimple} from '../SmolAddressInput.simple';
 
 import type {TAddressBookEntryReducer} from 'pages/apps/address-book';
 import type {Dispatch, ReactElement, SetStateAction} from 'react';
-import type {TAddress} from '@utils/tools.address';
+import type {TAddress} from '@builtbymom/web3/types';
 import type {TInputAddressLike} from '../SmolAddressInput';
 
 function EntryAvatarWrapper(props: {address: TAddress}): ReactElement {
@@ -192,7 +191,7 @@ function NameInput(props: {
 				<label htmlFor={'name'}>
 					<small className={'pl-1'}>{'Name'}</small>
 				</label>
-				<small className={'pr-1 text-red'}>{getErrorMessage()}</small>
+				<small className={'text-red pr-1'}>{getErrorMessage()}</small>
 			</div>
 			<TextInput
 				inputRef={inputRef}
@@ -232,7 +231,7 @@ function AddressInput(props: {
 	useEffect(() => {
 		onChangeAddressLike({
 			address: selectedEntry.address,
-			label: safeAddress({
+			label: toSafeAddress({
 				address: selectedEntry.address,
 				ens: selectedEntry.ens
 			}),
@@ -283,7 +282,7 @@ function AddressInput(props: {
 				<label htmlFor={'address'}>
 					<small className={'pl-1'}>{'Address'}</small>
 				</label>
-				<small className={'pr-1 text-red'}>{getErrorMessage()}</small>
+				<small className={'text-red pr-1'}>{getErrorMessage()}</small>
 			</div>
 
 			<SmolAddressInputSimple
@@ -316,7 +315,7 @@ export function AddressBookCurtain(props: {
 	const [isEditMode, set_isEditMode] = useState<boolean>(props.isEditing);
 	const [addressLike, set_addressLike] = useState<TInputAddressLike>({
 		address: props.selectedEntry.address,
-		label: safeAddress({
+		label: toSafeAddress({
 			address: props.selectedEntry.address,
 			ens: props.selectedEntry.ens,
 			addrOverride: props.selectedEntry.address?.substring(0, 6)
@@ -352,7 +351,7 @@ export function AddressBookCurtain(props: {
 	const onResetAddressLike = useAsyncTrigger(async () => {
 		set_addressLike({
 			address: props.selectedEntry.address,
-			label: safeAddress({
+			label: toSafeAddress({
 				address: props.selectedEntry.address,
 				ens: props.selectedEntry.ens,
 				addrOverride: props.selectedEntry.address?.substring(0, 6)
@@ -378,7 +377,7 @@ export function AddressBookCurtain(props: {
 			<CurtainContent className={'focus:!border-green'}>
 				<aside
 					style={{boxShadow: '-8px 0px 20px 0px rgba(36, 40, 51, 0.08)'}}
-					className={'flex h-full flex-col overflow-y-hidden bg-neutral-0 p-6'}>
+					className={'bg-neutral-0 flex h-full flex-col overflow-y-hidden p-6'}>
 					<button
 						aria-label={'Hack to prevent focus on fav on mount'}
 						className={'pointer-events-none h-0 w-0 opacity-0'}

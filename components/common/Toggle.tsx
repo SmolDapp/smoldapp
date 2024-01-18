@@ -19,7 +19,7 @@ export default function Toggle({
 			<span
 				aria-hidden={'true'}
 				className={`pointer-events-none inline-block h-[8px] w-[8px] rounded-full shadow ring-0 transition-all duration-200 ease-in-out ${
-					isEnabled ? 'mr-1 translate-x-5 bg-neutral-0' : 'ml-1 translate-x-0 bg-primary'
+					isEnabled ? 'bg-neutral-0 mr-1 translate-x-5' : 'bg-primary ml-1 translate-x-0'
 				}`}
 			/>
 		</Switch>

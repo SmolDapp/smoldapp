@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import type {NextApiRequest, NextApiResponse} from 'next';
 import type {TAlchemyAssets} from 'utils/types/opensea';
-import type {TNDict} from '@yearn-finance/web-lib/types';
+import type {TNDict} from '@builtbymom/web3/types';
 
 async function fetchAllAssetsFromAlchemy(chainID: number, owner: string, next?: string): Promise<TAlchemyAssets[]> {
 	const chainIDToNetwork: TNDict<string> = {

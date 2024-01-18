@@ -2,20 +2,22 @@ import React, {Fragment, memo, useCallback} from 'react';
 import IconSquareMinus from 'components/icons/IconSquareMinus';
 import IconSquarePlus from 'components/icons/IconSquarePlus';
 import {useTokensWithBalance} from 'hooks/useTokensWithBalance';
-import {handleInputChangeEventValue} from 'utils/handleInputChangeEventValue';
+import {
+	handleInputChangeEventValue,
+	isZeroAddress,
+	parseUnits,
+	toAddress,
+	toNormalizedBN
+} from '@builtbymom/web3/utils';
 import {newVoidRow, useDisperse} from '@disperse/useDisperse';
-import {isZeroAddress, toAddress} from '@utils/tools.address';
-import {parseUnits, toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import {AddressLikeInput} from '@common/AddressLikeInput';
 import {MultipleTokenSelector} from '@common/TokenInput/TokenSelector';
 
 import {DisperseWizard} from './Wizard';
 
 import type {ReactElement} from 'react';
-import type {TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
+import type {TAddress, TNormalizedBN, TToken} from '@builtbymom/web3/types';
 import type {TDisperseConfiguration} from '@disperse/useDisperse';
-import type {TAddress} from '@utils/tools.address';
-import type {TToken} from '@utils/types/types';
 
 function AmountToSendInput(props: {
 	token: TToken | undefined;
@@ -126,7 +128,7 @@ const Disperse = memo(function Disperse(): ReactElement {
 				<div className={'relative col-span-12 flex flex-col text-neutral-900'}>
 					<div className={'w-full md:w-3/4'}>
 						<b>{'Who gets what?'}</b>
-						<p className={'text-neutral-500 text-sm'}>
+						<p className={'text-sm text-neutral-500'}>
 							{
 								'Drop the wallet, ENS, or Lens handle of who you want to receive the tokens, and enter the amount each address should receive. Add more receivers by clicking the +. Clicking is fun.'
 							}
@@ -150,8 +152,8 @@ const Disperse = memo(function Disperse(): ReactElement {
 
 						<div className={'col-span-12 flex w-full flex-col'}>
 							<div className={'mb-2 grid grid-cols-2 gap-4'}>
-								<p className={'text-neutral-500 text-xs'}>{'Receivers'}</p>
-								<p className={'text-neutral-500 text-xs'}>{'Amount'}</p>
+								<p className={'text-xs text-neutral-500'}>{'Receivers'}</p>
+								<p className={'text-xs text-neutral-500'}>{'Amount'}</p>
 							</div>
 							<div className={'grid grid-cols-2 gap-x-4 gap-y-2'}>
 								{configuration.receivers.map((receiver): ReactElement => {
