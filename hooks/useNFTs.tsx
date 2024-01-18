@@ -5,8 +5,8 @@ import {retrieveENSNameFromNode} from 'utils/tools.ens';
 import {getAbiItem, parseAbi} from 'viem';
 import {erc721ABI} from 'wagmi';
 import {toAddress, toBigInt} from '@builtbymom/web3/utils';
+import {getClient} from '@builtbymom/web3/utils/wagmi';
 import {multicall} from '@wagmi/core';
-import {getClient} from '@yearn-finance/web-lib/utils/wagmi/utils';
 
 import type {TNFT} from 'utils/types/nftMigratooor';
 import type {ContractFunctionConfig} from 'viem';

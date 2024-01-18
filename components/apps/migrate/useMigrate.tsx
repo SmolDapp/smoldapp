@@ -1,7 +1,7 @@
 import React, {createContext, useContext, useMemo, useReducer} from 'react';
+import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
 import {isZeroAddress} from '@builtbymom/web3/utils';
 import {useUpdateEffect} from '@react-hookz/web';
-import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 
 import type {TInputAddressLike} from 'components/designSystem/SmolAddressInput';
 import type {Dispatch} from 'react';

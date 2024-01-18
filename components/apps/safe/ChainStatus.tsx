@@ -7,7 +7,9 @@ import DISPERSE_ABI from 'utils/abi/disperse.abi';
 import GNOSIS_SAFE_PROXY_FACTORY from 'utils/abi/gnosisSafeProxyFactory.abi';
 import {multicall} from 'utils/actions';
 import {encodeFunctionData, parseEther} from 'viem';
+import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
 import {toAddress} from '@builtbymom/web3/utils';
+import {defaultTxStatus, getClient, getNetwork} from '@builtbymom/web3/utils/wagmi';
 import {EIP3770_PREFIX} from '@utils/eip-3770';
 import {
 	getNetwork as getWagmiNetwork,
@@ -17,9 +19,6 @@ import {
 	waitForTransaction
 } from '@wagmi/core';
 import {toast} from '@yearn-finance/web-lib/components/yToast';
-import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
-import {getClient, getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
-import {defaultTxStatus} from '@yearn-finance/web-lib/utils/web3/transaction';
 
 import {
 	DEFAULT_FEES_USD,

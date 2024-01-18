@@ -1,6 +1,7 @@
 import {cloneElement, Fragment, type ReactElement} from 'react';
 import Link from 'next/link';
 import {usePathname} from 'next/navigation';
+import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
 import {cl, isZeroAddress} from '@builtbymom/web3/utils';
 import {
 	IconAppAddressBook,
@@ -11,7 +12,6 @@ import {
 	IconAppSwap
 } from '@icons/IconApps';
 import {useIsMounted} from '@react-hookz/web';
-import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 
 type TNavItemProps = {
 	label: string;

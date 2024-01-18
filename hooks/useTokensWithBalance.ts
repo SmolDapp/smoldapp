@@ -1,11 +1,11 @@
 import {useState} from 'react';
 import useWallet from '@builtbymom/web3/contexts/useWallet';
 import {useTokenList} from '@builtbymom/web3/contexts/WithTokenList';
+import {useChainID} from '@builtbymom/web3/hooks/useChainID';
 import {toAddress, toNormalizedBN} from '@builtbymom/web3/utils';
+import {getNetwork} from '@builtbymom/web3/utils/wagmi';
 import {useDeepCompareEffect, useDeepCompareMemo} from '@react-hookz/web';
-import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {ETH_TOKEN_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
-import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 
 import type {TDict, TToken} from '@builtbymom/web3/types';
 

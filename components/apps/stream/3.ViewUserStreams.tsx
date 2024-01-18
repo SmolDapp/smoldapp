@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {defaultInputAddressLike} from 'components/designSystem/SmolAddressInput';
 import {Button} from 'components/Primitives/Button';
+import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
 import {isZeroAddress, toAddress} from '@builtbymom/web3/utils';
 import {IconSpinner} from '@icons/IconSpinner';
-import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import AddressInput from '@common/AddressInput';
 
 import {useUserStreams} from './useUserStreams';

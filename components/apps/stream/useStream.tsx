@@ -3,8 +3,8 @@ import {defaultInputAddressLike, type TInputAddressLike} from 'components/design
 import {isBefore} from 'date-fns';
 import {scrollToTargetAdjusted} from 'utils/animations';
 import {HEADER_HEIGHT} from 'utils/constants';
+import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
 import {useUpdateEffect} from '@react-hookz/web';
-import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 
 import type {Dispatch, SetStateAction} from 'react';
 import type {TNormalizedBN, TToken} from '@builtbymom/web3/types';

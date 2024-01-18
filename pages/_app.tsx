@@ -1,7 +1,6 @@
 import React from 'react';
 import {Rubik, Source_Code_Pro} from 'next/font/google';
 import Layout from 'components/designSystem/Layout';
-import {TokenListModalContextApp} from 'contexts/useTokenListModal';
 import {WalletContextApp} from '@builtbymom/web3/contexts/useWallet';
 import {WithMom} from '@builtbymom/web3/contexts/WithMom';
 import {WithTokenList} from '@builtbymom/web3/contexts/WithTokenList';
@@ -49,15 +48,13 @@ function MyApp(props: AppProps): ReactElement {
 			<WithMom supportedChains={[...supportedNetworks, ...supportedTestNetworks, localhost]}>
 				<WithTokenList>
 					<WalletContextApp>
-						<TokenListModalContextApp>
-							<SafeProvider>
-								<main className={`h-app flex flex-col ${rubik.variable} ${sourceCodePro.variable}`}>
-									<Meta />
-									<Layout {...props} />
-								</main>
-								{!shouldHidePopover && <FeebackPopover />}
-							</SafeProvider>
-						</TokenListModalContextApp>
+						<SafeProvider>
+							<main className={`h-app flex flex-col ${rubik.variable} ${sourceCodePro.variable}`}>
+								<Meta />
+								<Layout {...props} />
+							</main>
+							{!shouldHidePopover && <FeebackPopover />}
+						</SafeProvider>
 					</WalletContextApp>
 				</WithTokenList>
 			</WithMom>

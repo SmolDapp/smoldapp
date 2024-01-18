@@ -12,11 +12,11 @@ import {
 	polygonZkEvm,
 	zkSync
 } from 'wagmi/chains';
-import {indexedWagmiChains} from '@yearn-finance/web-lib/utils/wagmi/utils';
+import {indexedWagmiChains} from '@builtbymom/web3/utils/wagmi';
 
 import {COINGECKO_GAS_COIN_IDS, NFTMIGRATOOOR_CONTRACT_PER_CHAIN, SAFE_API_URI} from './constants';
 
-import type {TChainContract, TExtendedChain} from '@yearn-finance/web-lib/utils/wagmi/utils';
+import type {TChainContract, TExtendedChain} from '@builtbymom/web3/utils/wagmi';
 
 export const supportedNetworks = [
 	mainnet,

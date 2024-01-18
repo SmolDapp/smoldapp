@@ -7,11 +7,11 @@ import {useAddressBook} from 'contexts/useAddressBook';
 import {useIsMounted} from 'hooks/useIsMounted';
 import Identicon from 'identicon.js';
 import {useEnsAvatar, useEnsName} from 'wagmi';
+import {useChainID} from '@builtbymom/web3/hooks/useChainID';
 import {cl, isAddress, toAddress, toSafeAddress} from '@builtbymom/web3/utils';
 import {IconHeart, IconHeartFilled} from '@icons/IconHeart';
 import * as Tooltip from '@radix-ui/react-tooltip';
 import {useUpdateEffect} from '@react-hookz/web';
-import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {copyToClipboard} from '@yearn-finance/web-lib/utils/helpers';
 
 import type {TAddressBookEntry} from 'contexts/useAddressBook';

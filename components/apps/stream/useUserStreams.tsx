@@ -1,9 +1,9 @@
 import {useState} from 'react';
 import {useAsyncTrigger} from '@builtbymom/web3/hooks/useAsyncTrigger';
+import {useChainID} from '@builtbymom/web3/hooks/useChainID';
 import {toBigInt} from '@builtbymom/web3/utils';
+import {getClient} from '@builtbymom/web3/utils/wagmi';
 import {YVESTING_FACTORY_ABI} from '@utils/abi/yVestingFactory.abi';
-import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
-import {getClient} from '@yearn-finance/web-lib/utils/wagmi/utils';
 
 import {getVestingContracts} from './constants';
 

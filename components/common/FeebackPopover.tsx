@@ -5,10 +5,10 @@ import IconBug from 'components/icons/IconBug';
 import html2canvas from 'html2canvas';
 import {useAccount} from 'wagmi';
 import axios from 'axios';
+import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
 import {toAddress, truncateHex} from '@builtbymom/web3/utils';
 import {Popover as PopoverHeadlessUI, Portal, Transition} from '@headlessui/react';
 import {useLocalStorageValue} from '@react-hookz/web';
-import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 
 import type {ReactElement} from 'react';
 

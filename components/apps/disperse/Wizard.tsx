@@ -8,13 +8,13 @@ import {notifyDisperse} from 'utils/notifier';
 import {getTransferTransaction} from 'utils/tools.gnosis';
 import {erc20ABI, useContractRead} from 'wagmi';
 import useWallet from '@builtbymom/web3/contexts/useWallet';
+import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
+import {useChainID} from '@builtbymom/web3/hooks/useChainID';
 import {cl, formatAmount, isZeroAddress, toAddress, toBigInt, toBigNumberAsAmount} from '@builtbymom/web3/utils';
+import {defaultTxStatus} from '@builtbymom/web3/utils/wagmi/transaction';
 import {useSafeAppsSDK} from '@gnosis.pm/safe-apps-react-sdk';
 import {toast} from '@yearn-finance/web-lib/components/yToast';
-import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
-import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {ETH_TOKEN_ADDRESS, ZERO_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
-import {defaultTxStatus} from '@yearn-finance/web-lib/utils/web3/transaction';
 import {SuccessModal} from '@common/ConfirmationModal';
 
 import {useDisperse} from './useDisperse';

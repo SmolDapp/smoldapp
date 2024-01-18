@@ -1,9 +1,9 @@
 import {useState} from 'react';
 import {useAddressBook} from 'contexts/useAddressBook';
 import {useAsyncTrigger} from '@builtbymom/web3/hooks/useAsyncTrigger';
+import {useChainID} from '@builtbymom/web3/hooks/useChainID';
 import {isEthAddress} from '@builtbymom/web3/utils';
 import {getIsSmartContract} from '@utils/tools.address';
-import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {Warning} from '@common/Primitives/Warning';
 
 import {useSendFlow} from './useSendFlow';

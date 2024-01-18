@@ -2,14 +2,14 @@ import React, {Fragment, useCallback, useMemo, useState} from 'react';
 import {Button} from 'components/Primitives/Button';
 import {addSeconds, differenceInSeconds, format} from 'date-fns';
 import {erc20ABI, useContractReads} from 'wagmi';
+import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
 import {useTokenList} from '@builtbymom/web3/contexts/WithTokenList';
+import {useChainID} from '@builtbymom/web3/hooks/useChainID';
 import {formatAmount, toAddress, toBigInt, toNormalizedBN} from '@builtbymom/web3/utils';
+import {defaultTxStatus} from '@builtbymom/web3/utils/wagmi';
 import {useIntervalEffect} from '@react-hookz/web';
 import {YVESTING_SIMPLE_ABI} from '@utils/abi/yVestingSimple.abi';
 import {claimFromVesting} from '@utils/actions';
-import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
-import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
-import {defaultTxStatus} from '@yearn-finance/web-lib/utils/web3/transaction';
 import {Counter} from '@common/Counter';
 import {ImageWithFallback} from '@common/ImageWithFallback';
 

@@ -3,9 +3,9 @@
 import React, {createContext, useContext, useState} from 'react';
 import axios from 'axios';
 import {useAsyncTrigger} from '@builtbymom/web3/hooks/useAsyncTrigger';
+import {useChainID} from '@builtbymom/web3/hooks/useChainID';
 import {toAddress, toNormalizedBN} from '@builtbymom/web3/utils';
 import {useLocalStorageValue} from '@react-hookz/web';
-import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {TokenListHandlerPopover} from '@common/TokenList/TokenListHandlerPopover';
 
 import type {AxiosResponse} from 'axios';

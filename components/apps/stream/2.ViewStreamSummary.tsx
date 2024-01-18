@@ -2,15 +2,15 @@ import React, {Fragment, useCallback, useMemo, useState} from 'react';
 import {Button} from 'components/Primitives/Button';
 import {differenceInDays, differenceInMonths, differenceInSeconds, getUnixTime, isAfter, isBefore} from 'date-fns';
 import {erc20ABI, useContractRead} from 'wagmi';
+import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
+import {useChainID} from '@builtbymom/web3/hooks/useChainID';
 import {formatAmount, toAddress, toBigInt} from '@builtbymom/web3/utils';
+import {defaultTxStatus} from '@builtbymom/web3/utils/wagmi';
 import {IconChevronBoth} from '@icons/IconChevronBoth';
 import {useIntervalEffect} from '@react-hookz/web';
 import {useStream} from '@stream/useStream';
 import {approveERC20, deployVestingContract, isApprovedERC20} from '@utils/actions';
 import {AddressLike} from '@yearn-finance/web-lib/components/AddressLike';
-import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
-import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
-import {defaultTxStatus} from '@yearn-finance/web-lib/utils/web3/transaction';
 import {Counter} from '@common/Counter';
 
 import {getDefaultVestingContract} from './constants';

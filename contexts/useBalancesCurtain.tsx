@@ -5,10 +5,10 @@ import {CloseCurtainButton} from 'components/designSystem/Curtains/InfoCurtain';
 import {CurtainContent} from 'components/Primitives/Curtain';
 import {useTokensWithBalance} from 'hooks/useTokensWithBalance';
 import useWallet from '@builtbymom/web3/contexts/useWallet';
+import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
 import {cl, formatAmount, toAddress, truncateHex} from '@builtbymom/web3/utils';
 import * as Dialog from '@radix-ui/react-dialog';
 import {useDeepCompareMemo} from '@react-hookz/web';
-import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {IconLoader} from '@yearn-finance/web-lib/icons/IconLoader';
 import {ImageWithFallback} from '@common/ImageWithFallback';
 

@@ -63,7 +63,7 @@
 		"web3-eth-abi": "^1.10.0"
 	},
 	"devDependencies": {
-		"@builtbymom/web3": "^0.0.15",
+		"@builtbymom/web3": "^0.0.16",
 		"@commitlint/cli": "^18.4.1",
 		"@commitlint/config-conventional": "^18.4.0",
 		"@total-typescript/ts-reset": "^0.5.1",

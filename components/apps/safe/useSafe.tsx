@@ -2,7 +2,7 @@ import React, {createContext, useContext, useMemo, useReducer} from 'react';
 import {COINGECKO_GAS_COIN_IDS} from 'utils/constants';
 import {concat, hexToBigInt, keccak256, toHex} from 'viem';
 import useSWR from 'swr';
-import {baseFetcher} from '@yearn-finance/web-lib/utils/fetchers';
+import {baseFetcher} from '@builtbymom/web3/utils';
 
 import type {TMultiSafeActions, TMultiSafeConfiguration, TOwners, TPriceFromGecko, TSafe} from './types';
 
