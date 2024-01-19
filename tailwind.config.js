@@ -55,12 +55,14 @@ module.exports = {
 				inherit: 'inherit',
 				sidebar: '280px',
 				main: '1000px',
+				22: '88px',
 				108: '432px'
 			},
 			maxWidth: {
 				'4xl': '888px',
 				'5xl': '992px',
 				'6xl': '1200px',
+				22: '88px',
 				108: '432px'
 			},
 			fontSize: {

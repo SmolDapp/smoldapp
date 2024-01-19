@@ -2,8 +2,9 @@ import React, {useCallback, useState} from 'react';
 import {getNewInput} from 'components/sections/Send/useSendFlow';
 import {useBalancesCurtain} from 'contexts/useBalancesCurtain';
 import useWallet from '@builtbymom/web3/contexts/useWallet';
-import {cl, formatAmount, parseUnits, percentOf, toBigInt, toNormalizedBN} from '@builtbymom/web3/utils';
+import {cl, formatAmount, isAddress, parseUnits, percentOf, toBigInt, toNormalizedBN} from '@builtbymom/web3/utils';
 import {IconChevron} from '@icons/IconChevron';
+import {IconWallet} from '@icons/IconWallet';
 import {ImageWithFallback} from '@common/ImageWithFallback';
 
 import type {ReactElement} from 'react';
@@ -198,21 +199,32 @@ export function SmolTokenAmountInput({showPercentButtons = false, onSetValue, va
 						'bg-neutral-200 hover:bg-neutral-300 transition-colors'
 					)}
 					onClick={() => onOpenCurtain(onSelectToken)}>
-					<div className={'flex w-full max-w-[116px] items-center gap-2'}>
-						<ImageWithFallback
-							alt={token?.symbol || ''}
-							unoptimized
-							src={token?.logoURI || ''}
-							quality={90}
-							width={32}
-							height={32}
-						/>
-						<p className={cl('truncate font-bold ', token?.symbol ? '' : 'text-neutral-600')}>
-							{token?.symbol || 'Select'}
+					<div className={'flex w-full max-w-44 items-center gap-2'}>
+						{token && isAddress(token.address) ? (
+							<ImageWithFallback
+								unoptimized
+								alt={token?.symbol || ''}
+								src={token?.logoURI || ''}
+								quality={90}
+								width={32}
+								height={32}
+							/>
+						) : (
+							<div
+								className={'bg-neutral-0 flex size-8 min-w-8 items-center justify-center rounded-full'}>
+								<IconWallet className={'size-4 text-neutral-600'} />
+							</div>
+						)}
+						<p
+							className={cl(
+								'truncate',
+								isAddress(token?.address) ? 'font-bold' : 'text-neutral-600 text-sm font-normal'
+							)}>
+							{token?.symbol || 'Select token'}
 						</p>
 					</div>
 
-					<IconChevron className={'size-4 text-neutral-600'} />
+					<IconChevron className={'size-4 min-w-4 text-neutral-600'} />
 				</button>
 			</label>
 		</div>

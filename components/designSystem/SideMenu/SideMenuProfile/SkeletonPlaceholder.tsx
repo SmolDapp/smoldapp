@@ -1,12 +1,13 @@
 import {type ReactElement} from 'react';
-import {AddressBookEntryAddress, AddressBookEntryAvatar} from 'components/designSystem/AddressBookEntry';
+import {AddressBookEntryAddress} from 'components/designSystem/AddressBookEntry';
+import {Avatar} from 'components/designSystem/Avatar';
 import {NetworkPopoverSelector} from 'components/designSystem/NetworkSelector/Popover';
 
 export function SkeletonPlaceholder(): ReactElement {
 	return (
 		<section className={'p-4'}>
 			<div className={'flex gap-2'}>
-				<AddressBookEntryAvatar
+				<Avatar
 					isLoading
 					address={undefined}
 					src={undefined}

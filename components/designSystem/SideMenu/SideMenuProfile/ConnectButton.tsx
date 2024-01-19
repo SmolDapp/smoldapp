@@ -19,7 +19,7 @@ export function ConnectButton(): ReactElement {
 			<div className={'w-full'}>
 				<button
 					onClick={onConnect}
-					className={'h-8 w-full rounded-lg bg-primary text-xs transition-colors hover:bg-primaryHover'}>
+					className={'bg-primary hover:bg-primaryHover h-8 w-full rounded-lg text-xs transition-colors'}>
 					{'Connect Wallet'}
 				</button>
 			</div>

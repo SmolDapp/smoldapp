@@ -11,6 +11,8 @@ import {checkENSValidity} from '@utils/tools.ens';
 import {getPublicClient} from '@wagmi/core';
 import {IconLoader} from '@yearn-finance/web-lib/icons/IconLoader';
 
+import {AvatarWrapper} from './Avatar';
+
 import type {TAddressBookEntry} from 'contexts/useAddressBook';
 import type {ReactElement} from 'react';
 import type {TAddress} from '@builtbymom/web3/types';
@@ -171,17 +173,20 @@ export function SmolAddressInput({onSetValue, value}: TAddressInput): ReactEleme
 		[actions]
 	);
 
-	const onSelectItem = useCallback((item: TAddressBookEntry): void => {
-		currentInput.current = item.label || item.ens || toAddress(item.address);
-		currentLabel.current = item.label || item.ens || toAddress(item.address);
-		currentAddress.current = toAddress(item.address);
-		onSetValue({
-			address: toAddress(item.address),
-			label: item.label || item.ens || toAddress(item.address),
-			isValid: true,
-			source: 'addressBook'
-		});
-	}, []);
+	const onSelectItem = useCallback(
+		(item: TAddressBookEntry): void => {
+			currentInput.current = item.label || item.ens || toAddress(item.address);
+			currentLabel.current = item.label || item.ens || toAddress(item.address);
+			currentAddress.current = toAddress(item.address);
+			onSetValue({
+				address: toAddress(item.address),
+				label: item.label || item.ens || toAddress(item.address),
+				isValid: true,
+				source: 'addressBook'
+			});
+		},
+		[onSetValue]
+	);
 
 	const getInputValue = useCallback((): string | undefined => {
 		if (isFocused) {
@@ -228,7 +233,7 @@ export function SmolAddressInput({onSetValue, value}: TAddressInput): ReactEleme
 	}, [isFocused, value.isValid, isCheckingValidity]);
 
 	return (
-		<div className={'group relative size-full max-w-108 rounded-lg'}>
+		<div className={'max-w-108 group relative size-full rounded-lg'}>
 			<label
 				className={cl(
 					'h-20 z-20 relative',
@@ -246,12 +251,12 @@ export function SmolAddressInput({onSetValue, value}: TAddressInput): ReactEleme
 						{getHasStatusIcon() ? (
 							<div className={'pointer-events-none relative size-4 min-w-[16px]'}>
 								<IconCircleCheck
-									className={`absolute size-4 text-green transition-opacity${
+									className={`text-green absolute size-4 transition-opacity${
 										!isCheckingValidity && value.isValid === true ? 'opacity-100' : 'opacity-0'
 									}`}
 								/>
 								<IconCircleCross
-									className={`absolute size-4 text-red transition-opacity${
+									className={`text-red absolute size-4 transition-opacity${
 										!isCheckingValidity && value.isValid === false ? 'opacity-100' : 'opacity-0'
 									}`}
 								/>
@@ -315,11 +320,22 @@ export function SmolAddressInput({onSetValue, value}: TAddressInput): ReactEleme
 					<button
 						onClick={() => onOpenCurtain(selectedEntry => onSelectItem(selectedEntry))}
 						className={cl(
-							'flex items-center gap-4 rounded-lg p-4',
+							'flex items-center gap-4 rounded-lg p-4 w-22',
 							'bg-neutral-200 hover:bg-neutral-300 transition-colors'
 						)}>
-						<IconAppAddressBook className={'size-8 text-neutral-600'} />
-						<IconChevron className={'size-4 text-neutral-600'} />
+						{!isAddress(currentAddress.current) ? (
+							<div
+								className={'bg-neutral-0 flex size-8 min-w-8 items-center justify-center rounded-full'}>
+								<IconAppAddressBook className={'size-4 text-neutral-600'} />
+							</div>
+						) : (
+							<AvatarWrapper
+								address={toAddress(currentAddress.current)}
+								sizeClassname={'h-8 w-8 min-w-8'}
+							/>
+						)}
+
+						<IconChevron className={'size-4 min-w-4 text-neutral-600'} />
 					</button>
 				</div>
 			</label>

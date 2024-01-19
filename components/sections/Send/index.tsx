@@ -31,10 +31,10 @@ function SendTokenRow({input}: {input: TSendInputElement}): ReactElement {
 			return <IconSpinner className={'size-4'} />;
 		}
 		if (input.status === 'success') {
-			return <IconCircleCheck className={'size-4 text-green'} />;
+			return <IconCircleCheck className={'text-green size-4'} />;
 		}
 		if (input.status === 'error') {
-			return <IconCircleCross className={'size-4 text-red'} />;
+			return <IconCircleCross className={'text-red size-4'} />;
 		}
 		return null;
 	};
@@ -65,9 +65,7 @@ function SendTokenRow({input}: {input: TSendInputElement}): ReactElement {
 
 export function Send(): ReactElement {
 	const {configuration, dispatchConfiguration} = useSendFlow();
-
 	const {tokenList} = useTokenList();
-
 	const isReceiverERC20 = Boolean(configuration.receiver.address && tokenList[configuration.receiver.address]);
 
 	const onAddToken = (): void => {
@@ -82,7 +80,7 @@ export function Send(): ReactElement {
 	};
 
 	return (
-		<div className={'w-full max-w-108'}>
+		<div className={'max-w-108 w-full'}>
 			<div className={'mb-6'}>
 				<p className={'font-medium'}>{'Receiver'}</p>
 				<SmolAddressInput

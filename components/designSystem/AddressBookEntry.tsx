@@ -1,18 +1,17 @@
 'use client';
 
-import React, {useEffect, useMemo, useState} from 'react';
-import Image from 'next/image';
+import React, {useEffect} from 'react';
 import {TooltipContent} from 'components/Primitives/Tooltip';
 import {useAddressBook} from 'contexts/useAddressBook';
 import {useIsMounted} from 'hooks/useIsMounted';
-import Identicon from 'identicon.js';
 import {useEnsAvatar, useEnsName} from 'wagmi';
 import {useChainID} from '@builtbymom/web3/hooks/useChainID';
-import {cl, isAddress, toAddress, toSafeAddress} from '@builtbymom/web3/utils';
+import {cl, toAddress, toSafeAddress} from '@builtbymom/web3/utils';
 import {IconHeart, IconHeartFilled} from '@icons/IconHeart';
 import * as Tooltip from '@radix-ui/react-tooltip';
-import {useUpdateEffect} from '@react-hookz/web';
 import {copyToClipboard} from '@yearn-finance/web-lib/utils/helpers';
+
+import {Avatar} from './Avatar';
 
 import type {TAddressBookEntry} from 'contexts/useAddressBook';
 import type {MouseEventHandler, ReactElement} from 'react';
@@ -47,63 +46,6 @@ function EntryBookEntryFavorite(props: {
 	);
 }
 
-export function AddressBookEntryAvatar(props: {
-	src: string | null | undefined;
-	address: TAddress | undefined;
-	isLoading: boolean;
-	label?: string;
-	sizeClassname?: string;
-}): ReactElement {
-	const [imageSrc, set_imageSrc] = useState(props.src);
-	const hasAvatar = useMemo(() => imageSrc !== undefined, [imageSrc]);
-	const sizeClassname = props.sizeClassname || 'h-8 w-8 min-w-[32px]';
-
-	useUpdateEffect((): void => {
-		set_imageSrc(props.src);
-	}, [props.src]);
-
-	if (props.isLoading) {
-		return <div className={cl('skeleton-full', sizeClassname)} />;
-	}
-	if (!hasAvatar && !isAddress(props.address)) {
-		return <div className={cl('rounded-full bg-neutral-200', sizeClassname)} />;
-	}
-	if (!hasAvatar || !imageSrc) {
-		const data = new Identicon(toAddress(props.address), {
-			background: [255, 255, 255, 0],
-			size: 128,
-			margin: 0.2
-		}).toString();
-		return (
-			<div
-				className={cl(
-					'rounded-full flex justify-center items-center border border-neutral-400',
-					sizeClassname
-				)}>
-				<Image
-					src={`data:image/png;base64,${data}`}
-					className={'size-full rounded-full'}
-					width={128}
-					height={128}
-					alt={''}
-				/>
-			</div>
-		);
-	}
-	return (
-		<div className={cl('rounded-full bg-neutral-200/40', sizeClassname)}>
-			<Image
-				className={'rounded-full'}
-				unoptimized
-				src={imageSrc || ''}
-				width={128}
-				height={128}
-				alt={''}
-				onError={() => set_imageSrc(undefined)}
-			/>
-		</div>
-	);
-}
 export function AddressBookEntryAddress(props: {
 	address: TAddress | undefined;
 	ens: string | undefined;
@@ -193,13 +135,12 @@ export function AddressBookEntry(props: {
 					? 'opacity-40 hover:opacity-100 transition-opacity'
 					: ''
 			)}>
-			<div className={'relative flex w-full gap-2'}>
-				<AddressBookEntryAvatar
+			<div className={'relative flex w-full items-center gap-2'}>
+				<Avatar
 					isLoading={isLoadingAvatar}
 					address={toAddress(props.entry.address)}
 					label={props.entry.label}
 					src={avatar}
-					sizeClassname={'h-10 w-10 min-w-[40px]'}
 				/>
 				<AddressBookEntryAddress
 					address={toAddress(props.entry.address)}
