@@ -30,18 +30,18 @@ function MigrateItem({row}: {row: TMigrateElement}): ReactElement {
 
 	function renderStatusIndicator(): ReactElement {
 		if (!configuration.receiver) {
-			return <div className={'h-4 w-4 rounded-full border border-neutral-200 bg-neutral-300'} />;
+			return <div className={'size-4 rounded-full border border-neutral-200 bg-neutral-300'} />;
 		}
 		if (row.status === 'pending') {
-			return <IconSpinner className={'h-4 w-4'} />;
+			return <IconSpinner className={'size-4'} />;
 		}
 		if (row.status === 'success') {
-			return <IconCircleCheck className={'text-green h-4 w-4'} />;
+			return <IconCircleCheck className={'size-4 text-green'} />;
 		}
 		if (row.status === 'error') {
-			return <IconCircleCross className={'text-red h-4 w-4'} />;
+			return <IconCircleCross className={'size-4 text-red'} />;
 		}
-		return <div className={'h-4 w-4 rounded-full border border-neutral-200 bg-neutral-300'} />;
+		return <div className={'size-4 rounded-full border border-neutral-200 bg-neutral-300'} />;
 	}
 
 	return (
@@ -94,7 +94,7 @@ function SpendingWizard(props: {onHandleMigration: VoidFunction}): ReactElement 
 				)}>
 				<div className={'flex w-full flex-row items-center space-x-3 md:flex-row md:items-start'}>
 					<div className={'pt-0.5'}>
-						<div className={'h-4 w-4 rounded-full border border-neutral-200 bg-neutral-300'} />
+						<div className={'size-4 rounded-full border border-neutral-200 bg-neutral-300'} />
 					</div>
 
 					<div className={'flex w-full flex-row items-center space-x-3 md:flex-row md:items-center'}>

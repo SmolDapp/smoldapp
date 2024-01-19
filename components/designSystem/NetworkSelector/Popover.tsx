@@ -57,7 +57,7 @@ export function NetworkPopoverSelector(): ReactElement {
 					<p className={'truncate text-xs'}>
 						{isMounted() && currentNetwork?.label ? currentNetwork?.label : 'Select chain...'}
 					</p>
-					<IconChevron className={'h-4 w-4 rotate-90'} />
+					<IconChevron className={'size-4 rotate-90'} />
 				</button>
 			</Popover.Trigger>
 

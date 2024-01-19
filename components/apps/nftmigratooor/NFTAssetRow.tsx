@@ -24,7 +24,7 @@ function AssetImage(props: {nft: TNFT}): ReactElement {
 	if ((nft.imageURL || '').endsWith('.mov') || ['mov', 'mp4'].includes(nft?.imageType || '')) {
 		return (
 			<video
-				className={'h-full w-full object-cover object-center'}
+				className={'size-full object-cover object-center'}
 				src={nft.imageURL || ''}
 				width={500}
 				height={500}
@@ -35,7 +35,7 @@ function AssetImage(props: {nft: TNFT}): ReactElement {
 	if (['svg'].includes(nft?.imageType || '') && nft.imageRaw) {
 		return (
 			<div
-				className={'svg-fit flex aspect-square h-full w-full object-cover object-center'}
+				className={'svg-fit flex aspect-square size-full object-cover object-center'}
 				dangerouslySetInnerHTML={{__html: nft.imageURL as string}}
 			/>
 		);
@@ -44,7 +44,7 @@ function AssetImage(props: {nft: TNFT}): ReactElement {
 	return (
 		<NFTWithFallback
 			src={nft.imageURL || ''}
-			className={'h-full w-full object-cover'}
+			className={'size-full object-cover'}
 			width={500}
 			height={500}
 			unoptimized
@@ -60,8 +60,8 @@ const NFTAsset = memo(function NFTAsset(props: TNFTAssetProps): ReactElement {
 		<div
 			role={'button'}
 			onClick={(): void => onSelect(nft)}
-			className={`group relative grid w-full grid-cols-1 border-y-0 border-l-2 border-r-0 border-solid border-neutral-200 px-4 py-2 text-left transition-colors hover:bg-neutral-50/50 md:grid-cols-9 md:px-6 md:pl-16 ${
-				isSelected ? 'border-primary bg-neutral-50/50' : 'border-transparent'
+			className={`hover:bg-neutral-50/50 group relative grid w-full grid-cols-1 border-y-0 border-l-2 border-r-0 border-solid border-neutral-200 px-4 py-2 text-left transition-colors md:grid-cols-9 md:px-6 md:pl-16${
+				isSelected ? 'bg-neutral-50/50 border-primary' : 'border-transparent'
 			}`}>
 			<div className={'col-span-5 mb-2 flex h-14 flex-row items-center justify-between py-4 md:mb-0 md:py-0'}>
 				<div className={'flex flex-row items-center space-x-4 md:space-x-6'}>
@@ -72,7 +72,7 @@ const NFTAsset = memo(function NFTAsset(props: TNFTAssetProps): ReactElement {
 						value={''}
 						className={'checkbox cursor-pointer'}
 					/>
-					<div className={'flex h-8 min-h-[48px] w-8 min-w-[48px] md:h-10 md:w-10'}>
+					<div className={'flex size-8 min-h-[48px] min-w-[48px] md:size-10'}>
 						<AssetImage {...props} />
 						{/* {(nft.imageURL || '').endsWith('.mov') || ['mov', 'mp4'].includes(nft?.imageType || '') ? (
 							<video
@@ -103,10 +103,10 @@ const NFTAsset = memo(function NFTAsset(props: TNFTAssetProps): ReactElement {
 							}/${nft.tokenID}`}
 							onClick={(e): void => e.stopPropagation()}
 							className={
-								'flex cursor-pointer flex-row items-center space-x-2 text-neutral-500 transition-colors hover:text-neutral-900 hover:underline'
+								'text-neutral-500 flex cursor-pointer flex-row items-center space-x-2 transition-colors hover:text-neutral-900 hover:underline'
 							}>
 							<p className={'font-mono text-xs'}>{truncateHex(nft.collection.address, 5)}</p>
-							<IconLinkOut className={'h-3 w-3'} />
+							<IconLinkOut className={'size-3'} />
 						</Link>
 					</div>
 				</div>
@@ -137,7 +137,7 @@ const NFTAsset = memo(function NFTAsset(props: TNFTAssetProps): ReactElement {
 								'group flex w-full cursor-alias items-center justify-between text-xs text-neutral-600 hover:text-neutral-900'
 							}>
 							<legend className={'sr-only'}>{'See on Etherscan'}</legend>
-							<LogoEtherscan className={'h-6 w-6 rounded-full border border-neutral-200'} />
+							<LogoEtherscan className={'size-6 rounded-full border border-neutral-200'} />
 						</Link>
 					</div>
 					{nft.permalink ? (
@@ -148,7 +148,7 @@ const NFTAsset = memo(function NFTAsset(props: TNFTAssetProps): ReactElement {
 									'group flex w-full cursor-alias items-center justify-between text-xs text-neutral-600 hover:text-neutral-900'
 								}>
 								<legend className={'sr-only'}>{'See on Opensea'}</legend>
-								<LogoOpensea className={'h-6 w-6 rounded-full border border-neutral-200'} />
+								<LogoOpensea className={'size-6 rounded-full border border-neutral-200'} />
 							</Link>
 						</div>
 					) : null}
@@ -159,7 +159,7 @@ const NFTAsset = memo(function NFTAsset(props: TNFTAssetProps): ReactElement {
 								'group flex w-full cursor-alias items-center justify-between text-xs text-neutral-600 hover:text-neutral-900'
 							}>
 							<legend className={'sr-only'}>{'See on Rarible'}</legend>
-							<LogoRarible className={'h-6 w-6 rounded-full border border-neutral-200'} />
+							<LogoRarible className={'size-6 rounded-full border border-neutral-200'} />
 						</Link>
 					</div>
 					<div>
@@ -169,7 +169,7 @@ const NFTAsset = memo(function NFTAsset(props: TNFTAssetProps): ReactElement {
 								'group flex w-full cursor-alias items-center justify-between text-xs text-neutral-600 hover:text-neutral-900'
 							}>
 							<legend className={'sr-only'}>{'See on LooksRare'}</legend>
-							<LogoLooksRare className={'h-6 w-6 rounded-full border border-neutral-200'} />
+							<LogoLooksRare className={'size-6 rounded-full border border-neutral-200'} />
 						</Link>
 					</div>
 				</div>

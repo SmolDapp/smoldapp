@@ -79,7 +79,7 @@ function Home({summary}: {summary: TTokenListSummary}): ReactElement {
 						className={`transition-colors ${
 							typeOfList === 'tokens'
 								? 'text-neutral-700'
-								: 'cursor-pointer text-neutral-500/80 hover:text-neutral-700'
+								: 'text-neutral-500/80 cursor-pointer hover:text-neutral-700'
 						}`}>
 						{'Tokens'}
 					</button>
@@ -89,7 +89,7 @@ function Home({summary}: {summary: TTokenListSummary}): ReactElement {
 						className={`transition-colors ${
 							typeOfList === 'pools'
 								? 'text-neutral-700'
-								: 'cursor-pointer text-neutral-500/80 hover:text-neutral-700'
+								: 'text-neutral-500/80 cursor-pointer hover:text-neutral-700'
 						}`}>
 						{'Pools'}
 					</button>
@@ -99,7 +99,7 @@ function Home({summary}: {summary: TTokenListSummary}): ReactElement {
 						className={`transition-colors ${
 							typeOfList === 'legacy'
 								? 'text-neutral-700'
-								: 'cursor-pointer text-neutral-500/80 hover:text-neutral-700'
+								: 'text-neutral-500/80 cursor-pointer hover:text-neutral-700'
 						}`}>
 						{'Legacy'}
 					</button>

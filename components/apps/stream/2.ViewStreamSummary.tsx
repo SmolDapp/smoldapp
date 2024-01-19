@@ -226,7 +226,7 @@ function ViewStreamSummary(): ReactElement {
 				<div className={'relative col-span-12 flex flex-col p-4 text-neutral-900 md:p-6'}>
 					<div className={'w-full md:w-3/4'}>
 						<b>{'Let’s practice safe streaming'}</b>
-						<p className={'text-sm text-neutral-500'}>
+						<p className={'text-neutral-500 text-sm'}>
 							{'Before we set up your stream let’s take a moment to check all the details are correct.'}
 						</p>
 					</div>
@@ -297,7 +297,7 @@ function ViewStreamSummary(): ReactElement {
 								<div className={'absolute right-4 top-4'}>
 									<IconChevronBoth
 										className={
-											'h-4 w-4 text-neutral-500 transition-colors group-hover:text-neutral-900'
+											'text-neutral-500 size-4 transition-colors group-hover:text-neutral-900'
 										}
 									/>
 								</div>

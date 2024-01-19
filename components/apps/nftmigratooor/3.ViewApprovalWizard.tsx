@@ -516,7 +516,7 @@ function ViewApprovalWizard(): ReactElement {
 					}>
 					<div className={'mb-6 w-full'}>
 						<b>{'Review and proceed'}</b>
-						<p className={'text-sm text-neutral-500'}>
+						<p className={'text-neutral-500 text-sm'}>
 							{
 								'This is a multiple steps process. If you are sending multiple NFTs from the same collection, you will need to approve the collection to transfer them, otherwise you will just need to transfer each NFT individually.'
 							}
@@ -540,7 +540,7 @@ function ViewApprovalWizard(): ReactElement {
 			</div>
 			<button
 				id={'TRIGGER_NFT_MIGRATOOOR_HIDDEN'}
-				className={'pointer-events-none invisible block h-0 w-0 opacity-0'}
+				className={'pointer-events-none invisible block size-0 opacity-0'}
 				disabled={selected.length === 0 || !provider || isApproving}
 				onClick={(): void => {
 					set_isApproving(true);

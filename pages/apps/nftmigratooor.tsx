@@ -30,7 +30,7 @@ function NFTMigratooor(): ReactElement {
 					}>
 					{'Migrate your JPEG like a pingouin.'}
 				</h1>
-				<b className={'mt-4 w-full text-base leading-normal text-neutral-500 md:w-2/3 md:text-lg md:leading-8'}>
+				<b className={'text-neutral-500 mt-4 w-full text-base leading-normal md:w-2/3 md:text-lg md:leading-8'}>
 					{'The easiest way to migrate your NFTs from one wallet to another.'}
 				</b>
 			</div>

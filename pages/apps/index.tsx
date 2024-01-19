@@ -17,26 +17,26 @@ const apps = [
 		description: (
 			<span>
 				{'One address, all the chains. Deploy your Safe across '}
-				<span className={'text-primary-500 group-hover:text-neutral-0 font-semibold transition-colors'}>
+				<span className={'text-primary-500 font-semibold transition-colors group-hover:text-neutral-0'}>
 					{'multiple chains'}
 				</span>
 				{'.'}
 			</span>
 		),
-		icon: <LogoMultiSafe className={'h-[80px] w-[80px]'} />
+		icon: <LogoMultiSafe className={'size-[80px]'} />
 	},
 	{
 		href: '/disperse',
 		title: 'Disperse',
 		description: (
 			<span>
-				<span className={'text-primary-500 group-hover:text-neutral-0 font-semibold transition-colors'}>
+				<span className={'text-primary-500 font-semibold transition-colors group-hover:text-neutral-0'}>
 					{'Distribute'}
 				</span>
 				{' ether or tokens to multiple addresses.'}
 			</span>
 		),
-		icon: <LogoDisperse className={'h-[80px] w-[80px]'} />
+		icon: <LogoDisperse className={'size-[80px]'} />
 	},
 	{
 		href: 'https://gib.to',
@@ -44,7 +44,7 @@ const apps = [
 		description: (
 			<span>
 				{'The easiest way to '}
-				<span className={'text-primary-500 group-hover:text-neutral-0 font-semibold transition-colors'}>
+				<span className={'text-primary-500 font-semibold transition-colors group-hover:text-neutral-0'}>
 					{'donate'}
 				</span>
 				{' to the crypto projects you love.'}
@@ -64,7 +64,7 @@ const apps = [
 		title: 'Dump Services',
 		description: (
 			<span>
-				<span className={'text-primary-500 group-hover:text-neutral-0 font-semibold transition-colors'}>
+				<span className={'text-primary-500 font-semibold transition-colors group-hover:text-neutral-0'}>
 					{'Dump'}
 				</span>
 				{' your tokens like a pro'}
@@ -85,13 +85,13 @@ const apps = [
 		description: (
 			<span>
 				{'The hassle-free solution to '}
-				<span className={'text-primary-500 group-hover:text-neutral-0 font-semibold transition-colors'}>
+				<span className={'text-primary-500 font-semibold transition-colors group-hover:text-neutral-0'}>
 					{'migrate'}
 				</span>
 				{' your tokens.'}
 			</span>
 		),
-		icon: <LogoMigrate className={'h-[80px] w-[80px]'} />
+		icon: <LogoMigrate className={'size-[80px]'} />
 	},
 	{
 		href: '/nftmigratooor',
@@ -99,13 +99,13 @@ const apps = [
 		description: (
 			<span>
 				{'Easily '}
-				<span className={'text-primary-500 group-hover:text-neutral-0 font-semibold transition-colors'}>
+				<span className={'text-primary-500 font-semibold transition-colors group-hover:text-neutral-0'}>
 					{'migrate your NFTs'}
 				</span>
 				{' to your new wallet.'}
 			</span>
 		),
-		icon: <LogoNFTMigratooor className={'h-[80px] w-[80px]'} />
+		icon: <LogoNFTMigratooor className={'size-[80px]'} />
 	},
 	{
 		href: '/tokenlistooor',
@@ -113,13 +113,13 @@ const apps = [
 		description: (
 			<span>
 				{'An up to date automatic '}
-				<span className={'text-primary-500 group-hover:text-neutral-0 font-semibold transition-colors'}>
+				<span className={'text-primary-500 font-semibold transition-colors group-hover:text-neutral-0'}>
 					{'tokenList'}
 				</span>
 				{' for your dApp.'}
 			</span>
 		),
-		icon: <LogoTokenlistooor className={'h-[80px] w-[80px]'} />
+		icon: <LogoTokenlistooor className={'size-[80px]'} />
 	}
 ];
 

@@ -228,7 +228,7 @@ export function SmolAddressInput({onSetValue, value}: TAddressInput): ReactEleme
 	}, [isFocused, value.isValid, isCheckingValidity]);
 
 	return (
-		<div className={'max-w-108 group relative h-full w-full rounded-lg'}>
+		<div className={'group relative size-full max-w-108 rounded-lg'}>
 			<label
 				className={cl(
 					'h-20 z-20 relative',
@@ -244,20 +244,20 @@ export function SmolAddressInput({onSetValue, value}: TAddressInput): ReactEleme
 							'pointer-events-none h-full'
 						)}>
 						{getHasStatusIcon() ? (
-							<div className={'pointer-events-none relative h-4 w-4 min-w-[16px]'}>
+							<div className={'pointer-events-none relative size-4 min-w-[16px]'}>
 								<IconCircleCheck
-									className={`text-green absolute h-4 w-4 transition-opacity ${
+									className={`absolute size-4 text-green transition-opacity${
 										!isCheckingValidity && value.isValid === true ? 'opacity-100' : 'opacity-0'
 									}`}
 								/>
 								<IconCircleCross
-									className={`text-red absolute h-4 w-4 transition-opacity ${
+									className={`absolute size-4 text-red transition-opacity${
 										!isCheckingValidity && value.isValid === false ? 'opacity-100' : 'opacity-0'
 									}`}
 								/>
 								<div className={'absolute inset-0 flex items-center justify-center'}>
 									<IconLoader
-										className={`h-4 w-4 animate-spin text-neutral-900 transition-opacity ${
+										className={`size-4 animate-spin text-neutral-900 transition-opacity${
 											isCheckingValidity ? 'opacity-100' : 'opacity-0'
 										}`}
 									/>
@@ -318,8 +318,8 @@ export function SmolAddressInput({onSetValue, value}: TAddressInput): ReactEleme
 							'flex items-center gap-4 rounded-lg p-4',
 							'bg-neutral-200 hover:bg-neutral-300 transition-colors'
 						)}>
-						<IconAppAddressBook className={'h-8 w-8 text-neutral-600'} />
-						<IconChevron className={'h-4 w-4 text-neutral-600'} />
+						<IconAppAddressBook className={'size-8 text-neutral-600'} />
+						<IconChevron className={'size-4 text-neutral-600'} />
 					</button>
 				</div>
 			</label>

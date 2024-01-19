@@ -61,12 +61,10 @@ function TokenListHandlerPopover({
 									onClick={(): void => set_isOpen(false)}
 									className={'absolute -right-2 -top-2'}>
 									<div
-										className={
-											'group h-6 w-6 cursor-pointer overflow-hidden rounded-full bg-white'
-										}>
+										className={'group size-6 cursor-pointer overflow-hidden rounded-full bg-white'}>
 										<IconCircleCross
 											className={
-												'h-6 w-6 overflow-hidden rounded-full p-[2px] text-neutral-400 transition-colors hover:text-neutral-900'
+												'size-6 overflow-hidden rounded-full p-[2px] text-neutral-400 transition-colors hover:text-neutral-900'
 											}
 											aria-hidden={'true'}
 										/>
@@ -99,7 +97,7 @@ function TokenListHandlerPopover({
 														<div
 															key={eachList.name}
 															className={
-																'relative flex w-full p-4 transition-colors hover:bg-neutral-50 md:px-6'
+																'hover:bg-neutral-50 relative flex w-full p-4 transition-colors md:px-6'
 															}>
 															<div
 																className={
@@ -111,7 +109,7 @@ function TokenListHandlerPopover({
 																	}>
 																	<div
 																		className={
-																			'rounded-full border border-neutral-100'
+																			'border-neutral-100 rounded-full border'
 																		}>
 																		<ImageWithFallback
 																			alt={eachList.name}
@@ -131,7 +129,7 @@ function TokenListHandlerPopover({
 																		</p>
 																		<span
 																			className={
-																				'font-number text-xxs mt-2 block !font-mono text-neutral-600 transition-colors md:text-xs'
+																				'font-number mt-2 block !font-mono text-xxs text-neutral-600 transition-colors md:text-xs'
 																			}>
 																			{eachList.uri ? (
 																				<a

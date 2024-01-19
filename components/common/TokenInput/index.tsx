@@ -117,7 +117,7 @@ function TokenInput({
 						ref={scope}
 						className={'ml-2 flex flex-row items-center space-x-2'}>
 						<span
-							className={'relative block h-4 w-4'}
+							className={'relative block size-4'}
 							style={{zIndex: index}}>
 							{shouldCheckBalance && (
 								<IconCircleCross
@@ -125,7 +125,7 @@ function TokenInput({
 										opacity: toBigInt(value?.raw) > balanceOf.raw ? 1 : 0,
 										pointerEvents: toBigInt(value?.raw) > balanceOf.raw ? 'auto' : 'none'
 									}}
-									className={'text-red absolute inset-0 h-4 w-4 transition-opacity'}
+									className={'absolute inset-0 size-4 text-red transition-opacity'}
 								/>
 							)}
 						</span>

@@ -58,7 +58,7 @@ function FavoriteToggle(props: {isFavorite: boolean; onClick: () => void}): Reac
 				props.onClick();
 			}}
 			className={cl('rounded p-1', 'h-12 w-12 rounded-lg bg-neutral-300', 'flex justify-center items-center')}>
-			<div className={'group relative flex h-4 w-4 items-center justify-center'}>
+			<div className={'group relative flex size-4 items-center justify-center'}>
 				<IconHeart
 					className={cl(
 						'absolute h-4 w-4 transition-colors',
@@ -108,7 +108,7 @@ function ActionButtons(props: {
 			</button>
 
 			{props.isEditMode ? (
-				<div className={'h-4 w-4'}>
+				<div className={'size-4'}>
 					<NetworkDropdownSelector
 						disabled={!props.isEditMode}
 						value={props.selectedEntry.chains}
@@ -116,7 +116,7 @@ function ActionButtons(props: {
 							props.dispatch({type: 'SET_CHAINS', payload: chains});
 						}}>
 						<IconGears
-							className={'mb-0.5 h-4 w-4 text-neutral-600 transition-colors hover:text-neutral-900'}
+							className={'mb-0.5 size-4 text-neutral-600 transition-colors hover:text-neutral-900'}
 						/>
 					</NetworkDropdownSelector>
 				</div>
@@ -124,7 +124,7 @@ function ActionButtons(props: {
 				<button
 					className={'withRing -m-1 rounded p-1'}
 					onClick={onDelete}>
-					<IconTrash className={'h-4 w-4 text-neutral-600 transition-colors hover:text-neutral-900'} />
+					<IconTrash className={'size-4 text-neutral-600 transition-colors hover:text-neutral-900'} />
 				</button>
 			)}
 		</div>
@@ -191,7 +191,7 @@ function NameInput(props: {
 				<label htmlFor={'name'}>
 					<small className={'pl-1'}>{'Name'}</small>
 				</label>
-				<small className={'text-red pr-1'}>{getErrorMessage()}</small>
+				<small className={'pr-1 text-red'}>{getErrorMessage()}</small>
 			</div>
 			<TextInput
 				inputRef={inputRef}
@@ -282,7 +282,7 @@ function AddressInput(props: {
 				<label htmlFor={'address'}>
 					<small className={'pl-1'}>{'Address'}</small>
 				</label>
-				<small className={'text-red pr-1'}>{getErrorMessage()}</small>
+				<small className={'pr-1 text-red'}>{getErrorMessage()}</small>
 			</div>
 
 			<SmolAddressInputSimple
@@ -377,10 +377,10 @@ export function AddressBookCurtain(props: {
 			<CurtainContent className={'focus:!border-green'}>
 				<aside
 					style={{boxShadow: '-8px 0px 20px 0px rgba(36, 40, 51, 0.08)'}}
-					className={'bg-neutral-0 flex h-full flex-col overflow-y-hidden p-6'}>
+					className={'flex h-full flex-col overflow-y-hidden bg-neutral-0 p-6'}>
 					<button
 						aria-label={'Hack to prevent focus on fav on mount'}
-						className={'pointer-events-none h-0 w-0 opacity-0'}
+						className={'pointer-events-none size-0 opacity-0'}
 						tabIndex={0}
 					/>
 					<div className={'mb-4 flex flex-row items-center justify-between'}>

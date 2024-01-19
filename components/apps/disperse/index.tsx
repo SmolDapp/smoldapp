@@ -128,7 +128,7 @@ const Disperse = memo(function Disperse(): ReactElement {
 				<div className={'relative col-span-12 flex flex-col text-neutral-900'}>
 					<div className={'w-full md:w-3/4'}>
 						<b>{'Who gets what?'}</b>
-						<p className={'text-sm text-neutral-500'}>
+						<p className={'text-neutral-500 text-sm'}>
 							{
 								'Drop the wallet, ENS, or Lens handle of who you want to receive the tokens, and enter the amount each address should receive. Add more receivers by clicking the +. Clicking is fun.'
 							}
@@ -152,8 +152,8 @@ const Disperse = memo(function Disperse(): ReactElement {
 
 						<div className={'col-span-12 flex w-full flex-col'}>
 							<div className={'mb-2 grid grid-cols-2 gap-4'}>
-								<p className={'text-xs text-neutral-500'}>{'Receivers'}</p>
-								<p className={'text-xs text-neutral-500'}>{'Amount'}</p>
+								<p className={'text-neutral-500 text-xs'}>{'Receivers'}</p>
+								<p className={'text-neutral-500 text-xs'}>{'Amount'}</p>
 							</div>
 							<div className={'grid grid-cols-2 gap-x-4 gap-y-2'}>
 								{configuration.receivers.map((receiver): ReactElement => {
@@ -199,7 +199,7 @@ const Disperse = memo(function Disperse(): ReactElement {
 														})
 													}
 													className={
-														'h-4 w-4 cursor-pointer text-neutral-400 transition-colors hover:text-neutral-900'
+														'size-4 cursor-pointer text-neutral-400 transition-colors hover:text-neutral-900'
 													}
 												/>
 												<IconSquarePlus
@@ -210,7 +210,7 @@ const Disperse = memo(function Disperse(): ReactElement {
 														})
 													}
 													className={
-														'h-4 w-4 cursor-pointer text-neutral-400 transition-colors hover:text-neutral-900'
+														'size-4 cursor-pointer text-neutral-400 transition-colors hover:text-neutral-900'
 													}
 												/>
 											</div>

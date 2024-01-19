@@ -169,7 +169,7 @@ const MultiSafeForm = memo(function MultiSafeForm(): ReactElement {
 				<div className={'relative col-span-12 flex flex-col p-4 text-neutral-900 md:p-6'}>
 					<div className={'w-full md:w-3/4'}>
 						<b>{'Do you already have a Safe?'}</b>
-						<p className={'text-sm text-neutral-500'}>
+						<p className={'text-neutral-500 text-sm'}>
 							{'You can take an existing Safe cross chain or deploy a new one.'}
 						</p>
 					</div>

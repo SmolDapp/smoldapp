@@ -16,7 +16,7 @@ function ViewSectionHeading({title, content, configSection, className}: TViewSec
 				<b suppressHydrationWarning>{title}</b>
 				<p
 					suppressHydrationWarning
-					className={'whitespace-pre-wrap text-sm text-neutral-500'}>
+					className={'text-neutral-500 whitespace-pre-wrap text-sm'}>
 					{content}
 				</p>
 			</div>

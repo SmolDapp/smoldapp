@@ -66,19 +66,19 @@ function ApprovalWizard({onSuccess, allowance}: TApprovalWizardProps): ReactElem
 
 	function renderStatusIndicator(): ReactElement {
 		if (!configuration.tokenToSend) {
-			return <div className={'h-4 w-4 rounded-full border border-neutral-200 bg-neutral-300'} />;
+			return <div className={'size-4 rounded-full border border-neutral-200 bg-neutral-300'} />;
 		}
 		if (allowance >= totalToDisperse) {
-			return <IconCircleCheck className={'text-green h-4 w-4'} />;
+			return <IconCircleCheck className={'size-4 text-green'} />;
 		}
 		if (approvalStatus.pending) {
-			return <IconSpinner className={'h-4 w-4'} />;
+			return <IconSpinner className={'size-4'} />;
 		}
 		if (approvalStatus.success) {
-			return <IconCircleCheck className={'text-green h-4 w-4'} />;
+			return <IconCircleCheck className={'size-4 text-green'} />;
 		}
 		if (approvalStatus.error) {
-			return <IconCircleCross className={'text-red h-4 w-4'} />;
+			return <IconCircleCross className={'size-4 text-red'} />;
 		}
 		if (
 			totalToDisperse >
@@ -87,10 +87,10 @@ function ApprovalWizard({onSuccess, allowance}: TApprovalWizardProps): ReactElem
 				chainID: configuration.tokenToSend.chainID
 			}).raw
 		) {
-			return <IconCircleCross className={'text-red h-4 w-4'} />;
+			return <IconCircleCross className={'size-4 text-red'} />;
 		}
 
-		return <div className={'h-4 w-4 rounded-full border border-neutral-200 bg-neutral-300'} />;
+		return <div className={'size-4 rounded-full border border-neutral-200 bg-neutral-300'} />;
 	}
 
 	function renderStatusMessage(): ReactElement {
@@ -225,7 +225,7 @@ function ApprovalWizard({onSuccess, allowance}: TApprovalWizardProps): ReactElem
 function NothingToDisperse(): ReactElement {
 	return (
 		<div className={'flex w-full flex-row items-center space-x-3 md:flex-row md:items-center'}>
-			<div className={'h-3 w-3'} />
+			<div className={'size-3'} />
 			<div className={'text-left text-sm text-neutral-900/40'}>
 				{'Please add some receivers to disperse tokens'}
 			</div>
@@ -238,7 +238,7 @@ function DisperseElement({row}: {row: TDisperseReceiver}): ReactElement {
 
 	return (
 		<div className={'flex w-full flex-row items-center space-x-3 md:flex-row md:items-center'}>
-			<div className={'h-3 w-3'} />
+			<div className={'size-3'} />
 			<div className={'text-left text-sm'}>
 				{'Sending '}
 				<span className={'font-number font-bold'}>
@@ -430,18 +430,18 @@ function SpendingWizard(props: TSpendingWizardProps): ReactElement {
 
 	function renderStatusIndicator(): ReactElement {
 		if (isDispersed) {
-			return <IconCircleCheck className={'text-green h-4 w-4'} />;
+			return <IconCircleCheck className={'size-4 text-green'} />;
 		}
 		if (disperseStatus.pending) {
-			return <IconSpinner className={'h-4 w-4'} />;
+			return <IconSpinner className={'size-4'} />;
 		}
 		if (disperseStatus.success) {
-			return <IconCircleCheck className={'text-green h-4 w-4'} />;
+			return <IconCircleCheck className={'size-4 text-green'} />;
 		}
 		if (disperseStatus.error) {
-			return <IconCircleCross className={'text-red h-4 w-4'} />;
+			return <IconCircleCross className={'size-4 text-red'} />;
 		}
-		return <div className={'h-4 w-4 rounded-full border border-neutral-200 bg-neutral-300'} />;
+		return <div className={'size-4 rounded-full border border-neutral-200 bg-neutral-300'} />;
 	}
 
 	return (

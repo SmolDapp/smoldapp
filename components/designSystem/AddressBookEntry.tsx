@@ -27,7 +27,7 @@ function EntryBookEntryFavorite(props: {
 			role={'switch'}
 			onClick={props.onClick}
 			className={'withRing -mr-1 -mt-1 rounded p-1'}>
-			<div className={'group relative flex h-4 w-4 items-center justify-center'}>
+			<div className={'group relative flex size-4 items-center justify-center'}>
 				<IconHeart
 					className={cl(
 						'absolute h-4 w-4 transition-colors',
@@ -82,7 +82,7 @@ export function AddressBookEntryAvatar(props: {
 				)}>
 				<Image
 					src={`data:image/png;base64,${data}`}
-					className={'h-full w-full rounded-full'}
+					className={'size-full rounded-full'}
 					width={128}
 					height={128}
 					alt={''}

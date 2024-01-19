@@ -115,10 +115,10 @@ export function FeebackPopover(): ReactElement {
 			<PopoverHeadlessUI className={'relative z-50'}>
 				<PopoverHeadlessUI.Button
 					className={
-						'bg-primary-500 fixed bottom-5 right-5 flex h-10 w-10 items-center justify-center rounded-full'
+						'bg-primary-500 fixed bottom-5 right-5 flex size-10 items-center justify-center rounded-full'
 					}
 					ref={set_referenceElement}>
-					<IconBug className={'text-neutral-0 h-4 w-4'} />
+					<IconBug className={'size-4 text-neutral-0'} />
 				</PopoverHeadlessUI.Button>
 				<PopoverHeadlessUI.Overlay className={'fixed inset-0 bg-black opacity-30'} />
 				<Transition
@@ -136,13 +136,13 @@ export function FeebackPopover(): ReactElement {
 						{({close}): ReactElement => (
 							<div
 								className={
-									'bg-neutral-0 flex flex-col space-y-2 overflow-hidden rounded-md border border-neutral-300/50 p-6 pb-3 shadow shadow-transparent'
+									'flex flex-col space-y-2 overflow-hidden rounded-md border border-neutral-300/50 bg-neutral-0 p-6 pb-3 shadow shadow-transparent'
 								}>
 								<select
 									name={'type'}
 									id={'type'}
 									className={
-										'cursor-pointer border border-neutral-300/50 bg-transparent text-xs transition-colors hover:bg-neutral-100/40 focus:border-neutral-300/50'
+										'hover:bg-neutral-100/40 cursor-pointer border border-neutral-300/50 bg-transparent text-xs transition-colors focus:border-neutral-300/50'
 									}
 									onChange={({target: {value}}): void => {
 										if (isRequestTypeKnown(value)) {
@@ -157,7 +157,7 @@ export function FeebackPopover(): ReactElement {
 									cols={30}
 									rows={4}
 									className={
-										'resize-none border border-neutral-300/50 bg-transparent p-2 text-xs transition-colors hover:bg-neutral-100/40 focus:border-neutral-300/50'
+										'hover:bg-neutral-100/40 resize-none border border-neutral-300/50 bg-transparent p-2 text-xs transition-colors focus:border-neutral-300/50'
 									}
 									onChange={({target: {value}}): void => set_description(value)}
 									placeholder={`Describe the ${type} in detail`}
@@ -165,7 +165,7 @@ export function FeebackPopover(): ReactElement {
 								<input
 									id={'telegramHandle'}
 									className={
-										'resize-none border border-neutral-300/50 bg-transparent p-2 text-xs transition-colors hover:bg-neutral-100/40 focus:border-neutral-300/50'
+										'hover:bg-neutral-100/40 resize-none border border-neutral-300/50 bg-transparent p-2 text-xs transition-colors focus:border-neutral-300/50'
 									}
 									onChange={({target: {value}}): void => set_telegramHandle(value)}
 									placeholder={'Your telegram handle'}
@@ -173,7 +173,7 @@ export function FeebackPopover(): ReactElement {
 								<button
 									disabled={!description || description.length < 10 || isSubmitDisabled}
 									className={
-										'text-neutral-0 relative h-8 cursor-pointer items-center justify-center border border-transparent bg-neutral-900 px-2 text-xs transition-all hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-40'
+										'relative h-8 cursor-pointer items-center justify-center border border-transparent bg-neutral-900 px-2 text-xs text-neutral-0 transition-all hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-40'
 									}
 									onClick={async (): Promise<void> => onSubmit(close)}>
 									{'Submit'}

@@ -159,7 +159,7 @@ export function VestingElement({vesting}: {vesting: TStreamArgs}): ReactElement 
 					</Button>
 				</div>
 			</div>
-			<div className={'mt-4 grid gap-1 rounded-md bg-neutral-100 p-4'}>
+			<div className={'bg-neutral-100 mt-4 grid gap-1 rounded-md p-4'}>
 				<dl className={'mb-2 flex flex-col justify-between md:mb-0 md:flex-row'}>
 					<dt className={'text-xs font-medium text-neutral-900'}>{'Already claimed: '}</dt>
 					<dd className={'font-number text-xs text-neutral-900'}>

@@ -13,13 +13,13 @@ export function ConnectButton(): ReactElement {
 				'px-10 pb-6 pt-5',
 				'flex flex-col justify-center items-center'
 			)}>
-			<div className={'mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-neutral-300'}>
-				<IconWallet className={'h-6 w-6 text-neutral-700'} />
+			<div className={'mb-5 flex size-12 items-center justify-center rounded-full bg-neutral-300'}>
+				<IconWallet className={'size-6 text-neutral-700'} />
 			</div>
 			<div className={'w-full'}>
 				<button
 					onClick={onConnect}
-					className={'bg-primary hover:bg-primaryHover h-8 w-full rounded-lg text-xs transition-colors'}>
+					className={'h-8 w-full rounded-lg bg-primary text-xs transition-colors hover:bg-primaryHover'}>
 					{'Connect Wallet'}
 				</button>
 			</div>

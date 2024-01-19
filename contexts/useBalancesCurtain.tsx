@@ -137,7 +137,7 @@ function BalancesCurtain(props: {
 			<CurtainContent>
 				<aside
 					style={{boxShadow: '-8px 0px 20px 0px rgba(36, 40, 51, 0.08)'}}
-					className={'bg-neutral-0 flex h-full flex-col overflow-y-hidden p-6'}>
+					className={'flex h-full flex-col overflow-y-hidden bg-neutral-0 p-6'}>
 					<div className={'mb-4 flex flex-row items-center justify-between'}>
 						<h3 className={'font-bold'}>{'Your Wallet'}</h3>
 						<CloseCurtainButton />
@@ -173,7 +173,7 @@ function BalancesCurtain(props: {
 										}}
 									/>
 								))}
-							{props.isLoading && <IconLoader className={'mt-2 h-4 w-4 animate-spin text-neutral-900'} />}
+							{props.isLoading && <IconLoader className={'mt-2 size-4 animate-spin text-neutral-900'} />}
 						</div>
 					</div>
 				</aside>

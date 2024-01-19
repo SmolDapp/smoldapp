@@ -106,7 +106,7 @@ function TokenListsSelector(): ReactElement {
 									<b>{list.name}</b>
 									{selected.find((selectedList): boolean => selectedList.name === list.name) ? (
 										<div className={'flex h-6 items-center justify-end p-2 text-xs'}>
-											<IconCircleCheck className={'text-green h-4 w-4'} />
+											<IconCircleCheck className={'size-4 text-green'} />
 										</div>
 									) : (
 										<Button
@@ -128,7 +128,7 @@ function TokenListsSelector(): ReactElement {
 										target={'_blank'}
 										rel={'noopener noreferrer'}
 										className={
-											'cursor-pointer font-mono text-xs text-neutral-500 transition-colors hover:text-neutral-900'
+											'text-neutral-500 cursor-pointer font-mono text-xs transition-colors hover:text-neutral-900'
 										}>
 										{`${list.URI.replace(
 											'https://raw.githubusercontent.com/Migratooor/tokenLists/main/lists/',

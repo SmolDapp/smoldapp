@@ -7,7 +7,7 @@ import * as Dialog from '@radix-ui/react-dialog';
 export function CloseCurtainButton(): ReactElement {
 	return (
 		<Dialog.Close className={'withRing group -mr-1 -mt-1 rounded p-1'}>
-			<IconCross className={'h-4 w-4 text-neutral-600 transition-colors group-hover:text-neutral-900'} />
+			<IconCross className={'size-4 text-neutral-600 transition-colors group-hover:text-neutral-900'} />
 			<span className={'sr-only'}>{'Close'}</span>
 		</Dialog.Close>
 	);
@@ -28,7 +28,7 @@ export function InfoCurtain(props: TCurtainElement): ReactElement {
 			<CurtainContent>
 				<aside
 					style={{boxShadow: '-8px 0px 20px 0px rgba(36, 40, 51, 0.08)'}}
-					className={'bg-neutral-0 flex h-full flex-col p-6'}>
+					className={'flex h-full flex-col bg-neutral-0 p-6'}>
 					<div className={'mb-4 flex flex-row items-center justify-between'}>
 						<h3 className={'font-bold'}>{'Info'}</h3>
 						<CloseCurtainButton />

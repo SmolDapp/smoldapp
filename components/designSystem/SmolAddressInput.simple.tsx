@@ -205,7 +205,7 @@ export function SmolAddressInputSimple(
 	}, [isFocused, value.isValid, isCheckingValidity]);
 
 	return (
-		<div className={'max-w-108 group relative h-full w-full rounded-lg'}>
+		<div className={'group relative size-full max-w-108 rounded-lg'}>
 			<label
 				className={cl(
 					'h-20 z-20 relative',
@@ -229,18 +229,18 @@ export function SmolAddressInputSimple(
 								getHasStatusIcon() ? 'opacity-100' : 'opacity-0'
 							)}>
 							<IconCircleCheck
-								className={`text-green absolute h-4 w-4 transition-opacity ${
+								className={`absolute size-4 text-green transition-opacity${
 									!isCheckingValidity && value.isValid === true ? 'opacity-100' : 'opacity-0'
 								}`}
 							/>
 							<IconCircleCross
-								className={`text-red absolute h-4 w-4 transition-opacity ${
+								className={`absolute size-4 text-red transition-opacity${
 									!isCheckingValidity && value.isValid === false ? 'opacity-100' : 'opacity-0'
 								}`}
 							/>
 							<div className={'absolute inset-0 flex items-center justify-center'}>
 								<IconLoader
-									className={`h-4 w-4 animate-spin text-neutral-900 transition-opacity ${
+									className={`size-4 animate-spin text-neutral-900 transition-opacity${
 										isCheckingValidity ? 'opacity-100' : 'opacity-0'
 									}`}
 								/>

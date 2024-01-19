@@ -139,7 +139,7 @@ function AddressBookActions(props: TAddressBookActions): ReactElement {
 					'rounded-lg p-2 text-xs flex flex-row items-center',
 					'bg-primary text-neutral-900 transition-colors hover:bg-primaryHover'
 				)}>
-				<IconPlus className={'mr-2 h-3 w-3 text-neutral-900'} />
+				<IconPlus className={'mr-2 size-3 text-neutral-900'} />
 				{'Add contact'}
 			</button>
 
@@ -158,7 +158,7 @@ function AddressBookActions(props: TAddressBookActions): ReactElement {
 					onClick={event => event.stopPropagation()}
 					onChange={handleFileUpload}
 				/>
-				<IconImport className={'mr-2 h-3 w-3 text-neutral-900'} />
+				<IconImport className={'mr-2 size-3 text-neutral-900'} />
 				{'Import Contacts'}
 			</button>
 
@@ -168,7 +168,7 @@ function AddressBookActions(props: TAddressBookActions): ReactElement {
 					'rounded-lg p-2 text-xs flex flex-row items-center',
 					'bg-neutral-300 text-neutral-900 transition-colors hover:bg-neutral-400'
 				)}>
-				<IconImport className={'mr-2 h-3 w-3 rotate-180 text-neutral-900'} />
+				<IconImport className={'mr-2 size-3 rotate-180 text-neutral-900'} />
 				{'Download Contacts'}
 			</button>
 		</div>

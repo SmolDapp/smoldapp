@@ -127,7 +127,7 @@ export function SmolTokenAmountInput({showPercentButtons = false, onSetValue, va
 	}, [isFocused, value.isValid]);
 
 	return (
-		<div className={'relative h-full w-full rounded-lg'}>
+		<div className={'relative size-full rounded-lg'}>
 			<label
 				className={cl(
 					'h-20 z-20 relative border transition-all',
@@ -212,7 +212,7 @@ export function SmolTokenAmountInput({showPercentButtons = false, onSetValue, va
 						</p>
 					</div>
 
-					<IconChevron className={'h-4 w-4 text-neutral-600'} />
+					<IconChevron className={'size-4 text-neutral-600'} />
 				</button>
 			</label>
 		</div>

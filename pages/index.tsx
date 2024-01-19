@@ -109,7 +109,7 @@ function Index(): ReactElement {
 			<div>
 				<section className={'z-10 mx-auto grid w-full max-w-5xl'}>
 					<div className={'flex flex-row items-center justify-between'}>
-						<h2 className={'scroll-m-20 pb-4 text-xl text-neutral-500'}>{'Your tokens'}</h2>
+						<h2 className={'text-neutral-500 scroll-m-20 pb-4 text-xl'}>{'Your tokens'}</h2>
 					</div>
 					<SectionYourTokens />
 				</section>

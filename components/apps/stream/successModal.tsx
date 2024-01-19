@@ -40,7 +40,7 @@ function SuccessModal({isOpen, onClose}: {isOpen: boolean; onClose: VoidFunction
 					<div className={'bg-primary-900/40 fixed inset-0 backdrop-blur-sm transition-opacity'} />
 				</Transition.Child>
 
-				<div className={'fixed inset-0 z-[1001] flex h-screen w-screen items-center justify-center'}>
+				<div className={'size-screen fixed inset-0 z-[1001] flex items-center justify-center'}>
 					<Confetti
 						active={shouldTriggerConfettis}
 						config={{spread: 500}}
@@ -78,7 +78,7 @@ function SuccessModal({isOpen, onClose}: {isOpen: boolean; onClose: VoidFunction
 									</div>
 								</div>
 								<div className={'my-10 flex items-center justify-center'}>
-									<div className={'h-52 w-52'}>
+									<div className={'size-52'}>
 										<Lottie
 											loop={false}
 											animationData={SuccessAnimation}

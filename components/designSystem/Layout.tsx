@@ -30,13 +30,13 @@ function App(props: TAppProp): ReactElement {
 								'bg-neutral-200 transition-colors hover:bg-neutral-300',
 								'flex justify-center items-center'
 							)}>
-							<IconQuestionMark className={'h-6 w-6 text-neutral-600'} />
+							<IconQuestionMark className={'size-6 text-neutral-600'} />
 						</div>
 					}
 				/>
 			</div>
 			<section className={'-mt-2 w-full p-10 pt-0'}>
-				<div className={'md:max-w-108 mb-6 flex w-full flex-row justify-between'}>
+				<div className={'mb-6 flex w-full flex-row justify-between md:max-w-108'}>
 					<div>
 						<h1 className={'text-3xl font-bold text-neutral-900'}>{props.title}</h1>
 						<p className={'text-base text-neutral-600'}>{props.description}</p>
@@ -64,12 +64,12 @@ export default function Layout(props: AppProps): ReactElement {
 
 	return (
 		<div className={'mx-auto mt-10 w-full max-w-6xl'}>
-			<div className={'grid-cols-root grid w-full'}>
+			<div className={'grid w-full grid-cols-root'}>
 				<motion.nav
 					initial={{scale: 0.9, opacity: 0}}
 					animate={{scale: 1, opacity: 1}}
 					transition={{duration: 0.6, ease: 'easeInOut'}}
-					className={'col-sidebar h-app bg-neutral-0 sticky top-10 z-20 flex flex-col rounded-lg'}>
+					className={'sticky top-10 z-20 col-sidebar flex h-app flex-col rounded-lg bg-neutral-0'}>
 					<SideMenu />
 				</motion.nav>
 
@@ -82,7 +82,7 @@ export default function Layout(props: AppProps): ReactElement {
 							animate={'animate'}
 							exit={'exit'}
 							initial={'initial'}
-							className={'min-h-app bg-neutral-0 relative mb-10 w-full overflow-x-hidden rounded-lg'}>
+							className={'relative mb-10 min-h-app w-full overflow-x-hidden rounded-lg bg-neutral-0'}>
 							<WithAddressBook>
 								<App
 									title={appName}

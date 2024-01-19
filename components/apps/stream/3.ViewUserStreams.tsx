@@ -29,7 +29,7 @@ function ViewUserStreams(): ReactElement {
 				<div className={'relative col-span-12 flex flex-col p-4 text-neutral-900 md:p-6'}>
 					<div className={'w-full md:w-3/4'}>
 						<b>{'Wow! Digital bearer assets flying through cyberspace every single second.'}</b>
-						<p className={'text-sm text-neutral-500'}>
+						<p className={'text-neutral-500 text-sm'}>
 							{'Feel free to claim your tokens whenever and your stream will keep streaming.'}
 						</p>
 					</div>
@@ -60,7 +60,7 @@ function ViewUserStreams(): ReactElement {
 						{isFetching ? (
 							<div className={'col-span-12 flex min-h-[200px] flex-col items-center justify-center p-4'}>
 								<IconSpinner />
-								<p className={'mt-6 text-center text-sm text-neutral-500'}>
+								<p className={'text-neutral-500 mt-6 text-center text-sm'}>
 									{
 										'Just a second anon, an intern is racing through the digital ether to fetch your streams.'
 									}
@@ -69,7 +69,7 @@ function ViewUserStreams(): ReactElement {
 						) : userVestings.length === 0 ? (
 							<div className={'col-span-12 flex min-h-[200px] flex-col items-center justify-center p-4'}>
 								<svg
-									className={'h-4 w-4 text-neutral-400'}
+									className={'size-4 text-neutral-400'}
 									xmlns={'http://www.w3.org/2000/svg'}
 									viewBox={'0 0 512 512'}>
 									<path
@@ -79,7 +79,7 @@ function ViewUserStreams(): ReactElement {
 										fill={'currentcolor'}
 									/>
 								</svg>
-								<p className={'mt-6 text-center text-sm text-neutral-500'}>
+								<p className={'text-neutral-500 mt-6 text-center text-sm'}>
 									{
 										'Oh no. Looks like you don’t have any streams yet. Feel free to set one up. Could be fun?'
 									}

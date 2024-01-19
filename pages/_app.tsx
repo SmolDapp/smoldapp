@@ -49,7 +49,7 @@ function MyApp(props: AppProps): ReactElement {
 				<WithTokenList>
 					<WalletContextApp>
 						<SafeProvider>
-							<main className={`h-app flex flex-col ${rubik.variable} ${sourceCodePro.variable}`}>
+							<main className={`flex h-app flex-col ${rubik.variable} ${sourceCodePro.variable}`}>
 								<Meta />
 								<Layout {...props} />
 							</main>

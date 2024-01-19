@@ -28,13 +28,13 @@ function SendTokenRow({input}: {input: TSendInputElement}): ReactElement {
 
 	const renderIcon = (): ReactElement | null => {
 		if (input.status === 'pending') {
-			return <IconSpinner className={'h-4 w-4'} />;
+			return <IconSpinner className={'size-4'} />;
 		}
 		if (input.status === 'success') {
-			return <IconCircleCheck className={'text-green h-4 w-4'} />;
+			return <IconCircleCheck className={'size-4 text-green'} />;
 		}
 		if (input.status === 'error') {
-			return <IconCircleCross className={'text-red h-4 w-4'} />;
+			return <IconCircleCross className={'size-4 text-red'} />;
 		}
 		return null;
 	};
@@ -54,7 +54,7 @@ function SendTokenRow({input}: {input: TSendInputElement}): ReactElement {
 						'-right-11 p-1 text-neutral-600 transition-colors hover:text-neutral-700'
 					)}
 					onClick={onRemoveInput}>
-					<IconCross className={'h-4 w-4'} />
+					<IconCross className={'size-4'} />
 				</button>
 			)}
 
@@ -82,7 +82,7 @@ export function Send(): ReactElement {
 	};
 
 	return (
-		<div className={'max-w-108 w-full'}>
+		<div className={'w-full max-w-108'}>
 			<div className={'mb-6'}>
 				<p className={'font-medium'}>{'Receiver'}</p>
 				<SmolAddressInput

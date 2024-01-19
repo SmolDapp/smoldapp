@@ -37,7 +37,7 @@ const NFTCollection = memo(function NFTCollection(props: TNFTCollectionProps): R
 			open
 			className={'detailsMigrate group'}>
 			<summary
-				className={`flex flex-col items-start border-l-2 bg-neutral-100 p-0 transition-colors ${
+				className={`bg-neutral-100 flex flex-col items-start border-l-2 p-0 transition-colors ${
 					isCollectionSelected ? 'border-l-primary' : 'border-l-transparent'
 				}`}>
 				<div
@@ -61,15 +61,15 @@ const NFTCollection = memo(function NFTCollection(props: TNFTCollectionProps): R
 
 					<div
 						className={
-							'groupHoverText relative flex flex-row items-center space-x-2 text-xs tabular-nums text-neutral-500'
+							'groupHoverText text-neutral-500 relative flex flex-row items-center space-x-2 text-xs tabular-nums'
 						}>
-						<p className={'text-xxs tabular-nums text-neutral-500'}>
+						<p className={'text-neutral-500 text-xxs tabular-nums'}>
 							{collectionItems.length > 1
 								? `${collectionItems.length} tokens`
 								: `${collectionItems.length} token`}
 						</p>
 						<IconChevronBoth
-							className={'h-6 w-6 text-neutral-400 transition-colors group-hover:text-neutral-900'}
+							className={'size-6 text-neutral-400 transition-colors group-hover:text-neutral-900'}
 						/>
 					</div>
 				</div>

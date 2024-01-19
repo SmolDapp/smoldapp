@@ -140,7 +140,7 @@ function NewSafe(): ReactElement {
 								'rounded-md border border-orange-200 !bg-orange-200/60',
 								'text-xs font-bold text-orange-600 md:whitespace-pre'
 							)}>
-							<IconWarning className={'mr-2 mt-[1px] h-4 w-4 min-w-[16px] text-orange-600'} />
+							<IconWarning className={'text-orange-600 mr-2 mt-[1px] size-4 min-w-[16px]'} />
 							{'At least 1/2 threshold is recommanded to avoid issues.\n'}
 							{'You can use any other wallet or even the Safe app on your phone as another owner.'}
 						</div>
@@ -167,7 +167,7 @@ function NewSafe(): ReactElement {
 				<div className={'mt-2'}>
 					<p
 						className={
-							'font-number text-xxs max-w-[100%] break-all text-neutral-400 md:whitespace-pre md:break-normal'
+							'font-number max-w-[100%] break-all text-xxs text-neutral-400 md:whitespace-pre md:break-normal'
 						}>
 						{`Seed: ${configuration.seed.toString()}`}
 					</p>
@@ -195,7 +195,7 @@ function NewSafe(): ReactElement {
 								shouldCancel.current = true;
 							}}
 							className={
-								'hover:!text-neutral-0 absolute inset-0 z-50 flex items-center justify-center transition-colors hover:cursor-pointer hover:bg-neutral-900'
+								'absolute inset-0 z-50 flex items-center justify-center transition-colors hover:cursor-pointer hover:bg-neutral-900 hover:!text-neutral-0'
 							}>
 							<p>{'Cancel'}</p>
 						</span>

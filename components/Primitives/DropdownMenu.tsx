@@ -48,14 +48,14 @@ export const DropdownMenuCheckboxItem = forwardRef(({className, children, checke
 				'absolute left-2 flex h-4 w-4 items-center justify-center',
 				!checked ? 'opacity-100' : 'opacity-0'
 			)}>
-			<IconCheckbox className={'h-4 w-4'} />
+			<IconCheckbox className={'size-4'} />
 		</span>
 		<span
 			className={cl(
 				'absolute left-2 flex h-4 w-4 items-center justify-center',
 				checked ? 'opacity-100' : 'opacity-0'
 			)}>
-			<IconCheckboxChecked className={'h-4 w-4'} />
+			<IconCheckboxChecked className={'size-4'} />
 		</span>
 		{children}
 	</CheckboxItem>

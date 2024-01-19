@@ -315,7 +315,7 @@ function ChainStatus({chain, singleton}: TChainStatusArgs): ReactElement {
 					<span className={'tooltipLight top-full mt-1'}>
 						<div
 							className={
-								'font-number text-xxs w-40 border border-neutral-300 bg-neutral-100 p-1 px-2 text-center text-neutral-900'
+								'font-number bg-neutral-100 w-40 border border-neutral-300 p-1 px-2 text-center text-xxs text-neutral-900'
 							}>
 							<p>{'The Safe was deployed using an un-cloneable legacy method. Soz 😕'}</p>
 						</div>
@@ -347,7 +347,7 @@ function ChainStatus({chain, singleton}: TChainStatusArgs): ReactElement {
 			key={chain.id}
 			className={'box-0 flex w-full flex-row items-center justify-between p-4'}>
 			<div className={'flex gap-4'}>
-				<div className={'h-10 w-10'}>
+				<div className={'size-10'}>
 					<Image
 						src={`${process.env.SMOL_ASSETS_URL}/chain/${chain.id}/logo-128.png`}
 						width={40}
