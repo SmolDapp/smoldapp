@@ -1,6 +1,8 @@
 import {cloneElement, Fragment, type ReactElement} from 'react';
 import Link from 'next/link';
 import {usePathname} from 'next/navigation';
+import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
+import {cl, isZeroAddress} from '@builtbymom/web3/utils';
 import {
 	IconAppAddressBook,
 	IconAppDisperse,
@@ -10,9 +12,6 @@ import {
 	IconAppSwap
 } from '@icons/IconApps';
 import {useIsMounted} from '@react-hookz/web';
-import {isZeroAddress} from '@utils/tools.address';
-import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
-import {cl} from '@yearn-finance/web-lib/utils/cl';
 
 type TNavItemProps = {
 	label: string;
@@ -22,7 +21,7 @@ type TNavItemProps = {
 };
 function NavItem(props: TNavItemProps): ReactElement {
 	return (
-		<li className={'relative z-10'}>
+		<li className={'relative z-10 px-4'}>
 			<Link href={props.href}>
 				<div
 					className={cl(
@@ -71,9 +70,9 @@ export function SideMenuNav(): ReactElement {
 	const pathname = usePathname();
 
 	return (
-		<>
-			<section className={'flex h-full flex-col p-4'}>
-				<ul className={'grid gap-2'}>
+		<div className={'scrollable scrollbar-show py-4'}>
+			<section className={'flex h-full flex-col'}>
+				<ul className={'grid gap-2 pb-8'}>
 					<NavItem
 						href={'/apps/send'}
 						isSelected={pathname.startsWith('/apps/send')}
@@ -114,6 +113,6 @@ export function SideMenuNav(): ReactElement {
 
 				<LogOutButton />
 			</section>
-		</>
+		</div>
 	);
 }

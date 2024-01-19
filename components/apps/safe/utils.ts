@@ -1,11 +1,11 @@
 import {fromHex, type Hex, pad, toHex} from 'viem';
 import axios from 'axios';
-import {toAddress} from '@utils/tools.address';
+import {toAddress} from '@builtbymom/web3/utils';
+import {getClient, getNetwork} from '@builtbymom/web3/utils/wagmi';
 import {supportedNetworks, type TAppExtendedChain} from '@utils/tools.chains';
 import {ZERO_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
-import {getClient, getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 
-import type {TAddress} from '@utils/tools.address';
+import type {TAddress} from '@builtbymom/web3/types';
 import type {TOwners} from './types';
 
 export const ZERO = '0';

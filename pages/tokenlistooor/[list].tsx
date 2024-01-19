@@ -10,16 +10,16 @@ import relativeTime from 'dayjs/plugin/relativeTime.js';
 import weekday from 'dayjs/plugin/weekday.js';
 import {SUPPORTED_CHAIN_IDS} from 'utils/constants';
 import {motion} from 'framer-motion';
+import {getNetwork} from '@builtbymom/web3/utils/wagmi';
 import {useMountEffect} from '@react-hookz/web';
 import {IconSocialGithub} from '@yearn-finance/web-lib/icons/IconSocialGithub';
-import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 import {ImageWithFallback} from '@common/ImageWithFallback';
 
 import type {Variants} from 'framer-motion';
 import type {GetServerSidePropsResult, NextPageContext} from 'next';
 import type {TTokenListItem} from 'pages/tokenlistooor';
 import type {ReactElement} from 'react';
-import type {TExtendedChain} from '@yearn-finance/web-lib/utils/wagmi/utils';
+import type {TExtendedChain} from '@builtbymom/web3/utils/wagmi';
 
 extend(relativeTime);
 extend(dayjsDuration);
@@ -58,7 +58,7 @@ function TokenListHero({list}: {list: TTokenListItem}): ReactElement {
 					<div className={'absolute -top-10 right-0'}>
 						<div
 							className={
-								'text-neutral-500 w-full rounded-md border border-dashed border-neutral-300 bg-neutral-0 px-3 py-1 text-xs leading-6 md:text-sm'
+								'bg-neutral-0 w-full rounded-md border border-dashed border-neutral-300 px-3 py-1 text-xs leading-6 text-neutral-500 md:text-sm'
 							}>
 							{'Last update: '}
 							<span className={'inline-flex items-center pl-2 font-bold text-neutral-900'}>
@@ -82,7 +82,7 @@ function TokenListHero({list}: {list: TTokenListItem}): ReactElement {
 					<h1 className={'mt-1 text-3xl font-bold tracking-tight text-neutral-900 md:mt-1 md:text-4xl'}>
 						{list.name}
 					</h1>
-					<div className={'text-neutral-500 mt-4 text-base leading-normal md:mt-6 md:text-lg md:leading-8'}>
+					<div className={'mt-4 text-base leading-normal text-neutral-500 md:mt-6 md:text-lg md:leading-8'}>
 						{list.description || `A list of token for ${list.name}`}
 						<p className={'text-sm'}>
 							{'Version: '}
@@ -141,7 +141,7 @@ function TokenListItem({item}: {item: TTokenListItem['tokens'][0]}): ReactElemen
 					</p>
 					<span
 						className={
-							'font-number mt-2 block !font-mono text-xxs text-neutral-600 transition-colors md:text-xs'
+							'font-number text-xxs mt-2 block !font-mono text-neutral-600 transition-colors md:text-xs'
 						}>
 						<a
 							href={`${currentNetwork?.blockExplorers?.etherscan?.url || 'https://etherscan.io'}/token/${
@@ -159,7 +159,7 @@ function TokenListItem({item}: {item: TTokenListItem['tokens'][0]}): ReactElemen
 
 			<div className={'col-span-12 flex justify-end text-right md:col-span-4'}>
 				<div>
-					<p className={'block text-xxs text-neutral-700 md:text-xs'}>{'Chain'}</p>
+					<p className={'text-xxs block text-neutral-700 md:text-xs'}>{'Chain'}</p>
 					<b>{currentNetwork?.name || `Chain ${item.chainId}`}</b>
 				</div>
 			</div>
@@ -223,7 +223,7 @@ function TokenListContent({list}: {list: TTokenListItem}): ReactElement {
 				<div>
 					<input
 						className={
-							'text-neutral-500 rounded-md border border-neutral-200 bg-neutral-0 px-3 py-1 text-xs leading-6 md:text-sm'
+							'bg-neutral-0 rounded-md border border-neutral-200 px-3 py-1 text-xs leading-6 text-neutral-500 md:text-sm'
 						}
 						type={'text'}
 						placeholder={'Search'}
@@ -248,7 +248,7 @@ function TokenListContent({list}: {list: TTokenListItem}): ReactElement {
 				<div>
 					<select
 						className={
-							'text-neutral-500 rounded-md border border-neutral-200 bg-neutral-0 px-3 py-1 pr-10 text-xs leading-6 md:text-sm'
+							'bg-neutral-0 rounded-md border border-neutral-200 px-3 py-1 pr-10 text-xs leading-6 text-neutral-500 md:text-sm'
 						}
 						value={network}
 						onChange={(e): void => {
@@ -282,7 +282,7 @@ function TokenListContent({list}: {list: TTokenListItem}): ReactElement {
 			</div>
 			<div
 				className={
-					'divide-neutral-100 grid grid-cols-1 divide-y rounded-md border border-neutral-200 bg-neutral-0 md:grid-cols-1'
+					'bg-neutral-0 grid grid-cols-1 divide-y divide-neutral-100 rounded-md border border-neutral-200 md:grid-cols-1'
 				}>
 				{searchResult.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(
 					(item): ReactElement => (
@@ -292,7 +292,7 @@ function TokenListContent({list}: {list: TTokenListItem}): ReactElement {
 							initial={'initial'}
 							whileInView={'enter'}
 							variants={variants as Variants}
-							className={'hover:bg-neutral-50/40 relative flex w-full p-4 transition-colors md:p-6'}>
+							className={'relative flex w-full p-4 transition-colors hover:bg-neutral-50/40 md:p-6'}>
 							<TokenListItem item={item} />
 						</motion.div>
 					)

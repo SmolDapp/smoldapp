@@ -1,8 +1,9 @@
 import {useState} from 'react';
 import {useAddressBook} from 'contexts/useAddressBook';
-import {useAsyncTrigger} from 'hooks/useAsyncTrigger';
-import {getIsSmartContract, isNullAddress} from '@utils/tools.address';
-import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
+import {useAsyncTrigger} from '@builtbymom/web3/hooks/useAsyncTrigger';
+import {useChainID} from '@builtbymom/web3/hooks/useChainID';
+import {isEthAddress} from '@builtbymom/web3/utils';
+import {getIsSmartContract} from '@utils/tools.address';
 import {Warning} from '@common/Primitives/Warning';
 
 import {useSendFlow} from './useSendFlow';
@@ -35,7 +36,7 @@ export function SendStatus({isReceiverERC20}: {isReceiverERC20: boolean}): React
 			});
 		}
 
-		if (isNullAddress(configuration.receiver.address)) {
+		if (isEthAddress(configuration.receiver.address)) {
 			return set_status({message: 'Impossible to sent tokens to null address', type: 'error'});
 		}
 

@@ -1,10 +1,10 @@
 'use client';
 
 import {forwardRef} from 'react';
+import {cl} from '@builtbymom/web3/utils';
 import {IconChevronBoth} from '@icons/IconChevronBoth';
 import {IconCircleCheck} from '@icons/IconCircleCheck';
 import * as SelectPrimitive from '@radix-ui/react-select';
-import {cl} from '@yearn-finance/web-lib/utils/cl';
 
 export const SelectTrigger = forwardRef<
 	React.ElementRef<typeof SelectPrimitive.Trigger>,
@@ -76,7 +76,7 @@ export const SelectItem = forwardRef<
 		{...props}>
 		<span className={'absolute right-2 flex h-3.5 w-3.5 items-center justify-center'}>
 			<SelectPrimitive.ItemIndicator>
-				<IconCircleCheck className={' h-3 w-3 text-green'} />
+				<IconCircleCheck className={' text-green h-3 w-3'} />
 			</SelectPrimitive.ItemIndicator>
 		</span>
 

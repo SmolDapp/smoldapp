@@ -5,7 +5,7 @@ import dayjs, {extend} from 'dayjs';
 import dayjsDuration from 'dayjs/plugin/duration.js';
 import relativeTime from 'dayjs/plugin/relativeTime.js';
 import weekday from 'dayjs/plugin/weekday.js';
-import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
+import {formatAmount} from '@builtbymom/web3/utils';
 
 import {ImageWithFallback} from '../../common/ImageWithFallback';
 
@@ -34,13 +34,13 @@ function TokenListCard({item}: {item: TTokenListItem}): ReactElement {
 						height={36}
 						alt={''}
 					/>
-					<div className={'text-neutral-500 flex flex-col text-end text-xs'}>
+					<div className={'flex flex-col text-end text-xs text-neutral-500'}>
 						<small>{`v${item.version.major}.${item.version.minor}.${item.version.patch}`}</small>
 					</div>
 				</div>
 				<div className={'w-full px-4 text-left md:px-6'}>
 					<b>{item.name}</b>
-					<p className={'text-neutral-500 text-sm'}>
+					<p className={'text-sm text-neutral-500'}>
 						{item.description || `A list of token for ${item.name}`}
 					</p>
 				</div>
@@ -66,7 +66,7 @@ function TokenListCard({item}: {item: TTokenListItem}): ReactElement {
 					<div className={'border-t border-dashed border-neutral-200'}>
 						<span
 							className={
-								'group-hover:bg-neutral-100 flex cursor-pointer flex-row items-center justify-between px-4 py-2 transition-colors md:px-6'
+								'flex cursor-pointer flex-row items-center justify-between px-4 py-2 transition-colors group-hover:bg-neutral-100 md:px-6'
 							}>
 							<small>{'Link '}</small>
 							<b
@@ -101,13 +101,13 @@ function LegacyTokenListCard({item}: {item: Partial<TTokenListItem>}): ReactElem
 					height={36}
 					alt={''}
 				/>
-				<div className={'flex flex-col text-end text-xs text-red'}>
+				<div className={'text-red flex flex-col text-end text-xs'}>
 					<small>{'Deprecated'}</small>
 				</div>
 			</div>
 			<div className={'w-full px-4 text-left md:px-6'}>
 				<b>{item.name}</b>
-				<p className={'text-neutral-500 text-sm'}>{`A list of token for ${item.name}`}</p>
+				<p className={'text-sm text-neutral-500'}>{`A list of token for ${item.name}`}</p>
 			</div>
 			<div
 				className={
@@ -122,7 +122,7 @@ function LegacyTokenListCard({item}: {item: Partial<TTokenListItem>}): ReactElem
 				<div className={'border-y border-dashed border-neutral-200'}>
 					<span
 						className={
-							'group-hover:bg-neutral-100 flex cursor-pointer flex-row items-center justify-between px-4 py-2 transition-colors md:px-6'
+							'flex cursor-pointer flex-row items-center justify-between px-4 py-2 transition-colors group-hover:bg-neutral-100 md:px-6'
 						}>
 						<small>{'Link '}</small>
 						<b className={'group-hover:underline'}>{'list.json'}</b>

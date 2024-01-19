@@ -5,14 +5,13 @@ import {TextInput} from 'components/Primitives/TextInput';
 import {useAddressBook} from 'contexts/useAddressBook';
 import Papa from 'papaparse';
 import {LayoutGroup, motion} from 'framer-motion';
+import {cl, toAddress} from '@builtbymom/web3/utils';
 import IconImport from '@icons/IconImport';
 import {IconPlus} from '@icons/IconPlus';
-import {toAddress} from '@utils/tools.address';
-import {cl} from '@yearn-finance/web-lib/utils/cl';
 
 import type {TAddressBookEntry} from 'contexts/useAddressBook';
 import type {ChangeEvent, ReactElement} from 'react';
-import type {TAddress} from '@utils/tools.address';
+import type {TAddress} from '@builtbymom/web3/types';
 
 export type TAddressBookEntryReducer =
 	| {type: 'SET_SELECTED_ENTRY'; payload: TAddressBookEntry}

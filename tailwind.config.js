@@ -61,7 +61,7 @@ module.exports = {
 			maxWidth: {
 				'4xl': '888px',
 				'5xl': '992px',
-				'6xl': '1280px',
+				'6xl': '1200px',
 				444: '444px'
 			},
 			fontSize: {
@@ -75,11 +75,11 @@ module.exports = {
 				'3xl': ['32px', '40px']
 			},
 			gridTemplateColumns: {
-				root: 'repeat(32, minmax(0, 1fr))'
+				root: 'repeat(30, minmax(0, 1fr))'
 			},
 			gridColumn: {
 				sidebar: 'span 7 / span 7',
-				main: 'span 25 / span 25'
+				main: 'span 23 / span 23'
 			}
 		}
 	},

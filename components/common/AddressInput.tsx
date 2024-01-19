@@ -1,11 +1,10 @@
 import React, {useCallback, useMemo, useRef, useState} from 'react';
 import {checkENSValidity} from 'utils/tools.ens';
 import {checkLensValidity} from 'utils/tools.lens';
+import {cl, isZeroAddress, toAddress} from '@builtbymom/web3/utils';
 import {IconCircleCheck} from '@icons/IconCircleCheck';
 import {IconCircleCross} from '@icons/IconCircleCross';
-import {isZeroAddress, toAddress} from '@utils/tools.address';
 import {IconLoader} from '@yearn-finance/web-lib/icons/IconLoader';
-import {cl} from '@yearn-finance/web-lib/utils/cl';
 import {ZERO_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
 
 import type {TInputAddressLike} from 'components/designSystem/SmolAddressInput';
@@ -98,12 +97,12 @@ function AddressInput({value, onChangeValue, ...props}: TAddressInput): ReactEle
 				<span className={status === 'invalid' || status === 'warning' ? 'tooltip' : 'pointer-events-none'}>
 					<div className={'pointer-events-none relative h-4 w-4'}>
 						<IconCircleCheck
-							className={`absolute h-4 w-4 text-green transition-opacity ${
+							className={`text-green absolute h-4 w-4 transition-opacity ${
 								status === 'valid' ? 'opacity-100' : 'opacity-0'
 							}`}
 						/>
 						<IconCircleCross
-							className={`absolute h-4 w-4 text-red transition-opacity ${
+							className={`text-red absolute h-4 w-4 transition-opacity ${
 								status === 'invalid' ? 'opacity-100' : 'opacity-0'
 							}`}
 						/>

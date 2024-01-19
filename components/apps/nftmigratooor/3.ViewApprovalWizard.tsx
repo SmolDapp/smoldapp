@@ -2,22 +2,20 @@ import React, {useCallback, useMemo, useState} from 'react';
 import {approveAllERC721, batchTransferERC721, listERC1155, transferERC721, transferERC1155} from 'utils/actions';
 import {NFTMIGRATOOOR_CONTRACT_PER_CHAIN} from 'utils/constants';
 import {getSafeBatchTransferFrom1155, getSafeTransferFrom721} from 'utils/tools.gnosis';
+import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
+import {useChainID} from '@builtbymom/web3/hooks/useChainID';
+import {decodeAsBoolean, toAddress, toBigInt} from '@builtbymom/web3/utils';
+import {defaultTxStatus} from '@builtbymom/web3/utils/wagmi';
 import {useSafeAppsSDK} from '@gnosis.pm/safe-apps-react-sdk';
 import ApprovalWizardItem from '@nftmigratooor/ApprovalWizardItem';
 import {useNFTMigratooor} from '@nftmigratooor/useNFTMigratooor';
 import {useUpdateEffect} from '@react-hookz/web';
-import {toAddress} from '@utils/tools.address';
 import {erc721ABI, multicall} from '@wagmi/core';
-import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
-import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
-import {decodeAsBoolean} from '@yearn-finance/web-lib/utils/decoder';
-import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
-import {defaultTxStatus} from '@yearn-finance/web-lib/utils/web3/transaction';
 
 import type {ReactElement} from 'react';
 import type {TApprovalStatus, TNFT, TWizardStatus} from 'utils/types/nftMigratooor';
 import type {ContractFunctionConfig, TransactionReceipt} from 'viem';
-import type {TDict} from '@yearn-finance/web-lib/types';
+import type {TDict} from '@builtbymom/web3/types';
 import type {BaseTransaction} from '@gnosis.pm/safe-apps-sdk';
 
 function ViewApprovalWizard(): ReactElement {
@@ -518,7 +516,7 @@ function ViewApprovalWizard(): ReactElement {
 					}>
 					<div className={'mb-6 w-full'}>
 						<b>{'Review and proceed'}</b>
-						<p className={'text-neutral-500 text-sm'}>
+						<p className={'text-sm text-neutral-500'}>
 							{
 								'This is a multiple steps process. If you are sending multiple NFTs from the same collection, you will need to approve the collection to transfer them, otherwise you will just need to transfer each NFT individually.'
 							}

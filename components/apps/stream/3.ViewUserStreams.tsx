@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {defaultInputAddressLike} from 'components/designSystem/SmolAddressInput';
 import {Button} from 'components/Primitives/Button';
+import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
+import {isZeroAddress, toAddress} from '@builtbymom/web3/utils';
 import {IconSpinner} from '@icons/IconSpinner';
-import {isZeroAddress, toAddress} from '@utils/tools.address';
-import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import AddressInput from '@common/AddressInput';
 
 import {useUserStreams} from './useUserStreams';
@@ -29,7 +29,7 @@ function ViewUserStreams(): ReactElement {
 				<div className={'relative col-span-12 flex flex-col p-4 text-neutral-900 md:p-6'}>
 					<div className={'w-full md:w-3/4'}>
 						<b>{'Wow! Digital bearer assets flying through cyberspace every single second.'}</b>
-						<p className={'text-neutral-500 text-sm'}>
+						<p className={'text-sm text-neutral-500'}>
 							{'Feel free to claim your tokens whenever and your stream will keep streaming.'}
 						</p>
 					</div>
@@ -60,7 +60,7 @@ function ViewUserStreams(): ReactElement {
 						{isFetching ? (
 							<div className={'col-span-12 flex min-h-[200px] flex-col items-center justify-center p-4'}>
 								<IconSpinner />
-								<p className={'text-neutral-500 mt-6 text-center text-sm'}>
+								<p className={'mt-6 text-center text-sm text-neutral-500'}>
 									{
 										'Just a second anon, an intern is racing through the digital ether to fetch your streams.'
 									}
@@ -79,7 +79,7 @@ function ViewUserStreams(): ReactElement {
 										fill={'currentcolor'}
 									/>
 								</svg>
-								<p className={'text-neutral-500 mt-6 text-center text-sm'}>
+								<p className={'mt-6 text-center text-sm text-neutral-500'}>
 									{
 										'Oh no. Looks like you don’t have any streams yet. Feel free to set one up. Could be fun?'
 									}

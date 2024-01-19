@@ -1,9 +1,9 @@
 import {type ReactElement} from 'react';
 import {useIsMounted} from 'hooks/useIsMounted';
 import {useBalance} from 'wagmi';
-import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
-import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
-import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
+import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
+import {useChainID} from '@builtbymom/web3/hooks/useChainID';
+import {getNetwork} from '@builtbymom/web3/utils/wagmi';
 import {Counter} from '@common/Counter';
 
 export function CoinBalance(): ReactElement {

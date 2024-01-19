@@ -1,6 +1,6 @@
 import React from 'react';
+import {cl} from '@builtbymom/web3/utils';
 import {IconCircleCheck} from '@icons/IconCircleCheck';
-import {cl} from '@yearn-finance/web-lib/utils/cl';
 
 import type {ReactElement} from 'react';
 
@@ -23,7 +23,7 @@ export function TemplateButton(props: {
 				<small className={'whitespace-break-spaces'}>{props.description}</small>
 			</div>
 			<IconCircleCheck
-				className={`absolute right-4 top-4 h-4 w-4 text-green transition-opacity ${
+				className={`text-green absolute right-4 top-4 h-4 w-4 transition-opacity ${
 					props.isSelected ? 'opacity-100' : 'opacity-0'
 				}`}
 			/>

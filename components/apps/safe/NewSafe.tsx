@@ -11,8 +11,7 @@ import {useMultiSafe} from 'components/apps/safe/useSafe';
 import IconWarning from 'components/icons/IconWarning';
 import {Button} from 'components/Primitives/Button';
 import {concat, encodePacked, getContractAddress, hexToBigInt, keccak256, toHex} from 'viem';
-import {isZeroAddress} from '@utils/tools.address';
-import {cl} from '@yearn-finance/web-lib/utils/cl';
+import {cl, isZeroAddress} from '@builtbymom/web3/utils';
 
 import {
 	generateArgInitializers,
@@ -25,7 +24,7 @@ import {
 
 import type {ReactElement} from 'react';
 import type {Hex} from 'viem';
-import type {TAddress} from '@utils/tools.address';
+import type {TAddress} from '@builtbymom/web3/types';
 
 type TComputeAddress = {
 	argInitializers: string;
@@ -141,7 +140,7 @@ function NewSafe(): ReactElement {
 								'rounded-md border border-orange-200 !bg-orange-200/60',
 								'text-xs font-bold text-orange-600 md:whitespace-pre'
 							)}>
-							<IconWarning className={'text-orange-600 mr-2 mt-[1px] h-4 w-4 min-w-[16px]'} />
+							<IconWarning className={'mr-2 mt-[1px] h-4 w-4 min-w-[16px] text-orange-600'} />
 							{'At least 1/2 threshold is recommanded to avoid issues.\n'}
 							{'You can use any other wallet or even the Safe app on your phone as another owner.'}
 						</div>
@@ -168,7 +167,7 @@ function NewSafe(): ReactElement {
 				<div className={'mt-2'}>
 					<p
 						className={
-							'font-number max-w-[100%] break-all text-xxs text-neutral-400 md:whitespace-pre md:break-normal'
+							'font-number text-xxs max-w-[100%] break-all text-neutral-400 md:whitespace-pre md:break-normal'
 						}>
 						{`Seed: ${configuration.seed.toString()}`}
 					</p>
@@ -196,7 +195,7 @@ function NewSafe(): ReactElement {
 								shouldCancel.current = true;
 							}}
 							className={
-								'absolute inset-0 z-50 flex items-center justify-center transition-colors hover:cursor-pointer hover:bg-neutral-900 hover:!text-neutral-0'
+								'hover:!text-neutral-0 absolute inset-0 z-50 flex items-center justify-center transition-colors hover:cursor-pointer hover:bg-neutral-900'
 							}>
 							<p>{'Cancel'}</p>
 						</span>

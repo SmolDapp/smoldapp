@@ -1,14 +1,14 @@
 import React from 'react';
 import {Rubik, Source_Code_Pro} from 'next/font/google';
 import Layout from 'components/designSystem/Layout';
-import {TokenListContextApp} from 'contexts/useTokenList';
-import {WalletContextApp} from 'contexts/useWallet';
+import {WalletContextApp} from '@builtbymom/web3/contexts/useWallet';
+import {WithMom} from '@builtbymom/web3/contexts/WithMom';
+import {WithTokenList} from '@builtbymom/web3/contexts/WithTokenList';
+import {localhost} from '@builtbymom/web3/utils/wagmi';
 import {SafeProvider} from '@gnosis.pm/safe-apps-react-sdk';
 import {useLocalStorageValue} from '@react-hookz/web';
 import {supportedNetworks, supportedTestNetworks} from '@utils/tools.chains';
 import {Analytics} from '@vercel/analytics/react';
-import {WithYearn} from '@yearn-finance/web-lib/contexts/WithYearn';
-import {localhost} from '@yearn-finance/web-lib/utils/wagmi/networks';
 import {FeebackPopover} from '@common/FeebackPopover';
 import Meta from '@common/Meta';
 
@@ -45,19 +45,19 @@ function MyApp(props: AppProps): ReactElement {
 					}
 				`}
 			</style>
-			<WithYearn supportedChains={[...supportedNetworks, ...supportedTestNetworks, localhost]}>
-				<TokenListContextApp>
+			<WithMom supportedChains={[...supportedNetworks, ...supportedTestNetworks, localhost]}>
+				<WithTokenList>
 					<WalletContextApp>
 						<SafeProvider>
-							<main className={`flex h-app flex-col ${rubik.variable} ${sourceCodePro.variable}`}>
+							<main className={`h-app flex flex-col ${rubik.variable} ${sourceCodePro.variable}`}>
 								<Meta />
 								<Layout {...props} />
 							</main>
 							{!shouldHidePopover && <FeebackPopover />}
 						</SafeProvider>
 					</WalletContextApp>
-				</TokenListContextApp>
-			</WithYearn>
+				</WithTokenList>
+			</WithMom>
 			<Analytics />
 		</>
 	);

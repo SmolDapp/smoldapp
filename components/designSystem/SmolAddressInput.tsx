@@ -1,20 +1,19 @@
 import React, {useCallback, useMemo, useRef, useState} from 'react';
 import {useAddressBook} from 'contexts/useAddressBook';
 import {getEnsName} from 'viem/ens';
+import {cl, isAddress, toAddress, truncateHex} from '@builtbymom/web3/utils';
 import {IconAppAddressBook} from '@icons/IconApps';
 import {IconChevron} from '@icons/IconChevron';
 import {IconCircleCheck} from '@icons/IconCircleCheck';
 import {IconCircleCross} from '@icons/IconCircleCross';
 import {useAsyncAbortable} from '@react-hookz/web';
-import {isAddress, toAddress, truncateHex} from '@utils/tools.address';
 import {checkENSValidity} from '@utils/tools.ens';
 import {getPublicClient} from '@wagmi/core';
 import {IconLoader} from '@yearn-finance/web-lib/icons/IconLoader';
-import {cl} from '@yearn-finance/web-lib/utils/cl';
 
 import type {TAddressBookEntry} from 'contexts/useAddressBook';
 import type {ReactElement} from 'react';
-import type {TAddress} from '@utils/tools.address';
+import type {TAddress} from '@builtbymom/web3/types';
 
 export type TInputAddressLike = {
 	address: TAddress | undefined;
@@ -247,12 +246,12 @@ export function SmolAddressInput({onSetValue, value}: TAddressInput): ReactEleme
 						{getHasStatusIcon() ? (
 							<div className={'pointer-events-none relative h-4 w-4 min-w-[16px]'}>
 								<IconCircleCheck
-									className={`absolute h-4 w-4 text-green transition-opacity ${
+									className={`text-green absolute h-4 w-4 transition-opacity ${
 										!isCheckingValidity && value.isValid === true ? 'opacity-100' : 'opacity-0'
 									}`}
 								/>
 								<IconCircleCross
-									className={`absolute h-4 w-4 text-red transition-opacity ${
+									className={`text-red absolute h-4 w-4 transition-opacity ${
 										!isCheckingValidity && value.isValid === false ? 'opacity-100' : 'opacity-0'
 									}`}
 								/>

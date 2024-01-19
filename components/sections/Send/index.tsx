@@ -1,11 +1,11 @@
 import {SmolAddressInput} from 'components/designSystem/SmolAddressInput';
 import {SmolTokenAmountInput} from 'components/designSystem/SmolTokenAmountInput';
-import {useTokenList} from 'contexts/useTokenList';
+import {useTokenList} from '@builtbymom/web3/contexts/WithTokenList';
+import {cl} from '@builtbymom/web3/utils';
 import {IconCircleCheck} from '@icons/IconCircleCheck';
 import {IconCircleCross} from '@icons/IconCircleCross';
 import {IconCross} from '@icons/IconCross';
 import {IconSpinner} from '@icons/IconSpinner';
-import {cl} from '@yearn-finance/web-lib/utils/cl';
 
 import {SendStatus} from './SendStatus';
 import {useSendFlow} from './useSendFlow';
@@ -31,10 +31,10 @@ function SendTokenRow({input}: {input: TSendInputElement}): ReactElement {
 			return <IconSpinner className={'h-4 w-4'} />;
 		}
 		if (input.status === 'success') {
-			return <IconCircleCheck className={'h-4 w-4 text-green'} />;
+			return <IconCircleCheck className={'text-green h-4 w-4'} />;
 		}
 		if (input.status === 'error') {
-			return <IconCircleCross className={'h-4 w-4 text-red'} />;
+			return <IconCircleCross className={'text-red h-4 w-4'} />;
 		}
 		return null;
 	};

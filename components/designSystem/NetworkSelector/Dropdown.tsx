@@ -2,13 +2,13 @@
 
 import React, {useState} from 'react';
 import {DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuSeparator} from 'components/Primitives/DropdownMenu';
+import {cl} from '@builtbymom/web3/utils';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import {supportedNetworks} from '@utils/tools.chains';
 import {IconChevronBottom} from '@yearn-finance/web-lib/icons/IconChevronBottom';
-import {cl} from '@yearn-finance/web-lib/utils/cl';
 
 import type {InputHTMLAttributes, ReactElement} from 'react';
-import type {TNDict} from '@yearn-finance/web-lib/types';
+import type {TNDict} from '@builtbymom/web3/types';
 
 function NetworkDropdownTrigger(
 	props: {

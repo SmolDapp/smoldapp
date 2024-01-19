@@ -2,8 +2,8 @@ import React, {useState} from 'react';
 import AddressInput from 'components/common/AddressInput';
 import {defaultInputAddressLike} from 'components/designSystem/SmolAddressInput';
 import {Button} from 'components/Primitives/Button';
+import {isZeroAddress, toAddress} from '@builtbymom/web3/utils';
 import {useNFTMigratooor} from '@nftmigratooor/useNFTMigratooor';
-import {isZeroAddress, toAddress} from '@utils/tools.address';
 import ViewSectionHeading from '@common/ViewSectionHeading';
 
 import type {TInputAddressLike} from 'components/designSystem/SmolAddressInput';

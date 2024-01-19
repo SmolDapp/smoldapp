@@ -1,17 +1,13 @@
 import React, {useCallback, useState} from 'react';
 import {getNewInput} from 'components/sections/Send/useSendFlow';
 import {useBalancesCurtain} from 'contexts/useBalancesCurtain';
-import useWallet from 'contexts/useWallet';
+import useWallet from '@builtbymom/web3/contexts/useWallet';
+import {cl, formatAmount, parseUnits, percentOf, toBigInt, toNormalizedBN} from '@builtbymom/web3/utils';
 import {IconChevron} from '@icons/IconChevron';
-import {percentOf} from '@utils/tools.math';
-import {cl} from '@yearn-finance/web-lib/utils/cl';
-import {parseUnits, toBigInt, toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
-import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
 import {ImageWithFallback} from '@common/ImageWithFallback';
 
 import type {ReactElement} from 'react';
-import type {TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
-import type {TToken} from '@utils/types/types';
+import type {TNormalizedBN, TToken} from '@builtbymom/web3/types';
 
 export type TSendInputElement = {
 	amount: string;
@@ -35,14 +31,13 @@ const percentIntervals = [25, 50, 75];
 
 export function SmolTokenAmountInput({showPercentButtons = false, onSetValue, value}: TTokenAmountInput): ReactElement {
 	const [isFocused, set_isFocused] = useState<boolean>(false);
-
 	const {onOpenCurtain} = useBalancesCurtain();
-
 	const {getBalance} = useWallet();
-
 	const {token} = value;
 
-	const selectedTokenBalance = token ? getBalance(token.address) : toNormalizedBN(0);
+	const selectedTokenBalance = token
+		? getBalance({address: token.address, chainID: token.chainID})
+		: toNormalizedBN(0);
 
 	const onChange = (amount: string): void => {
 		if (amount === '') {
@@ -101,7 +96,7 @@ export function SmolTokenAmountInput({showPercentButtons = false, onSetValue, va
 	};
 
 	const onSelectToken = (token: TToken): void => {
-		const tokenBalance = getBalance(token.address);
+		const tokenBalance = getBalance({address: token.address, chainID: token.chainID});
 		const inputBigInt = parseUnits(value.amount, token?.decimals || 18);
 
 		if (tokenBalance.raw < inputBigInt) {

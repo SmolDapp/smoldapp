@@ -2,15 +2,14 @@ import {useEffect, useRef, useState} from 'react';
 import {ImageWithFallback} from 'components/common/ImageWithFallback';
 import {IconCircleCheck} from 'components/icons/IconCircleCheck';
 import {Button} from 'components/Primitives/Button';
-import {useWallet} from 'contexts/useWallet';
 import axios from 'axios';
+import {useWallet} from '@builtbymom/web3/contexts/useWallet';
+import {toAddress} from '@builtbymom/web3/utils';
 import {useMountEffect, useThrottledCallback} from '@react-hookz/web';
-import {toAddress} from '@utils/tools.address';
 
 import type {TTokenListItem, TTokenListSummary} from 'pages/tokenlistooor';
 import type {ReactElement} from 'react';
-import type {TDict} from '@yearn-finance/web-lib/types';
-import type {TToken} from '@utils/types/types';
+import type {TDict, TToken} from '@builtbymom/web3/types';
 
 type TTokenList = {
 	name: string;
@@ -28,7 +27,7 @@ async function fetchTokenListSummary(): Promise<TTokenListSummary> {
 }
 
 function TokenListsSelector(): ReactElement {
-	const {refreshWithList} = useWallet();
+	const {onRefreshWithList} = useWallet();
 	const tokenListRef = useRef<TDict<TTokenList>>({});
 	const tokenListFetchedRef = useRef<TDict<boolean>>({});
 	const tokenListTokensRef = useRef<TDict<TToken>>({});
@@ -107,13 +106,13 @@ function TokenListsSelector(): ReactElement {
 									<b>{list.name}</b>
 									{selected.find((selectedList): boolean => selectedList.name === list.name) ? (
 										<div className={'flex h-6 items-center justify-end p-2 text-xs'}>
-											<IconCircleCheck className={'h-4 w-4 text-green'} />
+											<IconCircleCheck className={'text-green h-4 w-4'} />
 										</div>
 									) : (
 										<Button
 											onClick={async (): Promise<void> => {
 												set_isRefreshing((s): TDict<boolean> => ({...s, [list.name]: true}));
-												await refreshWithList(tokenListTokensRef.current);
+												await onRefreshWithList(tokenListTokensRef.current);
 												set_selected((s): TTokenListItem[] => [...s, list]);
 												set_isRefreshing((s): TDict<boolean> => ({...s, [list.name]: false}));
 											}}
@@ -129,7 +128,7 @@ function TokenListsSelector(): ReactElement {
 										target={'_blank'}
 										rel={'noopener noreferrer'}
 										className={
-											'text-neutral-500 cursor-pointer font-mono text-xs transition-colors hover:text-neutral-900'
+											'cursor-pointer font-mono text-xs text-neutral-500 transition-colors hover:text-neutral-900'
 										}>
 										{`${list.URI.replace(
 											'https://raw.githubusercontent.com/Migratooor/tokenLists/main/lists/',

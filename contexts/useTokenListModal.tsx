@@ -1,31 +1,16 @@
 'use client';
 
-import React, {createContext, useCallback, useContext, useMemo, useState} from 'react';
-import {useAsyncTrigger} from 'hooks/useAsyncTrigger';
+import React, {createContext, useContext, useState} from 'react';
 import axios from 'axios';
+import {useAsyncTrigger} from '@builtbymom/web3/hooks/useAsyncTrigger';
+import {useChainID} from '@builtbymom/web3/hooks/useChainID';
+import {toAddress, toNormalizedBN} from '@builtbymom/web3/utils';
 import {useLocalStorageValue} from '@react-hookz/web';
-import {toAddress} from '@utils/tools.address';
-import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
-import {toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import {TokenListHandlerPopover} from '@common/TokenList/TokenListHandlerPopover';
 
 import type {AxiosResponse} from 'axios';
-import type {Dispatch, SetStateAction} from 'react';
-import type {TAddress, TDict} from '@yearn-finance/web-lib/types';
-import type {TToken, TTokenList} from '@utils/types/types';
+import type {TDict, TToken, TTokenList} from '@builtbymom/web3/types';
 
-export type TTokenListProps = {
-	tokenList: TDict<TToken>;
-	getToken: (tokenAddress: TAddress) => TToken | undefined;
-	set_tokenList: Dispatch<SetStateAction<TDict<TToken>>>;
-	openTokenListModal: () => void;
-};
-const defaultProps: TTokenListProps = {
-	tokenList: {},
-	getToken: (): TToken | undefined => undefined,
-	set_tokenList: (): void => undefined,
-	openTokenListModal: (): void => undefined
-};
 const customDefaultList = {
 	name: 'Custom',
 	description: 'Custom token list',
@@ -41,19 +26,18 @@ const customDefaultList = {
 	tokens: []
 };
 
-const TokenList = createContext<TTokenListProps>(defaultProps);
-export const TokenListContextApp = ({children}: {children: React.ReactElement}): React.ReactElement => {
-	const {safeChainID} = useChainID();
-	const {value: extraTokenlist, set: set_extraTokenlist} = useLocalStorageValue<string[]>(
-		`${process.env.PROJECT_SLUG}/extraTokenlists`
-	);
-	const {value: extraTokens, set: set_extraTokens} = useLocalStorageValue<TTokenList['tokens']>(
-		`${process.env.PROJECT_SLUG}/extraTokens`
-	);
-	const [tokenList, set_tokenList] = useState<TDict<TToken>>({});
-	const [tokenListExtra, set_tokenListExtra] = useState<TDict<TToken>>({});
-	const [tokenListCustom, set_tokenListCustom] = useState<TDict<TToken>>({});
+export type TTokenListModalProps = {
+	openTokenListModal: () => void;
+};
+const defaultProps: TTokenListModalProps = {
+	openTokenListModal: (): void => undefined
+};
 
+const TokenListModal = createContext<TTokenListModalProps>(defaultProps);
+export const TokenListModalContextApp = ({children}: {children: React.ReactElement}): React.ReactElement => {
+	const {safeChainID} = useChainID();
+	const {value: extraTokenlist, set: set_extraTokenlist} = useLocalStorageValue<string[]>('extraTokenlists');
+	const {value: extraTokens, set: set_extraTokens} = useLocalStorageValue<TTokenList['tokens']>('extraTokens');
 	const [lists, set_lists] = useState<TTokenList[]>([]);
 	const [extraLists, set_extraLists] = useState<TTokenList[]>([]);
 	const [customLists, set_customLists] = useState<TTokenList>(customDefaultList);
@@ -92,7 +76,6 @@ export const TokenListContextApp = ({children}: {children: React.ReactElement}):
 				};
 			}
 		}
-		set_tokenList(tokenListTokens);
 		set_lists(fromList);
 	}, [safeChainID]);
 
@@ -121,7 +104,6 @@ export const TokenListContextApp = ({children}: {children: React.ReactElement}):
 				}
 			}
 		}
-		set_tokenListExtra(tokenListTokens);
 		set_extraLists(fromList);
 	}, [extraTokenlist]);
 
@@ -146,39 +128,12 @@ export const TokenListContextApp = ({children}: {children: React.ReactElement}):
 					};
 				}
 			}
-			set_tokenListCustom(tokenListTokens);
 			set_customLists({...customDefaultList, tokens: extraTokens});
 		}
 	}, [extraTokens]);
 
-	const aggregatedTokenList = useMemo(
-		() => ({...tokenList, ...tokenListExtra, ...tokenListCustom}),
-		[tokenList, tokenListExtra, tokenListCustom]
-	);
-
-	const getToken = useCallback(
-		(tokenAddress: TAddress): TToken => {
-			const fromTokenList = aggregatedTokenList[toAddress(tokenAddress)];
-			if (fromTokenList) {
-				return fromTokenList;
-			}
-			return {} as TToken;
-		},
-		[aggregatedTokenList]
-	);
-
-	const contextValue = useMemo(
-		(): TTokenListProps => ({
-			tokenList: aggregatedTokenList,
-			set_tokenList,
-			getToken,
-			openTokenListModal: (): void => set_isTokenListModalOpen(true)
-		}),
-		[aggregatedTokenList, getToken]
-	);
-
 	return (
-		<TokenList.Provider value={contextValue}>
+		<TokenListModal.Provider value={{openTokenListModal: (): void => set_isTokenListModalOpen(true)}}>
 			{children}
 			<TokenListHandlerPopover
 				isOpen={isTokenListModalOpen}
@@ -201,12 +156,10 @@ export const TokenListContextApp = ({children}: {children: React.ReactElement}):
 							};
 						}
 					}
-					set_tokenList(prevTokenList => ({...prevTokenList, ...tokenListTokens}));
 					set_lists((prevLists: TTokenList[]): TTokenList[] => [...prevLists, list]);
 					set_extraTokenlist([...(extraTokenlist || []), list.uri]);
 				}}
 				onAddToken={(newToken: TToken): void => {
-					set_tokenList(prevTokenList => ({...prevTokenList, [newToken.address]: newToken}));
 					set_extraTokens([
 						...(extraTokens || []),
 						{
@@ -220,8 +173,8 @@ export const TokenListContextApp = ({children}: {children: React.ReactElement}):
 					]);
 				}}
 			/>
-		</TokenList.Provider>
+		</TokenListModal.Provider>
 	);
 };
 
-export const useTokenList = (): TTokenListProps => useContext(TokenList);
+export const useTokenListModal = (): TTokenListModalProps => useContext(TokenListModal);

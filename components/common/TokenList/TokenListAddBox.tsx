@@ -2,17 +2,16 @@ import React, {useCallback, useMemo, useRef, useState} from 'react';
 import {defaultInputAddressLike} from 'components/designSystem/SmolAddressInput';
 import {Button} from 'components/Primitives/Button';
 import axios from 'axios';
+import {useChainID} from '@builtbymom/web3/hooks/useChainID';
+import {decodeAsBigInt, decodeAsNumber, decodeAsString, toNormalizedBN} from '@builtbymom/web3/utils';
 import {IconCircleCheck} from '@icons/IconCircleCheck';
 import {IconCircleCross} from '@icons/IconCircleCross';
 import {erc20ABI, readContracts} from '@wagmi/core';
-import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {IconLoader} from '@yearn-finance/web-lib/icons/IconLoader';
-import {decodeAsBigInt, decodeAsNumber, decodeAsString} from '@yearn-finance/web-lib/utils/decoder';
-import {toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import AddressInput from '@common/AddressInput';
 
 import type {TInputAddressLike} from 'components/designSystem/SmolAddressInput';
-import type {TToken, TTokenList} from '@utils/types/types';
+import type {TToken, TTokenList} from '@builtbymom/web3/types';
 
 type TValue = {
 	label: string;
@@ -178,12 +177,12 @@ function TokenListAddBox({onAddTokenList, onAddToken}: TTokenListAddBox): React.
 								}>
 								<div className={'pointer-events-none relative h-4 w-4'}>
 									<IconCircleCheck
-										className={`absolute h-4 w-4 text-green transition-opacity ${
+										className={`text-green absolute h-4 w-4 transition-opacity ${
 											statusURI === 'valid' ? 'opacity-100' : 'opacity-0'
 										}`}
 									/>
 									<IconCircleCross
-										className={`absolute h-4 w-4 text-red transition-opacity ${
+										className={`text-red absolute h-4 w-4 transition-opacity ${
 											statusURI === 'invalid' ? 'opacity-100' : 'opacity-0'
 										}`}
 									/>

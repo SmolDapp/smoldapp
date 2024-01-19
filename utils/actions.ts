@@ -2,6 +2,8 @@ import assert from 'assert';
 import {SINGLETON_L2} from 'components/apps/safe/utils';
 import DISPERSE_ABI from 'utils/abi/disperse.abi';
 import {isAddressEqual} from 'viem';
+import {assertAddress, toBigInt} from '@builtbymom/web3/utils';
+import {defaultTxStatus, handleTx, toWagmiProvider} from '@builtbymom/web3/utils/wagmi';
 import {
 	erc20ABI,
 	erc721ABI,
@@ -12,10 +14,6 @@ import {
 	waitForTransaction
 } from '@wagmi/core';
 import {MAX_UINT_256} from '@yearn-finance/web-lib/utils/constants';
-import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
-import {handleTx, toWagmiProvider} from '@yearn-finance/web-lib/utils/wagmi/provider';
-import {assertAddress} from '@yearn-finance/web-lib/utils/wagmi/utils';
-import {defaultTxStatus} from '@yearn-finance/web-lib/utils/web3/transaction';
 
 import ERC1155_ABI from './abi/ERC1155.abi';
 import GNOSIS_SAFE_PROXY_FACTORY from './abi/gnosisSafeProxyFactory.abi';
@@ -27,9 +25,8 @@ import {YVESTING_SIMPLE_ABI} from './abi/yVestingSimple.abi';
 
 import type {Abi, BaseError, Hex} from 'viem';
 import type {Connector} from 'wagmi';
-import type {TWriteTransaction} from '@yearn-finance/web-lib/utils/wagmi/provider';
-import type {TTxResponse} from '@yearn-finance/web-lib/utils/web3/transaction';
-import type {TAddress} from '@utils/tools.address';
+import type {TAddress} from '@builtbymom/web3/types';
+import type {TTxResponse, TWriteTransaction} from '@builtbymom/web3/utils/wagmi';
 
 //Because USDT do not return a boolean on approve, we need to use this ABI
 const ALTERNATE_ERC20_APPROVE_ABI = [

@@ -1,13 +1,11 @@
 import React, {createContext, useContext, useMemo, useReducer} from 'react';
+import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
+import {isZeroAddress} from '@builtbymom/web3/utils';
 import {useUpdateEffect} from '@react-hookz/web';
-import {isZeroAddress} from '@utils/tools.address';
-import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 
 import type {TInputAddressLike} from 'components/designSystem/SmolAddressInput';
 import type {Dispatch} from 'react';
-import type {TAddress, TDict} from '@yearn-finance/web-lib/types';
-import type {TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
-import type {TToken} from '@utils/types/types';
+import type {TAddress, TDict, TNormalizedBN, TToken} from '@builtbymom/web3/types';
 
 export type TMigrateElement = TToken & {
 	amount: TNormalizedBN | undefined;

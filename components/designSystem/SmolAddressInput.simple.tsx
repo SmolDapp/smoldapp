@@ -1,18 +1,17 @@
 import React, {useCallback, useRef, useState} from 'react';
 import {getEnsName} from 'viem/ens';
+import {cl, isAddress, toAddress, truncateHex} from '@builtbymom/web3/utils';
 import {IconCircleCheck} from '@icons/IconCircleCheck';
 import {IconCircleCross} from '@icons/IconCircleCross';
 import {useAsyncAbortable, useUpdateEffect} from '@react-hookz/web';
-import {isAddress, toAddress, truncateHex} from '@utils/tools.address';
 import {checkENSValidity} from '@utils/tools.ens';
 import {getPublicClient} from '@wagmi/core';
 import {IconLoader} from '@yearn-finance/web-lib/icons/IconLoader';
-import {cl} from '@yearn-finance/web-lib/utils/cl';
 
 import {defaultInputAddressLike} from './SmolAddressInput';
 
 import type {InputHTMLAttributes, ReactElement, RefObject} from 'react';
-import type {TAddress} from '@utils/tools.address';
+import type {TAddress} from '@builtbymom/web3/types';
 import type {TInputAddressLike} from './SmolAddressInput';
 
 export function SmolAddressInputSimple(
@@ -230,12 +229,12 @@ export function SmolAddressInputSimple(
 								getHasStatusIcon() ? 'opacity-100' : 'opacity-0'
 							)}>
 							<IconCircleCheck
-								className={`absolute h-4 w-4 text-green transition-opacity ${
+								className={`text-green absolute h-4 w-4 transition-opacity ${
 									!isCheckingValidity && value.isValid === true ? 'opacity-100' : 'opacity-0'
 								}`}
 							/>
 							<IconCircleCross
-								className={`absolute h-4 w-4 text-red transition-opacity ${
+								className={`text-red absolute h-4 w-4 transition-opacity ${
 									!isCheckingValidity && value.isValid === false ? 'opacity-100' : 'opacity-0'
 								}`}
 							/>

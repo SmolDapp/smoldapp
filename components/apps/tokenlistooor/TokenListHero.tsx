@@ -45,7 +45,7 @@ function TokenListHero({summary}: {summary: TTokenListSummary | undefined}): Rea
 					<div>
 						<span
 							className={
-								'bg-neutral-100 text-neutral-500 rounded-md border border-neutral-200 px-3 py-1 text-xs leading-6 md:text-sm'
+								'rounded-md border border-neutral-200 bg-neutral-100 px-3 py-1 text-xs leading-6 text-neutral-500 md:text-sm'
 							}>
 							{'Last update: '}
 							<span className={'inline-flex items-center pl-2 font-bold text-neutral-900'}>
@@ -56,7 +56,7 @@ function TokenListHero({summary}: {summary: TTokenListSummary | undefined}): Rea
 					<h1 className={'mt-4 text-3xl font-bold tracking-tight text-neutral-900 md:mt-6 md:text-4xl'}>
 						{'Tokenlistooor'}
 					</h1>
-					<p className={'text-neutral-500 mt-4 text-base leading-normal md:mt-6 md:text-lg md:leading-8'}>
+					<p className={'mt-4 text-base leading-normal text-neutral-500 md:mt-6 md:text-lg md:leading-8'}>
 						{
 							'Up to date token lists that fulfill your needs! Tokenlistooor is a fork of Uniswap Tokenlists, with focus on adding more automation and extra features.'
 						}
@@ -90,7 +90,7 @@ function TokenListHero({summary}: {summary: TTokenListSummary | undefined}): Rea
 								)
 							}
 							className={
-								'box-0 hover:!bg-neutral-100 group relative flex w-full cursor-pointer flex-col justify-center text-ellipsis !border-dashed !border-neutral-300 px-4 py-2 transition-colors'
+								'box-0 group relative flex w-full cursor-pointer flex-col justify-center text-ellipsis !border-dashed !border-neutral-300 px-4 py-2 transition-colors hover:!bg-neutral-100'
 							}>
 							<p className={'font-number text-ellipsis text-base'}>{'tokenlistooor.json'}</p>
 							<div className={'absolute right-4'}>
@@ -116,12 +116,12 @@ function TokenListHero({summary}: {summary: TTokenListSummary | undefined}): Rea
 									className={'font-number text-xl'}>
 									{time}
 								</b>
-								<p className={'text-neutral-500 pt-2 text-xs'}>
+								<p className={'pt-2 text-xs text-neutral-500'}>
 									{
 										'The next automatic update is just around the corner! Our lists are updated automatically with each new commit or every Sunday at midday, without any manual input.'
 									}
 								</p>
-								<p className={'text-neutral-500 pt-2 text-xs'}>
+								<p className={'pt-2 text-xs text-neutral-500'}>
 									{
 										'The tokenlistooor.json is an automatically curated list of tokens that appear in at least 50% of the lists below, for a given chain, at the time of update.'
 									}

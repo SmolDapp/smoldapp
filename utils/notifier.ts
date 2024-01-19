@@ -1,15 +1,12 @@
 import axios from 'axios';
-import {truncateHex} from '@utils/tools.address';
+import {formatAmount, toNormalizedBN, truncateHex} from '@builtbymom/web3/utils';
 import {getNetwork} from '@wagmi/core';
-import {toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
-import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
 
 import {EIP3770_PREFIX} from './eip-3770';
 
 import type {TSendInputElement} from 'components/designSystem/SmolTokenAmountInput';
 import type {Hex} from 'viem';
-import type {TAddress} from '@utils/tools.address';
-import type {TToken} from './types/types';
+import type {TAddress, TToken} from '@builtbymom/web3/types';
 
 const safeBaseURI = 'https://app.safe.global/transactions/tx?safe=';
 export function notifyGib({

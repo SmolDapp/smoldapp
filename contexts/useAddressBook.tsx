@@ -3,14 +3,14 @@
 import React, {createContext, useCallback, useContext, useMemo, useState} from 'react';
 import assert from 'assert';
 import {AddressSelectorCurtain} from 'components/designSystem/Curtains/AddressSelectorCurtain';
-import {useAsyncTrigger} from 'hooks/useAsyncTrigger';
 import setupIndexedDB, {useIndexedDBStore} from 'use-indexeddb';
+import {useAsyncTrigger} from '@builtbymom/web3/hooks/useAsyncTrigger';
+import {isAddress, toAddress} from '@builtbymom/web3/utils';
 import {useMountEffect} from '@react-hookz/web';
 import {slugify} from '@utils/helpers';
-import {isAddress, toAddress} from '@utils/tools.address';
 
 import type {IndexedDBConfig} from 'use-indexeddb/dist/interfaces';
-import type {TAddress} from '@utils/tools.address';
+import type {TAddress} from '@builtbymom/web3/types';
 
 export type TAddressBookEntry = {
 	id?: number; // Unique ID of the entry

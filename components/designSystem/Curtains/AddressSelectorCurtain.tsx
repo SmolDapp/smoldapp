@@ -7,8 +7,8 @@ import {TextInput} from 'components/Primitives/TextInput';
 import {useAddressBook} from 'contexts/useAddressBook';
 import {useIsMounted} from 'hooks/useIsMounted';
 import {LayoutGroup, motion} from 'framer-motion';
+import {toAddress} from '@builtbymom/web3/utils';
 import * as Dialog from '@radix-ui/react-dialog';
-import {toAddress} from '@utils/tools.address';
 
 import {AddressBookEntry} from '../AddressBookEntry';
 
@@ -81,7 +81,7 @@ export function AddressSelectorCurtain(props: {
 			<CurtainContent>
 				<aside
 					style={{boxShadow: '-8px 0px 20px 0px rgba(36, 40, 51, 0.08)'}}
-					className={'flex h-full flex-col overflow-y-hidden bg-neutral-0 p-6'}>
+					className={'bg-neutral-0 flex h-full flex-col overflow-y-hidden p-6'}>
 					<div className={'mb-4 flex flex-row items-center justify-between'}>
 						<h3 className={'font-bold'}>{'Address Book'}</h3>
 						<CloseCurtainButton />
