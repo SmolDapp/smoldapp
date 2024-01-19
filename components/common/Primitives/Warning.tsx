@@ -10,9 +10,9 @@ export function Warning({message, type}: {message: string; type: TWarningType}):
 			return 'border-[#FF5B5B] text-[#FF0000] bg-[#FBDADA]';
 		}
 		if (type === 'warning') {
-			return 'border-[#F4B731] text-[#F4B731]';
+			return 'border-[#FF9900] text-[#FF9900] bg-[#FFF3D3]';
 		}
-		return '';
+		return 'border-neutral-600 text-neutral-700 bg-neutral-300';
 	};
 
 	return (
