@@ -322,7 +322,7 @@ export function SmolAddressInput({onSetValue, value}: TAddressInput): ReactEleme
 					<button
 						onClick={() => onOpenCurtain(selectedEntry => onSelectItem(selectedEntry))}
 						className={cl(
-							'flex items-center gap-4 rounded-lg p-4 w-22',
+							'flex items-center gap-4 rounded-sm p-4 w-22',
 							'bg-neutral-200 hover:bg-neutral-300 transition-colors'
 						)}>
 						<div className={'flex size-8 min-w-8 items-center justify-center rounded-full bg-neutral-0'}>

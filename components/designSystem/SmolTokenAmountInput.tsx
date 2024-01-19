@@ -195,7 +195,7 @@ export function SmolTokenAmountInput({showPercentButtons = false, onSetValue, va
 				</div>
 				<button
 					className={cl(
-						'flex items-center gap-4 rounded-lg p-4 max-w-[176px] w-full',
+						'flex items-center gap-4 rounded-sm p-4 max-w-[176px] w-full',
 						'bg-neutral-200 hover:bg-neutral-300 transition-colors'
 					)}
 					onClick={() => onOpenCurtain(onSelectToken)}>
