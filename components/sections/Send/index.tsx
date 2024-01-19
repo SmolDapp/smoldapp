@@ -31,10 +31,10 @@ function SendTokenRow({input}: {input: TSendInputElement}): ReactElement {
 			return <IconSpinner className={'size-4'} />;
 		}
 		if (input.status === 'success') {
-			return <IconCircleCheck className={'text-green size-4'} />;
+			return <IconCircleCheck className={'size-4 text-green'} />;
 		}
 		if (input.status === 'error') {
-			return <IconCircleCross className={'text-red size-4'} />;
+			return <IconCircleCross className={'size-4 text-red'} />;
 		}
 		return null;
 	};
@@ -80,7 +80,7 @@ export function Send(): ReactElement {
 	};
 
 	return (
-		<div className={'max-w-108 w-full'}>
+		<div className={'w-full max-w-108'}>
 			<div className={'mb-6'}>
 				<p className={'font-medium'}>{'Receiver'}</p>
 				<SmolAddressInput

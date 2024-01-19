@@ -200,7 +200,7 @@ export function SmolTokenAmountInput({showPercentButtons = false, onSetValue, va
 					)}
 					onClick={() => onOpenCurtain(onSelectToken)}>
 					<div className={'flex w-full max-w-44 items-center gap-2'}>
-						<div className={'bg-neutral-0 flex size-8 min-w-8 items-center justify-center rounded-full'}>
+						<div className={'flex size-8 min-w-8 items-center justify-center rounded-full bg-neutral-0'}>
 							{token && isAddress(token.address) ? (
 								<ImageWithFallback
 									unoptimized

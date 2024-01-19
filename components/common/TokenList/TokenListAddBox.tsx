@@ -177,12 +177,12 @@ function TokenListAddBox({onAddTokenList, onAddToken}: TTokenListAddBox): React.
 								}>
 								<div className={'pointer-events-none relative size-4'}>
 									<IconCircleCheck
-										className={`text-green absolute size-4 transition-opacity ${
+										className={`absolute size-4 text-green transition-opacity ${
 											statusURI === 'valid' ? 'opacity-100' : 'opacity-0'
 										}`}
 									/>
 									<IconCircleCross
-										className={`text-red absolute size-4 transition-opacity ${
+										className={`absolute size-4 text-red transition-opacity ${
 											statusURI === 'invalid' ? 'opacity-100' : 'opacity-0'
 										}`}
 									/>

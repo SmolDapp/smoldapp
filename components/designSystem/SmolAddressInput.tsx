@@ -235,7 +235,7 @@ export function SmolAddressInput({onSetValue, value}: TAddressInput): ReactEleme
 	}, [isFocused, value.isValid, isCheckingValidity]);
 
 	return (
-		<div className={'max-w-108 group relative size-full rounded-lg'}>
+		<div className={'group relative size-full max-w-108 rounded-lg'}>
 			<label
 				className={cl(
 					'h-20 z-20 relative',
@@ -253,12 +253,12 @@ export function SmolAddressInput({onSetValue, value}: TAddressInput): ReactEleme
 						{getHasStatusIcon() ? (
 							<div className={'pointer-events-none relative size-4 min-w-[16px]'}>
 								<IconCircleCheck
-									className={`text-green absolute size-4 transition-opacity ${
+									className={`absolute size-4 text-green transition-opacity ${
 										!isCheckingValidity && value.isValid === true ? 'opacity-100' : 'opacity-0'
 									}`}
 								/>
 								<IconCircleCross
-									className={`text-red absolute size-4 transition-opacity ${
+									className={`absolute size-4 text-red transition-opacity ${
 										!isCheckingValidity && value.isValid === false ? 'opacity-100' : 'opacity-0'
 									}`}
 								/>
@@ -325,7 +325,7 @@ export function SmolAddressInput({onSetValue, value}: TAddressInput): ReactEleme
 							'flex items-center gap-4 rounded-lg p-4 w-22',
 							'bg-neutral-200 hover:bg-neutral-300 transition-colors'
 						)}>
-						<div className={'bg-neutral-0 flex size-8 min-w-8 items-center justify-center rounded-full'}>
+						<div className={'flex size-8 min-w-8 items-center justify-center rounded-full bg-neutral-0'}>
 							{!isAddress(value.address) ? (
 								<IconAppAddressBook className={'size-4 text-neutral-600'} />
 							) : (

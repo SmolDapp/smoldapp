@@ -167,7 +167,7 @@ function NameInput(props: {
 				<label htmlFor={'name'}>
 					<small className={'pl-1'}>{'Name'}</small>
 				</label>
-				<small className={'text-red pr-1'}>{getErrorMessage()}</small>
+				<small className={'pr-1 text-red'}>{getErrorMessage()}</small>
 			</div>
 			<TextInput
 				inputRef={inputRef}
@@ -258,7 +258,7 @@ function AddressInput(props: {
 				<label htmlFor={'address'}>
 					<small className={'pl-1'}>{'Address'}</small>
 				</label>
-				<small className={'text-red pr-1'}>{getErrorMessage()}</small>
+				<small className={'pr-1 text-red'}>{getErrorMessage()}</small>
 			</div>
 
 			<SmolAddressInputSimple
@@ -353,7 +353,7 @@ export function AddressBookCurtain(props: {
 			<CurtainContent className={'focus:!border-green'}>
 				<aside
 					style={{boxShadow: '-8px 0px 20px 0px rgba(36, 40, 51, 0.08)'}}
-					className={'bg-neutral-0 flex h-full flex-col overflow-y-hidden p-6'}>
+					className={'flex h-full flex-col overflow-y-hidden bg-neutral-0 p-6'}>
 					<button
 						aria-label={'Hack to prevent focus on fav on mount'}
 						className={'pointer-events-none size-0 opacity-0'}
