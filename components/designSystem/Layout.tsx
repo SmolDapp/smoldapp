@@ -63,8 +63,8 @@ export default function Layout(props: AppProps): ReactElement {
 	const appAction = (Component as TComponent).getAction || (() => null);
 
 	return (
-		<div className={'mx-auto mt-10 w-full max-w-6xl pl-4 pr-8'}>
-			<div className={'grid-cols-root grid w-full space-x-4'}>
+		<div className={'mx-auto mt-10 w-full max-w-6xl'}>
+			<div className={'grid-cols-root grid w-full'}>
 				<motion.nav
 					initial={{scale: 0.9, opacity: 0}}
 					animate={{scale: 1, opacity: 1}}
@@ -73,36 +73,36 @@ export default function Layout(props: AppProps): ReactElement {
 					<SideMenu />
 				</motion.nav>
 
-				<AnimatePresence mode={'wait'}>
-					<motion.main
-						key={appName}
-						variants={appWrapperVariants}
-						custom={router.isReady}
-						animate={'animate'}
-						exit={'exit'}
-						initial={'initial'}
-						className={
-							'col-main min-h-app bg-neutral-0 relative mb-10 w-full overflow-x-hidden rounded-lg'
-						}>
-						<WithAddressBook>
-							<App
-								title={appName}
-								description={appDescription}
-								action={appAction()}>
-								<motion.div
-									initial={{scale: 0.9, opacity: 0}}
-									animate={{scale: 1, opacity: 1}}
-									transition={{
-										delay: router.isReady ? 0.2 : 0.4,
-										duration: 0.6,
-										ease: 'easeInOut'
-									}}>
-									{getLayout(<Component {...props} />, router)}
-								</motion.div>
-							</App>
-						</WithAddressBook>
-					</motion.main>
-				</AnimatePresence>
+				<div className={'col-main pl-4'}>
+					<AnimatePresence mode={'wait'}>
+						<motion.main
+							key={appName}
+							variants={appWrapperVariants}
+							custom={router.isReady}
+							animate={'animate'}
+							exit={'exit'}
+							initial={'initial'}
+							className={'min-h-app bg-neutral-0 relative mb-10 w-full overflow-x-hidden rounded-lg'}>
+							<WithAddressBook>
+								<App
+									title={appName}
+									description={appDescription}
+									action={appAction()}>
+									<motion.div
+										initial={{scale: 0.9, opacity: 0}}
+										animate={{scale: 1, opacity: 1}}
+										transition={{
+											delay: router.isReady ? 0.2 : 0.4,
+											duration: 0.6,
+											ease: 'easeInOut'
+										}}>
+										{getLayout(<Component {...props} />, router)}
+									</motion.div>
+								</App>
+							</WithAddressBook>
+						</motion.main>
+					</AnimatePresence>
+				</div>
 			</div>
 		</div>
 	);
