@@ -280,15 +280,13 @@ export function SendWizard({isReceiverERC20}: {isReceiverERC20: boolean}): React
 
 	return (
 		<>
-			<div className={'w-full md:max-w-[442px]'}>
-				<Button
-					className={'w-full'}
-					isBusy={migrateStatus.pending}
-					isDisabled={isSendButtonDisabled}
-					onClick={onHandleMigration}>
-					<b>{'Send'}</b>
-				</Button>
-			</div>
+			<Button
+				className={'!h-10 w-full max-w-[240px]'}
+				isBusy={migrateStatus.pending}
+				isDisabled={isSendButtonDisabled}
+				onClick={onHandleMigration}>
+				<b>{'Send'}</b>
+			</Button>
 			<SuccessModal
 				title={'It looks like a success!'}
 				content={
