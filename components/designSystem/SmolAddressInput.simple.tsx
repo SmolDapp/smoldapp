@@ -205,7 +205,7 @@ export function SmolAddressInputSimple(
 	}, [isFocused, value.isValid, isCheckingValidity]);
 
 	return (
-		<div className={'group relative h-full w-full max-w-[444px] rounded-lg'}>
+		<div className={'max-w-108 group relative h-full w-full rounded-lg'}>
 			<label
 				className={cl(
 					'h-20 z-20 relative',

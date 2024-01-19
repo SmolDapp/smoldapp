@@ -82,7 +82,7 @@ export function Send(): ReactElement {
 	};
 
 	return (
-		<div className={'w-full max-w-[444px]'}>
+		<div className={'max-w-108 w-full'}>
 			<div className={'mb-6'}>
 				<p className={'font-medium'}>{'Receiver'}</p>
 				<SmolAddressInput

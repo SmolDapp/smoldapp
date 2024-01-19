@@ -36,7 +36,7 @@ function App(props: TAppProp): ReactElement {
 				/>
 			</div>
 			<section className={'-mt-2 w-full p-10 pt-0'}>
-				<div className={'md:max-w-444 mb-6 flex w-full flex-row justify-between'}>
+				<div className={'md:max-w-108 mb-6 flex w-full flex-row justify-between'}>
 					<div>
 						<h1 className={'text-3xl font-bold text-neutral-900'}>{props.title}</h1>
 						<p className={'text-base text-neutral-600'}>{props.description}</p>

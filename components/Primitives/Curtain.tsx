@@ -14,7 +14,7 @@ export const CurtainContent = (props: DialogContentProps): ReactElement => {
 				{...rest}
 				tabIndex={-1}
 				className={cl(
-					'absolute z-50 transition ease inset-y-0 h-full right-0 w-full max-w-[428px]',
+					'absolute z-50 transition ease inset-y-0 h-full right-0 w-full max-w-108',
 					'data-[state=open]:animate-in data-[state=open]:duration-300 data-[state=open]:slide-in-from-right',
 					'data-[state=closed]:slide-out-to-right data-[state=closed]:animate-out data-[state=closed]:duration-300',
 					className

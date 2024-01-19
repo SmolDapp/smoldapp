@@ -238,7 +238,7 @@ function AddressBookPage(): ReactElement {
 
 	return (
 		<Fragment>
-			<div className={'w-444'}>
+			<div className={'w-108'}>
 				<div className={'my-4 grid gap-4'}>
 					<AddressBookActions onOpenCurtain={() => set_curtainStatus({isOpen: true, isEditing: true})} />
 					<TextInput

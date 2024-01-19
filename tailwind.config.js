@@ -56,13 +56,13 @@ module.exports = {
 				inherit: 'inherit',
 				sidebar: '280px',
 				main: '1000px',
-				444: '444px'
+				108: '432px'
 			},
 			maxWidth: {
 				'4xl': '888px',
 				'5xl': '992px',
 				'6xl': '1200px',
-				444: '444px'
+				108: '432px'
 			},
 			fontSize: {
 				xxs: ['10px', '16px'],
