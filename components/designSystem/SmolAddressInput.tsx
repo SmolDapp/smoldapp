@@ -50,6 +50,8 @@ export function SmolAddressInput({onSetValue, value}: TAddressInput): ReactEleme
 		[getCachedEntry, value]
 	);
 
+	console.warn(addressBookEntry);
+
 	const [, actions] = useAsyncAbortable(
 		async (signal, input: string): Promise<void> =>
 			new Promise<void>(async (resolve, reject): Promise<void> => {
@@ -251,18 +253,18 @@ export function SmolAddressInput({onSetValue, value}: TAddressInput): ReactEleme
 						{getHasStatusIcon() ? (
 							<div className={'pointer-events-none relative size-4 min-w-[16px]'}>
 								<IconCircleCheck
-									className={`text-green absolute size-4 transition-opacity${
+									className={`text-green absolute size-4 transition-opacity ${
 										!isCheckingValidity && value.isValid === true ? 'opacity-100' : 'opacity-0'
 									}`}
 								/>
 								<IconCircleCross
-									className={`text-red absolute size-4 transition-opacity${
+									className={`text-red absolute size-4 transition-opacity ${
 										!isCheckingValidity && value.isValid === false ? 'opacity-100' : 'opacity-0'
 									}`}
 								/>
 								<div className={'absolute inset-0 flex items-center justify-center'}>
 									<IconLoader
-										className={`size-4 animate-spin text-neutral-900 transition-opacity${
+										className={`size-4 animate-spin text-neutral-900 transition-opacity ${
 											isCheckingValidity ? 'opacity-100' : 'opacity-0'
 										}`}
 									/>
@@ -323,17 +325,16 @@ export function SmolAddressInput({onSetValue, value}: TAddressInput): ReactEleme
 							'flex items-center gap-4 rounded-lg p-4 w-22',
 							'bg-neutral-200 hover:bg-neutral-300 transition-colors'
 						)}>
-						{!isAddress(currentAddress.current) ? (
-							<div
-								className={'bg-neutral-0 flex size-8 min-w-8 items-center justify-center rounded-full'}>
+						<div className={'bg-neutral-0 flex size-8 min-w-8 items-center justify-center rounded-full'}>
+							{!isAddress(value.address) ? (
 								<IconAppAddressBook className={'size-4 text-neutral-600'} />
-							</div>
-						) : (
-							<AvatarWrapper
-								address={toAddress(currentAddress.current)}
-								sizeClassname={'h-8 w-8 min-w-8'}
-							/>
-						)}
+							) : (
+								<AvatarWrapper
+									address={toAddress(value.address)}
+									sizeClassname={'h-8 w-8 min-w-8'}
+								/>
+							)}
+						</div>
 
 						<IconChevron className={'size-4 min-w-4 text-neutral-600'} />
 					</button>

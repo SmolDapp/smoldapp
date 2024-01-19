@@ -97,18 +97,18 @@ function AddressInput({value, onChangeValue, ...props}: TAddressInput): ReactEle
 				<span className={status === 'invalid' || status === 'warning' ? 'tooltip' : 'pointer-events-none'}>
 					<div className={'pointer-events-none relative size-4'}>
 						<IconCircleCheck
-							className={`absolute size-4 text-green transition-opacity${
+							className={`text-green absolute size-4 transition-opacity ${
 								status === 'valid' ? 'opacity-100' : 'opacity-0'
 							}`}
 						/>
 						<IconCircleCross
-							className={`absolute size-4 text-red transition-opacity${
+							className={`text-red absolute size-4 transition-opacity ${
 								status === 'invalid' ? 'opacity-100' : 'opacity-0'
 							}`}
 						/>
 						<div className={'absolute inset-0 flex items-center justify-center'}>
 							<IconLoader
-								className={`size-4 animate-spin text-neutral-900 transition-opacity${
+								className={`size-4 animate-spin text-neutral-900 transition-opacity ${
 									status === 'pending' ? 'opacity-100' : 'opacity-0'
 								}`}
 							/>

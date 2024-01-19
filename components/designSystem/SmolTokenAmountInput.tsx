@@ -200,21 +200,20 @@ export function SmolTokenAmountInput({showPercentButtons = false, onSetValue, va
 					)}
 					onClick={() => onOpenCurtain(onSelectToken)}>
 					<div className={'flex w-full max-w-44 items-center gap-2'}>
-						{token && isAddress(token.address) ? (
-							<ImageWithFallback
-								unoptimized
-								alt={token?.symbol || ''}
-								src={token?.logoURI || ''}
-								quality={90}
-								width={32}
-								height={32}
-							/>
-						) : (
-							<div
-								className={'bg-neutral-0 flex size-8 min-w-8 items-center justify-center rounded-full'}>
+						<div className={'bg-neutral-0 flex size-8 min-w-8 items-center justify-center rounded-full'}>
+							{token && isAddress(token.address) ? (
+								<ImageWithFallback
+									unoptimized
+									alt={token?.symbol || ''}
+									src={token?.logoURI || ''}
+									quality={90}
+									width={32}
+									height={32}
+								/>
+							) : (
 								<IconWallet className={'size-4 text-neutral-600'} />
-							</div>
-						)}
+							)}
+						</div>
 						<p
 							className={cl(
 								'truncate',
