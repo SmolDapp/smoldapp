@@ -70,8 +70,8 @@ export function SideMenuNav(): ReactElement {
 	const pathname = usePathname();
 
 	return (
-		<div className={'scrollable scrollbar-show py-4'}>
-			<section className={'flex h-full flex-col'}>
+		<div className={'scrollable scrollbar-show h-full py-4'}>
+			<section className={'flex h-full flex-col justify-between'}>
 				<ul className={'grid gap-2 pb-8'}>
 					<NavItem
 						href={'/apps/send'}
