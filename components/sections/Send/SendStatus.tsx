@@ -62,7 +62,7 @@ export function SendStatus({isReceiverERC20}: {isReceiverERC20: boolean}): React
 	return (
 		<div className={'mb-4'}>
 			<Warning
-				message={status?.message}
+				message={status.message}
 				type={status.type}
 			/>
 		</div>
