@@ -278,7 +278,7 @@ function AddressBookPage(): ReactElement {
 	const hasNoEntries = listCachedEntries().length === 0;
 	const hasNoFilteredEntry = entries.length === 0;
 	return (
-		<Fragment>
+		<div className={'w-108'}>
 			{hasNoEntries ? (
 				<div className={'w-444 md:h-content md:min-h-content'}>
 					<EmptyAddressBook onOpenCurtain={() => set_curtainStatus({isOpen: true, isEditing: true})} />
@@ -356,12 +356,18 @@ function AddressBookPage(): ReactElement {
 					if (!status.isOpen) {
 						dispatch({
 							type: 'SET_SELECTED_ENTRY',
-							payload: {address: undefined, label: '', slugifiedLabel: '', chains: [], isFavorite: false}
+							payload: {
+								address: undefined,
+								label: '',
+								slugifiedLabel: '',
+								chains: [],
+								isFavorite: false
+							}
 						});
 					}
 				}}
 			/>
-		</Fragment>
+		</div>
 	);
 }
 
