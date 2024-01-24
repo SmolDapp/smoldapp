@@ -1,4 +1,5 @@
 import {useState} from 'react';
+import Link from 'next/link';
 import {useAddressBook} from 'contexts/useAddressBook';
 import {useAsyncTrigger} from '@builtbymom/web3/hooks/useAsyncTrigger';
 import {useChainID} from '@builtbymom/web3/hooks/useChainID';
@@ -15,7 +16,7 @@ export function SendStatus({isReceiverERC20}: {isReceiverERC20: boolean}): React
 	const {configuration} = useSendFlow();
 	const {safeChainID} = useChainID();
 
-	const [status, set_status] = useState<{type: TWarningType; message: string} | null>(null);
+	const [status, set_status] = useState<{type: TWarningType; message: string | ReactElement} | null>(null);
 
 	const {getEntry} = useAddressBook();
 
@@ -31,25 +32,44 @@ export function SendStatus({isReceiverERC20}: {isReceiverERC20: boolean}): React
 
 		if (isSmartContract && !fromAddressBook && !isReceiverERC20) {
 			return set_status({
-				message: 'You are going to send tokens to smart contract that is not present in the Address Book',
+				message: (
+					<>
+						{'Hello. Looks like you’re sending to a '}
+						<Link
+							target={'_blank'}
+							href={'/'}>
+							<span className={'font-semibold hover:underline'}>{'smart contract address'}</span>
+						</Link>
+						{'. If it’s intentional, go'}
+						{'right ahead, otherwise you might want to double check.'}
+					</>
+				),
 				type: 'warning'
 			});
 		}
 
 		if (isEthAddress(configuration.receiver.address)) {
-			return set_status({message: 'Impossible to sent tokens to null address', type: 'error'});
+			return set_status({
+				message: 'Yo… uh… hmm… this is an invalid address. Tokens sent here may be lost forever. Oh no!',
+				type: 'error'
+			});
 		}
 
 		if (isReceiverERC20) {
-			return set_status({message: 'Receiver is an ERC20 token', type: 'error'});
+			return set_status({
+				message: 'You’re sending to an ERC20 token address. Tokens sent here may be lost forever. Rip!',
+				type: 'error'
+			});
 		}
-
 		if (configuration.receiver.address && !fromAddressBook) {
-			return set_status({message: 'Address is not present in the Address Book', type: 'warning'});
+			return set_status({message: 'This address isn’t in your address book. Wanna add it?', type: 'warning'});
 		}
-
 		if (configuration.receiver.address && !fromAddressBook?.chains.includes(safeChainID)) {
-			return set_status({message: 'Address in the Address Book is related to different chain', type: 'warning'});
+			return set_status({
+				message:
+					'You added this address on [chain name], please check it can receive funds on [current chain].',
+				type: 'warning'
+			});
 		}
 
 		return set_status(null);
