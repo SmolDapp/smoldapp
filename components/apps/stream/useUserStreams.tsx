@@ -7,8 +7,8 @@ import {YVESTING_FACTORY_ABI} from '@utils/abi/yVestingFactory.abi';
 
 import {getVestingContracts} from './constants';
 
-import type {TInputAddressLike} from 'components/designSystem/SmolAddressInput';
 import type {TAddress} from '@builtbymom/web3/types';
+import type {TInputAddressLike} from '@utils/tools.address';
 
 export type TStreamArgs = {
 	funder: TAddress;

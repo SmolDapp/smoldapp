@@ -3,9 +3,9 @@ import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
 import {isZeroAddress} from '@builtbymom/web3/utils';
 import {useUpdateEffect} from '@react-hookz/web';
 
-import type {TInputAddressLike} from 'components/designSystem/SmolAddressInput';
 import type {Dispatch} from 'react';
 import type {TAddress, TDict, TNormalizedBN, TToken} from '@builtbymom/web3/types';
+import type {TInputAddressLike} from '@utils/tools.address';
 
 export type TMigrateElement = TToken & {
 	amount: TNormalizedBN | undefined;

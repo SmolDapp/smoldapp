@@ -21,7 +21,7 @@ import {SmolAddressInputSimple} from '../SmolAddressInput.simple';
 
 import type {TAddressBookEntryReducer} from 'pages/apps/address-book';
 import type {Dispatch, ReactElement, SetStateAction} from 'react';
-import type {TInputAddressLike} from '../SmolAddressInput';
+import type {TInputAddressLike} from '@utils/tools.address';
 
 function FavoriteToggle(props: {isFavorite: boolean; onClick: () => void}): ReactElement {
 	return (

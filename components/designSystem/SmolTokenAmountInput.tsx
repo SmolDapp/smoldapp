@@ -2,9 +2,20 @@ import React, {useCallback, useState} from 'react';
 import {getNewInput} from 'components/sections/Send/useSendFlow';
 import {useBalancesCurtain} from 'contexts/useBalancesCurtain';
 import useWallet from '@builtbymom/web3/contexts/useWallet';
-import {cl, formatAmount, isAddress, parseUnits, percentOf, toBigInt, toNormalizedBN} from '@builtbymom/web3/utils';
+import {useChainID} from '@builtbymom/web3/hooks/useChainID';
+import {
+	cl,
+	formatAmount,
+	isAddress,
+	parseUnits,
+	percentOf,
+	toBigInt,
+	toNormalizedBN,
+	toNormalizedValue
+} from '@builtbymom/web3/utils';
 import {IconChevron} from '@icons/IconChevron';
 import {IconWallet} from '@icons/IconWallet';
+import {useDeepCompareEffect} from '@react-hookz/web';
 import {ImageWithFallback} from '@common/ImageWithFallback';
 
 import type {ReactElement} from 'react';
@@ -26,21 +37,31 @@ type TTokenAmountInput = {
 	showPercentButtons?: boolean;
 	onSetValue: (value: Partial<TSendInputElement>) => void;
 	value: TSendInputElement;
+	initialValue?: Partial<{amount: bigint; token: TToken}>;
 };
 
 const percentIntervals = [25, 50, 75];
 
-export function SmolTokenAmountInput({showPercentButtons = false, onSetValue, value}: TTokenAmountInput): ReactElement {
+export function SmolTokenAmountInput({
+	showPercentButtons = false,
+	onSetValue,
+	value,
+	initialValue
+}: TTokenAmountInput): ReactElement {
 	const [isFocused, set_isFocused] = useState<boolean>(false);
 	const {onOpenCurtain} = useBalancesCurtain();
-	const {getBalance} = useWallet();
+
+	const {safeChainID} = useChainID();
+	const {getBalance, isLoading} = useWallet();
+
 	const {token} = value;
 
-	const selectedTokenBalance = token
-		? getBalance({address: token.address, chainID: token.chainID})
+	const selectedTokenBalance = token ? getBalance({address: token.address, chainID: safeChainID}) : toNormalizedBN(0);
+	const initialTokenBalance = initialValue?.token?.address
+		? getBalance({address: initialValue?.token.address, chainID: safeChainID})
 		: toNormalizedBN(0);
 
-	const onChange = (amount: string): void => {
+	const onChange = (amount: string, balance: TNormalizedBN, token?: TToken): void => {
 		if (amount === '') {
 			return onSetValue({
 				amount,
@@ -53,7 +74,7 @@ export function SmolTokenAmountInput({showPercentButtons = false, onSetValue, va
 		if (+amount > 0) {
 			const inputBigInt = amount ? parseUnits(amount, token?.decimals || 18) : toBigInt(0);
 
-			if (inputBigInt > selectedTokenBalance.raw) {
+			if (inputBigInt > balance.raw && !isLoading) {
 				return onSetValue({
 					amount,
 					normalizedBigAmount: toNormalizedBN(inputBigInt, token?.decimals || 18),
@@ -96,14 +117,13 @@ export function SmolTokenAmountInput({showPercentButtons = false, onSetValue, va
 		});
 	};
 
-	const onSelectToken = (token: TToken): void => {
-		const tokenBalance = getBalance({address: token.address, chainID: token.chainID});
-		const inputBigInt = parseUnits(value.amount, token?.decimals || 18);
+	const onSelectToken = (valueBigInt: bigint, token: TToken): void => {
+		const tokenBalance = getBalance({address: token.address, chainID: safeChainID});
 
-		if (tokenBalance.raw < inputBigInt) {
+		if (tokenBalance.raw < valueBigInt) {
 			return onSetValue({
 				token,
-				normalizedBigAmount: toNormalizedBN(inputBigInt, token?.decimals || 18),
+				normalizedBigAmount: toNormalizedBN(valueBigInt, token?.decimals || 18),
 				isValid: false,
 				error: 'Insufficient balance'
 			});
@@ -111,7 +131,7 @@ export function SmolTokenAmountInput({showPercentButtons = false, onSetValue, va
 
 		onSetValue({
 			token,
-			normalizedBigAmount: toNormalizedBN(inputBigInt, token?.decimals || 18),
+			normalizedBigAmount: toNormalizedBN(valueBigInt, token?.decimals || 18),
 			isValid: true,
 			error: undefined
 		});
@@ -126,6 +146,20 @@ export function SmolTokenAmountInput({showPercentButtons = false, onSetValue, va
 		}
 		return 'border-neutral-400';
 	}, [isFocused, value.isValid]);
+
+	useDeepCompareEffect(() => {
+		if (!initialValue) {
+			return;
+		}
+		if (initialValue.amount && initialValue.token?.address) {
+			const normalizedAmount = toNormalizedValue(
+				initialValue.amount,
+				initialValue?.token?.decimals || 18
+			).toString();
+			onSelectToken(initialValue.amount, initialValue.token);
+			onChange(normalizedAmount, initialTokenBalance, initialValue.token);
+		}
+	}, [initialValue, initialTokenBalance]);
 
 	return (
 		<div className={'relative size-full rounded-lg'}>
@@ -147,7 +181,7 @@ export function SmolTokenAmountInput({showPercentButtons = false, onSetValue, va
 						type={'number'}
 						placeholder={'0.00'}
 						value={value.amount}
-						onChange={e => onChange(e.target.value)}
+						onChange={e => onChange(e.target.value, selectedTokenBalance, token)}
 						max={selectedTokenBalance.normalized}
 						onFocus={() => set_isFocused(true)}
 						onBlur={() => set_isFocused(false)}
@@ -198,7 +232,9 @@ export function SmolTokenAmountInput({showPercentButtons = false, onSetValue, va
 						'flex items-center gap-4 rounded-sm p-4 max-w-[176px] w-full',
 						'bg-neutral-200 hover:bg-neutral-300 transition-colors'
 					)}
-					onClick={() => onOpenCurtain(onSelectToken)}>
+					onClick={() =>
+						onOpenCurtain(token => onSelectToken(parseUnits(value.amount, token?.decimals || 18), token))
+					}>
 					<div className={'flex w-full max-w-44 items-center gap-2'}>
 						<div className={'flex size-8 min-w-8 items-center justify-center rounded-full bg-neutral-0'}>
 							{token && isAddress(token.address) ? (

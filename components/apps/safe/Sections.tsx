@@ -1,12 +1,12 @@
 import React, {useCallback, useState} from 'react';
 import assert from 'assert';
 import ChainStatus from 'components/apps/safe/ChainStatus';
-import {defaultInputAddressLike} from 'components/designSystem/SmolAddressInput';
 import {Button} from 'components/Primitives/Button';
 import {cl, isZeroAddress, toAddress} from '@builtbymom/web3/utils';
 import IconSquareMinus from '@icons/IconSquareMinus';
 import IconSquarePlus from '@icons/IconSquarePlus';
 import IconWarning from '@icons/IconWarning';
+import {defaultInputAddressLike} from '@utils/tools.address';
 import {supportedNetworks, supportedTestNetworks} from '@utils/tools.chains';
 import {fetchTransaction} from '@wagmi/core';
 import {AddressLike} from '@yearn-finance/web-lib/components/AddressLike';
@@ -19,10 +19,10 @@ import {Label} from '@common/Label';
 import {newVoidOwner, useMultiSafe} from './useSafe';
 import {CALL_INIT_SIGNATURE, decodeArgInitializers, retrieveSafeTxHash, SINGLETON_L2, SINGLETON_L2_DDP} from './utils';
 
-import type {TInputAddressLike} from 'components/designSystem/SmolAddressInput';
 import type {ReactElement} from 'react';
 import type {Hex} from 'viem';
 import type {TAddress} from '@builtbymom/web3/types';
+import type {TInputAddressLike} from '@utils/tools.address';
 import type {TOwners} from './types';
 
 export function SectionDisplayOwners(): ReactElement {

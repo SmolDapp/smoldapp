@@ -1,13 +1,14 @@
 import React, {createContext, useContext, useEffect, useMemo, useReducer, useState} from 'react';
-import {defaultInputAddressLike, type TInputAddressLike} from 'components/designSystem/SmolAddressInput';
 import {isBefore} from 'date-fns';
 import {scrollToTargetAdjusted} from 'utils/animations';
 import {HEADER_HEIGHT} from 'utils/constants';
 import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
 import {useUpdateEffect} from '@react-hookz/web';
+import {defaultInputAddressLike} from '@utils/tools.address';
 
 import type {Dispatch, SetStateAction} from 'react';
 import type {TNormalizedBN, TToken} from '@builtbymom/web3/types';
+import type {TInputAddressLike} from '@utils/tools.address';
 
 export enum Step {
 	FLOW_SELECTION = 'flow',

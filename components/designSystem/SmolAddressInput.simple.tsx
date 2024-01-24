@@ -4,15 +4,14 @@ import {cl, isAddress, toAddress, truncateHex} from '@builtbymom/web3/utils';
 import {IconCircleCheck} from '@icons/IconCircleCheck';
 import {IconCircleCross} from '@icons/IconCircleCross';
 import {useAsyncAbortable, useUpdateEffect} from '@react-hookz/web';
+import {defaultInputAddressLike} from '@utils/tools.address';
 import {checkENSValidity} from '@utils/tools.ens';
 import {getPublicClient} from '@wagmi/core';
 import {IconLoader} from '@yearn-finance/web-lib/icons/IconLoader';
 
-import {defaultInputAddressLike} from './SmolAddressInput';
-
 import type {InputHTMLAttributes, ReactElement, RefObject} from 'react';
 import type {TAddress} from '@builtbymom/web3/types';
-import type {TInputAddressLike} from './SmolAddressInput';
+import type {TInputAddressLike} from '@utils/tools.address';
 
 export function SmolAddressInputSimple(
 	props: {

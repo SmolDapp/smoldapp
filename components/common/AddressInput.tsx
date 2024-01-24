@@ -7,8 +7,8 @@ import {IconCircleCross} from '@icons/IconCircleCross';
 import {IconLoader} from '@yearn-finance/web-lib/icons/IconLoader';
 import {ZERO_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
 
-import type {TInputAddressLike} from 'components/designSystem/SmolAddressInput';
 import type {ReactElement} from 'react';
+import type {TInputAddressLike} from '@utils/tools.address';
 
 export type TAddressInput = {
 	value: TInputAddressLike;

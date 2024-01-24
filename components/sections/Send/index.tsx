@@ -1,3 +1,4 @@
+import {useCallback} from 'react';
 import {SmolAddressInput} from 'components/designSystem/SmolAddressInput';
 import {SmolTokenAmountInput} from 'components/designSystem/SmolTokenAmountInput';
 import {useTokenList} from '@builtbymom/web3/contexts/WithTokenList';
@@ -6,16 +7,27 @@ import {IconCircleCheck} from '@icons/IconCircleCheck';
 import {IconCircleCross} from '@icons/IconCircleCross';
 import {IconCross} from '@icons/IconCross';
 import {IconSpinner} from '@icons/IconSpinner';
+import {useDeepCompareEffect} from '@react-hookz/web';
+import {toAddress} from '@yearn-finance/web-lib/utils/address';
+import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
 
 import {SendStatus} from './SendStatus';
 import {useSendFlow} from './useSendFlow';
+import {useSendQueryManagement} from './useSendQuery';
 import {SendWizard} from './Wizard';
 
-import type {TInputAddressLike} from 'components/designSystem/SmolAddressInput';
 import type {TSendInputElement} from 'components/designSystem/SmolTokenAmountInput';
 import type {ReactElement} from 'react';
+import type {TToken} from '@builtbymom/web3/types';
+import type {TInputAddressLike} from '@utils/tools.address';
 
-function SendTokenRow({input}: {input: TSendInputElement}): ReactElement {
+function SendTokenRow({
+	input,
+	initialValue
+}: {
+	input: TSendInputElement;
+	initialValue: Partial<{amount: bigint; token: TToken}>;
+}): ReactElement {
 	const {configuration, dispatchConfiguration} = useSendFlow();
 
 	const onSetValue = (value: Partial<TSendInputElement>): void => {
@@ -46,6 +58,7 @@ function SendTokenRow({input}: {input: TSendInputElement}): ReactElement {
 			<SmolTokenAmountInput
 				onSetValue={onSetValue}
 				value={input}
+				initialValue={initialValue}
 			/>
 			{configuration.inputs.length > 1 && input.status === 'none' && (
 				<button
@@ -65,19 +78,31 @@ function SendTokenRow({input}: {input: TSendInputElement}): ReactElement {
 
 export function Send(): ReactElement {
 	const {configuration, dispatchConfiguration} = useSendFlow();
-	const {tokenList} = useTokenList();
+	const {initialStateFromUrl} = useSendQueryManagement();
+
+	const {tokenList, getToken} = useTokenList();
 	const isReceiverERC20 = Boolean(configuration.receiver.address && tokenList[configuration.receiver.address]);
 
-	const onAddToken = (): void => {
+	const onAddToken = useCallback((): void => {
 		dispatchConfiguration({
 			type: 'ADD_INPUT',
 			payload: undefined
 		});
-	};
+	}, [dispatchConfiguration]);
 
 	const onSetRecipient = (value: TInputAddressLike): void => {
 		dispatchConfiguration({type: 'SET_RECEIVER', payload: value});
 	};
+
+	/**
+	 * Add missing token inputs if tokens are present in the url query
+	 */
+	useDeepCompareEffect(() => {
+		if (!initialStateFromUrl || !Array.isArray(initialStateFromUrl.tokens)) {
+			return;
+		}
+		initialStateFromUrl.tokens.slice(1).forEach(() => onAddToken());
+	}, [initialStateFromUrl]);
 
 	return (
 		<div className={'w-full max-w-108'}>
@@ -86,15 +111,26 @@ export function Send(): ReactElement {
 				<SmolAddressInput
 					onSetValue={onSetRecipient}
 					value={configuration.receiver}
+					initialStateFromUrl={initialStateFromUrl?.to}
 				/>
 			</div>
 			<div>
 				<p className={'font-medium'}>{'Token'}</p>
-				{configuration.inputs.map(input => (
+				{configuration.inputs.map((input, index) => (
 					<div
 						className={'mb-4'}
 						key={input.UUID}>
-						<SendTokenRow input={input} />
+						<SendTokenRow
+							input={input}
+							initialValue={{
+								amount: initialStateFromUrl?.values?.[index]
+									? toBigInt(initialStateFromUrl?.values[index])
+									: undefined,
+								token: initialStateFromUrl?.tokens?.[index]
+									? getToken(toAddress(initialStateFromUrl?.tokens?.[index]))
+									: undefined
+							}}
+						/>
 					</div>
 				))}
 			</div>

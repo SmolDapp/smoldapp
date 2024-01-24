@@ -9,9 +9,9 @@ import TokenInput from '@common/TokenInput';
 import {useMigrate} from './useMigrate';
 import {MigrateWizard} from './Wizard';
 
-import type {TInputAddressLike} from 'components/designSystem/SmolAddressInput';
 import type {ReactElement} from 'react';
 import type {TToken} from '@builtbymom/web3/types';
+import type {TInputAddressLike} from '@utils/tools.address';
 
 function MigrateTokenRow(props: {index: number; token: TToken}): ReactElement {
 	const {configuration, dispatchConfiguration} = useMigrate();

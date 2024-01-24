@@ -1,17 +1,17 @@
 import React, {useCallback, useMemo, useRef, useState} from 'react';
-import {defaultInputAddressLike} from 'components/designSystem/SmolAddressInput';
 import {Button} from 'components/Primitives/Button';
 import axios from 'axios';
 import {useChainID} from '@builtbymom/web3/hooks/useChainID';
 import {decodeAsBigInt, decodeAsNumber, decodeAsString, toNormalizedBN} from '@builtbymom/web3/utils';
 import {IconCircleCheck} from '@icons/IconCircleCheck';
 import {IconCircleCross} from '@icons/IconCircleCross';
+import {defaultInputAddressLike} from '@utils/tools.address';
 import {erc20ABI, readContracts} from '@wagmi/core';
 import {IconLoader} from '@yearn-finance/web-lib/icons/IconLoader';
 import AddressInput from '@common/AddressInput';
 
-import type {TInputAddressLike} from 'components/designSystem/SmolAddressInput';
 import type {TToken, TTokenList} from '@builtbymom/web3/types';
+import type {TInputAddressLike} from '@utils/tools.address';
 
 type TValue = {
 	label: string;

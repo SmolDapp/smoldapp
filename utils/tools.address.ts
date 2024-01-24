@@ -5,6 +5,19 @@ import {supportedNetworks} from './tools.chains';
 import type {GetBytecodeReturnType} from 'viem';
 import type {TAddress} from '@builtbymom/web3/types';
 
+export type TInputAddressLike = {
+	address: TAddress | undefined;
+	label: string;
+	isValid: boolean | 'undetermined';
+	source?: 'typed' | 'addressBook' | 'defaultValue';
+	error?: string;
+};
+export const defaultInputAddressLike: TInputAddressLike = {
+	address: undefined,
+	label: '',
+	isValid: 'undetermined',
+	source: 'typed'
+};
 export async function getIsSmartContract({
 	address,
 	chainId,

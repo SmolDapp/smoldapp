@@ -1,4 +1,4 @@
-import React, {useCallback, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {useAddressBook} from 'contexts/useAddressBook';
 import {getEnsName} from 'viem/ens';
 import {cl, isAddress, toAddress, truncateHex} from '@builtbymom/web3/utils';
@@ -7,6 +7,7 @@ import {IconChevron} from '@icons/IconChevron';
 import {IconCircleCheck} from '@icons/IconCircleCheck';
 import {IconCircleCross} from '@icons/IconCircleCross';
 import {useAsyncAbortable} from '@react-hookz/web';
+import {defaultInputAddressLike} from '@utils/tools.address';
 import {checkENSValidity} from '@utils/tools.ens';
 import {getPublicClient} from '@wagmi/core';
 import {IconLoader} from '@yearn-finance/web-lib/icons/IconLoader';
@@ -16,28 +17,17 @@ import {AvatarWrapper} from './Avatar';
 import type {TAddressBookEntry} from 'contexts/useAddressBook';
 import type {ReactElement} from 'react';
 import type {TAddress} from '@builtbymom/web3/types';
-
-export type TInputAddressLike = {
-	address: TAddress | undefined;
-	label: string;
-	isValid: boolean | 'undetermined';
-	source?: 'typed' | 'addressBook' | 'defaultValue';
-	error?: string;
-};
-export const defaultInputAddressLike: TInputAddressLike = {
-	address: undefined,
-	label: '',
-	isValid: 'undetermined',
-	source: 'typed'
-};
+import type {TInputAddressLike} from '@utils/tools.address';
 
 type TAddressInput = {
 	onSetValue: (value: TInputAddressLike) => void;
 	value: TInputAddressLike;
+	initialStateFromUrl?: string | undefined;
 };
 
-export function SmolAddressInput({onSetValue, value}: TAddressInput): ReactElement {
+export function SmolAddressInput({onSetValue, value, initialStateFromUrl}: TAddressInput): ReactElement {
 	const {onOpenCurtain, getEntry, getCachedEntry} = useAddressBook();
+
 	const [isFocused, set_isFocused] = useState<boolean>(false);
 	const [isCheckingValidity, set_isCheckingValidity] = useState<boolean>(false);
 
@@ -175,20 +165,24 @@ export function SmolAddressInput({onSetValue, value}: TAddressInput): ReactEleme
 		[actions]
 	);
 
-	const onSelectItem = useCallback(
-		(item: TAddressBookEntry): void => {
-			currentInput.current = item.label || item.ens || toAddress(item.address);
-			currentLabel.current = item.label || item.ens || toAddress(item.address);
-			currentAddress.current = toAddress(item.address);
-			onSetValue({
-				address: toAddress(item.address),
-				label: item.label || item.ens || toAddress(item.address),
-				isValid: true,
-				source: 'addressBook'
-			});
-		},
-		[onSetValue]
-	);
+	useEffect(() => {
+		if (!initialStateFromUrl) {
+			return;
+		}
+		onChange(initialStateFromUrl);
+	}, [initialStateFromUrl, onChange]);
+
+	const onSelectItem = useCallback((item: TAddressBookEntry): void => {
+		currentInput.current = item.label || item.ens || toAddress(item.address);
+		currentLabel.current = item.label || item.ens || toAddress(item.address);
+		currentAddress.current = toAddress(item.address);
+		onSetValue({
+			address: toAddress(item.address),
+			label: item.label || item.ens || toAddress(item.address),
+			isValid: true,
+			source: 'addressBook'
+		});
+	}, []);
 
 	const getInputValue = useCallback((): string | undefined => {
 		if (isFocused) {

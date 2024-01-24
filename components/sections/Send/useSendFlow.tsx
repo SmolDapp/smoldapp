@@ -1,12 +1,13 @@
 import React, {createContext, useContext, useMemo, useReducer} from 'react';
-import {defaultInputAddressLike} from 'components/designSystem/SmolAddressInput';
 import {toNormalizedBN} from '@builtbymom/web3/utils';
 import {optionalRenderProps} from '@utils/react/optionalRenderProps';
+import {defaultInputAddressLike} from '@utils/tools.address';
 
-import type {TInputAddressLike} from 'components/designSystem/SmolAddressInput';
 import type {TSendInputElement} from 'components/designSystem/SmolTokenAmountInput';
 import type {Dispatch, ReactElement} from 'react';
 import type {TOptionalRenderProps} from '@utils/react/optionalRenderProps';
+import type {TInputAddressLike} from '@utils/tools.address';
+import type {TPartialExhaustive} from '@utils/types/types';
 
 export type TSendConfiguration = {
 	receiver: TInputAddressLike;
@@ -20,8 +21,15 @@ export type TSendActions =
 	| {type: 'SET_VALUE'; payload: Partial<TSendInputElement>}
 	| {type: 'RESET'; payload: undefined};
 
+export type TSendQuery = TPartialExhaustive<{
+	to: string;
+	tokens: string[];
+	values: string[];
+}>;
+
 export type TSend = {
 	configuration: TSendConfiguration;
+
 	dispatchConfiguration: Dispatch<TSendActions>;
 };
 
@@ -41,6 +49,7 @@ const defaultProps: TSend = {
 		receiver: defaultInputAddressLike,
 		inputs: [getNewInput()]
 	},
+
 	dispatchConfiguration: (): void => undefined
 };
 
