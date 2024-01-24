@@ -1,5 +1,5 @@
 import type {TransactionReceipt} from 'viem';
-import type {TAddress} from '@utils/tools.address';
+import type {TAddress} from '@builtbymom/web3/types';
 
 export type TApprovalStatus = 'Approved' | 'Not Approved';
 

@@ -8,7 +8,7 @@ import {useNFTMigratooor} from '@nftmigratooor/useNFTMigratooor';
 
 import type {ReactElement} from 'react';
 import type {TNFT} from 'utils/types/nftMigratooor';
-import type {TDict} from '@yearn-finance/web-lib/types';
+import type {TDict} from '@builtbymom/web3/types';
 
 const ViewTableOpenSea = memo(function ViewTableOpenSea({onProceed}: {onProceed: VoidFunction}): ReactElement {
 	const {nfts, isFetchingNFTs, selected, set_selected} = useNFTMigratooor();
@@ -152,12 +152,12 @@ const ViewTableOpenSea = memo(function ViewTableOpenSea({onProceed}: {onProceed:
 				<div className={'grid gap-0 pt-4'}>
 					{isFetchingNFTs ? (
 						<div className={'flex h-48 flex-col items-center justify-center space-y-2'}>
-							<IconSpinner className={'text-neutral-500 h-4 w-4'} />
+							<IconSpinner className={'text-neutral-500 size-4'} />
 							<small>{'Retrieving your NFTs...'}</small>
 						</div>
 					) : Object.entries(groupedByCollection).length === 0 ? (
 						<div className={'flex h-48 flex-col items-center justify-center space-y-2'}>
-							<IconHeartBroken className={'text-neutral-500 h-4 w-4'} />
+							<IconHeartBroken className={'text-neutral-500 size-4'} />
 							<small>{'No NFTs found.'}</small>
 						</div>
 					) : (

@@ -10,16 +10,16 @@ import relativeTime from 'dayjs/plugin/relativeTime.js';
 import weekday from 'dayjs/plugin/weekday.js';
 import {SUPPORTED_CHAIN_IDS} from 'utils/constants';
 import {motion} from 'framer-motion';
+import {getNetwork} from '@builtbymom/web3/utils/wagmi';
 import {useMountEffect} from '@react-hookz/web';
 import {IconSocialGithub} from '@yearn-finance/web-lib/icons/IconSocialGithub';
-import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 import {ImageWithFallback} from '@common/ImageWithFallback';
 
 import type {Variants} from 'framer-motion';
 import type {GetServerSidePropsResult, NextPageContext} from 'next';
 import type {TTokenListItem} from 'pages/tokenlistooor';
 import type {ReactElement} from 'react';
-import type {TExtendedChain} from '@yearn-finance/web-lib/utils/wagmi/utils';
+import type {TExtendedChain} from '@builtbymom/web3/utils/wagmi';
 
 extend(relativeTime);
 extend(dayjsDuration);
@@ -98,7 +98,7 @@ function TokenListHero({list}: {list: TTokenListItem}): ReactElement {
 							href={`https://github.com/SmolDapp/tokenLists/blob/main/lists/${fileName}`}
 							target={'_blank'}>
 							<Button>
-								<IconSocialGithub className={'mr-4 h-6 w-6'} />
+								<IconSocialGithub className={'mr-4 size-6'} />
 								{'Github'}
 							</Button>
 						</Link>

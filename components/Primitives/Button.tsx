@@ -1,6 +1,6 @@
 import React, {forwardRef} from 'react';
+import {cl} from '@builtbymom/web3/utils';
 import {IconSpinner} from '@icons/IconSpinner';
-import {cl} from '@yearn-finance/web-lib/utils/cl';
 
 import type {ComponentPropsWithoutRef, ForwardedRef, MouseEvent, ReactElement, ReactNode} from 'react';
 
@@ -45,7 +45,7 @@ export const Button = forwardRef((props: TButton, ref: ForwardedRef<HTMLButtonEl
 			{children}
 			{isBusy ? (
 				<div className={'absolute inset-0 flex items-center justify-center'}>
-					<IconSpinner className={'h-6 w-6 animate-spin text-neutral-900'} />
+					<IconSpinner className={'size-6 animate-spin text-neutral-900'} />
 				</div>
 			) : null}
 		</button>

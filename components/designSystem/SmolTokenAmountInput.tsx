@@ -1,18 +1,25 @@
 import React, {useCallback, useState} from 'react';
 import {getNewInput} from 'components/sections/Send/useSendFlow';
 import {useBalancesCurtain} from 'contexts/useBalancesCurtain';
-import useWallet from 'contexts/useWallet';
+import useWallet from '@builtbymom/web3/contexts/useWallet';
+import {useChainID} from '@builtbymom/web3/hooks/useChainID';
+import {
+	cl,
+	formatAmount,
+	isAddress,
+	parseUnits,
+	percentOf,
+	toBigInt,
+	toNormalizedBN,
+	toNormalizedValue
+} from '@builtbymom/web3/utils';
 import {IconChevron} from '@icons/IconChevron';
+import {IconWallet} from '@icons/IconWallet';
 import {useDeepCompareEffect} from '@react-hookz/web';
-import {percentOf} from '@utils/tools.math';
-import {cl} from '@yearn-finance/web-lib/utils/cl';
-import {parseUnits, toBigInt, toNormalizedBN, toNormalizedValue} from '@yearn-finance/web-lib/utils/format.bigNumber';
-import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
 import {ImageWithFallback} from '@common/ImageWithFallback';
 
 import type {ReactElement} from 'react';
-import type {TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
-import type {TToken} from '@utils/types/types';
+import type {TNormalizedBN, TToken} from '@builtbymom/web3/types';
 
 export type TSendInputElement = {
 	amount: string;
@@ -42,16 +49,16 @@ export function SmolTokenAmountInput({
 	initialValue
 }: TTokenAmountInput): ReactElement {
 	const [isFocused, set_isFocused] = useState<boolean>(false);
-
 	const {onOpenCurtain} = useBalancesCurtain();
 
+	const {safeChainID} = useChainID();
 	const {getBalance, isLoading} = useWallet();
 
 	const {token} = value;
 
-	const selectedTokenBalance = token ? getBalance(token.address) : toNormalizedBN(0);
+	const selectedTokenBalance = token ? getBalance({address: token.address, chainID: safeChainID}) : toNormalizedBN(0);
 	const initialTokenBalance = initialValue?.token?.address
-		? getBalance(initialValue?.token.address)
+		? getBalance({address: initialValue?.token.address, chainID: safeChainID})
 		: toNormalizedBN(0);
 
 	const onChange = (amount: string, balance: TNormalizedBN, token?: TToken): void => {
@@ -111,7 +118,7 @@ export function SmolTokenAmountInput({
 	};
 
 	const onSelectToken = (valueBigInt: bigint, token: TToken): void => {
-		const tokenBalance = getBalance(token.address);
+		const tokenBalance = getBalance({address: token.address, chainID: safeChainID});
 
 		if (tokenBalance.raw < valueBigInt) {
 			return onSetValue({
@@ -155,7 +162,7 @@ export function SmolTokenAmountInput({
 	}, [initialValue, initialTokenBalance]);
 
 	return (
-		<div className={'relative h-full w-full rounded-lg'}>
+		<div className={'relative size-full rounded-lg'}>
 			<label
 				className={cl(
 					'h-20 z-20 relative border transition-all',
@@ -222,27 +229,37 @@ export function SmolTokenAmountInput({
 				</div>
 				<button
 					className={cl(
-						'flex items-center gap-4 rounded-lg p-4 max-w-[176px] w-full',
+						'flex items-center gap-4 rounded-sm p-4 max-w-[176px] w-full',
 						'bg-neutral-200 hover:bg-neutral-300 transition-colors'
 					)}
 					onClick={() =>
 						onOpenCurtain(token => onSelectToken(parseUnits(value.amount, token?.decimals || 18), token))
 					}>
-					<div className={'flex w-full max-w-[116px] items-center gap-2'}>
-						<ImageWithFallback
-							alt={token?.symbol || ''}
-							unoptimized
-							src={token?.logoURI || ''}
-							quality={90}
-							width={32}
-							height={32}
-						/>
-						<p className={cl('truncate font-bold ', token?.symbol ? '' : 'text-neutral-600')}>
-							{token?.symbol || 'Select'}
+					<div className={'flex w-full max-w-44 items-center gap-2'}>
+						<div className={'flex size-8 min-w-8 items-center justify-center rounded-full bg-neutral-0'}>
+							{token && isAddress(token.address) ? (
+								<ImageWithFallback
+									unoptimized
+									alt={token?.symbol || ''}
+									src={token?.logoURI || ''}
+									quality={90}
+									width={32}
+									height={32}
+								/>
+							) : (
+								<IconWallet className={'size-4 text-neutral-600'} />
+							)}
+						</div>
+						<p
+							className={cl(
+								'truncate',
+								isAddress(token?.address) ? 'font-bold' : 'text-neutral-600 text-sm font-normal'
+							)}>
+							{token?.symbol || 'Select token'}
 						</p>
 					</div>
 
-					<IconChevron className={'h-4 w-4 text-neutral-600'} />
+					<IconChevron className={'size-4 min-w-4 text-neutral-600'} />
 				</button>
 			</label>
 		</div>

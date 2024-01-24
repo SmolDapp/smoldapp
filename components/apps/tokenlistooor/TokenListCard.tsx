@@ -5,7 +5,7 @@ import dayjs, {extend} from 'dayjs';
 import dayjsDuration from 'dayjs/plugin/duration.js';
 import relativeTime from 'dayjs/plugin/relativeTime.js';
 import weekday from 'dayjs/plugin/weekday.js';
-import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
+import {formatAmount} from '@builtbymom/web3/utils';
 
 import {ImageWithFallback} from '../../common/ImageWithFallback';
 

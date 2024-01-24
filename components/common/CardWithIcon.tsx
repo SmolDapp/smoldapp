@@ -1,6 +1,6 @@
 import {cloneElement} from 'react';
 import {IconCircleCheck} from 'components/icons/IconCircleCheck';
-import {cl} from '@yearn-finance/web-lib/utils/cl';
+import {cl} from '@builtbymom/web3/utils';
 
 import type {ReactElement} from 'react';
 
@@ -21,7 +21,7 @@ export default function CardWithIcon({isSelected, onClick, label, icon}: TCardWi
 			<div className={'relative flex w-full flex-col items-center justify-center'}>
 				<div
 					suppressHydrationWarning
-					className={`mb-4 flex h-10 w-10 items-center justify-center rounded-full border border-neutral-200 transition-colors group-hover:bg-neutral-0 md:h-12 md:w-12 ${
+					className={`mb-4 flex size-10 items-center justify-center rounded-full border border-neutral-200 transition-colors group-hover:bg-neutral-0 md:size-12${
 						isSelected ? 'bg-neutral-0' : ''
 					}`}>
 					{cloneElement(icon, {className: 'h-5 md:h-6 w-5 md:w-6 text-neutral-900'})}
@@ -33,7 +33,7 @@ export default function CardWithIcon({isSelected, onClick, label, icon}: TCardWi
 				</b>
 			</div>
 			<IconCircleCheck
-				className={`absolute right-4 top-4 h-4 w-4 text-green transition-opacity ${
+				className={`absolute right-4 top-4 size-4 text-green transition-opacity ${
 					isSelected ? 'opacity-100' : 'opacity-0'
 				}`}
 			/>
@@ -52,7 +52,7 @@ export function SmallCardWithIcon({isSelected, onClick, label, icon}: TCardWithI
 			<div className={'relative flex w-full flex-col items-center justify-center'}>
 				<div
 					suppressHydrationWarning
-					className={`border-primary-200 mb-2 flex h-6 w-6 items-center justify-center rounded-full border transition-colors group-hover:bg-neutral-0 md:h-8 md:w-8 ${
+					className={`border-primary-200 mb-2 flex size-6 items-center justify-center rounded-full border transition-colors group-hover:bg-neutral-0 md:size-8${
 						isSelected ? 'bg-neutral-0' : ''
 					}`}>
 					{cloneElement(icon, {className: 'h-2 md:h-4 w-2 md:w-4 text-primary-900'})}
@@ -64,7 +64,7 @@ export function SmallCardWithIcon({isSelected, onClick, label, icon}: TCardWithI
 				</b>
 			</div>
 			<IconCircleCheck
-				className={`absolute right-4 top-4 h-4 w-4 text-green transition-opacity ${
+				className={`absolute right-4 top-4 size-4 text-green transition-opacity ${
 					isSelected ? 'opacity-100' : 'opacity-0'
 				}`}
 			/>

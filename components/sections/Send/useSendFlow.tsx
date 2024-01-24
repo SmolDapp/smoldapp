@@ -1,7 +1,7 @@
 import React, {createContext, useContext, useMemo, useReducer} from 'react';
+import {toNormalizedBN} from '@builtbymom/web3/utils';
 import {optionalRenderProps} from '@utils/react/optionalRenderProps';
 import {defaultInputAddressLike} from '@utils/tools.address';
-import {toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 
 import type {TSendInputElement} from 'components/designSystem/SmolTokenAmountInput';
 import type {Dispatch, ReactElement} from 'react';

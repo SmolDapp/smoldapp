@@ -1,13 +1,13 @@
 import {type ReactElement, useMemo, useState} from 'react';
 import {Command, CommandEmpty, CommandGroup, CommandInput, CommandItem} from 'components/Primitives/Commands';
 import {useConnect, usePublicClient} from 'wagmi';
+import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
+import {toSafeChainID} from '@builtbymom/web3/hooks/useChainID';
+import {cl} from '@builtbymom/web3/utils';
 import {IconChevron} from '@icons/IconChevron';
 import * as Popover from '@radix-ui/react-popover';
 import {useIsMounted} from '@react-hookz/web';
 import {supportedTestNetworks} from '@utils/tools.chains';
-import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
-import {toSafeChainID} from '@yearn-finance/web-lib/hooks/useChainID';
-import {cl} from '@yearn-finance/web-lib/utils/cl';
 import {ImageWithFallback} from '@common/ImageWithFallback';
 
 export function NetworkPopoverSelector(): ReactElement {
@@ -57,7 +57,7 @@ export function NetworkPopoverSelector(): ReactElement {
 					<p className={'truncate text-xs'}>
 						{isMounted() && currentNetwork?.label ? currentNetwork?.label : 'Select chain...'}
 					</p>
-					<IconChevron className={'h-4 w-4 rotate-90'} />
+					<IconChevron className={'size-4 rotate-90'} />
 				</button>
 			</Popover.Trigger>
 

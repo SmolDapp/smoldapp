@@ -1,8 +1,8 @@
 'use client';
 
 import {forwardRef} from 'react';
+import {cl} from '@builtbymom/web3/utils';
 import * as TooltipPrimitive from '@radix-ui/react-tooltip';
-import {cl} from '@yearn-finance/web-lib/utils/cl';
 
 import type {ComponentPropsWithoutRef, ElementRef} from 'react';
 

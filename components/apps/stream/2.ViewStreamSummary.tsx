@@ -2,17 +2,15 @@ import React, {Fragment, useCallback, useMemo, useState} from 'react';
 import {Button} from 'components/Primitives/Button';
 import {differenceInDays, differenceInMonths, differenceInSeconds, getUnixTime, isAfter, isBefore} from 'date-fns';
 import {erc20ABI, useContractRead} from 'wagmi';
+import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
+import {useChainID} from '@builtbymom/web3/hooks/useChainID';
+import {formatAmount, toAddress, toBigInt} from '@builtbymom/web3/utils';
+import {defaultTxStatus} from '@builtbymom/web3/utils/wagmi';
 import {IconChevronBoth} from '@icons/IconChevronBoth';
 import {useIntervalEffect} from '@react-hookz/web';
 import {useStream} from '@stream/useStream';
 import {approveERC20, deployVestingContract, isApprovedERC20} from '@utils/actions';
-import {toAddress} from '@utils/tools.address';
 import {AddressLike} from '@yearn-finance/web-lib/components/AddressLike';
-import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
-import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
-import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
-import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
-import {defaultTxStatus} from '@yearn-finance/web-lib/utils/web3/transaction';
 import {Counter} from '@common/Counter';
 
 import {getDefaultVestingContract} from './constants';
@@ -299,7 +297,7 @@ function ViewStreamSummary(): ReactElement {
 								<div className={'absolute right-4 top-4'}>
 									<IconChevronBoth
 										className={
-											'text-neutral-500 h-4 w-4 transition-colors group-hover:text-neutral-900'
+											'text-neutral-500 size-4 transition-colors group-hover:text-neutral-900'
 										}
 									/>
 								</div>

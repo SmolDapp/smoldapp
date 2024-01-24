@@ -7,7 +7,7 @@ import TokenListHero from '@tokenlistooor/TokenListHero';
 
 import type {Variants} from 'framer-motion';
 import type {ReactElement} from 'react';
-import type {TAddress} from '@utils/tools.address';
+import type {TAddress} from '@builtbymom/web3/types';
 
 export type TTokenListItem = {
 	name: string;

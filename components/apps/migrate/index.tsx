@@ -1,9 +1,8 @@
 import React, {useCallback} from 'react';
-import useWallet from 'contexts/useWallet';
 import {useTokensWithBalance} from 'hooks/useTokensWithBalance';
+import useWallet from '@builtbymom/web3/contexts/useWallet';
+import {toAddress, toNormalizedBN} from '@builtbymom/web3/utils';
 import {IconSpinner} from '@icons/IconSpinner';
-import {toAddress} from '@utils/tools.address';
-import {toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import {AddressLikeInput} from '@common/AddressLikeInput';
 import TokenInput from '@common/TokenInput';
 
@@ -11,8 +10,8 @@ import {useMigrate} from './useMigrate';
 import {MigrateWizard} from './Wizard';
 
 import type {ReactElement} from 'react';
+import type {TToken} from '@builtbymom/web3/types';
 import type {TInputAddressLike} from '@utils/tools.address';
-import type {TToken} from '@utils/types/types';
 
 function MigrateTokenRow(props: {index: number; token: TToken}): ReactElement {
 	const {configuration, dispatchConfiguration} = useMigrate();
@@ -41,7 +40,7 @@ function MigrateTokenRow(props: {index: number; token: TToken}): ReactElement {
 		<TokenInput
 			index={props.index}
 			token={props.token}
-			placeholder={`${getBalance(props.token.address).normalized}`}
+			placeholder={`${getBalance({address: props.token.address, chainID: props.token.chainID}).normalized}`}
 			value={configuration.tokens[props.token.address]?.amount || undefined}
 			onChange={async v => onSelect(v.raw)}
 		/>
@@ -122,7 +121,7 @@ export function Migrate(): ReactElement {
 											'col-span-12 flex min-h-[200px] flex-col items-center justify-center'
 										}>
 										<svg
-											className={'h-4 w-4 text-neutral-400'}
+											className={'size-4 text-neutral-400'}
 											xmlns={'http://www.w3.org/2000/svg'}
 											viewBox={'0 0 512 512'}>
 											<path

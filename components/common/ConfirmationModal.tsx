@@ -1,9 +1,9 @@
 import {Fragment, useState} from 'react';
 import Confetti from 'react-dom-confetti';
 import {Button} from 'components/Primitives/Button';
+import {cl} from '@builtbymom/web3/utils';
 import {Dialog, Transition} from '@headlessui/react';
 import {useUpdateEffect} from '@react-hookz/web';
-import {cl} from '@yearn-finance/web-lib/utils/cl';
 
 import type {ReactElement} from 'react';
 
@@ -44,7 +44,7 @@ function SuccessModal(props: TSuccessModal): ReactElement {
 					<div className={'bg-primary-900/40 fixed inset-0 backdrop-blur-sm transition-opacity'} />
 				</Transition.Child>
 
-				<div className={'fixed inset-0 z-[1001] flex h-screen w-screen items-center justify-center'}>
+				<div className={'size-screen fixed inset-0 z-[1001] flex items-center justify-center'}>
 					<Confetti
 						active={shouldTriggerConfettis}
 						config={{spread: 500}}

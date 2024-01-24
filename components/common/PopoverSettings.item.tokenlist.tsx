@@ -1,11 +1,11 @@
-import {useTokenList} from 'contexts/useTokenList';
+import {useTokenListModal} from 'contexts/useTokenListModal';
 
 import {SmallCardWithIcon} from './CardWithIcon';
 
 import type {ReactElement} from 'react';
 
 export function PopoverSettingsItemTokenList(): ReactElement {
-	const {openTokenListModal} = useTokenList();
+	const {openTokenListModal} = useTokenListModal();
 
 	return (
 		<div aria-label={'tokenlist'}>

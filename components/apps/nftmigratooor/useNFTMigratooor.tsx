@@ -3,15 +3,15 @@ import useNFTs from 'hooks/useNFTs';
 import {scrollToTargetAdjusted} from 'utils/animations';
 import {HEADER_HEIGHT} from 'utils/constants';
 import {alchemyToNFT, fetchAllAssetsFromAlchemy} from 'utils/types/opensea';
+import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
+import {useChainID} from '@builtbymom/web3/hooks/useChainID';
+import {isZeroAddress, toAddress} from '@builtbymom/web3/utils';
 import {useUpdateEffect} from '@react-hookz/web';
-import {isZeroAddress, toAddress} from '@utils/tools.address';
-import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
-import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 
 import type {Dispatch, SetStateAction} from 'react';
 import type {TNFT} from 'utils/types/nftMigratooor';
 import type {TAlchemyAssets} from 'utils/types/opensea';
-import type {TAddress} from '@utils/tools.address';
+import type {TAddress} from '@builtbymom/web3/types';
 
 export enum Step {
 	DESTINATION = 'destination',

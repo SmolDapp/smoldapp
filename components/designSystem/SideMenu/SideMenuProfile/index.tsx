@@ -1,8 +1,8 @@
 import {type ReactElement} from 'react';
 import {NetworkPopoverSelector} from 'components/designSystem/NetworkSelector/Popover';
+import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
+import {isAddress} from '@builtbymom/web3/utils';
 import {useIsMounted} from '@react-hookz/web';
-import {isAddress} from '@utils/tools.address';
-import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 
 import {CoinBalance} from './CoinBalance';
 import {ConnectButton} from './ConnectButton';

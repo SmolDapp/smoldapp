@@ -2,14 +2,13 @@ import React, {createContext, useContext, useEffect, useMemo, useReducer, useSta
 import {isBefore} from 'date-fns';
 import {scrollToTargetAdjusted} from 'utils/animations';
 import {HEADER_HEIGHT} from 'utils/constants';
+import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
 import {useUpdateEffect} from '@react-hookz/web';
 import {defaultInputAddressLike} from '@utils/tools.address';
-import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 
 import type {Dispatch, SetStateAction} from 'react';
-import type {TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
+import type {TNormalizedBN, TToken} from '@builtbymom/web3/types';
 import type {TInputAddressLike} from '@utils/tools.address';
-import type {TToken} from '@utils/types/types';
 
 export enum Step {
 	FLOW_SELECTION = 'flow',

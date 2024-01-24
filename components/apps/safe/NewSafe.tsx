@@ -11,8 +11,7 @@ import {useMultiSafe} from 'components/apps/safe/useSafe';
 import IconWarning from 'components/icons/IconWarning';
 import {Button} from 'components/Primitives/Button';
 import {concat, encodePacked, getContractAddress, hexToBigInt, keccak256, toHex} from 'viem';
-import {isZeroAddress} from '@utils/tools.address';
-import {cl} from '@yearn-finance/web-lib/utils/cl';
+import {cl, isZeroAddress} from '@builtbymom/web3/utils';
 
 import {
 	generateArgInitializers,
@@ -25,7 +24,7 @@ import {
 
 import type {ReactElement} from 'react';
 import type {Hex} from 'viem';
-import type {TAddress} from '@utils/tools.address';
+import type {TAddress} from '@builtbymom/web3/types';
 
 type TComputeAddress = {
 	argInitializers: string;
@@ -141,7 +140,7 @@ function NewSafe(): ReactElement {
 								'rounded-md border border-orange-200 !bg-orange-200/60',
 								'text-xs font-bold text-orange-600 md:whitespace-pre'
 							)}>
-							<IconWarning className={'text-orange-600 mr-2 mt-[1px] h-4 w-4 min-w-[16px]'} />
+							<IconWarning className={'text-orange-600 mr-2 mt-[1px] size-4 min-w-[16px]'} />
 							{'At least 1/2 threshold is recommanded to avoid issues.\n'}
 							{'You can use any other wallet or even the Safe app on your phone as another owner.'}
 						</div>

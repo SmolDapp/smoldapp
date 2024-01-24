@@ -3,29 +3,26 @@ import {IconCircleCheck} from 'components/icons/IconCircleCheck';
 import {IconCircleCross} from 'components/icons/IconCircleCross';
 import {IconSpinner} from 'components/icons/IconSpinner';
 import {Button} from 'components/Primitives/Button';
-import useWallet from 'contexts/useWallet';
 import {approveERC20, disperseERC20, disperseETH, isApprovedERC20} from 'utils/actions';
 import {notifyDisperse} from 'utils/notifier';
 import {getTransferTransaction} from 'utils/tools.gnosis';
 import {erc20ABI, useContractRead} from 'wagmi';
+import useWallet from '@builtbymom/web3/contexts/useWallet';
+import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
+import {useChainID} from '@builtbymom/web3/hooks/useChainID';
+import {cl, formatAmount, isZeroAddress, toAddress, toBigInt, toBigNumberAsAmount} from '@builtbymom/web3/utils';
+import {defaultTxStatus} from '@builtbymom/web3/utils/wagmi/transaction';
 import {useSafeAppsSDK} from '@gnosis.pm/safe-apps-react-sdk';
-import {isZeroAddress, toAddress} from '@utils/tools.address';
 import {toast} from '@yearn-finance/web-lib/components/yToast';
-import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
-import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
-import {cl} from '@yearn-finance/web-lib/utils/cl';
 import {ETH_TOKEN_ADDRESS, ZERO_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
-import {formatBigNumberAsAmount, toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
-import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
-import {defaultTxStatus} from '@yearn-finance/web-lib/utils/web3/transaction';
 import {SuccessModal} from '@common/ConfirmationModal';
 
 import {useDisperse} from './useDisperse';
 
 import type {ReactElement} from 'react';
 import type {BaseError, Hex} from 'viem';
+import type {TAddress} from '@builtbymom/web3/types';
 import type {BaseTransaction} from '@gnosis.pm/safe-apps-sdk';
-import type {TAddress} from '@utils/tools.address';
 import type {TDisperseReceiver} from './useDisperse';
 
 type TApprovalWizardProps = {
@@ -69,25 +66,31 @@ function ApprovalWizard({onSuccess, allowance}: TApprovalWizardProps): ReactElem
 
 	function renderStatusIndicator(): ReactElement {
 		if (!configuration.tokenToSend) {
-			return <div className={'h-4 w-4 rounded-full border border-neutral-200 bg-neutral-300'} />;
+			return <div className={'size-4 rounded-full border border-neutral-200 bg-neutral-300'} />;
 		}
 		if (allowance >= totalToDisperse) {
-			return <IconCircleCheck className={'h-4 w-4 text-green'} />;
+			return <IconCircleCheck className={'size-4 text-green'} />;
 		}
 		if (approvalStatus.pending) {
-			return <IconSpinner className={'h-4 w-4'} />;
+			return <IconSpinner className={'size-4'} />;
 		}
 		if (approvalStatus.success) {
-			return <IconCircleCheck className={'h-4 w-4 text-green'} />;
+			return <IconCircleCheck className={'size-4 text-green'} />;
 		}
 		if (approvalStatus.error) {
-			return <IconCircleCross className={'h-4 w-4 text-red'} />;
+			return <IconCircleCross className={'size-4 text-red'} />;
 		}
-		if (totalToDisperse > getBalance(toAddress(configuration.tokenToSend?.address)).raw) {
-			return <IconCircleCross className={'h-4 w-4 text-red'} />;
+		if (
+			totalToDisperse >
+			getBalance({
+				address: toAddress(configuration.tokenToSend?.address),
+				chainID: configuration.tokenToSend.chainID
+			}).raw
+		) {
+			return <IconCircleCross className={'size-4 text-red'} />;
 		}
 
-		return <div className={'h-4 w-4 rounded-full border border-neutral-200 bg-neutral-300'} />;
+		return <div className={'size-4 rounded-full border border-neutral-200 bg-neutral-300'} />;
 	}
 
 	function renderStatusMessage(): ReactElement {
@@ -102,7 +105,7 @@ function ApprovalWizard({onSuccess, allowance}: TApprovalWizardProps): ReactElem
 						suppressHydrationWarning
 						className={'font-number font-bold'}>
 						{formatAmount(
-							formatBigNumberAsAmount(allowance, configuration.tokenToSend?.decimals || 18),
+							toBigNumberAsAmount(allowance, configuration.tokenToSend?.decimals || 18),
 							6,
 							configuration.tokenToSend?.decimals || 18
 						)}
@@ -119,7 +122,7 @@ function ApprovalWizard({onSuccess, allowance}: TApprovalWizardProps): ReactElem
 						suppressHydrationWarning
 						className={'font-number font-bold'}>
 						{formatAmount(
-							formatBigNumberAsAmount(totalToDisperse, configuration.tokenToSend?.decimals || 18),
+							toBigNumberAsAmount(totalToDisperse, configuration.tokenToSend?.decimals || 18),
 							6,
 							configuration.tokenToSend?.decimals || 18
 						)}
@@ -128,7 +131,13 @@ function ApprovalWizard({onSuccess, allowance}: TApprovalWizardProps): ReactElem
 				</div>
 			);
 		}
-		if (totalToDisperse > getBalance(toAddress(configuration.tokenToSend?.address)).raw) {
+		if (
+			totalToDisperse >
+			getBalance({
+				address: toAddress(configuration.tokenToSend?.address),
+				chainID: Number(configuration.tokenToSend?.chainID)
+			}).raw
+		) {
 			return (
 				<div className={'text-left text-sm'}>
 					{`You don't have enough ${configuration.tokenToSend?.symbol || 'Tokens'}`}
@@ -143,7 +152,7 @@ function ApprovalWizard({onSuccess, allowance}: TApprovalWizardProps): ReactElem
 					suppressHydrationWarning
 					className={'font-number font-bold'}>
 					{formatAmount(
-						formatBigNumberAsAmount(totalToDisperse, configuration.tokenToSend?.decimals || 18),
+						toBigNumberAsAmount(totalToDisperse, configuration.tokenToSend?.decimals || 18),
 						6,
 						configuration.tokenToSend?.decimals || 18
 					)}
@@ -194,7 +203,12 @@ function ApprovalWizard({onSuccess, allowance}: TApprovalWizardProps): ReactElem
 							suppressHydrationWarning
 							className={'font-number font-bold'}>
 							{formatAmount(
-								Number(getBalance(toAddress(configuration.tokenToSend?.address)).normalized),
+								Number(
+									getBalance({
+										address: toAddress(configuration.tokenToSend?.address),
+										chainID: Number(configuration.tokenToSend?.chainID)
+									}).normalized
+								),
 								6,
 								configuration.tokenToSend?.decimals || 18
 							)}
@@ -211,7 +225,7 @@ function ApprovalWizard({onSuccess, allowance}: TApprovalWizardProps): ReactElem
 function NothingToDisperse(): ReactElement {
 	return (
 		<div className={'flex w-full flex-row items-center space-x-3 md:flex-row md:items-center'}>
-			<div className={'h-3 w-3'} />
+			<div className={'size-3'} />
 			<div className={'text-left text-sm text-neutral-900/40'}>
 				{'Please add some receivers to disperse tokens'}
 			</div>
@@ -224,7 +238,7 @@ function DisperseElement({row}: {row: TDisperseReceiver}): ReactElement {
 
 	return (
 		<div className={'flex w-full flex-row items-center space-x-3 md:flex-row md:items-center'}>
-			<div className={'h-3 w-3'} />
+			<div className={'size-3'} />
 			<div className={'text-left text-sm'}>
 				{'Sending '}
 				<span className={'font-number font-bold'}>
@@ -257,7 +271,7 @@ function SpendingWizard(props: TSpendingWizardProps): ReactElement {
 	const {address, provider, isWalletSafe} = useWeb3();
 	const {safeChainID} = useChainID();
 	const {isDispersed, configuration} = useDisperse();
-	const {refresh} = useWallet();
+	const {onRefresh} = useWallet();
 	const {sdk} = useSafeAppsSDK();
 	const [disperseStatus, set_disperseStatus] = useState(defaultTxStatus);
 
@@ -344,12 +358,13 @@ function SpendingWizard(props: TSpendingWizardProps): ReactElement {
 			});
 			if (result.isSuccessful) {
 				props.onSuccess();
-				refresh([
+				onRefresh([
 					{
 						decimals: configuration.tokenToSend.decimals,
 						name: configuration.tokenToSend.name,
 						symbol: configuration.tokenToSend.symbol,
-						token: configuration.tokenToSend.address
+						address: configuration.tokenToSend.address,
+						chainID: configuration.tokenToSend.chainID
 					}
 				]);
 				if (result.receipt) {
@@ -378,12 +393,13 @@ function SpendingWizard(props: TSpendingWizardProps): ReactElement {
 			});
 			if (result.isSuccessful) {
 				props.onSuccess();
-				refresh([
+				onRefresh([
 					{
 						decimals: configuration.tokenToSend?.decimals,
 						name: configuration.tokenToSend?.name,
 						symbol: configuration.tokenToSend?.symbol,
-						token: toAddress(configuration.tokenToSend?.address)
+						address: toAddress(configuration.tokenToSend?.address),
+						chainID: Number(configuration.tokenToSend?.chainID)
 					}
 				]);
 				if (result.receipt) {
@@ -409,23 +425,23 @@ function SpendingWizard(props: TSpendingWizardProps): ReactElement {
 		onDisperseTokensForGnosis,
 		provider,
 		safeChainID,
-		refresh
+		onRefresh
 	]);
 
 	function renderStatusIndicator(): ReactElement {
 		if (isDispersed) {
-			return <IconCircleCheck className={'h-4 w-4 text-green'} />;
+			return <IconCircleCheck className={'size-4 text-green'} />;
 		}
 		if (disperseStatus.pending) {
-			return <IconSpinner className={'h-4 w-4'} />;
+			return <IconSpinner className={'size-4'} />;
 		}
 		if (disperseStatus.success) {
-			return <IconCircleCheck className={'h-4 w-4 text-green'} />;
+			return <IconCircleCheck className={'size-4 text-green'} />;
 		}
 		if (disperseStatus.error) {
-			return <IconCircleCross className={'h-4 w-4 text-red'} />;
+			return <IconCircleCross className={'size-4 text-red'} />;
 		}
-		return <div className={'h-4 w-4 rounded-full border border-neutral-200 bg-neutral-300'} />;
+		return <div className={'size-4 rounded-full border border-neutral-200 bg-neutral-300'} />;
 	}
 
 	return (
@@ -480,7 +496,12 @@ export function DisperseWizard(): ReactElement {
 		return configuration.receivers.reduce((acc, row): number => acc + Number(row.amount?.normalized || 0), 0);
 	}, [configuration.receivers]);
 
-	const isAboveBalance = totalToDisperse > getBalance(toAddress(configuration.tokenToSend?.address)).raw;
+	const isAboveBalance =
+		totalToDisperse >
+		getBalance({
+			address: toAddress(configuration.tokenToSend?.address),
+			chainID: Number(configuration.tokenToSend?.chainID)
+		}).raw;
 
 	const checkAlreadyExists = useCallback(
 		(UUID: string, address: TAddress): boolean => {

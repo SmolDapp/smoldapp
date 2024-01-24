@@ -1,8 +1,9 @@
 import React, {useState} from 'react';
 import AddressInput from 'components/common/AddressInput';
 import {Button} from 'components/Primitives/Button';
+import {isZeroAddress, toAddress} from '@builtbymom/web3/utils';
 import {useNFTMigratooor} from '@nftmigratooor/useNFTMigratooor';
-import {defaultInputAddressLike, isZeroAddress, toAddress} from '@utils/tools.address';
+import {defaultInputAddressLike} from '@utils/tools.address';
 import ViewSectionHeading from '@common/ViewSectionHeading';
 
 import type {ReactElement} from 'react';

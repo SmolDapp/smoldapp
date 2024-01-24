@@ -1,22 +1,21 @@
 'use client';
 
-import React, {useEffect, useMemo, useState} from 'react';
-import Image from 'next/image';
+import React, {useEffect} from 'react';
 import {TooltipContent} from 'components/Primitives/Tooltip';
 import {useAddressBook} from 'contexts/useAddressBook';
 import {useIsMounted} from 'hooks/useIsMounted';
 import {useEnsAvatar, useEnsName} from 'wagmi';
+import {useChainID} from '@builtbymom/web3/hooks/useChainID';
+import {cl, toAddress, toSafeAddress} from '@builtbymom/web3/utils';
 import {IconHeart, IconHeartFilled} from '@icons/IconHeart';
 import * as Tooltip from '@radix-ui/react-tooltip';
-import {useUpdateEffect} from '@react-hookz/web';
-import {getColorFromAdddress, isAddress, safeAddress, toAddress} from '@utils/tools.address';
-import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
-import {cl} from '@yearn-finance/web-lib/utils/cl';
 import {copyToClipboard} from '@yearn-finance/web-lib/utils/helpers';
+
+import {Avatar} from './Avatar';
 
 import type {TAddressBookEntry} from 'contexts/useAddressBook';
 import type {MouseEventHandler, ReactElement} from 'react';
-import type {TAddress} from '@utils/tools.address';
+import type {TAddress} from '@builtbymom/web3/types';
 
 function EntryBookEntryFavorite(props: {
 	isFavorite: boolean;
@@ -27,7 +26,7 @@ function EntryBookEntryFavorite(props: {
 			role={'switch'}
 			onClick={props.onClick}
 			className={'withRing -mr-1 -mt-1 rounded p-1'}>
-			<div className={'group relative flex h-4 w-4 items-center justify-center'}>
+			<div className={'group relative flex size-4 items-center justify-center'}>
 				<IconHeart
 					className={cl(
 						'absolute h-4 w-4 transition-colors',
@@ -47,49 +46,6 @@ function EntryBookEntryFavorite(props: {
 	);
 }
 
-export function AddressBookEntryAvatar(props: {
-	src: string | null | undefined;
-	address: TAddress | undefined;
-	isLoading: boolean;
-	sizeClassname?: string;
-}): ReactElement {
-	const [imageSrc, set_imageSrc] = useState(props.src);
-	const hasAvatar = useMemo(() => imageSrc !== undefined, [imageSrc]);
-	const addressColor = useMemo(() => getColorFromAdddress({address: toAddress(props.address)}), [props.address]);
-	const sizeClassname = props.sizeClassname || 'h-8 w-8 min-w-[32px]';
-
-	useUpdateEffect((): void => {
-		set_imageSrc(props.src);
-	}, [props.src]);
-
-	if (props.isLoading) {
-		return <div className={cl('skeleton-full', sizeClassname)} />;
-	}
-	if (!hasAvatar && !isAddress(props.address)) {
-		return <div className={cl('rounded-full bg-neutral-200', sizeClassname)} />;
-	}
-	if (!hasAvatar || !imageSrc) {
-		return (
-			<div
-				style={{background: addressColor}}
-				className={cl('rounded-full', sizeClassname)}
-			/>
-		);
-	}
-	return (
-		<div className={cl('rounded-full bg-neutral-200/40', sizeClassname)}>
-			<Image
-				className={'rounded-full'}
-				unoptimized
-				src={imageSrc || ''}
-				width={128}
-				height={128}
-				alt={''}
-				onError={() => set_imageSrc(undefined)}
-			/>
-		</div>
-	);
-}
 export function AddressBookEntryAddress(props: {
 	address: TAddress | undefined;
 	ens: string | undefined;
@@ -110,13 +66,13 @@ export function AddressBookEntryAddress(props: {
 	return (
 		<div className={'grid w-full'}>
 			<b className={'text-left text-base'}>
-				{safeAddress({address: props.address, ens: props.ens, addrOverride: props.address?.substring(0, 6)})}
+				{toSafeAddress({address: props.address, ens: props.ens, addrOverride: props.address?.substring(0, 6)})}
 			</b>
 			<Tooltip.Provider delayDuration={250}>
 				<Tooltip.Root>
 					<Tooltip.Trigger className={'flex w-fit items-center'}>
 						<small className={'cursor-pointer hover:underline'}>
-							{props.shouldTruncateAddress ? safeAddress({address: props.address}) : props.address}
+							{props.shouldTruncateAddress ? toSafeAddress({address: props.address}) : props.address}
 						</small>
 					</Tooltip.Trigger>
 					<TooltipContent
@@ -179,12 +135,12 @@ export function AddressBookEntry(props: {
 					? 'opacity-40 hover:opacity-100 transition-opacity'
 					: ''
 			)}>
-			<div className={'relative flex w-full gap-2'}>
-				<AddressBookEntryAvatar
+			<div className={'relative flex w-full items-center gap-2'}>
+				<Avatar
 					isLoading={isLoadingAvatar}
 					address={toAddress(props.entry.address)}
+					label={props.entry.label}
 					src={avatar}
-					sizeClassname={'h-10 w-10 min-w-[40px]'}
 				/>
 				<AddressBookEntryAddress
 					address={toAddress(props.entry.address)}

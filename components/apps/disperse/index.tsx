@@ -2,20 +2,22 @@ import React, {Fragment, memo, useCallback} from 'react';
 import IconSquareMinus from 'components/icons/IconSquareMinus';
 import IconSquarePlus from 'components/icons/IconSquarePlus';
 import {useTokensWithBalance} from 'hooks/useTokensWithBalance';
-import {handleInputChangeEventValue} from 'utils/handleInputChangeEventValue';
+import {
+	handleInputChangeEventValue,
+	isZeroAddress,
+	parseUnits,
+	toAddress,
+	toNormalizedBN
+} from '@builtbymom/web3/utils';
 import {newVoidRow, useDisperse} from '@disperse/useDisperse';
-import {isZeroAddress, toAddress} from '@utils/tools.address';
-import {parseUnits, toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import {AddressLikeInput} from '@common/AddressLikeInput';
 import {MultipleTokenSelector} from '@common/TokenInput/TokenSelector';
 
 import {DisperseWizard} from './Wizard';
 
 import type {ReactElement} from 'react';
-import type {TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
+import type {TAddress, TNormalizedBN, TToken} from '@builtbymom/web3/types';
 import type {TDisperseConfiguration} from '@disperse/useDisperse';
-import type {TAddress} from '@utils/tools.address';
-import type {TToken} from '@utils/types/types';
 
 function AmountToSendInput(props: {
 	token: TToken | undefined;
@@ -197,7 +199,7 @@ const Disperse = memo(function Disperse(): ReactElement {
 														})
 													}
 													className={
-														'h-4 w-4 cursor-pointer text-neutral-400 transition-colors hover:text-neutral-900'
+														'size-4 cursor-pointer text-neutral-400 transition-colors hover:text-neutral-900'
 													}
 												/>
 												<IconSquarePlus
@@ -208,7 +210,7 @@ const Disperse = memo(function Disperse(): ReactElement {
 														})
 													}
 													className={
-														'h-4 w-4 cursor-pointer text-neutral-400 transition-colors hover:text-neutral-900'
+														'size-4 cursor-pointer text-neutral-400 transition-colors hover:text-neutral-900'
 													}
 												/>
 											</div>

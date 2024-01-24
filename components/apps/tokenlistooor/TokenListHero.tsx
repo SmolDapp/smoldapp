@@ -66,7 +66,7 @@ function TokenListHero({summary}: {summary: TTokenListSummary | undefined}): Rea
 							href={'https://github.com/migratooor/tokenlists/'}
 							target={'_blank'}>
 							<Button>
-								<IconSocialGithub className={'mr-4 h-6 w-6'} />
+								<IconSocialGithub className={'mr-4 size-6'} />
 								{'Github'}
 							</Button>
 						</Link>
@@ -98,7 +98,7 @@ function TokenListHero({summary}: {summary: TTokenListSummary | undefined}): Rea
 									xmlns={'http://www.w3.org/2000/svg'}
 									viewBox={'0 0 512 512'}
 									className={
-										'h-4 w-4 text-neutral-300 transition-colors group-hover:text-neutral-900'
+										'size-4 text-neutral-300 transition-colors group-hover:text-neutral-900'
 									}>
 									<path
 										d={

@@ -2,7 +2,6 @@
 const {join} = require('path');
 const plugin = require('tailwindcss/plugin');
 const defaultTheme = require('tailwindcss/defaultTheme');
-const colors = require('tailwindcss/colors');
 
 module.exports = {
 	content: [
@@ -47,20 +46,26 @@ module.exports = {
 				mono: ['Source Code Pro', ...defaultTheme.fontFamily.mono]
 			},
 			height: {
+				content: '656px',
 				app: 'calc(100dvh - 80px)'
 			},
 			minHeight: {
+				content: '656px',
 				app: 'calc(100dvh - 80px)'
 			},
 			width: {
 				inherit: 'inherit',
 				sidebar: '280px',
-				main: '1000px'
+				main: '1000px',
+				22: '88px',
+				108: '432px'
 			},
 			maxWidth: {
 				'4xl': '888px',
 				'5xl': '992px',
-				'6xl': '1280px'
+				'6xl': '1200px',
+				22: '88px',
+				108: '432px'
 			},
 			fontSize: {
 				xxs: ['10px', '16px'],
@@ -73,11 +78,11 @@ module.exports = {
 				'3xl': ['32px', '40px']
 			},
 			gridTemplateColumns: {
-				root: 'repeat(32, minmax(0, 1fr))'
+				root: 'repeat(30, minmax(0, 1fr))'
 			},
 			gridColumn: {
 				sidebar: 'span 7 / span 7',
-				main: 'span 25 / span 25'
+				main: 'span 23 / span 23'
 			}
 		}
 	},

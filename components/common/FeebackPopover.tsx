@@ -5,10 +5,10 @@ import IconBug from 'components/icons/IconBug';
 import html2canvas from 'html2canvas';
 import {useAccount} from 'wagmi';
 import axios from 'axios';
+import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
+import {toAddress, truncateHex} from '@builtbymom/web3/utils';
 import {Popover as PopoverHeadlessUI, Portal, Transition} from '@headlessui/react';
 import {useLocalStorageValue} from '@react-hookz/web';
-import {toAddress, truncateHex} from '@utils/tools.address';
-import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 
 import type {ReactElement} from 'react';
 
@@ -115,10 +115,10 @@ export function FeebackPopover(): ReactElement {
 			<PopoverHeadlessUI className={'relative z-50'}>
 				<PopoverHeadlessUI.Button
 					className={
-						'bg-primary-500 fixed bottom-5 right-5 flex h-10 w-10 items-center justify-center rounded-full'
+						'bg-primary-500 fixed bottom-5 right-5 flex size-10 items-center justify-center rounded-full'
 					}
 					ref={set_referenceElement}>
-					<IconBug className={'h-4 w-4 text-neutral-0'} />
+					<IconBug className={'size-4 text-neutral-0'} />
 				</PopoverHeadlessUI.Button>
 				<PopoverHeadlessUI.Overlay className={'fixed inset-0 bg-black opacity-30'} />
 				<Transition

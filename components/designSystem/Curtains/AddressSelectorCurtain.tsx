@@ -7,8 +7,8 @@ import {TextInput} from 'components/Primitives/TextInput';
 import {useAddressBook} from 'contexts/useAddressBook';
 import {useIsMounted} from 'hooks/useIsMounted';
 import {LayoutGroup, motion} from 'framer-motion';
+import {toAddress} from '@builtbymom/web3/utils';
 import * as Dialog from '@radix-ui/react-dialog';
-import {toAddress} from '@utils/tools.address';
 
 import {AddressBookEntry} from '../AddressBookEntry';
 

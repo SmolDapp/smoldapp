@@ -11,7 +11,7 @@ export function PopoverSettings({children}: {children: ReactNode}): ReactElement
 			className={'relative z-10 inline-block text-left'}>
 			<Popover.Button className={'p-2 text-neutral-400 hover:text-primary'}>
 				<IconSettings
-					className={'h-4 w-4'}
+					className={'size-4'}
 					aria-hidden={'true'}
 				/>
 			</Popover.Button>

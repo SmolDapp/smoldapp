@@ -4,10 +4,9 @@ import {IconCircleCross} from 'components/icons/IconCircleCross';
 import IconWarning from 'components/icons/IconWarning';
 import {checkENSValidity} from 'utils/tools.ens';
 import {checkLensValidity} from 'utils/tools.lens';
+import {cl, isZeroAddress, toAddress} from '@builtbymom/web3/utils';
 import {useUpdateEffect} from '@react-hookz/web';
-import {isZeroAddress, toAddress} from '@utils/tools.address';
 import {IconLoader} from '@yearn-finance/web-lib/icons/IconLoader';
-import {cl} from '@yearn-finance/web-lib/utils/cl';
 
 import type {ReactElement} from 'react';
 

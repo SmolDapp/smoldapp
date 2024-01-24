@@ -2,8 +2,8 @@
 
 import {cloneElement} from 'react';
 import Link from 'next/link';
+import {cl} from '@builtbymom/web3/utils';
 import * as Tooltip from '@radix-ui/react-tooltip';
-import {cl} from '@yearn-finance/web-lib/utils/cl';
 
 import {TooltipContent} from '../Primitives/Tooltip';
 

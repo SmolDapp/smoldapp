@@ -1,18 +1,17 @@
 import React, {useCallback, useMemo, useRef, useState} from 'react';
 import {Button} from 'components/Primitives/Button';
 import axios from 'axios';
+import {useChainID} from '@builtbymom/web3/hooks/useChainID';
+import {decodeAsBigInt, decodeAsNumber, decodeAsString, toNormalizedBN} from '@builtbymom/web3/utils';
 import {IconCircleCheck} from '@icons/IconCircleCheck';
 import {IconCircleCross} from '@icons/IconCircleCross';
 import {defaultInputAddressLike} from '@utils/tools.address';
 import {erc20ABI, readContracts} from '@wagmi/core';
-import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {IconLoader} from '@yearn-finance/web-lib/icons/IconLoader';
-import {decodeAsBigInt, decodeAsNumber, decodeAsString} from '@yearn-finance/web-lib/utils/decoder';
-import {toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import AddressInput from '@common/AddressInput';
 
+import type {TToken, TTokenList} from '@builtbymom/web3/types';
 import type {TInputAddressLike} from '@utils/tools.address';
-import type {TToken, TTokenList} from '@utils/types/types';
 
 type TValue = {
 	label: string;
@@ -168,7 +167,7 @@ function TokenListAddBox({onAddTokenList, onAddToken}: TTokenListAddBox): React.
 							className={
 								statusURI === 'invalid' || statusURI === 'warning'
 									? 'relative'
-									: 'pointer-events-none relative h-4 w-4'
+									: 'pointer-events-none relative size-4'
 							}>
 							<span
 								className={
@@ -176,20 +175,20 @@ function TokenListAddBox({onAddTokenList, onAddToken}: TTokenListAddBox): React.
 										? 'tooltip'
 										: 'pointer-events-none'
 								}>
-								<div className={'pointer-events-none relative h-4 w-4'}>
+								<div className={'pointer-events-none relative size-4'}>
 									<IconCircleCheck
-										className={`absolute h-4 w-4 text-green transition-opacity ${
+										className={`absolute size-4 text-green transition-opacity ${
 											statusURI === 'valid' ? 'opacity-100' : 'opacity-0'
 										}`}
 									/>
 									<IconCircleCross
-										className={`absolute h-4 w-4 text-red transition-opacity ${
+										className={`absolute size-4 text-red transition-opacity ${
 											statusURI === 'invalid' ? 'opacity-100' : 'opacity-0'
 										}`}
 									/>
 									<div className={'absolute inset-0 flex items-center justify-center'}>
 										<IconLoader
-											className={`h-4 w-4 animate-spin text-neutral-900 transition-opacity ${
+											className={`size-4 animate-spin text-neutral-900 transition-opacity ${
 												statusURI === 'pending' ? 'opacity-100' : 'opacity-0'
 											}`}
 										/>

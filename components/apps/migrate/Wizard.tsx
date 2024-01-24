@@ -1,30 +1,27 @@
 import React, {Fragment, useCallback, useMemo, useState} from 'react';
 import {Button} from 'components/Primitives/Button';
-import {useWallet} from 'contexts/useWallet';
 import {transferERC20, transferEther} from 'utils/actions';
 import {getTransferTransaction} from 'utils/tools.gnosis';
+import {useWallet} from '@builtbymom/web3/contexts/useWallet';
+import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
+import {useChainID} from '@builtbymom/web3/hooks/useChainID';
+import {cl, formatAmount, isZeroAddress, toAddress, toBigInt} from '@builtbymom/web3/utils';
+import {getNetwork} from '@builtbymom/web3/utils/wagmi';
+import {defaultTxStatus, type TTxResponse} from '@builtbymom/web3/utils/wagmi';
 import {useSafeAppsSDK} from '@gnosis.pm/safe-apps-react-sdk';
 import {IconCircleCheck} from '@icons/IconCircleCheck';
 import {IconCircleCross} from '@icons/IconCircleCross';
 import {IconSpinner} from '@icons/IconSpinner';
-import {isZeroAddress, toAddress} from '@utils/tools.address';
 import {toast} from '@yearn-finance/web-lib/components/yToast';
-import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
-import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
-import {cl} from '@yearn-finance/web-lib/utils/cl';
 import {ETH_TOKEN_ADDRESS, ZERO_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
-import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
-import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
-import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
-import {defaultTxStatus, type TTxResponse} from '@yearn-finance/web-lib/utils/web3/transaction';
 import {SuccessModal} from '@common/ConfirmationModal';
 
 import {useMigrate} from './useMigrate';
 
 import type {ReactElement} from 'react';
 import type {BaseError, Hex} from 'viem';
-import type {TAddress, TDict} from '@yearn-finance/web-lib/types';
-import type {TBalanceData} from '@yearn-finance/web-lib/types/hooks';
+import type {TUseBalancesTokens} from '@builtbymom/web3/hooks/useBalances.multichains';
+import type {TAddress, TChainTokens} from '@builtbymom/web3/types';
 import type {BaseTransaction} from '@gnosis.pm/safe-apps-sdk';
 import type {TMigrateElement} from './useMigrate';
 
@@ -33,18 +30,18 @@ function MigrateItem({row}: {row: TMigrateElement}): ReactElement {
 
 	function renderStatusIndicator(): ReactElement {
 		if (!configuration.receiver) {
-			return <div className={'h-4 w-4 rounded-full border border-neutral-200 bg-neutral-300'} />;
+			return <div className={'size-4 rounded-full border border-neutral-200 bg-neutral-300'} />;
 		}
 		if (row.status === 'pending') {
-			return <IconSpinner className={'h-4 w-4'} />;
+			return <IconSpinner className={'size-4'} />;
 		}
 		if (row.status === 'success') {
-			return <IconCircleCheck className={'h-4 w-4 text-green'} />;
+			return <IconCircleCheck className={'size-4 text-green'} />;
 		}
 		if (row.status === 'error') {
-			return <IconCircleCross className={'h-4 w-4 text-red'} />;
+			return <IconCircleCross className={'size-4 text-red'} />;
 		}
-		return <div className={'h-4 w-4 rounded-full border border-neutral-200 bg-neutral-300'} />;
+		return <div className={'size-4 rounded-full border border-neutral-200 bg-neutral-300'} />;
 	}
 
 	return (
@@ -97,7 +94,7 @@ function SpendingWizard(props: {onHandleMigration: VoidFunction}): ReactElement 
 				)}>
 				<div className={'flex w-full flex-row items-center space-x-3 md:flex-row md:items-start'}>
 					<div className={'pt-0.5'}>
-						<div className={'h-4 w-4 rounded-full border border-neutral-200 bg-neutral-300'} />
+						<div className={'size-4 rounded-full border border-neutral-200 bg-neutral-300'} />
 					</div>
 
 					<div className={'flex w-full flex-row items-center space-x-3 md:flex-row md:items-center'}>
@@ -145,7 +142,7 @@ function SpendingWizard(props: {onHandleMigration: VoidFunction}): ReactElement 
 export function MigrateWizard(): ReactElement {
 	const {safeChainID} = useChainID();
 	const {configuration, dispatchConfiguration} = useMigrate();
-	const {balances, refresh, balancesNonce} = useWallet();
+	const {getToken, getBalance, onRefresh} = useWallet();
 	const {isWalletSafe, provider} = useWeb3();
 	const {sdk} = useSafeAppsSDK();
 	const [migrateStatus, set_migrateStatus] = useState(defaultTxStatus);
@@ -169,30 +166,32 @@ export function MigrateWizard(): ReactElement {
 	 ** from the selected state.
 	 **********************************************************************************************/
 	const handleSuccessCallback = useCallback(
-		async (tokenAddress: TAddress): Promise<TDict<TBalanceData>> => {
+		async (tokenAddress: TAddress): Promise<TChainTokens> => {
 			const chainCoin = getNetwork(safeChainID).nativeCurrency;
-			const tokensToRefresh = [
+			const tokensToRefresh: TUseBalancesTokens[] = [
 				{
-					token: ETH_TOKEN_ADDRESS,
+					address: ETH_TOKEN_ADDRESS,
 					decimals: chainCoin?.decimals || 18,
 					symbol: chainCoin?.symbol || 'ETH',
-					name: chainCoin?.name || 'Ether'
+					name: chainCoin?.name || 'Ether',
+					chainID: safeChainID
 				}
 			];
+			const token = getToken({address: tokenAddress, chainID: safeChainID});
 			if (!isZeroAddress(tokenAddress)) {
 				tokensToRefresh.push({
-					token: tokenAddress,
-					decimals: balances[tokenAddress].decimals,
-					symbol: balances[tokenAddress].symbol,
-					name: balances[tokenAddress].name
+					address: tokenAddress,
+					decimals: token.decimals,
+					symbol: token.symbol,
+					name: token.name,
+					chainID: safeChainID
 				});
 			}
 
-			const updatedBalances = await refresh(tokensToRefresh);
-			balancesNonce; // Disable eslint warning
+			const updatedBalances = await onRefresh(tokensToRefresh);
 			return updatedBalances;
 		},
-		[balances, balancesNonce, safeChainID, refresh]
+		[safeChainID, getToken, onRefresh]
 	);
 
 	/**********************************************************************************************
@@ -230,7 +229,7 @@ export function MigrateWizard(): ReactElement {
 
 		const isSendingBalance =
 			toBigInt(configuration.tokens[ETH_TOKEN_ADDRESS]?.amount?.raw) >=
-			toBigInt(balances[ETH_TOKEN_ADDRESS]?.raw);
+			getBalance({address: ETH_TOKEN_ADDRESS, chainID: safeChainID})?.raw;
 		const result = await transferEther({
 			connector: provider,
 			chainID: safeChainID,
@@ -247,9 +246,9 @@ export function MigrateWizard(): ReactElement {
 		}
 		return result;
 	}, [
-		balances,
 		configuration.receiver?.address,
 		configuration.tokens,
+		getBalance,
 		handleSuccessCallback,
 		onUpdateStatus,
 		provider,

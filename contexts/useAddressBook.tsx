@@ -3,23 +3,25 @@
 import React, {createContext, useCallback, useContext, useMemo, useState} from 'react';
 import assert from 'assert';
 import {AddressSelectorCurtain} from 'components/designSystem/Curtains/AddressSelectorCurtain';
-import {useAsyncTrigger} from 'hooks/useAsyncTrigger';
 import setupIndexedDB, {useIndexedDBStore} from 'use-indexeddb';
+import {useAsyncTrigger} from '@builtbymom/web3/hooks/useAsyncTrigger';
+import {isAddress, toAddress} from '@builtbymom/web3/utils';
 import {useMountEffect} from '@react-hookz/web';
 import {slugify} from '@utils/helpers';
-import {isAddress, toAddress} from '@utils/tools.address';
 
 import type {IndexedDBConfig} from 'use-indexeddb/dist/interfaces';
-import type {TAddress} from '@utils/tools.address';
+import type {TAddress} from '@builtbymom/web3/types';
 
 export type TAddressBookEntry = {
-	id?: number;
-	address: TAddress | undefined;
-	label: string;
-	chains: number[];
-	slugifiedLabel: string;
-	ens?: string;
-	isFavorite?: boolean;
+	id?: number; // Unique ID of the entry
+	address: TAddress | undefined; // Address of the entry. Can be undefined if the entry is not yet saved.
+	label: string; // Name the user gave to the address. Default to a truncated version of the address.
+	chains: number[]; // List of chains on which the address is valid. Dynamically updated when the user interacts.
+	slugifiedLabel: string; // Slugified version of the label. Used for searching.
+	ens?: string; // ENS name of the address. Not saved in the database.
+	isFavorite?: boolean; // Indicates if the address is a favorite.
+	numberOfInteractions?: number; // Number of times the address has been used for a action via Smol.
+	tags?: string[]; // List of tags associated with the address.
 };
 export type TSelectCallback = (item: TAddressBookEntry) => void;
 export type TAddressBookCurtainProps = {
@@ -28,6 +30,7 @@ export type TAddressBookCurtainProps = {
 	listCachedEntries: () => TAddressBookEntry[];
 	getEntry: (props: {address?: TAddress; label?: string}) => Promise<TAddressBookEntry | undefined>;
 	getCachedEntry: (props: {address?: TAddress; label?: string}) => TAddressBookEntry | undefined;
+	addEntry: (entry: TAddressBookEntry) => Promise<void>;
 	updateEntry: (entry: TAddressBookEntry) => Promise<void>;
 	deleteEntry: (address: TAddress) => Promise<void>;
 	onOpenCurtain: (callbackFn: TSelectCallback) => void;
@@ -39,6 +42,7 @@ const defaultProps: TAddressBookCurtainProps = {
 	listCachedEntries: (): TAddressBookEntry[] => [],
 	getEntry: async (): Promise<TAddressBookEntry | undefined> => undefined,
 	getCachedEntry: (): TAddressBookEntry | undefined => undefined,
+	addEntry: async (): Promise<void> => undefined,
 	updateEntry: async (): Promise<void> => undefined,
 	deleteEntry: async (): Promise<void> => undefined,
 	onOpenCurtain: (): void => undefined,
@@ -61,7 +65,8 @@ const addressBookIDBConfig: IndexedDBConfig = {
 				{name: 'label', keyPath: 'label'},
 				{name: 'slugifiedLabel', keyPath: 'slugifiedLabel'},
 				{name: 'chains', keyPath: 'chains'},
-				{name: 'isFavorite', keyPath: 'isFavorite'}
+				{name: 'isFavorite', keyPath: 'isFavorite'},
+				{name: 'numberOfInteractions', keyPath: 'numberOfInteractions'}
 			]
 		}
 	]
@@ -152,14 +157,52 @@ export const WithAddressBook = ({children}: {children: React.ReactElement}): Rea
 			try {
 				const existingEntry = await getEntry({address: entry.address});
 				if (existingEntry) {
-					update({...existingEntry, ...entry, slugifiedLabel: slugify(entry.label)});
+					const mergedChains = [...(existingEntry.chains || []), ...(entry.chains || [])];
+					const mergedTags = [...(existingEntry.tags || []), ...(entry.tags || [])];
+					const mergedFields = {...existingEntry, ...entry, chains: mergedChains, tags: mergedTags};
+					mergedFields.chains = [...new Set(mergedFields.chains)].filter(chain => chain !== 0);
+					update({...mergedFields, slugifiedLabel: slugify(mergedFields.label)});
 					set_entryNonce(nonce => nonce + 1);
 				} else {
 					assert(isAddress(entry.address));
 					add({
 						...entry,
 						slugifiedLabel: slugify(entry.label),
-						isFavorite: entry.isFavorite || false
+						isFavorite: entry.isFavorite || false,
+						numberOfInteractions: entry.numberOfInteractions || 0
+					});
+					set_entryNonce(nonce => nonce + 1);
+				}
+			} catch {
+				// Do nothing
+			}
+		},
+		[add, getEntry, update]
+	);
+
+	/**************************************************************************
+	 * Callback function that can be used to add an entry in the address
+	 * book. This is very similar to updateEntry, but will give update priority
+	 * to the smol database instead of the new entry.
+	 *************************************************************************/
+	const addEntry = useCallback(
+		async (entry: TAddressBookEntry): Promise<void> => {
+			try {
+				const existingEntry = await getEntry({address: entry.address});
+				if (existingEntry) {
+					const mergedChains = [...(entry.chains || []), ...(existingEntry.chains || [])];
+					const mergedTags = [...(entry.tags || []), ...(existingEntry.tags || [])];
+					const mergedFields = {...entry, ...existingEntry, chains: mergedChains, tags: mergedTags};
+					mergedFields.chains = [...new Set(mergedFields.chains)].filter(chain => chain !== 0);
+					update({...mergedFields, slugifiedLabel: slugify(mergedFields.label)});
+					set_entryNonce(nonce => nonce + 1);
+				} else {
+					assert(isAddress(entry.address));
+					add({
+						...entry,
+						slugifiedLabel: slugify(entry.label),
+						isFavorite: entry.isFavorite || false,
+						numberOfInteractions: entry.numberOfInteractions || 0
 					});
 					set_entryNonce(nonce => nonce + 1);
 				}
@@ -199,6 +242,7 @@ export const WithAddressBook = ({children}: {children: React.ReactElement}): Rea
 			listCachedEntries,
 			getEntry,
 			getCachedEntry,
+			addEntry,
 			updateEntry,
 			deleteEntry,
 			onOpenCurtain: (callbackFn): void => {
@@ -207,7 +251,16 @@ export const WithAddressBook = ({children}: {children: React.ReactElement}): Rea
 			},
 			onCloseCurtain: (): void => set_shouldOpenCurtain(false)
 		}),
-		[shouldOpenCurtain, listEntries, listCachedEntries, getEntry, getCachedEntry, updateEntry, deleteEntry]
+		[
+			shouldOpenCurtain,
+			listEntries,
+			addEntry,
+			listCachedEntries,
+			getEntry,
+			getCachedEntry,
+			updateEntry,
+			deleteEntry
+		]
 	);
 
 	return (

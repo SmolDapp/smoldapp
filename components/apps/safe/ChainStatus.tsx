@@ -7,8 +7,10 @@ import DISPERSE_ABI from 'utils/abi/disperse.abi';
 import GNOSIS_SAFE_PROXY_FACTORY from 'utils/abi/gnosisSafeProxyFactory.abi';
 import {multicall} from 'utils/actions';
 import {encodeFunctionData, parseEther} from 'viem';
+import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
+import {toAddress} from '@builtbymom/web3/utils';
+import {defaultTxStatus, getClient, getNetwork} from '@builtbymom/web3/utils/wagmi';
 import {EIP3770_PREFIX} from '@utils/eip-3770';
-import {toAddress} from '@utils/tools.address';
 import {
 	getNetwork as getWagmiNetwork,
 	prepareSendTransaction,
@@ -17,9 +19,6 @@ import {
 	waitForTransaction
 } from '@wagmi/core';
 import {toast} from '@yearn-finance/web-lib/components/yToast';
-import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
-import {getClient, getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
-import {defaultTxStatus} from '@yearn-finance/web-lib/utils/web3/transaction';
 
 import {
 	DEFAULT_FEES_USD,
@@ -33,7 +32,7 @@ import {
 } from './utils';
 
 import type {ReactElement} from 'react';
-import type {TAddress} from '@utils/tools.address';
+import type {TAddress} from '@builtbymom/web3/types';
 import type {TAppExtendedChain} from '@utils/tools.chains';
 import type {Chain} from '@wagmi/core';
 
@@ -348,7 +347,7 @@ function ChainStatus({chain, singleton}: TChainStatusArgs): ReactElement {
 			key={chain.id}
 			className={'box-0 flex w-full flex-row items-center justify-between p-4'}>
 			<div className={'flex gap-4'}>
-				<div className={'h-10 w-10'}>
+				<div className={'size-10'}>
 					<Image
 						src={`${process.env.SMOL_ASSETS_URL}/chain/${chain.id}/logo-128.png`}
 						width={40}

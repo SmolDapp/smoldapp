@@ -5,8 +5,8 @@ import {IconCircleCross} from 'components/icons/IconCircleCross';
 import {IconSpinner} from 'components/icons/IconSpinner';
 import {ETHEREUM_ENS_ADDRESS} from 'utils/constants';
 import {useNetwork} from 'wagmi';
+import {toAddress, truncateHex} from '@builtbymom/web3/utils';
 import {useNFTMigratooor} from '@nftmigratooor/useNFTMigratooor';
-import {toAddress, truncateHex} from '@utils/tools.address';
 
 import type {ReactElement} from 'react';
 import type {TApprovalStatus, TNFT, TWizardStatus} from 'utils/types/nftMigratooor';
@@ -30,28 +30,28 @@ function ApprovalWizardItem({
 
 	function renderApprovalIndication(): ReactElement {
 		if (collectionStatus?.approval === 'Approved' || collectionApprovalStatus === 'Approved') {
-			return <IconCircleCheck className={'h-4 w-4 text-green'} />;
+			return <IconCircleCheck className={'size-4 text-green'} />;
 		}
 		if (collectionStatus?.approval === 'Approving') {
 			return <IconSpinner />;
 		}
 		if (collectionStatus?.approval === 'Error') {
-			return <IconCircleCross className={'h-4 w-4 text-red'} />;
+			return <IconCircleCross className={'size-4 text-red'} />;
 		}
-		return <div className={'h-4 w-4 rounded-full bg-neutral-300'} />;
+		return <div className={'size-4 rounded-full bg-neutral-300'} />;
 	}
 
 	function renderExecuteIndication(): ReactElement {
 		if (collectionStatus?.execute === 'Executed') {
-			return <IconCircleCheck className={'h-4 w-4 text-green'} />;
+			return <IconCircleCheck className={'size-4 text-green'} />;
 		}
 		if (collectionStatus?.execute === 'Executing') {
 			return <IconSpinner />;
 		}
 		if (collectionStatus?.execute === 'Error') {
-			return <IconCircleCross className={'h-4 w-4 text-red'} />;
+			return <IconCircleCross className={'size-4 text-red'} />;
 		}
-		return <div className={'h-4 w-4 rounded-full bg-neutral-300'} />;
+		return <div className={'size-4 rounded-full bg-neutral-300'} />;
 	}
 
 	function renderReceipt(): ReactElement {
@@ -99,7 +99,7 @@ function ApprovalWizardItem({
 					</div>
 					<div className={'absolute right-2 top-2 px-2'}>
 						<IconChevronBoth
-							className={'text-neutral-500 h-4 w-4 transition-colors group-hover:text-neutral-900'}
+							className={'text-neutral-500 size-4 transition-colors group-hover:text-neutral-900'}
 						/>
 					</div>
 				</summary>
@@ -145,7 +145,7 @@ function ApprovalWizardItem({
 					</div>
 					<div className={'absolute right-2 top-2 px-2'}>
 						<IconChevronBoth
-							className={'text-neutral-500 h-4 w-4 transition-colors group-hover:text-neutral-900'}
+							className={'text-neutral-500 size-4 transition-colors group-hover:text-neutral-900'}
 						/>
 					</div>
 				</summary>

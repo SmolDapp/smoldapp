@@ -1,17 +1,16 @@
 import React, {Fragment, useState} from 'react';
-import {useTokenList} from 'contexts/useTokenList';
-import useWallet from 'contexts/useWallet';
+import useWallet from '@builtbymom/web3/contexts/useWallet';
+import {useTokenList} from '@builtbymom/web3/contexts/WithTokenList';
+import {useChainID} from '@builtbymom/web3/hooks/useChainID';
+import {toAddress, toNormalizedBN} from '@builtbymom/web3/utils';
+import {getNetwork} from '@builtbymom/web3/utils/wagmi';
 import {useDeepCompareEffect, useDeepCompareMemo} from '@react-hookz/web';
-import {toAddress} from '@utils/tools.address';
-import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {ETH_TOKEN_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
-import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 import {Counter} from '@common/Counter';
 import {ImageWithFallback} from '@common/ImageWithFallback';
 
 import type {ReactElement} from 'react';
-import type {TDict} from '@yearn-finance/web-lib/types';
-import type {TToken} from '@utils/types/types';
+import type {TDict, TToken} from '@builtbymom/web3/types';
 
 function SectionYourTokens(): ReactElement {
 	const {safeChainID} = useChainID();
@@ -34,6 +33,9 @@ function SectionYourTokens(): ReactElement {
 				name: wrappedToken.coinName,
 				symbol: wrappedToken.coinSymbol,
 				decimals: wrappedToken.decimals,
+				value: 0,
+				price: toNormalizedBN(0),
+				balance: toNormalizedBN(0),
 				logoURI: `${process.env.SMOL_ASSETS_URL}/token/${safeChainID}/${ETH_TOKEN_ADDRESS}/logo-32.png`
 			};
 		}
@@ -51,12 +53,12 @@ function SectionYourTokens(): ReactElement {
 	const filteredBalances = useDeepCompareMemo((): TToken[] => {
 		const withBalance = [];
 		for (const dest of Object.values(possibleTokens)) {
-			if (getBalance(dest.address).raw > 0n) {
+			if (getBalance({address: dest.address, chainID: safeChainID}).raw > 0n) {
 				withBalance.push(dest);
 			}
 		}
 		return withBalance;
-	}, [possibleTokens, getBalance]);
+	}, [possibleTokens, getBalance, safeChainID]);
 
 	return (
 		<Fragment>
@@ -82,7 +84,9 @@ function SectionYourTokens(): ReactElement {
 						<p className={'font-number text-right text-sm text-neutral-900'}>
 							<b suppressHydrationWarning>
 								<Counter
-									value={Number(getBalance(token.address).normalized)}
+									value={Number(
+										getBalance({address: token.address, chainID: safeChainID}).normalized
+									)}
 									decimals={token.decimals}
 								/>
 							</b>

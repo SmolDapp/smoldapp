@@ -1,16 +1,17 @@
 import React, {useCallback, useRef, useState} from 'react';
 import {getEnsName} from 'viem/ens';
+import {cl, isAddress, toAddress, truncateHex} from '@builtbymom/web3/utils';
 import {IconCircleCheck} from '@icons/IconCircleCheck';
 import {IconCircleCross} from '@icons/IconCircleCross';
 import {useAsyncAbortable, useUpdateEffect} from '@react-hookz/web';
-import {defaultInputAddressLike, isAddress, toAddress, truncateHex} from '@utils/tools.address';
+import {defaultInputAddressLike} from '@utils/tools.address';
 import {checkENSValidity} from '@utils/tools.ens';
 import {getPublicClient} from '@wagmi/core';
 import {IconLoader} from '@yearn-finance/web-lib/icons/IconLoader';
-import {cl} from '@yearn-finance/web-lib/utils/cl';
 
 import type {InputHTMLAttributes, ReactElement, RefObject} from 'react';
-import type {TAddress, TInputAddressLike} from '@utils/tools.address';
+import type {TAddress} from '@builtbymom/web3/types';
+import type {TInputAddressLike} from '@utils/tools.address';
 
 export function SmolAddressInputSimple(
 	props: {
@@ -183,8 +184,11 @@ export function SmolAddressInputSimple(
 		if (value.isValid === false) {
 			return 'border-red';
 		}
-		return 'border-neutral-400';
-	}, [isFocused, value.isValid]);
+		if (rest.disabled) {
+			return 'border-transparent';
+		}
+		return 'border-neutral-400 disabled:border-transparent';
+	}, [isFocused, rest.disabled, value.isValid]);
 
 	const getHasStatusIcon = useCallback((): boolean => {
 		if (!currentInput.current) {
@@ -200,12 +204,13 @@ export function SmolAddressInputSimple(
 	}, [isFocused, value.isValid, isCheckingValidity]);
 
 	return (
-		<div className={'group relative h-full w-full max-w-[444px] rounded-lg'}>
+		<div className={'group relative size-full max-w-108 rounded-lg'}>
 			<label
 				className={cl(
 					'h-20 z-20 relative',
 					'flex flex-row justify-between items-center cursor-text',
 					'p-2 pl-4 group rounded-lg overflow-hidden border',
+					'transition-colors',
 					props.disabled ? 'bg-neutral-300 cursor-default' : 'bg-neutral-0',
 					getBorderColor()
 				)}>
@@ -223,18 +228,18 @@ export function SmolAddressInputSimple(
 								getHasStatusIcon() ? 'opacity-100' : 'opacity-0'
 							)}>
 							<IconCircleCheck
-								className={`absolute h-4 w-4 text-green transition-opacity ${
+								className={`absolute size-4 text-green transition-opacity ${
 									!isCheckingValidity && value.isValid === true ? 'opacity-100' : 'opacity-0'
 								}`}
 							/>
 							<IconCircleCross
-								className={`absolute h-4 w-4 text-red transition-opacity ${
+								className={`absolute size-4 text-red transition-opacity ${
 									!isCheckingValidity && value.isValid === false ? 'opacity-100' : 'opacity-0'
 								}`}
 							/>
 							<div className={'absolute inset-0 flex items-center justify-center'}>
 								<IconLoader
-									className={`h-4 w-4 animate-spin text-neutral-900 transition-opacity ${
+									className={`size-4 animate-spin text-neutral-900 transition-opacity ${
 										isCheckingValidity ? 'opacity-100' : 'opacity-0'
 									}`}
 								/>
@@ -247,7 +252,6 @@ export function SmolAddressInputSimple(
 							'w-full border-none bg-transparent p-0 text-xl transition-all pr-6',
 							'text-neutral-900 placeholder:text-neutral-600 caret-neutral-700',
 							'focus:placeholder:text-neutral-300 placeholder:transition-colors',
-							'disabled:bg-neutral-300 transition-colors',
 							!currentLabel.current || isFocused ? 'translate-y-2' : 'translate-y-0'
 						)}
 						type={'text'}
@@ -260,6 +264,7 @@ export function SmolAddressInputSimple(
 						aria-invalid={!isFocused && value.isValid === false}
 						onFocus={getOnFocus}
 						onBlur={getOnBlur}
+						tabIndex={props.tabIndex}
 						{...rest}
 					/>
 

@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {Button} from 'components/Primitives/Button';
+import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
+import {isZeroAddress, toAddress} from '@builtbymom/web3/utils';
 import {IconSpinner} from '@icons/IconSpinner';
-import {defaultInputAddressLike, isZeroAddress, toAddress} from '@utils/tools.address';
-import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
+import {defaultInputAddressLike} from '@utils/tools.address';
 import AddressInput from '@common/AddressInput';
 
 import {useUserStreams} from './useUserStreams';
@@ -68,7 +69,7 @@ function ViewUserStreams(): ReactElement {
 						) : userVestings.length === 0 ? (
 							<div className={'col-span-12 flex min-h-[200px] flex-col items-center justify-center p-4'}>
 								<svg
-									className={'h-4 w-4 text-neutral-400'}
+									className={'size-4 text-neutral-400'}
 									xmlns={'http://www.w3.org/2000/svg'}
 									viewBox={'0 0 512 512'}>
 									<path

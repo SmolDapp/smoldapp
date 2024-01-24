@@ -1,25 +1,25 @@
 import {useCallback} from 'react';
 import {SmolAddressInput} from 'components/designSystem/SmolAddressInput';
 import {SmolTokenAmountInput} from 'components/designSystem/SmolTokenAmountInput';
-import {useTokenList} from 'contexts/useTokenList';
+import {useTokenList} from '@builtbymom/web3/contexts/WithTokenList';
+import {cl} from '@builtbymom/web3/utils';
 import {IconCircleCheck} from '@icons/IconCircleCheck';
 import {IconCircleCross} from '@icons/IconCircleCross';
 import {IconCross} from '@icons/IconCross';
 import {IconSpinner} from '@icons/IconSpinner';
 import {useDeepCompareEffect} from '@react-hookz/web';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
-import {cl} from '@yearn-finance/web-lib/utils/cl';
 import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
 
-import {SendWarning} from './SendWarning';
+import {SendStatus} from './SendStatus';
 import {useSendFlow} from './useSendFlow';
 import {useSendQueryManagement} from './useSendQuery';
 import {SendWizard} from './Wizard';
 
 import type {TSendInputElement} from 'components/designSystem/SmolTokenAmountInput';
 import type {ReactElement} from 'react';
+import type {TToken} from '@builtbymom/web3/types';
 import type {TInputAddressLike} from '@utils/tools.address';
-import type {TToken} from '@utils/types/types';
 
 function SendTokenRow({
 	input,
@@ -40,13 +40,13 @@ function SendTokenRow({
 
 	const renderIcon = (): ReactElement | null => {
 		if (input.status === 'pending') {
-			return <IconSpinner className={'h-4 w-4'} />;
+			return <IconSpinner className={'size-4'} />;
 		}
 		if (input.status === 'success') {
-			return <IconCircleCheck className={'h-4 w-4 text-green'} />;
+			return <IconCircleCheck className={'size-4 text-green'} />;
 		}
 		if (input.status === 'error') {
-			return <IconCircleCross className={'h-4 w-4 text-red'} />;
+			return <IconCircleCross className={'size-4 text-red'} />;
 		}
 		return null;
 	};
@@ -67,7 +67,7 @@ function SendTokenRow({
 						'-right-11 p-1 text-neutral-600 transition-colors hover:text-neutral-700'
 					)}
 					onClick={onRemoveInput}>
-					<IconCross className={'h-4 w-4'} />
+					<IconCross className={'size-4'} />
 				</button>
 			)}
 
@@ -105,7 +105,7 @@ export function Send(): ReactElement {
 	}, [initialStateFromUrl]);
 
 	return (
-		<div className={'w-full max-w-[444px]'}>
+		<div className={'w-full max-w-108'}>
 			<div className={'mb-6'}>
 				<p className={'font-medium'}>{'Receiver'}</p>
 				<SmolAddressInput
@@ -143,7 +143,7 @@ export function Send(): ReactElement {
 					{'+Add token'}
 				</button>
 			</div>
-			<SendWarning isReceiverERC20={isReceiverERC20} />
+			<SendStatus isReceiverERC20={isReceiverERC20} />
 			<SendWizard isReceiverERC20={isReceiverERC20} />
 		</div>
 	);

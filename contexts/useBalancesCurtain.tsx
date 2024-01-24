@@ -4,20 +4,16 @@ import React, {createContext, useContext, useEffect, useMemo, useState} from 're
 import {CloseCurtainButton} from 'components/designSystem/Curtains/InfoCurtain';
 import {CurtainContent} from 'components/Primitives/Curtain';
 import {useTokensWithBalance} from 'hooks/useTokensWithBalance';
+import useWallet from '@builtbymom/web3/contexts/useWallet';
+import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
+import {cl, formatAmount, toAddress, truncateHex} from '@builtbymom/web3/utils';
 import * as Dialog from '@radix-ui/react-dialog';
 import {useDeepCompareMemo} from '@react-hookz/web';
-import {toAddress, truncateHex} from '@utils/tools.address';
-import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {IconLoader} from '@yearn-finance/web-lib/icons/IconLoader';
-import {cl} from '@yearn-finance/web-lib/utils/cl';
-import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
 import {ImageWithFallback} from '@common/ImageWithFallback';
 
-import useWallet from './useWallet';
-
 import type {ReactElement} from 'react';
-import type {TAddress} from '@utils/tools.address';
-import type {TToken} from '@utils/types/types';
+import type {TAddress, TToken} from '@builtbymom/web3/types';
 
 export type TSelectCallback = (item: TToken) => void;
 export type TBalancesCurtainProps = {
@@ -45,7 +41,7 @@ function Token({
 	onSelect: (token: TToken) => void;
 }): ReactElement {
 	const {getBalance} = useWallet();
-	const tokenBalance = getBalance(token.address);
+	const tokenBalance = getBalance({address: token.address, chainID: token.chainID});
 
 	return (
 		<button
@@ -177,7 +173,7 @@ function BalancesCurtain(props: {
 										}}
 									/>
 								))}
-							{props.isLoading && <IconLoader className={'mt-2 h-4 w-4 animate-spin text-neutral-900'} />}
+							{props.isLoading && <IconLoader className={'mt-2 size-4 animate-spin text-neutral-900'} />}
 						</div>
 					</div>
 				</aside>

@@ -1,6 +1,5 @@
 import axios from 'axios';
-import {toAddress} from '@utils/tools.address';
-import {toBigInt} from '@yearn-finance/web-lib/utils/format.bigNumber';
+import {toAddress, toBigInt} from '@builtbymom/web3/utils';
 
 import type {AxiosResponse} from 'axios';
 import type {TNFT} from './nftMigratooor';

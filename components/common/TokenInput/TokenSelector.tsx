@@ -1,20 +1,17 @@
 import React from 'react';
 import {SelectContent, SelectItem, SelectTrigger} from 'components/Primitives/Select';
-import useWallet from 'contexts/useWallet';
+import useWallet from '@builtbymom/web3/contexts/useWallet';
+import {cl, formatAmount, toAddress} from '@builtbymom/web3/utils';
 import * as SelectPrimitive from '@radix-ui/react-select';
-import {toAddress} from '@utils/tools.address';
-import {cl} from '@yearn-finance/web-lib/utils/cl';
-import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
 import {ImageWithFallback} from '@common/ImageWithFallback';
 
 import type {ReactElement} from 'react';
-import type {TNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
-import type {TToken} from '@utils/types/types';
+import type {TNormalizedBN, TToken} from '@builtbymom/web3/types';
 
 export function PlaceholderOption(): ReactElement {
 	return (
 		<div className={'flex flex-row items-center gap-3'}>
-			<div className={'h-6 w-6 min-w-[24px]'}>
+			<div className={'size-6 min-w-[24px]'}>
 				<ImageWithFallback
 					alt={''}
 					src={'https://assets.smold.app/not-found.png'}
@@ -36,7 +33,7 @@ export function SelectTokenOption({token}: {token: TToken}): ReactElement {
 
 	return (
 		<div className={'flex flex-row items-center gap-3'}>
-			<div className={'h-6 w-6 min-w-[24px]'}>
+			<div className={'size-6 min-w-[24px]'}>
 				<ImageWithFallback
 					alt={token.name || ''}
 					unoptimized={!token.logoURI?.includes('assets.smold.app') || true}
@@ -54,7 +51,11 @@ export function SelectTokenOption({token}: {token: TToken}): ReactElement {
 					<p className={'text-base'}>{token.symbol}</p>
 					<small className={'text-xxs text-neutral-600'}>
 						&nbsp;
-						{` - ${formatAmount(getBalance(toAddress(token.address))?.normalized, 6, 6)} ${token.symbol}`}
+						{` - ${formatAmount(
+							getBalance({address: toAddress(token.address), chainID: token.chainID})?.normalized,
+							6,
+							6
+						)} ${token.symbol}`}
 					</small>
 				</span>
 

@@ -5,7 +5,7 @@ import {ImageWithFallback} from '@common/ImageWithFallback';
 import {TokenListAddBox} from '@common/TokenList/TokenListAddBox';
 
 import type {Dispatch, ReactElement, SetStateAction} from 'react';
-import type {TToken, TTokenList} from '@utils/types/types';
+import type {TToken, TTokenList} from '@builtbymom/web3/types';
 
 type TTokenListHandlerPopover = {
 	lists: TTokenList[];
@@ -40,7 +40,7 @@ function TokenListHandlerPopover({
 					leave={'ease-in duration-200'}
 					leaveFrom={'opacity-100'}
 					leaveTo={'opacity-0'}>
-					<div className={'fixed inset-0 bg-primary-900/40 backdrop-blur-sm transition-opacity'} />
+					<div className={'bg-primary-900/40 fixed inset-0 backdrop-blur-sm transition-opacity'} />
 				</Transition.Child>
 
 				<div className={'fixed inset-0 z-10 w-screen overflow-y-auto'}>
@@ -61,12 +61,10 @@ function TokenListHandlerPopover({
 									onClick={(): void => set_isOpen(false)}
 									className={'absolute -right-2 -top-2'}>
 									<div
-										className={
-											'group h-6 w-6 cursor-pointer overflow-hidden rounded-full bg-white'
-										}>
+										className={'group size-6 cursor-pointer overflow-hidden rounded-full bg-white'}>
 										<IconCircleCross
 											className={
-												'h-6 w-6 overflow-hidden rounded-full p-[2px] text-neutral-400 transition-colors hover:text-neutral-900'
+												'size-6 overflow-hidden rounded-full p-[2px] text-neutral-400 transition-colors hover:text-neutral-900'
 											}
 											aria-hidden={'true'}
 										/>
@@ -99,7 +97,7 @@ function TokenListHandlerPopover({
 														<div
 															key={eachList.name}
 															className={
-																'relative flex w-full p-4 transition-colors hover:bg-neutral-50 md:px-6'
+																'hover:bg-neutral-50 relative flex w-full p-4 transition-colors md:px-6'
 															}>
 															<div
 																className={
@@ -111,7 +109,7 @@ function TokenListHandlerPopover({
 																	}>
 																	<div
 																		className={
-																			'rounded-full border border-neutral-100'
+																			'border-neutral-100 rounded-full border'
 																		}>
 																		<ImageWithFallback
 																			alt={eachList.name}

@@ -23,7 +23,7 @@ const apps = [
 				{'.'}
 			</span>
 		),
-		icon: <LogoMultiSafe className={'h-[80px] w-[80px]'} />
+		icon: <LogoMultiSafe className={'size-[80px]'} />
 	},
 	{
 		href: '/disperse',
@@ -36,7 +36,7 @@ const apps = [
 				{' ether or tokens to multiple addresses.'}
 			</span>
 		),
-		icon: <LogoDisperse className={'h-[80px] w-[80px]'} />
+		icon: <LogoDisperse className={'size-[80px]'} />
 	},
 	{
 		href: 'https://gib.to',
@@ -91,7 +91,7 @@ const apps = [
 				{' your tokens.'}
 			</span>
 		),
-		icon: <LogoMigrate className={'h-[80px] w-[80px]'} />
+		icon: <LogoMigrate className={'size-[80px]'} />
 	},
 	{
 		href: '/nftmigratooor',
@@ -105,7 +105,7 @@ const apps = [
 				{' to your new wallet.'}
 			</span>
 		),
-		icon: <LogoNFTMigratooor className={'h-[80px] w-[80px]'} />
+		icon: <LogoNFTMigratooor className={'size-[80px]'} />
 	},
 	{
 		href: '/tokenlistooor',
@@ -119,7 +119,7 @@ const apps = [
 				{' for your dApp.'}
 			</span>
 		),
-		icon: <LogoTokenlistooor className={'h-[80px] w-[80px]'} />
+		icon: <LogoTokenlistooor className={'size-[80px]'} />
 	}
 ];
 

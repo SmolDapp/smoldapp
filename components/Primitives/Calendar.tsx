@@ -2,9 +2,9 @@
 
 import {Children} from 'react';
 import {DayPicker} from 'react-day-picker';
+import {cl} from '@builtbymom/web3/utils';
 import * as SelectPrimitive from '@radix-ui/react-select';
 import {IconChevronBottom} from '@yearn-finance/web-lib/icons/IconChevronBottom';
-import {cl} from '@yearn-finance/web-lib/utils/cl';
 
 import {SelectContent, SelectItem, SelectTrigger} from './Select';
 
@@ -69,13 +69,13 @@ export function Calendar({
 				IconLeft: ({...props}) => (
 					<IconChevronBottom
 						{...props}
-						className={'h-4 w-4 rotate-90'}
+						className={'size-4 rotate-90'}
 					/>
 				),
 				IconRight: ({...props}) => (
 					<IconChevronBottom
 						{...props}
-						className={'h-4 w-4 -rotate-90 text-right'}
+						className={'size-4 -rotate-90 text-right'}
 					/>
 				),
 				Dropdown: ({...props}) => (

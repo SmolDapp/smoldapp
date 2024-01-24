@@ -1,7 +1,8 @@
 import {type ReactElement} from 'react';
-import {AddressBookEntryAddress, AddressBookEntryAvatar} from 'components/designSystem/AddressBookEntry';
+import {AddressBookEntryAddress} from 'components/designSystem/AddressBookEntry';
+import {Avatar} from 'components/designSystem/Avatar';
 import {useAccount, useEnsAvatar} from 'wagmi';
-import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
+import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
 
 export function ProfileBox(): ReactElement {
 	const {address, ens} = useWeb3();
@@ -10,9 +11,10 @@ export function ProfileBox(): ReactElement {
 
 	return (
 		<div className={'flex gap-2'}>
-			<AddressBookEntryAvatar
+			<Avatar
 				sizeClassname={'h-10 w-10 min-w-[40px]'}
 				isLoading={isLoadingAvatar || isConnecting}
+				label={ens || undefined}
 				address={address}
 				src={avatar}
 			/>

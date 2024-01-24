@@ -1,20 +1,23 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {useAddressBook} from 'contexts/useAddressBook';
 import {getEnsName} from 'viem/ens';
+import {cl, isAddress, toAddress, truncateHex} from '@builtbymom/web3/utils';
 import {IconAppAddressBook} from '@icons/IconApps';
 import {IconChevron} from '@icons/IconChevron';
 import {IconCircleCheck} from '@icons/IconCircleCheck';
 import {IconCircleCross} from '@icons/IconCircleCross';
 import {useAsyncAbortable} from '@react-hookz/web';
-import {defaultInputAddressLike, isAddress, toAddress, truncateHex} from '@utils/tools.address';
+import {defaultInputAddressLike} from '@utils/tools.address';
 import {checkENSValidity} from '@utils/tools.ens';
 import {getPublicClient} from '@wagmi/core';
 import {IconLoader} from '@yearn-finance/web-lib/icons/IconLoader';
-import {cl} from '@yearn-finance/web-lib/utils/cl';
+
+import {AvatarWrapper} from './Avatar';
 
 import type {TAddressBookEntry} from 'contexts/useAddressBook';
 import type {ReactElement} from 'react';
-import type {TAddress, TInputAddressLike} from '@utils/tools.address';
+import type {TAddress} from '@builtbymom/web3/types';
+import type {TInputAddressLike} from '@utils/tools.address';
 
 type TAddressInput = {
 	onSetValue: (value: TInputAddressLike) => void;
@@ -36,6 +39,8 @@ export function SmolAddressInput({onSetValue, value, initialStateFromUrl}: TAddr
 		(): TAddressBookEntry | undefined => getCachedEntry({address: toAddress(value.address), label: value.label}),
 		[getCachedEntry, value]
 	);
+
+	console.warn(addressBookEntry);
 
 	const [, actions] = useAsyncAbortable(
 		async (signal, input: string): Promise<void> =>
@@ -224,7 +229,7 @@ export function SmolAddressInput({onSetValue, value, initialStateFromUrl}: TAddr
 	}, [isFocused, value.isValid, isCheckingValidity]);
 
 	return (
-		<div className={'group relative h-full w-full max-w-[444px] rounded-lg'}>
+		<div className={'group relative size-full max-w-108 rounded-lg'}>
 			<label
 				className={cl(
 					'h-20 z-20 relative',
@@ -240,20 +245,20 @@ export function SmolAddressInput({onSetValue, value, initialStateFromUrl}: TAddr
 							'pointer-events-none h-full'
 						)}>
 						{getHasStatusIcon() ? (
-							<div className={'pointer-events-none relative h-4 w-4 min-w-[16px]'}>
+							<div className={'pointer-events-none relative size-4 min-w-[16px]'}>
 								<IconCircleCheck
-									className={`absolute h-4 w-4 text-green transition-opacity ${
+									className={`absolute size-4 text-green transition-opacity ${
 										!isCheckingValidity && value.isValid === true ? 'opacity-100' : 'opacity-0'
 									}`}
 								/>
 								<IconCircleCross
-									className={`absolute h-4 w-4 text-red transition-opacity ${
+									className={`absolute size-4 text-red transition-opacity ${
 										!isCheckingValidity && value.isValid === false ? 'opacity-100' : 'opacity-0'
 									}`}
 								/>
 								<div className={'absolute inset-0 flex items-center justify-center'}>
 									<IconLoader
-										className={`h-4 w-4 animate-spin text-neutral-900 transition-opacity ${
+										className={`size-4 animate-spin text-neutral-900 transition-opacity ${
 											isCheckingValidity ? 'opacity-100' : 'opacity-0'
 										}`}
 									/>
@@ -311,11 +316,21 @@ export function SmolAddressInput({onSetValue, value, initialStateFromUrl}: TAddr
 					<button
 						onClick={() => onOpenCurtain(selectedEntry => onSelectItem(selectedEntry))}
 						className={cl(
-							'flex items-center gap-4 rounded-lg p-4',
+							'flex items-center gap-4 rounded-sm p-4 w-22',
 							'bg-neutral-200 hover:bg-neutral-300 transition-colors'
 						)}>
-						<IconAppAddressBook className={'h-8 w-8 text-neutral-600'} />
-						<IconChevron className={'h-4 w-4 text-neutral-600'} />
+						<div className={'flex size-8 min-w-8 items-center justify-center rounded-full bg-neutral-0'}>
+							{!isAddress(value.address) ? (
+								<IconAppAddressBook className={'size-4 text-neutral-600'} />
+							) : (
+								<AvatarWrapper
+									address={toAddress(value.address)}
+									sizeClassname={'h-8 w-8 min-w-8'}
+								/>
+							)}
+						</div>
+
+						<IconChevron className={'size-4 min-w-4 text-neutral-600'} />
 					</button>
 				</div>
 			</label>
