@@ -41,8 +41,7 @@ export function SendStatus({isReceiverERC20}: {isReceiverERC20: boolean}): React
 							href={'/'}>
 							<span className={'font-semibold hover:underline'}>{'smart contract address'}</span>
 						</Link>
-						{'. If it’s intentional, go'}
-						{'right ahead, otherwise you might want to double check.'}
+						{'. If it’s intentional, go right ahead, otherwise you might want to double check.'}
 					</>
 				),
 				type: 'warning'
