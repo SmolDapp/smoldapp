@@ -4,6 +4,7 @@ import {useAddressBook} from 'contexts/useAddressBook';
 import {useAsyncTrigger} from '@builtbymom/web3/hooks/useAsyncTrigger';
 import {useChainID} from '@builtbymom/web3/hooks/useChainID';
 import {isEthAddress} from '@builtbymom/web3/utils';
+import {getNetwork} from '@builtbymom/web3/utils/wagmi';
 import {getIsSmartContract} from '@utils/tools.address';
 import {Warning} from '@common/Primitives/Warning';
 
@@ -64,10 +65,12 @@ export function SendStatus({isReceiverERC20}: {isReceiverERC20: boolean}): React
 		if (configuration.receiver.address && !fromAddressBook) {
 			return set_status({message: 'This address isn’t in your address book. Wanna add it?', type: 'warning'});
 		}
+
 		if (configuration.receiver.address && !fromAddressBook?.chains.includes(safeChainID)) {
+			const {name: currentNetworkName} = getNetwork(safeChainID);
+			const fromAddressBookNetworkNames = fromAddressBook?.chains.map(chain => getNetwork(chain).name).join(', ');
 			return set_status({
-				message:
-					'You added this address on [chain name], please check it can receive funds on [current chain].',
+				message: `You added this address on ${fromAddressBookNetworkNames}, please check it can receive funds on ${currentNetworkName}.`,
 				type: 'warning'
 			});
 		}
