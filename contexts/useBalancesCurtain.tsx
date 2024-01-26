@@ -85,6 +85,8 @@ function BalancesCurtain(props: {
 }): ReactElement {
 	const [searchValue, set_searchValue] = useState('');
 	const {address} = useWeb3();
+	const {onConnect} = useWeb3();
+
 	/**************************************************************************
 	 * When the curtain is opened, we want to reset the search value.
 	 * This is to avoid preserving the state accross multiple openings.
@@ -161,7 +163,7 @@ function BalancesCurtain(props: {
 						<div className={'scrollable mb-8 flex flex-col items-center pb-2'}>
 							{balancesTextLayout}
 
-							{address &&
+							{address ? (
 								filteredTokens.map(token => (
 									<Token
 										key={token.address}
@@ -172,7 +174,21 @@ function BalancesCurtain(props: {
 											props.onOpenChange(false);
 										}}
 									/>
-								))}
+								))
+							) : (
+								<div className={'max-w-23 mt-3 w-full'}>
+									<button
+										onClick={() => {
+											onConnect();
+											props.onOpenChange(false);
+										}}
+										className={
+											'h-8 w-full rounded-lg bg-primary text-xs transition-colors hover:bg-primaryHover'
+										}>
+										{'Connect Wallet'}
+									</button>
+								</div>
+							)}
 							{props.isLoading && <IconLoader className={'mt-2 size-4 animate-spin text-neutral-900'} />}
 						</div>
 					</div>
