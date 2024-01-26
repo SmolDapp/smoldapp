@@ -21,7 +21,7 @@ type TAppProp = {
 function App(props: TAppProp): ReactElement {
 	return (
 		<div>
-			<div className={'flex w-full justify-end pr-4 pt-4'}>
+			<div className={'absolute right-4 top-4 flex w-full justify-end'}>
 				<InfoCurtain
 					trigger={
 						<div
@@ -35,7 +35,7 @@ function App(props: TAppProp): ReactElement {
 					}
 				/>
 			</div>
-			<section className={'-mt-2 w-full p-10 pt-0'}>
+			<section className={'-mt-2 w-full p-8'}>
 				<div className={'mb-6 flex w-full flex-row justify-between md:max-w-108'}>
 					<div>
 						<h1 className={'text-3xl font-bold text-neutral-900'}>{props.title}</h1>

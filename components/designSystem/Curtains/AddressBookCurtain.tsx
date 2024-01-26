@@ -219,6 +219,7 @@ function AddressInput(props: {
 	useEffect(() => {
 		const entry = getCachedEntry({address: props.addressLike.address});
 		const currentCustomValidity = inputRef.current?.validationMessage;
+
 		if (entry !== undefined && entry.id !== props.selectedEntry.id) {
 			inputRef.current?.setCustomValidity('This address is already in your address book');
 			onChange();
@@ -226,7 +227,7 @@ function AddressInput(props: {
 			inputRef.current?.setCustomValidity('');
 			onChange();
 		}
-	}, [props.addressLike, getCachedEntry, props.selectedEntry.id, onChange]);
+	}, [getCachedEntry, onChange, props.addressLike.address, props.selectedEntry.id]);
 
 	const getErrorMessage = useCallback((): string | undefined => {
 		if (props.addressLike.isValid === 'undetermined') {

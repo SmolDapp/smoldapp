@@ -1,6 +1,5 @@
 import React, {useCallback, useMemo, useRef, useState} from 'react';
 import {checkENSValidity} from 'utils/tools.ens';
-import {checkLensValidity} from 'utils/tools.lens';
 import {cl, isZeroAddress, toAddress} from '@builtbymom/web3/utils';
 import {IconCircleCheck} from '@icons/IconCircleCheck';
 import {IconCircleCross} from '@icons/IconCircleCross';
@@ -46,14 +45,6 @@ function AddressInput({value, onChangeValue, ...props}: TAddressInput): ReactEle
 				onChangeValue({address: undefined, label, isValid: 'undetermined'});
 				set_isLoadingValidish(true);
 				const [address, isValid] = await checkENSValidity(label);
-				if (currentLabel.current === label) {
-					onChangeValue({address, label, isValid});
-				}
-				set_isLoadingValidish(false);
-			} else if (label.endsWith('.lens') && label.length > 5) {
-				onChangeValue({address: undefined, label, isValid: 'undetermined'});
-				set_isLoadingValidish(true);
-				const [address, isValid] = await checkLensValidity(label);
 				if (currentLabel.current === label) {
 					onChangeValue({address, label, isValid});
 				}

@@ -3,7 +3,6 @@ import {IconCircleCheck} from 'components/icons/IconCircleCheck';
 import {IconCircleCross} from 'components/icons/IconCircleCross';
 import IconWarning from 'components/icons/IconWarning';
 import {checkENSValidity} from 'utils/tools.ens';
-import {checkLensValidity} from 'utils/tools.lens';
 import {cl, isZeroAddress, toAddress} from '@builtbymom/web3/utils';
 import {useUpdateEffect} from '@react-hookz/web';
 import {IconLoader} from '@yearn-finance/web-lib/icons/IconLoader';
@@ -139,14 +138,6 @@ export function AddressLikeInput({
 		if (label.endsWith('.eth')) {
 			set_isLoadingValidish(true);
 			checkENSValidity(label).then(([validishDest, isValid]): void => {
-				set_isLoadingValidish(false);
-				set_isValidish(isValid);
-				set_isValidDestination(isValid);
-				onChange(validishDest);
-			});
-		} else if (label.endsWith('.lens')) {
-			set_isLoadingValidish(true);
-			checkLensValidity(label).then(([validishDest, isValid]): void => {
 				set_isLoadingValidish(false);
 				set_isValidish(isValid);
 				set_isValidDestination(isValid);
