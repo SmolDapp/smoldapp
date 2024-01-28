@@ -3,8 +3,9 @@
 import React, {createContext, useContext, useEffect, useMemo, useState} from 'react';
 import {CloseCurtainButton} from 'components/designSystem/Curtains/InfoCurtain';
 import {CurtainContent} from 'components/Primitives/Curtain';
+import {useFetchBalance} from 'hooks/useFetchBalance';
+import {useFetchToken} from 'hooks/useFetchToken';
 import {useTokensWithBalance} from 'hooks/useTokensWithBalance';
-import useWallet from '@builtbymom/web3/contexts/useWallet';
 import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
 import {cl, formatAmount, toAddress, truncateHex} from '@builtbymom/web3/utils';
 import * as Dialog from '@radix-ui/react-dialog';
@@ -40,8 +41,10 @@ function Token({
 	isDisabled: boolean;
 	onSelect: (token: TToken) => void;
 }): ReactElement {
-	const {getBalance} = useWallet();
-	const tokenBalance = getBalance({address: token.address, chainID: token.chainID});
+	const tokenBalance = useFetchBalance({
+		address: '0x9E63B020ae098E73cF201EE1357EDc72DFEaA518',
+		tokenAddress: token.address
+	});
 
 	return (
 		<button
@@ -72,6 +75,24 @@ function Token({
 				<p className={'text-xs text-neutral-600'}>{'$420.69'}</p>
 			</div>
 		</button>
+	);
+}
+
+function FetchedToken({
+	tokenAddress,
+	onSelect
+}: {
+	tokenAddress: TAddress;
+	onSelect: (token: TToken) => void;
+}): ReactElement {
+	const token = useFetchToken({tokenAddress});
+
+	return (
+		<Token
+			token={token}
+			isDisabled={false}
+			onSelect={onSelect}
+		/>
 	);
 }
 
@@ -162,7 +183,10 @@ function BalancesCurtain(props: {
 						/>
 						<div className={'scrollable mb-8 flex flex-col items-center pb-2'}>
 							{balancesTextLayout}
-
+							<FetchedToken
+								tokenAddress={'0xa258C4606Ca8206D8aA700cE2143D7db854D168c'}
+								onSelect={() => {}}
+							/>
 							{address ? (
 								filteredTokens.map(token => (
 									<Token
