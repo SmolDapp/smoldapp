@@ -3,11 +3,10 @@
 import React, {createContext, useContext, useEffect, useMemo, useState} from 'react';
 import {CloseCurtainButton} from 'components/designSystem/Curtains/InfoCurtain';
 import {CurtainContent} from 'components/Primitives/Curtain';
-import {useFetchBalance} from 'hooks/useFetchBalance';
-import {useFetchToken} from 'hooks/useFetchToken';
+
 import {useTokensWithBalance} from 'hooks/useTokensWithBalance';
 import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
-import {cl, formatAmount, toAddress, truncateHex} from '@builtbymom/web3/utils';
+import {cl, formatAmount, isAddress, toAddress, truncateHex} from '@builtbymom/web3/utils';
 import * as Dialog from '@radix-ui/react-dialog';
 import {useDeepCompareMemo} from '@react-hookz/web';
 import {IconLoader} from '@yearn-finance/web-lib/icons/IconLoader';
@@ -15,6 +14,8 @@ import {ImageWithFallback} from '@common/ImageWithFallback';
 
 import type {ReactElement} from 'react';
 import type {TAddress, TToken} from '@builtbymom/web3/types';
+import {useBalances} from '@builtbymom/web3/hooks/useBalances.multichains';
+import {useChainID} from '@builtbymom/web3/hooks/useChainID';
 
 export type TSelectCallback = (item: TToken) => void;
 export type TBalancesCurtainProps = {
@@ -41,11 +42,6 @@ function Token({
 	isDisabled: boolean;
 	onSelect: (token: TToken) => void;
 }): ReactElement {
-	const tokenBalance = useFetchBalance({
-		address: '0x9E63B020ae098E73cF201EE1357EDc72DFEaA518',
-		tokenAddress: token.address
-	});
-
 	return (
 		<button
 			onClick={() => onSelect(token)}
@@ -71,7 +67,7 @@ function Token({
 				</div>
 			</div>
 			<div className={'text-right'}>
-				<b className={'text-left text-base'}>{formatAmount(tokenBalance.normalized, 0, 6)}</b>
+				<b className={'text-left text-base'}>{formatAmount(token.balance.normalized, 0, 6)}</b>
 				<p className={'text-xs text-neutral-600'}>{'$420.69'}</p>
 			</div>
 		</button>
@@ -85,7 +81,13 @@ function FetchedToken({
 	tokenAddress: TAddress;
 	onSelect: (token: TToken) => void;
 }): ReactElement {
-	const token = useFetchToken({tokenAddress});
+	const {safeChainID} = useChainID();
+	const {data} = useBalances({tokens: [{address: tokenAddress, chainID: safeChainID}]});
+	const token = data[safeChainID]?.[tokenAddress];
+
+	if (!token) {
+		return <IconLoader className={'mt-7 size-4 animate-spin text-neutral-900'} />;
+	}
 
 	return (
 		<Token
@@ -118,6 +120,13 @@ function BalancesCurtain(props: {
 		}
 	}, [props.isOpen]);
 
+	const searchTokenAddress = useMemo(() => {
+		if (isAddress(searchValue)) {
+			return toAddress(searchValue);
+		}
+		return undefined;
+	}, [searchValue]);
+
 	/**************************************************************************
 	 * Memo function that filters the tokens user have on
 	 * the search value.
@@ -136,7 +145,7 @@ function BalancesCurtain(props: {
 	const balancesTextLayout = useMemo(() => {
 		let balancesText = undefined;
 
-		if (filteredTokens.length === 0) {
+		if (filteredTokens.length === 0 && !searchTokenAddress) {
 			balancesText = 'No tokens found';
 		}
 		if (!address) {
@@ -183,10 +192,12 @@ function BalancesCurtain(props: {
 						/>
 						<div className={'scrollable mb-8 flex flex-col items-center pb-2'}>
 							{balancesTextLayout}
-							<FetchedToken
-								tokenAddress={'0xa258C4606Ca8206D8aA700cE2143D7db854D168c'}
-								onSelect={() => {}}
-							/>
+							{searchTokenAddress && (
+								<FetchedToken
+									tokenAddress={searchTokenAddress}
+									onSelect={() => {}}
+								/>
+							)}
 							{address ? (
 								filteredTokens.map(token => (
 									<Token

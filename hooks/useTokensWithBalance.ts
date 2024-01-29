@@ -45,8 +45,9 @@ export function useTokensWithBalance(): {tokensWithBalance: TToken[]; isLoading:
 	const tokensWithBalance = useDeepCompareMemo((): TToken[] => {
 		const withBalance = [];
 		for (const dest of Object.values(allTokens)) {
-			if (getBalance({address: dest.address, chainID: dest.chainID}).raw > 0n) {
-				withBalance.push(dest);
+			const balance = getBalance({address: dest.address, chainID: dest.chainID});
+			if (balance.raw > 0n) {
+				withBalance.push({...dest, balance});
 			}
 		}
 		return withBalance;
