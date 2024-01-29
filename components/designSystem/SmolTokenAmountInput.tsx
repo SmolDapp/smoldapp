@@ -51,15 +51,10 @@ export function SmolTokenAmountInput({
 	const [isFocused, set_isFocused] = useState<boolean>(false);
 	const {onOpenCurtain} = useBalancesCurtain();
 
-	const {safeChainID} = useChainID();
-	const {getBalance, isLoading} = useWallet();
-
 	const {token} = value;
 
-	const selectedTokenBalance = token ? getBalance({address: token.address, chainID: safeChainID}) : toNormalizedBN(0);
-	const initialTokenBalance = initialValue?.token?.address
-		? getBalance({address: initialValue?.token.address, chainID: safeChainID})
-		: toNormalizedBN(0);
+	const selectedTokenBalance = token?.balance ?? toNormalizedBN(0);
+	const initialTokenBalance = initialValue?.token?.balance ?? toNormalizedBN(0);
 
 	const onChange = (amount: string, balance: TNormalizedBN, token?: TToken): void => {
 		if (amount === '') {
@@ -74,7 +69,7 @@ export function SmolTokenAmountInput({
 		if (+amount > 0) {
 			const inputBigInt = amount ? parseUnits(amount, token?.decimals || 18) : toBigInt(0);
 
-			if (inputBigInt > balance.raw && !isLoading) {
+			if (inputBigInt > balance.raw) {
 				return onSetValue({
 					amount,
 					normalizedBigAmount: toNormalizedBN(inputBigInt, token?.decimals || 18),
@@ -118,9 +113,7 @@ export function SmolTokenAmountInput({
 	};
 
 	const onSelectToken = (valueBigInt: bigint, token: TToken): void => {
-		const tokenBalance = getBalance({address: token.address, chainID: safeChainID});
-
-		if (tokenBalance.raw < valueBigInt) {
+		if (token.balance.raw < valueBigInt) {
 			return onSetValue({
 				token,
 				normalizedBigAmount: toNormalizedBN(valueBigInt, token?.decimals || 18),

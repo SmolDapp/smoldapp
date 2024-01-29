@@ -205,7 +205,10 @@ function BalancesCurtain(props: {
 							{searchTokenAddress && (
 								<FetchedToken
 									tokenAddress={searchTokenAddress}
-									onSelect={() => {}}
+									onSelect={selected => {
+										props.onSelect?.(selected);
+										props.onOpenChange(false);
+									}}
 								/>
 							)}
 							{address ? (
