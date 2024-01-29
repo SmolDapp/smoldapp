@@ -16,6 +16,7 @@ import type {ReactElement} from 'react';
 import type {TAddress, TToken} from '@builtbymom/web3/types';
 import {useBalances} from '@builtbymom/web3/hooks/useBalances.multichains';
 import {useChainID} from '@builtbymom/web3/hooks/useChainID';
+import {isAddressEqual} from 'viem';
 
 export type TSelectCallback = (item: TToken) => void;
 export type TBalancesCurtainProps = {
@@ -120,8 +121,17 @@ function BalancesCurtain(props: {
 		}
 	}, [props.isOpen]);
 
+	/**************************************************************************
+	 * When user searches for a specific address, not present in the token list,
+	 * We want to display fetch this token and display it.
+	 * Memo function returns this search value if it is address and not present
+	 * in the token list.
+	 *************************************************************************/
 	const searchTokenAddress = useMemo(() => {
-		if (isAddress(searchValue)) {
+		if (
+			isAddress(searchValue) &&
+			!props.tokensWithBalance.some(token => isAddressEqual(token.address, toAddress(searchValue)))
+		) {
 			return toAddress(searchValue);
 		}
 		return undefined;
