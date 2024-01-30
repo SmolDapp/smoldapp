@@ -18,7 +18,6 @@ import {
 	zkSync
 } from 'wagmi/chains';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
-import {localhost} from '@yearn-finance/web-lib/utils/wagmi/networks';
 import {indexedWagmiChains} from '@yearn-finance/web-lib/utils/wagmi/utils';
 
 import {gnosis} from './chains';
@@ -51,8 +50,8 @@ export const SUPPORTED_CHAINS = [
 	aurora,
 	//Testnets
 	goerli,
-	baseGoerli,
-	localhost
+	baseGoerli
+	// localhost
 	// sepolia,
 	// optimismGoerli,
 	// bscTestnet,
