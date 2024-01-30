@@ -1,5 +1,24 @@
-import {arbitrum, base, baseGoerli, bsc, goerli, mainnet, optimism, polygon, polygonZkEvm, zkSync} from 'wagmi/chains';
+import {
+	arbitrum,
+	aurora,
+	avalanche,
+	base,
+	baseGoerli,
+	bsc,
+	celo,
+	fantom,
+	goerli,
+	linea,
+	mainnet,
+	mantle,
+	optimism,
+	polygon,
+	polygonZkEvm,
+	scroll,
+	zkSync
+} from 'wagmi/chains';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
+import {localhost} from '@yearn-finance/web-lib/utils/wagmi/networks';
 import {indexedWagmiChains} from '@yearn-finance/web-lib/utils/wagmi/utils';
 
 import {gnosis} from './chains';
@@ -20,15 +39,20 @@ export const SUPPORTED_CHAINS = [
 	gnosis,
 	polygon,
 	polygonZkEvm,
-	// fantom,
+	fantom,
 	zkSync,
+	mantle,
 	base,
 	arbitrum,
-
+	celo,
+	avalanche,
+	linea,
+	scroll,
+	aurora,
 	//Testnets
 	goerli,
-	baseGoerli
-	// localhost
+	baseGoerli,
+	localhost
 	// sepolia,
 	// optimismGoerli,
 	// bscTestnet,
@@ -37,6 +61,38 @@ export const SUPPORTED_CHAINS = [
 	// fantomTestnet,
 	// arbitrumGoerli
 ];
+
+export const SUPPORTED_SMOL_CHAINS = [
+	mainnet,
+	optimism,
+	bsc,
+	gnosis,
+	polygon,
+	polygonZkEvm,
+	zkSync,
+	base,
+	arbitrum,
+	goerli,
+	baseGoerli
+];
+
+export const SAFE_UI_BASE_URI: TNDict<string> = {
+	1: 'https://app.safe.global/home?safe=eth:',
+	10: 'https://app.safe.global/home?safe=oeth:',
+	56: 'https://app.safe.global/home?safe=bnb:',
+	100: 'https://app.safe.global/home?safe=gno:',
+	137: 'https://app.safe.global/home?safe=matic:',
+	250: 'https://safe.fantom.network/home?safe=ftm:',
+	1101: 'https://app.safe.global/home?safe=zkevm:',
+	5000: 'https://multisig.mantle.xyz/home?safe=mantle:',
+	8453: 'https://app.safe.global/home?safe=base:',
+	42161: 'https://app.safe.global/home?safe=arb1:',
+	42220: 'https://app.safe.global/home?safe=celo:',
+	43114: 'https://app.safe.global/home?safe=avax:',
+	59144: 'https://safe.linea.build/home?safe=linea:',
+	534352: 'https://safe.scroll.xyz/home?safe=scr:',
+	1313161554: 'https://app.safe.global/home?safe=aurora:'
+};
 
 export const SUPPORTED_CHAIN_IDS: TNDict<string> = {
 	1: 'Ethereum',
@@ -63,6 +119,25 @@ export const NFTMIGRATOOOR_CONTRACT_PER_CHAIN: TNDict<TAddress> = {
 	1101: toAddress('0xA3a3C48F1d5191968D3dEF7A5aE4c860589Bf380'),
 	8453: toAddress('0x101CBC599d01e90D21fc925c8222248863e3b6eA'),
 	42161: toAddress('0x7E08735690028cdF3D81e7165493F1C34065AbA2')
+};
+
+export const DISPERSE_CONTRACT_PER_CHAIN: TNDict<TAddress> = {
+	1: toAddress('0xD152f549545093347A162Dce210e7293f1452150'),
+	10: toAddress('0xD152f549545093347A162Dce210e7293f1452150'),
+	56: toAddress('0xD152f549545093347A162Dce210e7293f1452150'),
+	100: toAddress('0xD152f549545093347A162Dce210e7293f1452150'),
+	137: toAddress('0xD152f549545093347A162Dce210e7293f1452150'),
+	250: toAddress('0xD152f549545093347A162Dce210e7293f1452150'),
+	324: toAddress('0xD152f549545093347A162Dce210e7293f1452150'),
+	1101: toAddress('0xD152f549545093347A162Dce210e7293f1452150'),
+	5000: toAddress('0xC813978A4c104250B1d2bC198cC7bE74b68Cd81b'),
+	8453: toAddress('0xD152f549545093347A162Dce210e7293f1452150'),
+	42161: toAddress('0xD152f549545093347A162Dce210e7293f1452150'),
+	42220: toAddress('0xD152f549545093347A162Dce210e7293f1452150'),
+	43114: toAddress('0xD152f549545093347A162Dce210e7293f1452150'),
+	59144: toAddress('0x38a9C84bAaf727F8E09deF72C4Dc224fEFf2028F'),
+	534352: toAddress('0x38a9C84bAaf727F8E09deF72C4Dc224fEFf2028F'),
+	1313161554: toAddress('0xe025e5B1c61FD98e33F02caC811469664A81b4BD')
 };
 
 const SAFE_API_URI: {[chainId: number]: string} = {

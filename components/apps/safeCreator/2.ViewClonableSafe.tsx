@@ -204,26 +204,48 @@ function ViewClonableSafe(): ReactElement {
 								</Renderable>
 							</b>
 						</div>
+
 						<div className={'flex flex-col'}>
 							<small>{'Deployment status '}</small>
 							<Renderable
 								shouldRender={!!safeArgs?.address}
 								fallback={<span className={'text-neutral-400'}>{'-'}</span>}>
 								<div className={'mt-1 grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-4'}>
-									{SUPPORTED_CHAINS.filter((chain): boolean => ![324].includes(chain.id)).map(
+									{SUPPORTED_CHAINS.filter(
+										(chain): boolean => ![5, 324, 1337, 84531].includes(chain.id)
+									).map(
 										(chain): ReactElement => (
 											<ChainStatus
 												key={chain.id}
 												chain={chain}
 												safeAddress={toAddress(safeArgs?.address)}
-												originalTx={safeArgs?.tx}
-												singleton={safeArgs?.singleton}
 												owners={safeArgs?.owners || []}
 												threshold={safeArgs?.threshold || 0}
+												singleton={safeArgs?.singleton}
 												salt={safeArgs?.salt || 0n}
 											/>
 										)
 									)}
+								</div>
+								<div
+									className={
+										'mt-6 grid grid-cols-2 gap-2 border-t border-primary-100 pt-6 md:grid-cols-3 md:gap-4'
+									}>
+									{SUPPORTED_CHAINS.filter((chain): boolean => ![324].includes(chain.id))
+										.filter((chain): boolean => [5, 1337, 84531].includes(chain.id))
+										.map(
+											(chain): ReactElement => (
+												<ChainStatus
+													key={chain.id}
+													chain={chain}
+													safeAddress={toAddress(safeArgs?.address)}
+													owners={safeArgs?.owners || []}
+													threshold={safeArgs?.threshold || 0}
+													singleton={safeArgs?.singleton}
+													salt={safeArgs?.salt || 0n}
+												/>
+											)
+										)}
 								</div>
 							</Renderable>
 						</div>
@@ -286,7 +308,7 @@ function ViewClonableSafe(): ReactElement {
 						className={
 							'flex flex-row whitespace-pre rounded-md border border-red-200 !bg-red-200/60 p-2 text-xs font-bold text-red-600'
 						}>
-						<IconWarning className={'mr-2 h-4 w-4 text-red-600'} />
+						<IconWarning className={'mr-2 size-4 text-red-600'} />
 						{
 							'Uh oh, this doesn’t appear to be a Safe address.\nPlease check you typed the correct address as we couldn’t find a Safe for this address.'
 						}

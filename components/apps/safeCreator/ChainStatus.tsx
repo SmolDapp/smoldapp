@@ -4,6 +4,7 @@ import Link from 'next/link';
 import DISPERSE_ABI from 'utils/abi/disperse.abi';
 import GNOSIS_SAFE_PROXY_FACTORY from 'utils/abi/gnosisSafeProxyFactory.abi';
 import {multicall} from 'utils/actions';
+import {DISPERSE_CONTRACT_PER_CHAIN, SAFE_UI_BASE_URI, type TAppExtendedChain} from 'utils/constants';
 import {encodeFunctionData, parseEther} from 'viem';
 import {
 	getNetwork as getWagmiNetwork,
@@ -33,7 +34,6 @@ import {useSafeCreator} from './useSafeCreator';
 import {generateArgInitializers} from './utils';
 
 import type {ReactElement} from 'react';
-import type {TAppExtendedChain} from 'utils/constants';
 import type {TAddress} from '@yearn-finance/web-lib/types';
 import type {Chain, FetchTransactionResult} from '@wagmi/core';
 
@@ -221,7 +221,7 @@ function ChainStatus({
 			const signletonToUse = singleton || SINGLETON_L2;
 			const argInitializers = generateArgInitializers(owners, threshold);
 			const callDataDisperseEth = {
-				target: toAddress(process.env.DISPERSE_ADDRESS),
+				target: DISPERSE_CONTRACT_PER_CHAIN[chain.id],
 				value: fee,
 				allowFailure: false,
 				callData: encodeFunctionData({
@@ -286,10 +286,10 @@ function ChainStatus({
 					{'Deployed'}
 				</Button>
 				<Link
-					href={`${getNetwork(chain.id).defaultBlockExplorer}/address/${safeAddress}`}
+					href={`${SAFE_UI_BASE_URI[chain.id]}${safeAddress}`}
 					target={'_blank'}>
 					<Button className={'hidden !h-8 md:block'}>
-						<IconLinkOut className={'h-4 w-4 !text-white'} />
+						<IconLinkOut className={'size-4 !text-white'} />
 					</Button>
 					<p className={'block text-center text-xs text-neutral-600 md:hidden'}>{'See on explorer'}</p>
 				</Link>
@@ -340,17 +340,17 @@ function ChainStatus({
 		canDeployOnThatChain.isLoading
 			? 'Loading'
 			: isDeployedOnThatChain
-			  ? 'Deployed'
-			  : canDeployOnThatChain.canDeploy
-			    ? 'CanDeploy'
-			    : 'CannotDeploy'
+				? 'Deployed'
+				: canDeployOnThatChain.canDeploy
+					? 'CanDeploy'
+					: 'CannotDeploy'
 	];
 
 	return (
 		<div
 			key={chain.id}
 			className={'box-0 flex w-full flex-col items-center justify-center p-4 pb-2 md:pb-4'}>
-			<div className={'h-8 w-8'}>
+			<div className={'size-8'}>
 				<Image
 					src={`${process.env.SMOL_ASSETS_URL}/chain/${chain.id}/logo-128.png`}
 					width={32}

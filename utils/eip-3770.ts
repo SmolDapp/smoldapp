@@ -81,6 +81,7 @@ export const EIP3770_PREFIX: TNetworkShortName[] = [
 	{chainId: 7341, shortName: 'shyft'},
 	{chainId: 7700, shortName: 'canto'},
 	{chainId: 8217, shortName: 'cypress'},
+	{chainId: 8453, shortName: 'base'},
 	{chainId: 9000, shortName: 'evmos-testnet'},
 	{chainId: 9001, shortName: 'evmos'},
 	{chainId: 9728, shortName: 'boba-testnet'},
