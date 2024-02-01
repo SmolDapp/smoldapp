@@ -1,19 +1,12 @@
 import React, {useCallback, useState} from 'react';
 import {getNewInput} from 'components/sections/Send/useSendFlow';
 import {useBalancesCurtain} from 'contexts/useBalancesCurtain';
-import {
-	cl,
-	formatAmount,
-	isAddress,
-	parseUnits,
-	percentOf,
-	toBigInt,
-	toNormalizedBN,
-	toNormalizedValue
-} from '@builtbymom/web3/utils';
+import {parseUnits} from 'viem';
+import {cl, fromNormalized, isAddress, percentOf, toBigInt, toNormalizedBN} from '@builtbymom/web3/utils';
 import {IconChevron} from '@icons/IconChevron';
 import {IconWallet} from '@icons/IconWallet';
 import {useDeepCompareEffect} from '@react-hookz/web';
+import {handleLowAmount} from '@utils/helpers';
 import {ImageWithFallback} from '@common/ImageWithFallback';
 
 import type {ReactElement} from 'react';
@@ -65,26 +58,28 @@ export function SmolTokenAmountInput({
 		}
 
 		if (+amount > 0) {
-			const inputBigInt = amount ? parseUnits(amount, token?.decimals || 18) : toBigInt(0);
+			// http://localhost:3000/apps/send?to=0x9E63B020ae098E73cF201EE1357EDc72DFEaA518&tokens=0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84&values=1
 
+			const inputBigInt = amount ? fromNormalized(amount, token?.decimals || 18) : toBigInt(0);
+			const asNormalizedBN = toNormalizedBN(inputBigInt, token?.decimals || 18);
 			if (inputBigInt > balance.raw) {
 				return onSetValue({
-					amount,
-					normalizedBigAmount: toNormalizedBN(inputBigInt, token?.decimals || 18),
+					amount: asNormalizedBN.display,
+					normalizedBigAmount: asNormalizedBN,
 					isValid: false,
 					error: 'Insufficient Balance'
 				});
 			}
 			return onSetValue({
-				amount,
-				normalizedBigAmount: toNormalizedBN(inputBigInt, token?.decimals || 18),
+				amount: asNormalizedBN.display,
+				normalizedBigAmount: asNormalizedBN,
 				isValid: true,
 				error: undefined
 			});
 		}
 
 		onSetValue({
-			amount,
+			amount: '0',
 			normalizedBigAmount: toNormalizedBN(0),
 			isValid: false,
 			error: 'The amount is invalid'
@@ -94,7 +89,7 @@ export function SmolTokenAmountInput({
 	const onSetFractional = (percentage: number): void => {
 		if (percentage === 100) {
 			return onSetValue({
-				amount: selectedTokenBalance.normalized.toString(),
+				amount: selectedTokenBalance.display,
 				normalizedBigAmount: selectedTokenBalance,
 				isValid: true,
 				error: undefined
@@ -104,7 +99,10 @@ export function SmolTokenAmountInput({
 		const calculatedPercent = percentOf(+selectedTokenBalance.normalized, percentage);
 		onSetValue({
 			amount: calculatedPercent.toString(),
-			normalizedBigAmount: toNormalizedBN(parseUnits(calculatedPercent, token?.decimals), token?.decimals),
+			normalizedBigAmount: toNormalizedBN(
+				parseUnits(String(calculatedPercent), token?.decimals || 18),
+				token?.decimals
+			),
 			isValid: true,
 			error: undefined
 		});
@@ -143,11 +141,12 @@ export function SmolTokenAmountInput({
 			return;
 		}
 		if (initialValue.amount && initialValue.token?.address) {
-			const normalizedAmount = toNormalizedValue(
-				initialValue.amount,
-				initialValue?.token?.decimals || 18
-			).toString();
+			const normalizedAmount = String(
+				toNormalizedBN(initialValue.amount, initialValue?.token?.decimals || 18).normalized
+			);
+			console.warn(normalizedAmount);
 			onSelectToken(initialValue.amount, initialValue.token);
+
 			onChange(normalizedAmount, initialTokenBalance, initialValue.token);
 		}
 	}, [initialValue, initialTokenBalance]);
@@ -172,7 +171,9 @@ export function SmolTokenAmountInput({
 						type={'number'}
 						placeholder={'0.00'}
 						value={value.amount}
-						onChange={e => onChange(e.target.value, selectedTokenBalance, token)}
+						onChange={e => {
+							onChange(e.target.value, selectedTokenBalance, token);
+						}}
 						max={selectedTokenBalance.normalized}
 						onFocus={() => set_isFocused(true)}
 						onBlur={() => set_isFocused(false)}
@@ -199,10 +200,7 @@ export function SmolTokenAmountInput({
 							<button
 								onClick={() => onSetFractional(100)}
 								disabled={!token || selectedTokenBalance.raw === 0n}>
-								<p>
-									{'You have '}
-									{formatAmount(selectedTokenBalance.normalized, 0, 6)}
-								</p>
+								<p>{`You have ${handleLowAmount(selectedTokenBalance, 2, 6)}`}</p>
 							</button>
 						) : (
 							<p>{'No token selected'}</p>

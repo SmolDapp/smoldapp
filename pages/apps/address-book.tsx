@@ -6,6 +6,7 @@ import {useAddressBook} from 'contexts/useAddressBook';
 import Papa from 'papaparse';
 import {LayoutGroup, motion} from 'framer-motion';
 import {cl, toAddress} from '@builtbymom/web3/utils';
+import {IconAppAddressBook} from '@icons/IconApps';
 import {IconEmptyAddressBook} from '@icons/IconEmptyAddressBook';
 import IconImport from '@icons/IconImport';
 import {IconPlus} from '@icons/IconPlus';
@@ -196,7 +197,16 @@ function EmptyAddressBook(props: {onOpenCurtain: VoidFunction}): ReactElement {
 	return (
 		<div className={'flex size-full flex-col items-center  rounded-lg bg-neutral-200 px-11 py-[72px]'}>
 			<div className={'mb-6 flex size-40 items-center justify-center rounded-full bg-neutral-0'}>
-				<IconEmptyAddressBook />
+				<div className={'relative flex size-40 items-center justify-center rounded-full bg-white'}>
+					<IconAppAddressBook className={'size-20'} />
+					<button
+						onClick={props.onOpenCurtain}
+						className={
+							'absolute bottom-0 right-0 flex size-12 cursor-pointer items-center justify-center rounded-full bg-primary hover:bg-primaryHover'
+						}>
+						<IconPlus className={'size-4'} />
+					</button>
+				</div>
 			</div>
 			<div className={'flex flex-col items-center justify-center'}>
 				<p className={'text-center text-base text-neutral-600'}>
