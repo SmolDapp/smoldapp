@@ -1,8 +1,6 @@
 import React, {useCallback, useState} from 'react';
 import {getNewInput} from 'components/sections/Send/useSendFlow';
 import {useBalancesCurtain} from 'contexts/useBalancesCurtain';
-import useWallet from '@builtbymom/web3/contexts/useWallet';
-import {useChainID} from '@builtbymom/web3/hooks/useChainID';
 import {
 	cl,
 	formatAmount,

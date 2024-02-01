@@ -121,7 +121,7 @@ export function VestingElement({vesting}: {vesting: TStreamArgs}): ReactElement 
 					<div>
 						<ImageWithFallback
 							src={`${process.env.SMOL_ASSETS_URL}/token/${vesting.chainID}/${vesting.token}/logo-128.png`}
-							altSrc={getToken(vesting.token)?.logoURI || ''}
+							altSrc={getToken({address: vesting.token, chainID})?.logoURI || ''}
 							unoptimized
 							width={42}
 							height={42}

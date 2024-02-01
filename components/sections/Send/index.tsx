@@ -2,6 +2,8 @@ import {useCallback} from 'react';
 import {SmolAddressInput} from 'components/designSystem/SmolAddressInput';
 import {SmolTokenAmountInput} from 'components/designSystem/SmolTokenAmountInput';
 import {useTokenList} from '@builtbymom/web3/contexts/WithTokenList';
+import {useBalances} from '@builtbymom/web3/hooks/useBalances.multichains';
+import {useChainID} from '@builtbymom/web3/hooks/useChainID';
 import {cl, toAddress, toBigInt} from '@builtbymom/web3/utils';
 import {IconCircleCheck} from '@icons/IconCircleCheck';
 import {IconCircleCross} from '@icons/IconCircleCross';
@@ -18,8 +20,6 @@ import type {TSendInputElement} from 'components/designSystem/SmolTokenAmountInp
 import type {ReactElement} from 'react';
 import type {TToken} from '@builtbymom/web3/types';
 import type {TInputAddressLike} from '@utils/tools.address';
-import {useBalances} from '@builtbymom/web3/hooks/useBalances.multichains';
-import {useChainID} from '@builtbymom/web3/hooks/useChainID';
 
 function SendTokenRow({
 	input,
@@ -81,14 +81,16 @@ export function Send(): ReactElement {
 	const {configuration, dispatchConfiguration} = useSendFlow();
 	const {initialStateFromUrl} = useSendQueryManagement();
 
-	const {tokenList} = useTokenList();
+	const {currentNetworkTokenList} = useTokenList();
 
 	const initialTokensRaw =
 		initialStateFromUrl?.tokens?.map(token => ({address: toAddress(token), chainID: safeChainID})) || [];
 
 	const {data: initialTokens} = useBalances({tokens: initialTokensRaw});
 
-	const isReceiverERC20 = Boolean(configuration.receiver.address && tokenList[configuration.receiver.address]);
+	const isReceiverERC20 = Boolean(
+		configuration.receiver.address && currentNetworkTokenList[configuration.receiver.address]
+	);
 
 	const onAddToken = useCallback((): void => {
 		dispatchConfiguration({
@@ -101,11 +103,11 @@ export function Send(): ReactElement {
 		dispatchConfiguration({type: 'SET_RECEIVER', payload: value});
 	};
 
-	const getInitialAmount = (index: number) => {
+	const getInitialAmount = (index: number): bigint | undefined => {
 		return initialStateFromUrl?.values?.[index] ? toBigInt(initialStateFromUrl?.values[index]) : undefined;
 	};
 
-	const getInitialToken = (index: number) => {
+	const getInitialToken = (index: number): TToken | undefined => {
 		return initialStateFromUrl?.tokens?.[index] && initialTokens[safeChainID]
 			? initialTokens[safeChainID][initialStateFromUrl?.tokens[index]]
 			: undefined;

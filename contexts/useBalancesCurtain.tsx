@@ -3,20 +3,20 @@
 import React, {createContext, useContext, useEffect, useMemo, useState} from 'react';
 import {CloseCurtainButton} from 'components/designSystem/Curtains/InfoCurtain';
 import {CurtainContent} from 'components/Primitives/Curtain';
-
 import {useTokensWithBalance} from 'hooks/useTokensWithBalance';
+import {isAddressEqual} from 'viem';
 import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
+import {useTokenList} from '@builtbymom/web3/contexts/WithTokenList';
+import {useBalances} from '@builtbymom/web3/hooks/useBalances.multichains';
+import {useChainID} from '@builtbymom/web3/hooks/useChainID';
 import {cl, formatAmount, isAddress, toAddress, truncateHex} from '@builtbymom/web3/utils';
 import * as Dialog from '@radix-ui/react-dialog';
-import {useDeepCompareMemo, useLocalStorageValue} from '@react-hookz/web';
+import {useDeepCompareMemo} from '@react-hookz/web';
 import {IconLoader} from '@yearn-finance/web-lib/icons/IconLoader';
 import {ImageWithFallback} from '@common/ImageWithFallback';
 
 import type {ReactElement} from 'react';
-import type {TAddress, TToken, TTokenList} from '@builtbymom/web3/types';
-import {useBalances} from '@builtbymom/web3/hooks/useBalances.multichains';
-import {useChainID} from '@builtbymom/web3/hooks/useChainID';
-import {isAddressEqual} from 'viem';
+import type {TAddress, TToken} from '@builtbymom/web3/types';
 
 export type TSelectCallback = (item: TToken) => void;
 export type TBalancesCurtainProps = {
@@ -111,7 +111,7 @@ function BalancesCurtain(props: {
 	const {address} = useWeb3();
 	const {onConnect} = useWeb3();
 
-	const {value: extraTokens, set: set_extraTokens} = useLocalStorageValue<TTokenList['tokens']>('extraTokens');
+	const {addCustomToken} = useTokenList();
 
 	/**************************************************************************
 	 * When the curtain is opened, we want to reset the search value.
@@ -153,11 +153,6 @@ function BalancesCurtain(props: {
 				toAddress(token.address).toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())
 		);
 	}, [searchValue, props.tokensWithBalance]);
-
-	const addExternalToken = (token: TToken) => {
-		const {balance, price, ...restTokenProps} = token;
-		set_extraTokens([...(extraTokens ?? []), restTokenProps]);
-	};
 
 	const balancesTextLayout = useMemo(() => {
 		let balancesText = undefined;
@@ -215,7 +210,7 @@ function BalancesCurtain(props: {
 									onSelect={selected => {
 										props.onSelect?.(selected);
 										props.onOpenChange(false);
-										addExternalToken(selected);
+										addCustomToken(selected);
 									}}
 								/>
 							)}

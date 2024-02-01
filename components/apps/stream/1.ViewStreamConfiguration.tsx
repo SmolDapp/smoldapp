@@ -205,7 +205,7 @@ function TokenSelector(props: {onChangeTokenToReceiveValidity: (v: boolean | 'un
 	const {safeChainID} = useChainID();
 	const {getBalance} = useWallet();
 	const [possibleTokenToReceive, set_possibleTokenToReceive] = useState<TDict<TToken>>({});
-	const {tokenList} = useTokenList();
+	const {currentNetworkTokenList} = useTokenList();
 
 	/* 🔵 - Yearn Finance **************************************************************************
 	 ** On mount, fetch the token list from the tokenlistooor repo for the cowswap token list, which
@@ -228,7 +228,7 @@ function TokenSelector(props: {onChangeTokenToReceiveValidity: (v: boolean | 'un
 				logoURI: `${process.env.SMOL_ASSETS_URL}/token/${safeChainID}/${ETH_TOKEN_ADDRESS}/logo-32.png`
 			};
 		}
-		for (const eachToken of Object.values(tokenList)) {
+		for (const eachToken of Object.values(currentNetworkTokenList)) {
 			if (eachToken.address === ETH_TOKEN_ADDRESS) {
 				continue;
 			}
@@ -237,7 +237,7 @@ function TokenSelector(props: {onChangeTokenToReceiveValidity: (v: boolean | 'un
 			}
 		}
 		set_possibleTokenToReceive(possibleDestinationsTokens);
-	}, [tokenList, safeChainID]);
+	}, [currentNetworkTokenList, safeChainID]);
 
 	/* 🔵 - Yearn Finance **************************************************************************
 	 ** When the tokenToDisperse token changes, check if it is a valid tokenToDisperse token. The check is

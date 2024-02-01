@@ -13,7 +13,7 @@ export function useTokensWithBalance(): {tokensWithBalance: TToken[]; isLoading:
 	const {safeChainID} = useChainID();
 	const {getBalance, isLoading} = useWallet();
 	const [allTokens, set_allTokens] = useState<TDict<TToken>>({});
-	const {tokenList} = useTokenList();
+	const {currentNetworkTokenList} = useTokenList();
 
 	useDeepCompareEffect((): void => {
 		const possibleDestinationsTokens: TDict<TToken> = {};
@@ -31,7 +31,7 @@ export function useTokensWithBalance(): {tokensWithBalance: TToken[]; isLoading:
 				logoURI: `${process.env.SMOL_ASSETS_URL}/token/${safeChainID}/${ETH_TOKEN_ADDRESS}/logo-32.png`
 			};
 		}
-		for (const eachToken of Object.values(tokenList)) {
+		for (const eachToken of Object.values(currentNetworkTokenList)) {
 			if (eachToken.address === toAddress('0x0000000000000000000000000000000000001010')) {
 				continue; //ignore matic erc20
 			}
@@ -40,7 +40,7 @@ export function useTokensWithBalance(): {tokensWithBalance: TToken[]; isLoading:
 			}
 		}
 		set_allTokens(possibleDestinationsTokens);
-	}, [tokenList, safeChainID]);
+	}, [currentNetworkTokenList, safeChainID]);
 
 	const tokensWithBalance = useDeepCompareMemo((): TToken[] => {
 		const withBalance = [];
