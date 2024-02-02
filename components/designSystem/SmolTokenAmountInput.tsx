@@ -227,9 +227,13 @@ export function SmolTokenAmountInput({
 						<div className={'flex size-8 min-w-8 items-center justify-center rounded-full bg-neutral-0'}>
 							{token && isAddress(token.address) ? (
 								<ImageWithFallback
+									alt={token.symbol}
 									unoptimized
-									alt={token?.symbol || ''}
-									src={token?.logoURI || ''}
+									src={
+										token?.logoURI ||
+										`${process.env.SMOL_ASSETS_URL}/token/${token.chainID}/${token.address}/logo-32.png`
+									}
+									altSrc={`${process.env.SMOL_ASSETS_URL}/token/${token.chainID}/${token.address}/logo-32.png`}
 									quality={90}
 									width={32}
 									height={32}
