@@ -195,7 +195,7 @@ function BalancesCurtain(props: {
 								'w-full border-neutral-400 rounded-lg bg-transparent py-3 px-4 text-base',
 								'text-neutral-900 placeholder:text-neutral-600 caret-neutral-700',
 								'focus:placeholder:text-neutral-300 placeholder:transition-colors',
-								'focus:border-neutral-400'
+								'focus:border-neutral-400 disabled:cursor-not-allowed disabled:opacity-40'
 							)}
 							type={'text'}
 							placeholder={'0x... or Name'}
@@ -203,6 +203,7 @@ function BalancesCurtain(props: {
 							autoCorrect={'off'}
 							spellCheck={'false'}
 							value={searchValue}
+							disabled={!address}
 							onChange={e => set_searchValue(e.target.value)}
 						/>
 						<div className={'scrollable mb-8 flex flex-col items-center pb-2'}>
