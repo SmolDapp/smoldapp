@@ -2,6 +2,8 @@ import {useCallback} from 'react';
 import {SmolAddressInput} from 'components/designSystem/SmolAddressInput';
 import {SmolTokenAmountInput} from 'components/designSystem/SmolTokenAmountInput';
 import {useTokenList} from '@builtbymom/web3/contexts/WithTokenList';
+import {useBalances} from '@builtbymom/web3/hooks/useBalances.multichains';
+import {useChainID} from '@builtbymom/web3/hooks/useChainID';
 import {cl, toAddress, toBigInt} from '@builtbymom/web3/utils';
 import {IconCircleCheck} from '@icons/IconCircleCheck';
 import {IconCircleCross} from '@icons/IconCircleCross';
@@ -75,11 +77,20 @@ function SendTokenRow({
 }
 
 export function Send(): ReactElement {
+	const {safeChainID} = useChainID();
 	const {configuration, dispatchConfiguration} = useSendFlow();
 	const {initialStateFromUrl} = useSendQueryManagement();
 
-	const {tokenList, getToken} = useTokenList();
-	const isReceiverERC20 = Boolean(configuration.receiver.address && tokenList[configuration.receiver.address]);
+	const {currentNetworkTokenList} = useTokenList();
+
+	const initialTokensRaw =
+		initialStateFromUrl?.tokens?.map(token => ({address: toAddress(token), chainID: safeChainID})) || [];
+
+	const {data: initialTokens} = useBalances({tokens: initialTokensRaw});
+
+	const isReceiverERC20 = Boolean(
+		configuration.receiver.address && currentNetworkTokenList[configuration.receiver.address]
+	);
 
 	const onAddToken = useCallback((): void => {
 		dispatchConfiguration({
@@ -90,6 +101,16 @@ export function Send(): ReactElement {
 
 	const onSetRecipient = (value: TInputAddressLike): void => {
 		dispatchConfiguration({type: 'SET_RECEIVER', payload: value});
+	};
+
+	const getInitialAmount = (index: number): bigint | undefined => {
+		return initialStateFromUrl?.values?.[index] ? toBigInt(initialStateFromUrl?.values[index]) : undefined;
+	};
+
+	const getInitialToken = (index: number): TToken | undefined => {
+		return initialStateFromUrl?.tokens?.[index] && initialTokens[safeChainID]
+			? initialTokens[safeChainID][initialStateFromUrl?.tokens[index]]
+			: undefined;
 	};
 
 	/**
@@ -121,12 +142,8 @@ export function Send(): ReactElement {
 						<SendTokenRow
 							input={input}
 							initialValue={{
-								amount: initialStateFromUrl?.values?.[index]
-									? toBigInt(initialStateFromUrl?.values[index])
-									: undefined,
-								token: initialStateFromUrl?.tokens?.[index]
-									? getToken(toAddress(initialStateFromUrl?.tokens?.[index]))
-									: undefined
+								amount: getInitialAmount(index),
+								token: getInitialToken(index)
 							}}
 						/>
 					</div>

@@ -2,8 +2,6 @@ import React, {useCallback, useState} from 'react';
 import {getNewInput} from 'components/sections/Send/useSendFlow';
 import {useBalancesCurtain} from 'contexts/useBalancesCurtain';
 import {parseUnits} from 'viem';
-import useWallet from '@builtbymom/web3/contexts/useWallet';
-import {useChainID} from '@builtbymom/web3/hooks/useChainID';
 import {cl, fromNormalized, isAddress, percentOf, toBigInt, toNormalizedBN} from '@builtbymom/web3/utils';
 import {IconChevron} from '@icons/IconChevron';
 import {IconWallet} from '@icons/IconWallet';
@@ -44,15 +42,10 @@ export function SmolTokenAmountInput({
 	const [isFocused, set_isFocused] = useState<boolean>(false);
 	const {onOpenCurtain} = useBalancesCurtain();
 
-	const {safeChainID} = useChainID();
-	const {getBalance, isLoading} = useWallet();
-
 	const {token} = value;
 
-	const selectedTokenBalance = token ? getBalance({address: token.address, chainID: safeChainID}) : toNormalizedBN(0);
-	const initialTokenBalance = initialValue?.token?.address
-		? getBalance({address: initialValue?.token.address, chainID: safeChainID})
-		: toNormalizedBN(0);
+	const selectedTokenBalance = token?.balance ?? toNormalizedBN(0);
+	const initialTokenBalance = initialValue?.token?.balance ?? toNormalizedBN(0);
 
 	const onChange = (amount: string, balance: TNormalizedBN, token?: TToken): void => {
 		if (amount === '') {
@@ -69,7 +62,7 @@ export function SmolTokenAmountInput({
 
 			const inputBigInt = amount ? fromNormalized(amount, token?.decimals || 18) : toBigInt(0);
 			const asNormalizedBN = toNormalizedBN(inputBigInt, token?.decimals || 18);
-			if (inputBigInt > balance.raw && !isLoading) {
+			if (inputBigInt > balance.raw) {
 				return onSetValue({
 					amount: asNormalizedBN.display,
 					normalizedBigAmount: asNormalizedBN,
@@ -116,9 +109,7 @@ export function SmolTokenAmountInput({
 	};
 
 	const onSelectToken = (valueBigInt: bigint, token: TToken): void => {
-		const tokenBalance = getBalance({address: token.address, chainID: safeChainID});
-
-		if (tokenBalance.raw < valueBigInt) {
+		if (token.balance.raw < valueBigInt) {
 			return onSetValue({
 				token,
 				normalizedBigAmount: toNormalizedBN(valueBigInt, token?.decimals || 18),
@@ -153,7 +144,6 @@ export function SmolTokenAmountInput({
 			const normalizedAmount = String(
 				toNormalizedBN(initialValue.amount, initialValue?.token?.decimals || 18).normalized
 			);
-			console.warn(normalizedAmount);
 			onSelectToken(initialValue.amount, initialValue.token);
 
 			onChange(normalizedAmount, initialTokenBalance, initialValue.token);
@@ -237,9 +227,13 @@ export function SmolTokenAmountInput({
 						<div className={'flex size-8 min-w-8 items-center justify-center rounded-full bg-neutral-0'}>
 							{token && isAddress(token.address) ? (
 								<ImageWithFallback
+									alt={token.symbol}
 									unoptimized
-									alt={token?.symbol || ''}
-									src={token?.logoURI || ''}
+									src={
+										token?.logoURI ||
+										`${process.env.SMOL_ASSETS_URL}/token/${token.chainID}/${token.address}/logo-32.png`
+									}
+									altSrc={`${process.env.SMOL_ASSETS_URL}/token/${token.chainID}/${token.address}/logo-32.png`}
 									quality={90}
 									width={32}
 									height={32}

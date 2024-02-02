@@ -14,7 +14,7 @@ import type {TDict, TToken} from '@builtbymom/web3/types';
 
 function SectionYourTokens(): ReactElement {
 	const {safeChainID} = useChainID();
-	const {tokenList} = useTokenList();
+	const {currentNetworkTokenList} = useTokenList();
 	const [possibleTokens, set_possibleTokens] = useState<TDict<TToken>>({});
 	const {getBalance} = useWallet();
 
@@ -39,7 +39,7 @@ function SectionYourTokens(): ReactElement {
 				logoURI: `${process.env.SMOL_ASSETS_URL}/token/${safeChainID}/${ETH_TOKEN_ADDRESS}/logo-32.png`
 			};
 		}
-		for (const eachToken of Object.values(tokenList)) {
+		for (const eachToken of Object.values(currentNetworkTokenList)) {
 			if (eachToken.address === ETH_TOKEN_ADDRESS) {
 				continue;
 			}
@@ -48,7 +48,7 @@ function SectionYourTokens(): ReactElement {
 			}
 		}
 		set_possibleTokens(possibleDestinationsTokens);
-	}, [tokenList, safeChainID]);
+	}, [currentNetworkTokenList, safeChainID]);
 
 	const filteredBalances = useDeepCompareMemo((): TToken[] => {
 		const withBalance = [];
