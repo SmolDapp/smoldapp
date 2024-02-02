@@ -13,7 +13,7 @@ export function useTokensWithBalance(): {tokensWithBalance: TToken[]; isLoading:
 	const {safeChainID} = useChainID();
 	const {getBalance, isLoading} = useWallet();
 	const [allTokens, set_allTokens] = useState<TDict<TToken>>({});
-	const {currentNetworkTokenList} = useTokenList();
+	const {currentNetworkTokenList, isCustomToken} = useTokenList();
 
 	useDeepCompareEffect((): void => {
 		const possibleDestinationsTokens: TDict<TToken> = {};
@@ -46,7 +46,8 @@ export function useTokensWithBalance(): {tokensWithBalance: TToken[]; isLoading:
 		const withBalance = [];
 		for (const dest of Object.values(allTokens)) {
 			const balance = getBalance({address: dest.address, chainID: dest.chainID});
-			if (balance.raw > 0n) {
+			// force displaying extra tokens along with other tokens with balance
+			if (balance.raw > 0n || isCustomToken({address: dest.address, chainID: dest.chainID})) {
 				withBalance.push({...dest, balance});
 			}
 		}
