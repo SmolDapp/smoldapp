@@ -26,7 +26,7 @@ import {YVESTING_SIMPLE_ABI} from './abi/yVestingSimple.abi';
 import type {BaseError, Hex} from 'viem';
 import type {Connector} from 'wagmi';
 import type {TAddress} from '@yearn-finance/web-lib/types';
-import type {TWriteTransaction} from '@yearn-finance/web-lib/utils/wagmi/provider';
+import type {TWriteTransaction as ogTWriteTransaction} from '@yearn-finance/web-lib/utils/wagmi/provider';
 import type {TTxResponse} from '@yearn-finance/web-lib/utils/web3/transaction';
 
 //Because USDT do not return a boolean on approve, we need to use this ABI
@@ -44,6 +44,10 @@ const ALTERNATE_ERC20_APPROVE_ABI = [
 		type: 'function'
 	}
 ] as const;
+
+type TWriteTransaction = ogTWriteTransaction & {
+	chainID: number;
+};
 
 /* 🔵 - Smold App **************************************************************
  ** isApprovedERC20 is a _VIEW_ function that checks if a token is approved for
@@ -346,7 +350,7 @@ export async function disperseETH(props: TDisperseETH): Promise<TTxResponse> {
 		abi: DISPERSE_ABI,
 		functionName: 'disperseEther',
 		args: [props.receivers, props.amounts],
-		value: props.amounts.reduce((a, b): bigint => a + b, 0n)
+		value: props.amounts.reduce((a: bigint, b: bigint): bigint => a + b, 0n)
 	});
 }
 
@@ -423,7 +427,7 @@ export async function multicall(props: TMulticall): Promise<TTxResponse> {
 	assert(props.multicallData.length > 0, 'Nothing to do');
 	assertAddress(props.contractAddress, 'ContractAddress');
 
-	const value = props.multicallData.reduce((a, b): bigint => a + b.value, 0n);
+	const value = props.multicallData.reduce((a: bigint, b: {value: bigint}): bigint => a + b.value, 0n);
 	return await handleTx(props, {
 		address: props.contractAddress,
 		abi: MULTICALL_ABI,

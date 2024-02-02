@@ -9,6 +9,7 @@ import {getTransferTransaction} from 'utils/tools.gnosis';
 import {erc20ABI, useContractRead} from 'wagmi';
 import {useDisperse} from '@disperse/useDisperse';
 import {useSafeAppsSDK} from '@gnosis.pm/safe-apps-react-sdk';
+import {DISPERSE_CONTRACT_PER_CHAIN} from '@utils/constants';
 import {toast} from '@yearn-finance/web-lib/components/yToast';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
 import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
@@ -42,7 +43,7 @@ function ApprovalWizard({refetch, allowance}: TApprovalWizardProps): ReactElemen
 		const isApproved = await isApprovedERC20({
 			connector: provider,
 			contractAddress: toAddress(tokenToDisperse?.address),
-			spenderAddress: toAddress(process.env.DISPERSE_ADDRESS),
+			spenderAddress: DISPERSE_CONTRACT_PER_CHAIN[safeChainID],
 			amount: totalToDisperse
 		});
 		if (isApproved) {
@@ -52,7 +53,7 @@ function ApprovalWizard({refetch, allowance}: TApprovalWizardProps): ReactElemen
 			connector: provider,
 			chainID: safeChainID,
 			contractAddress: toAddress(tokenToDisperse?.address),
-			spenderAddress: toAddress(process.env.DISPERSE_ADDRESS),
+			spenderAddress: DISPERSE_CONTRACT_PER_CHAIN[safeChainID],
 			amount: totalToDisperse,
 			statusHandler: set_approvalStatus
 		});
@@ -64,18 +65,18 @@ function ApprovalWizard({refetch, allowance}: TApprovalWizardProps): ReactElemen
 
 	function renderStatusIndicator(): ReactElement {
 		if (allowance >= totalToDisperse) {
-			return <IconCircleCheck className={'h-3 w-3 text-[#16a34a]'} />;
+			return <IconCircleCheck className={'size-3 text-[#16a34a]'} />;
 		}
 		if (approvalStatus.pending) {
-			return <IconSpinner className={'h-3 w-3'} />;
+			return <IconSpinner className={'size-3'} />;
 		}
 		if (approvalStatus.success) {
-			return <IconCircleCheck className={'h-3 w-3 text-[#16a34a]'} />;
+			return <IconCircleCheck className={'size-3 text-[#16a34a]'} />;
 		}
 		if (approvalStatus.error) {
-			return <IconCircleCross className={'h-3 w-3 text-[#e11d48]'} />;
+			return <IconCircleCross className={'size-3 text-[#e11d48]'} />;
 		}
-		return <div className={'h-3 w-3 rounded-full border border-neutral-200 bg-neutral-300'} />;
+		return <div className={'size-3 rounded-full border border-neutral-200 bg-neutral-300'} />;
 	}
 
 	return (
@@ -111,7 +112,7 @@ function DisperseWizardItem({row}: {row: TDisperseElement}): ReactElement {
 
 	return (
 		<div className={'flex w-full flex-row items-center space-x-3 md:flex-row md:items-center'}>
-			<div className={'h-3 w-3'} />
+			<div className={'size-3'} />
 			<div className={'text-left text-sm'}>
 				{'Sending '}
 				<span className={'font-number font-bold'}>
@@ -145,7 +146,7 @@ function ViewApprovalWizard(): ReactElement {
 	const {data: allowance, refetch} = useContractRead({
 		abi: erc20ABI,
 		functionName: 'allowance',
-		args: [toAddress(address), toAddress(process.env.DISPERSE_ADDRESS)],
+		args: [toAddress(address), DISPERSE_CONTRACT_PER_CHAIN[safeChainID]],
 		address: toAddress(tokenToDisperse?.address),
 		enabled: tokenToDisperse !== undefined && toAddress(tokenToDisperse?.address) !== ETH_TOKEN_ADDRESS
 	});
@@ -221,7 +222,7 @@ function ViewApprovalWizard(): ReactElement {
 			const result = await disperseETH({
 				connector: provider,
 				chainID: safeChainID,
-				contractAddress: toAddress(process.env.DISPERSE_ADDRESS),
+				contractAddress: DISPERSE_CONTRACT_PER_CHAIN[safeChainID],
 				receivers: disperseAddresses,
 				amounts: disperseAmount,
 				statusHandler: set_disperseStatus
@@ -252,7 +253,7 @@ function ViewApprovalWizard(): ReactElement {
 			const result = await disperseERC20({
 				connector: provider,
 				chainID: safeChainID,
-				contractAddress: toAddress(process.env.DISPERSE_ADDRESS),
+				contractAddress: DISPERSE_CONTRACT_PER_CHAIN[safeChainID],
 				tokenToDisperse: toAddress(tokenToDisperse.address),
 				receivers: disperseAddresses,
 				amounts: disperseAmount,
@@ -294,18 +295,18 @@ function ViewApprovalWizard(): ReactElement {
 
 	function renderStatusIndicator(): ReactElement {
 		if (isDispersed) {
-			return <IconCircleCheck className={'h-3 w-3 text-[#16a34a]'} />;
+			return <IconCircleCheck className={'size-3 text-[#16a34a]'} />;
 		}
 		if (disperseStatus.pending) {
-			return <IconSpinner className={'h-3 w-3'} />;
+			return <IconSpinner className={'size-3'} />;
 		}
 		if (disperseStatus.success) {
-			return <IconCircleCheck className={'h-3 w-3 text-[#16a34a]'} />;
+			return <IconCircleCheck className={'size-3 text-[#16a34a]'} />;
 		}
 		if (disperseStatus.error) {
-			return <IconCircleCross className={'h-3 w-3 text-[#e11d48]'} />;
+			return <IconCircleCross className={'size-3 text-[#e11d48]'} />;
 		}
-		return <div className={'h-3 w-3 rounded-full border border-neutral-200 bg-neutral-300'} />;
+		return <div className={'size-3 rounded-full border border-neutral-200 bg-neutral-300'} />;
 	}
 
 	return (

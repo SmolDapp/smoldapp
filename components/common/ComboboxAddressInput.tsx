@@ -36,7 +36,7 @@ type TElement = {
 function Element(props: TElement): ReactElement {
 	return (
 		<div className={'flex w-full flex-row items-center space-x-4'}>
-			<div className={'h-6 w-6'}>
+			<div className={'size-6'}>
 				<ImageWithFallback
 					alt={''}
 					unoptimized
@@ -80,7 +80,7 @@ function ComboboxOption({option}: {option: TToken}): ReactElement {
 					/>
 					{isSelected ? (
 						<span className={'absolute inset-y-0 right-8 flex items-center'}>
-							<IconCircleCheck className={'absolute h-4 w-4 text-neutral-900'} />
+							<IconCircleCheck className={'absolute size-4 text-neutral-900'} />
 						</span>
 					) : null}
 				</>
@@ -173,7 +173,7 @@ function ComboboxAddressInput({possibleValues, value, onChangeValue, onAddValue}
 						.toLowerCase()
 						.replace(/\s+/g, '')
 						.includes(query.toLowerCase().replace(/\s+/g, ''))
-			  );
+				);
 
 	const filteredBalances = useMemo((): [TToken[], TToken[]] => {
 		const withBalance = [];
@@ -194,7 +194,7 @@ function ComboboxAddressInput({possibleValues, value, onChangeValue, onAddValue}
 			<div className={'relative flex w-full flex-row items-center space-x-4'}>
 				<div
 					key={`${value}_${currentElement?.chainID || 0}`}
-					className={'h-6 w-6'}>
+					className={'size-6'}>
 					<ImageWithFallback
 						alt={''}
 						unoptimized
@@ -231,7 +231,7 @@ function ComboboxAddressInput({possibleValues, value, onChangeValue, onAddValue}
 									balances?.[toAddress(value)]?.normalized || 0,
 									6,
 									currentElement?.decimals || 18
-							  )}`
+								)}`
 							: 'Available: -'}
 					</small>
 				</div>
@@ -262,15 +262,13 @@ function ComboboxAddressInput({possibleValues, value, onChangeValue, onAddValue}
 						{isLoadingTokenData && (
 							<div className={'absolute right-8'}>
 								<IconSpinner
-									className={
-										'h-4 w-4 text-neutral-500 transition-colors group-hover:text-neutral-900'
-									}
+									className={'size-4 text-neutral-500 transition-colors group-hover:text-neutral-900'}
 								/>
 							</div>
 						)}
 						<div className={'absolute right-2 md:right-3'}>
 							<IconChevronBoth
-								className={'h-4 w-4 text-neutral-500 transition-colors group-hover:text-neutral-900'}
+								className={'size-4 text-neutral-500 transition-colors group-hover:text-neutral-900'}
 							/>
 						</div>
 					</Combobox.Button>

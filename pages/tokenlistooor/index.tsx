@@ -123,7 +123,7 @@ function Home({summary}: {summary: TTokenListSummary}): ReactElement {
 										<LegacyTokenListCard item={tokenListItem} />
 									</motion.div>
 								)
-						  )
+							)
 						: (listToRender || []).map(
 								(tokenListItem: TTokenListItem, i: number): ReactElement => (
 									<motion.div
@@ -136,7 +136,7 @@ function Home({summary}: {summary: TTokenListSummary}): ReactElement {
 										<TokenListCard item={tokenListItem} />
 									</motion.div>
 								)
-						  )}
+							)}
 				</div>
 			</div>
 		</>
