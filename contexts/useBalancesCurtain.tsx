@@ -56,7 +56,10 @@ function Token({
 				<ImageWithFallback
 					alt={token.symbol}
 					unoptimized
-					src={token.logoURI || ''}
+					src={
+						token?.logoURI ||
+						`${process.env.SMOL_ASSETS_URL}/token/${token.chainID}/${token.address}/logo-32.png`
+					}
 					altSrc={`${process.env.SMOL_ASSETS_URL}/token/${token.chainID}/${token.address}/logo-32.png`}
 					quality={90}
 					width={32}
@@ -85,6 +88,7 @@ function FetchedToken({
 	const {safeChainID} = useChainID();
 	const {data} = useBalances({tokens: [{address: tokenAddress, chainID: safeChainID}]});
 	const token = data[safeChainID]?.[tokenAddress];
+	console.warn(data);
 
 	if (!token) {
 		return <IconLoader className={'mt-7 size-4 animate-spin text-neutral-900'} />;
@@ -110,7 +114,6 @@ function BalancesCurtain(props: {
 	const [searchValue, set_searchValue] = useState('');
 	const {address} = useWeb3();
 	const {onConnect} = useWeb3();
-
 	const {addCustomToken} = useTokenList();
 
 	/**************************************************************************
@@ -137,7 +140,7 @@ function BalancesCurtain(props: {
 			return toAddress(searchValue);
 		}
 		return undefined;
-	}, [searchValue]);
+	}, [props.tokensWithBalance, searchValue]);
 
 	/**************************************************************************
 	 * Memo function that filters the tokens user have on

@@ -144,7 +144,6 @@ export function SmolTokenAmountInput({
 			const normalizedAmount = String(
 				toNormalizedBN(initialValue.amount, initialValue?.token?.decimals || 18).normalized
 			);
-			console.warn(normalizedAmount);
 			onSelectToken(initialValue.amount, initialValue.token);
 
 			onChange(normalizedAmount, initialTokenBalance, initialValue.token);

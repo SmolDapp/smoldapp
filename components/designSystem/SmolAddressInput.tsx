@@ -40,8 +40,6 @@ export function SmolAddressInput({onSetValue, value, initialStateFromUrl}: TAddr
 		[getCachedEntry, value]
 	);
 
-	console.warn(addressBookEntry);
-
 	const [, actions] = useAsyncAbortable(
 		async (signal, input: string): Promise<void> =>
 			new Promise<void>(async (resolve, reject): Promise<void> => {
