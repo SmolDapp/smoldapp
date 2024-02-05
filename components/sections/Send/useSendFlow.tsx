@@ -1,5 +1,5 @@
 import React, {createContext, useContext, useMemo, useReducer} from 'react';
-import {toNormalizedBN} from '@builtbymom/web3/utils';
+import {zeroNormalizedBN} from '@builtbymom/web3/utils';
 import {optionalRenderProps} from '@utils/react/optionalRenderProps';
 import {defaultInputAddressLike} from '@utils/tools.address';
 
@@ -36,7 +36,7 @@ export type TSend = {
 export function getNewInput(): TSendInputElement {
 	return {
 		amount: '',
-		normalizedBigAmount: toNormalizedBN(0),
+		normalizedBigAmount: zeroNormalizedBN,
 		isValid: 'undetermined',
 		token: undefined,
 		status: 'none',

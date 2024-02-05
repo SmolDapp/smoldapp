@@ -8,7 +8,7 @@ import {zeroAddress} from 'viem';
 import useWallet from '@builtbymom/web3/contexts/useWallet';
 import {useTokenList} from '@builtbymom/web3/contexts/WithTokenList';
 import {useChainID} from '@builtbymom/web3/hooks/useChainID';
-import {cl, isZeroAddress, toAddress, toNormalizedBN} from '@builtbymom/web3/utils';
+import {cl, isZeroAddress, toAddress, zeroNormalizedBN} from '@builtbymom/web3/utils';
 import {getNetwork} from '@builtbymom/web3/utils/wagmi';
 import IconInfo from '@icons/IconInfo';
 import * as Tooltip from '@radix-ui/react-tooltip';
@@ -223,8 +223,8 @@ function TokenSelector(props: {onChangeTokenToReceiveValidity: (v: boolean | 'un
 				symbol: wrappedToken.coinSymbol,
 				decimals: wrappedToken.decimals,
 				value: 0,
-				price: toNormalizedBN(0),
-				balance: toNormalizedBN(0),
+				price: zeroNormalizedBN,
+				balance: zeroNormalizedBN,
 				logoURI: `${process.env.SMOL_ASSETS_URL}/token/${safeChainID}/${ETH_TOKEN_ADDRESS}/logo-32.png`
 			};
 		}

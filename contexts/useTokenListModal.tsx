@@ -4,7 +4,7 @@ import React, {createContext, useContext, useState} from 'react';
 import axios from 'axios';
 import {useAsyncTrigger} from '@builtbymom/web3/hooks/useAsyncTrigger';
 import {useChainID} from '@builtbymom/web3/hooks/useChainID';
-import {toAddress, toNormalizedBN} from '@builtbymom/web3/utils';
+import {toAddress, zeroNormalizedBN} from '@builtbymom/web3/utils';
 import {useLocalStorageValue} from '@react-hookz/web';
 import {TokenListHandlerPopover} from '@common/TokenList/TokenListHandlerPopover';
 
@@ -71,8 +71,8 @@ export const TokenListModalContextApp = ({children}: {children: React.ReactEleme
 					chainID: eachToken.chainId,
 					logoURI: eachToken.logoURI,
 					value: 0,
-					price: toNormalizedBN(0),
-					balance: toNormalizedBN(0)
+					price: zeroNormalizedBN,
+					balance: zeroNormalizedBN
 				};
 			}
 		}
@@ -97,8 +97,8 @@ export const TokenListModalContextApp = ({children}: {children: React.ReactEleme
 							chainID: eachToken.chainId,
 							logoURI: eachToken.logoURI,
 							value: 0,
-							price: toNormalizedBN(0),
-							balance: toNormalizedBN(0)
+							price: zeroNormalizedBN,
+							balance: zeroNormalizedBN
 						};
 					}
 				}
@@ -123,8 +123,8 @@ export const TokenListModalContextApp = ({children}: {children: React.ReactEleme
 						chainID: eachToken.chainId,
 						logoURI: eachToken.logoURI,
 						value: 0,
-						price: toNormalizedBN(0),
-						balance: toNormalizedBN(0)
+						price: zeroNormalizedBN,
+						balance: zeroNormalizedBN
 					};
 				}
 			}
@@ -151,8 +151,8 @@ export const TokenListModalContextApp = ({children}: {children: React.ReactEleme
 								chainID: eachToken.chainId,
 								logoURI: eachToken.logoURI,
 								value: 0,
-								price: toNormalizedBN(0),
-								balance: toNormalizedBN(0)
+								price: zeroNormalizedBN,
+								balance: zeroNormalizedBN
 							};
 						}
 					}

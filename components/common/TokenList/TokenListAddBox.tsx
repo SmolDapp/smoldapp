@@ -2,7 +2,7 @@ import React, {useCallback, useMemo, useRef, useState} from 'react';
 import {Button} from 'components/Primitives/Button';
 import axios from 'axios';
 import {useChainID} from '@builtbymom/web3/hooks/useChainID';
-import {decodeAsBigInt, decodeAsNumber, decodeAsString, toNormalizedBN} from '@builtbymom/web3/utils';
+import {decodeAsBigInt, decodeAsNumber, decodeAsString, zeroNormalizedBN} from '@builtbymom/web3/utils';
 import {IconCircleCheck} from '@icons/IconCircleCheck';
 import {IconCircleCross} from '@icons/IconCircleCross';
 import {defaultInputAddressLike} from '@utils/tools.address';
@@ -121,8 +121,8 @@ function TokenListAddBox({onAddTokenList, onAddToken}: TTokenListAddBox): React.
 					decimals: Number(decodeAsBigInt(decimals)) || decodeAsNumber(decimals),
 					logoURI: `${process.env.SMOL_ASSETS_URL}/token/${safeChainID}/${extraToken.address}/logo-32.png`,
 					value: 0,
-					price: toNormalizedBN(0),
-					balance: toNormalizedBN(0)
+					price: zeroNormalizedBN,
+					balance: zeroNormalizedBN
 				});
 				set_extraToken(defaultInputAddressLike);
 				set_isLoadingTokenAddress(false);

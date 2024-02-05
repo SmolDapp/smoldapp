@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {formatAmount, toNormalizedBN, truncateHex} from '@builtbymom/web3/utils';
+import {formatAmount, toNormalizedBN, truncateHex, zeroNormalizedBN} from '@builtbymom/web3/utils';
 import {getNetwork} from '@wagmi/core';
 
 import {EIP3770_PREFIX} from './eip-3770';
@@ -110,7 +110,7 @@ export function notifySend(props: {
 						? `${explorerBaseURI}/tx/${props.hashes[index]}`
 						: `${safeBaseURI}${chainPrefix}:${props.from}/transactions/tx?safe=eth:${props.from}&id=multisig_${props.from}_${props.hashes[index]}`;
 				return `\t\t\t\t\t\t\t- ${formatAmount(
-					(normalizedBigAmount || toNormalizedBN(0)).normalized,
+					(normalizedBigAmount || zeroNormalizedBN).normalized,
 					6,
 					decimals
 				)} [${symbol}](${explorerBaseURI}/address/${address}) | [tx](${txHashLink})`;

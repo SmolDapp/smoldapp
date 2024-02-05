@@ -2,7 +2,15 @@ import React, {useCallback, useState} from 'react';
 import {getNewInput} from 'components/sections/Send/useSendFlow';
 import {useBalancesCurtain} from 'contexts/useBalancesCurtain';
 import {parseUnits} from 'viem';
-import {cl, fromNormalized, isAddress, percentOf, toBigInt, toNormalizedBN} from '@builtbymom/web3/utils';
+import {
+	cl,
+	fromNormalized,
+	isAddress,
+	percentOf,
+	toBigInt,
+	toNormalizedBN,
+	zeroNormalizedBN
+} from '@builtbymom/web3/utils';
 import {IconChevron} from '@icons/IconChevron';
 import {IconWallet} from '@icons/IconWallet';
 import {useDeepCompareEffect} from '@react-hookz/web';
@@ -44,22 +52,20 @@ export function SmolTokenAmountInput({
 
 	const {token} = value;
 
-	const selectedTokenBalance = token?.balance ?? toNormalizedBN(0);
-	const initialTokenBalance = initialValue?.token?.balance ?? toNormalizedBN(0);
+	const selectedTokenBalance = token?.balance ?? zeroNormalizedBN;
+	const initialTokenBalance = initialValue?.token?.balance ?? zeroNormalizedBN;
 
 	const onChange = (amount: string, balance: TNormalizedBN, token?: TToken): void => {
 		if (amount === '') {
 			return onSetValue({
 				amount,
-				normalizedBigAmount: toNormalizedBN(0),
+				normalizedBigAmount: zeroNormalizedBN,
 				isValid: false,
 				error: 'The amount is invalid'
 			});
 		}
 
 		if (+amount > 0) {
-			// http://localhost:3000/apps/send?to=0x9E63B020ae098E73cF201EE1357EDc72DFEaA518&tokens=0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84&values=1
-
 			const inputBigInt = amount ? fromNormalized(amount, token?.decimals || 18) : toBigInt(0);
 			const asNormalizedBN = toNormalizedBN(inputBigInt, token?.decimals || 18);
 			if (inputBigInt > balance.raw) {
@@ -80,7 +86,7 @@ export function SmolTokenAmountInput({
 
 		onSetValue({
 			amount: '0',
-			normalizedBigAmount: toNormalizedBN(0),
+			normalizedBigAmount: zeroNormalizedBN,
 			isValid: false,
 			error: 'The amount is invalid'
 		});
@@ -101,7 +107,7 @@ export function SmolTokenAmountInput({
 			amount: calculatedPercent.toString(),
 			normalizedBigAmount: toNormalizedBN(
 				parseUnits(String(calculatedPercent), token?.decimals || 18),
-				token?.decimals
+				token?.decimals || 18
 			),
 			isValid: true,
 			error: undefined
