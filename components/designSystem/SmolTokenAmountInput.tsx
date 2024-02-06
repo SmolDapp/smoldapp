@@ -1,21 +1,11 @@
 import React, {useCallback, useState} from 'react';
 import {getNewInput} from 'components/sections/Send/useSendFlow';
-import {useBalancesCurtain} from 'contexts/useBalancesCurtain';
 import {parseUnits} from 'viem';
-import {
-	cl,
-	fromNormalized,
-	isAddress,
-	percentOf,
-	toBigInt,
-	toNormalizedBN,
-	zeroNormalizedBN
-} from '@builtbymom/web3/utils';
-import {IconChevron} from '@icons/IconChevron';
-import {IconWallet} from '@icons/IconWallet';
+import {cl, fromNormalized, percentOf, toBigInt, toNormalizedBN, zeroNormalizedBN} from '@builtbymom/web3/utils';
 import {useDeepCompareEffect} from '@react-hookz/web';
 import {handleLowAmount} from '@utils/helpers';
-import {ImageWithFallback} from '@common/ImageWithFallback';
+
+import {SmolTokenSelectorButton} from './SmolTokenSelectorButton';
 
 import type {ReactElement} from 'react';
 import type {TNormalizedBN, TToken} from '@builtbymom/web3/types';
@@ -48,7 +38,6 @@ export function SmolTokenAmountInput({
 	initialValue
 }: TTokenAmountInput): ReactElement {
 	const [isFocused, set_isFocused] = useState<boolean>(false);
-	const {onOpenCurtain} = useBalancesCurtain();
 
 	const {token} = value;
 
@@ -114,18 +103,23 @@ export function SmolTokenAmountInput({
 		});
 	};
 
-	const onSelectToken = (valueBigInt: bigint, token: TToken): void => {
+	const onSelectToken = (token: TToken): void => {
+		onSetValue({
+			token,
+			isValid: true,
+			error: undefined
+		});
+	};
+
+	const onSetTokenValue = (valueBigInt: bigint, token: TToken): void => {
 		if (token.balance.raw < valueBigInt) {
 			return onSetValue({
-				token,
 				normalizedBigAmount: toNormalizedBN(valueBigInt, token?.decimals || 18),
 				isValid: false,
 				error: 'Insufficient balance'
 			});
 		}
-
 		onSetValue({
-			token,
 			normalizedBigAmount: toNormalizedBN(valueBigInt, token?.decimals || 18),
 			isValid: true,
 			error: undefined
@@ -150,7 +144,8 @@ export function SmolTokenAmountInput({
 			const normalizedAmount = String(
 				toNormalizedBN(initialValue.amount, initialValue?.token?.decimals || 18).normalized
 			);
-			onSelectToken(initialValue.amount, initialValue.token);
+			onSelectToken(initialValue.token);
+			onSetTokenValue(initialValue.amount, initialValue.token);
 
 			onChange(normalizedAmount, initialTokenBalance, initialValue.token);
 		}
@@ -221,44 +216,14 @@ export function SmolTokenAmountInput({
 						</button>
 					</div>
 				</div>
-				<button
-					className={cl(
-						'flex items-center gap-4 rounded-sm p-4 max-w-[176px] w-full',
-						'bg-neutral-200 hover:bg-neutral-300 transition-colors'
-					)}
-					onClick={() =>
-						onOpenCurtain(token => onSelectToken(parseUnits(value.amount, token?.decimals || 18), token))
-					}>
-					<div className={'flex w-full max-w-44 items-center gap-2'}>
-						<div className={'flex size-8 min-w-8 items-center justify-center rounded-full bg-neutral-0'}>
-							{token && isAddress(token.address) ? (
-								<ImageWithFallback
-									alt={token.symbol}
-									unoptimized
-									src={
-										token?.logoURI ||
-										`${process.env.SMOL_ASSETS_URL}/token/${token.chainID}/${token.address}/logo-32.png`
-									}
-									altSrc={`${process.env.SMOL_ASSETS_URL}/token/${token.chainID}/${token.address}/logo-32.png`}
-									quality={90}
-									width={32}
-									height={32}
-								/>
-							) : (
-								<IconWallet className={'size-4 text-neutral-600'} />
-							)}
-						</div>
-						<p
-							className={cl(
-								'truncate',
-								isAddress(token?.address) ? 'font-bold' : 'text-neutral-600 text-sm font-normal'
-							)}>
-							{token?.symbol || 'Select token'}
-						</p>
-					</div>
-
-					<IconChevron className={'size-4 min-w-4 text-neutral-600'} />
-				</button>
+				<div className={'max-w-[176px]'}>
+					<SmolTokenSelectorButton
+						onSelectToken={onSelectToken}
+						onSetTokenValue={onSetTokenValue}
+						token={token}
+						amount={value.amount}
+					/>
+				</div>
 			</label>
 		</div>
 	);

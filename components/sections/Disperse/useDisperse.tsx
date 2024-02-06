@@ -1,7 +1,9 @@
 import React, {createContext, useContext, useMemo, useReducer, useState} from 'react';
+import {optionalRenderProps} from '@utils/react/optionalRenderProps';
 
-import type {Dispatch} from 'react';
+import type {Dispatch, ReactElement} from 'react';
 import type {TAddress, TNormalizedBN, TToken} from '@builtbymom/web3/types';
+import type {TOptionalRenderProps} from '@utils/react/optionalRenderProps';
 
 export type TDisperseReceiver = {
 	address: TAddress | undefined;
@@ -92,7 +94,11 @@ const configurationReducer = (state: TDisperseConfiguration, action: TDisperseAc
 };
 
 const DisperseContext = createContext<TDisperse>(defaultProps);
-export const DisperseContextApp = ({children}: {children: React.ReactElement}): React.ReactElement => {
+export const DisperseContextApp = ({
+	children
+}: {
+	children: TOptionalRenderProps<TDisperse, ReactElement>;
+}): React.ReactElement => {
 	const [isDispersed, set_isDispersed] = useState<boolean>(false);
 	const [configuration, dispatch] = useReducer(configurationReducer, defaultProps.configuration);
 
@@ -114,7 +120,11 @@ export const DisperseContextApp = ({children}: {children: React.ReactElement}): 
 		[configuration, isDispersed]
 	);
 
-	return <DisperseContext.Provider value={contextValue}>{children}</DisperseContext.Provider>;
+	return (
+		<DisperseContext.Provider value={contextValue}>
+			{optionalRenderProps(children, contextValue)}
+		</DisperseContext.Provider>
+	);
 };
 
 export const useDisperse = (): TDisperse => {
