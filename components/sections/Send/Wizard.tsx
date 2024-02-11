@@ -17,7 +17,7 @@ import {SuccessModal} from '@common/ConfirmationModal';
 
 import {useSendFlow} from './useSendFlow';
 
-import type {TSendInputElement} from 'components/designSystem/SmolTokenAmountInput';
+import type {TTokenAmountInputElement} from 'components/designSystem/SmolTokenAmountInput';
 import type {ReactElement} from 'react';
 import type {BaseError, Hex} from 'viem';
 import type {TUseBalancesTokens} from '@builtbymom/web3/hooks/useBalances.multichains';
@@ -25,7 +25,7 @@ import type {TAddress, TChainTokens, TToken} from '@builtbymom/web3/types';
 import type {BaseTransaction} from '@gnosis.pm/safe-apps-sdk';
 import type {TModify} from '@utils/types/types';
 
-type TInputWithToken = TModify<TSendInputElement, {token: TToken}>;
+type TInputWithToken = TModify<TTokenAmountInputElement, {token: TToken}>;
 
 export function SendWizard({isReceiverERC20}: {isReceiverERC20: boolean}): ReactElement {
 	const {safeChainID} = useChainID();
@@ -152,7 +152,7 @@ export function SendWizard({isReceiverERC20}: {isReceiverERC20: boolean}): React
 	const onMigrateSelectedForGnosis = useCallback(
 		async (allSelected: TInputWithToken[]): Promise<void> => {
 			const transactions: BaseTransaction[] = [];
-			const migratedTokens: TSendInputElement[] = [];
+			const migratedTokens: TTokenAmountInputElement[] = [];
 			for (const input of allSelected) {
 				const amount = toBigInt(input.normalizedBigAmount.raw);
 				if (amount === 0n) {

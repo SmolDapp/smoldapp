@@ -10,7 +10,8 @@ import {SmolTokenSelectorButton} from './SmolTokenSelectorButton';
 import type {ReactElement} from 'react';
 import type {TNormalizedBN, TToken} from '@builtbymom/web3/types';
 
-export type TSendInputElement = {
+// TODO: move to lib
+export type TTokenAmountInputElement = {
 	amount: string;
 	normalizedBigAmount: TNormalizedBN;
 	token: TToken | undefined;
@@ -20,12 +21,12 @@ export type TSendInputElement = {
 	UUID: string;
 };
 
-export const defaultTokenInputLike: TSendInputElement = getNewInput();
+export const defaultTokenInputLike: TTokenAmountInputElement = getNewInput();
 
 type TTokenAmountInput = {
 	showPercentButtons?: boolean;
-	onSetValue: (value: Partial<TSendInputElement>) => void;
-	value: TSendInputElement;
+	onSetValue: (value: Partial<TTokenAmountInputElement>) => void;
+	value: TTokenAmountInputElement;
 	initialValue?: Partial<{amount: bigint; token: TToken}>;
 };
 

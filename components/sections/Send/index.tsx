@@ -16,7 +16,7 @@ import {useSendFlow} from './useSendFlow';
 import {useSendQueryManagement} from './useSendQuery';
 import {SendWizard} from './Wizard';
 
-import type {TSendInputElement} from 'components/designSystem/SmolTokenAmountInput';
+import type {TTokenAmountInputElement} from 'components/designSystem/SmolTokenAmountInput';
 import type {ReactElement} from 'react';
 import type {TToken} from '@builtbymom/web3/types';
 import type {TInputAddressLike} from '@utils/tools.address';
@@ -25,12 +25,12 @@ function SendTokenRow({
 	input,
 	initialValue
 }: {
-	input: TSendInputElement;
+	input: TTokenAmountInputElement;
 	initialValue: Partial<{amount: bigint; token: TToken}>;
 }): ReactElement {
 	const {configuration, dispatchConfiguration} = useSendFlow();
 
-	const onSetValue = (value: Partial<TSendInputElement>): void => {
+	const onSetValue = (value: Partial<TTokenAmountInputElement>): void => {
 		dispatchConfiguration({type: 'SET_VALUE', payload: {...value, UUID: input.UUID}});
 	};
 
@@ -149,7 +149,7 @@ export function Send(): ReactElement {
 					</div>
 				))}
 			</div>
-			<div className={'mb-4 '}>
+			<div className={'mb-4'}>
 				<button
 					className={
 						'rounded-lg bg-neutral-200 px-3 py-1 text-xs text-neutral-700 transition-colors hover:bg-neutral-300'

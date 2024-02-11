@@ -1,29 +1,28 @@
 import React, {createContext, useContext, useMemo, useReducer, useState} from 'react';
+import {zeroNormalizedBN} from '@builtbymom/web3/utils';
 import {optionalRenderProps} from '@utils/react/optionalRenderProps';
+import {defaultInputAddressLike} from '@utils/tools.address';
 
+import type {TAmountInputElement} from 'components/designSystem/SmolAmountInput';
 import type {Dispatch, ReactElement} from 'react';
-import type {TAddress, TNormalizedBN, TToken} from '@builtbymom/web3/types';
+import type {TToken} from '@builtbymom/web3/types';
 import type {TOptionalRenderProps} from '@utils/react/optionalRenderProps';
+import type {TInputAddressLike} from '@utils/tools.address';
 
-export type TDisperseReceiver = {
-	address: TAddress | undefined;
-	amount: TNormalizedBN | undefined;
-	label: string;
-	UUID: string;
-};
+export type TDisperseInput = {receiver: TInputAddressLike; value: TAmountInputElement; UUID: string};
 
 export type TDisperseConfiguration = {
 	tokenToSend: TToken | undefined;
-	receivers: TDisperseReceiver[];
+	inputs: TDisperseInput[];
 };
 
 export type TDisperseActions =
 	| {type: 'SET_TOKEN_TO_SEND'; payload: TToken | undefined}
-	| {type: 'SET_RECEIVERS'; payload: TDisperseReceiver[]}
-	| {type: 'ADD_RECEIVERS'; payload: TDisperseReceiver[]}
-	| {type: 'ADD_SIBLING_RECEIVER_FROM_UUID'; payload: string}
+	| {type: 'SET_RECEIVERS'; payload: TDisperseInput[]}
+	| {type: 'ADD_RECEIVERS'; payload: TDisperseInput[]}
 	| {type: 'DEL_RECEIVER_BY_UUID'; payload: string}
-	| {type: 'UPD_RECEIVER_BY_UUID'; payload: TDisperseReceiver}
+	| {type: 'SET_RECEIVER'; payload: Partial<TInputAddressLike> & {UUID: string}}
+	| {type: 'SET_VALUE'; payload: Partial<TAmountInputElement> & {UUID: string}}
 	| {type: 'RESET'; payload: undefined};
 
 export type TDisperse = {
@@ -33,11 +32,15 @@ export type TDisperse = {
 	onResetDisperse: () => void;
 };
 
-export function newVoidRow(): TDisperseReceiver {
+export function newVoidRow(): TDisperseInput {
 	return {
-		address: undefined,
-		label: '',
-		amount: undefined,
+		receiver: defaultInputAddressLike,
+		value: {
+			amount: '',
+			normalizedBigAmount: zeroNormalizedBN,
+			isValid: 'undetermined',
+			status: 'none'
+		},
 		UUID: crypto.randomUUID()
 	};
 }
@@ -48,7 +51,7 @@ const defaultProps: TDisperse = {
 	onResetDisperse: (): void => undefined,
 	configuration: {
 		tokenToSend: undefined,
-		receivers: [newVoidRow(), newVoidRow()]
+		inputs: [newVoidRow(), newVoidRow()]
 	}
 };
 
@@ -57,39 +60,53 @@ const configurationReducer = (state: TDisperseConfiguration, action: TDisperseAc
 		case 'SET_TOKEN_TO_SEND':
 			return {...state, tokenToSend: action.payload};
 		case 'SET_RECEIVERS':
-			return {...state, receivers: action.payload};
+			return {...state, inputs: action.payload};
 		case 'ADD_RECEIVERS':
-			return {...state, receivers: [...state.receivers, ...action.payload]};
-		case 'ADD_SIBLING_RECEIVER_FROM_UUID':
-			return {
-				...state,
-				receivers: state.receivers.reduce((acc, row): TDisperseReceiver[] => {
-					if (row.UUID === action.payload) {
-						return [...acc, row, newVoidRow()];
-					}
-					return [...acc, row];
-				}, [] as TDisperseReceiver[])
-			};
+			return {...state, inputs: [...state.inputs, ...action.payload]};
+
 		case 'DEL_RECEIVER_BY_UUID':
-			if (state.receivers.length === 1) {
-				return {...state, receivers: [newVoidRow()]};
+			if (state.inputs.length === 1) {
+				return {...state, inputs: [newVoidRow()]};
 			}
 			return {
 				...state,
-				receivers: state.receivers.filter((receiver): boolean => receiver.UUID !== action.payload)
+				inputs: state.inputs.filter((input): boolean => input.UUID !== action.payload)
 			};
-		case 'UPD_RECEIVER_BY_UUID':
+
+		case 'SET_RECEIVER': {
 			return {
 				...state,
-				receivers: state.receivers.map((receiver): TDisperseReceiver => {
-					if (action.payload.UUID === receiver.UUID) {
-						return action.payload;
-					}
-					return receiver;
-				})
+				inputs: state.inputs.map(input =>
+					input.UUID === action.payload.UUID
+						? {
+								...input,
+								receiver: {
+									...input.receiver,
+									...action.payload
+								}
+							}
+						: input
+				)
 			};
+		}
+		case 'SET_VALUE': {
+			return {
+				...state,
+				inputs: state.inputs.map(input =>
+					input.UUID === action.payload.UUID
+						? {
+								...input,
+								value: {
+									...input.value,
+									...action.payload
+								}
+							}
+						: input
+				)
+			};
+		}
 		case 'RESET':
-			return {tokenToSend: undefined, receivers: [newVoidRow()]};
+			return {tokenToSend: undefined, inputs: [newVoidRow()]};
 	}
 };
 

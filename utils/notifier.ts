@@ -4,7 +4,7 @@ import {getNetwork} from '@wagmi/core';
 
 import {EIP3770_PREFIX} from './eip-3770';
 
-import type {TSendInputElement} from 'components/designSystem/SmolTokenAmountInput';
+import type {TTokenAmountInputElement} from 'components/designSystem/SmolTokenAmountInput';
 import type {Hex} from 'viem';
 import type {TAddress, TToken} from '@builtbymom/web3/types';
 
@@ -85,7 +85,7 @@ export function notifyDisperse(props: {
 
 export function notifySend(props: {
 	chainID: number;
-	tokensMigrated: TSendInputElement[];
+	tokensMigrated: TTokenAmountInputElement[];
 	hashes: Hex[];
 	to: TAddress;
 	from: TAddress;

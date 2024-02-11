@@ -227,7 +227,7 @@ export function SmolAddressInput({onSetValue, value, initialStateFromUrl}: TAddr
 	}, [isFocused, value.isValid, isCheckingValidity]);
 
 	return (
-		<div className={'group relative size-full max-w-108 rounded-lg'}>
+		<div className={'group relative size-full rounded-lg'}>
 			<label
 				className={cl(
 					'h-20 z-20 relative',

@@ -1,7 +1,9 @@
 import React, {memo} from 'react';
 import {SmolTokenSelector} from 'components/designSystem/SmolTokenSelector';
 
-import {useDisperse} from './useDisperse';
+import {DisperseAddressAndAmountInputs} from './DisperseAddressAndAmountInputs';
+import {newVoidRow, useDisperse} from './useDisperse';
+import {DisperseWizard} from './Wizard';
 
 import type {ReactElement} from 'react';
 import type {TToken} from '@builtbymom/web3/types';
@@ -111,36 +113,39 @@ const Disperse = memo(function Disperse(): ReactElement {
 		dispatchConfiguration({type: 'SET_TOKEN_TO_SEND', payload: token});
 	};
 
+	const onAddReceiver = (): void => {
+		dispatchConfiguration({type: 'ADD_RECEIVERS', payload: [newVoidRow()]});
+	};
+
 	return (
-		<div className={'w-full max-w-[444px]'}>
-			<div className={'mb-6'}>
-				<p className={'mb-2 font-medium'}>{'Receiver'}</p>
+		<div className={'w-full'}>
+			<div className={'mb-6 max-w-[432px]'}>
+				<p className={'mb-2 font-medium'}>{'Token'}</p>
 				<SmolTokenSelector
 					token={configuration.tokenToSend}
 					onSelectToken={onSelectToken}
 				/>
 			</div>
-			{/* <div>
-				<p className={'font-medium'}>{'Token'}</p>
+			<div>
+				<p className={'font-medium mb-2'}>{'Send to'}</p>
 				{configuration.inputs.map(input => (
-					<div
-						className={'mb-4'}
-						key={input.UUID}>
-						<SendTokenRow input={input} />
-					</div>
+					<DisperseAddressAndAmountInputs
+						key={input.UUID}
+						input={input}
+					/>
 				))}
 			</div>
-			<div className={'mb-4 '}>
+			<div className={'my-4'}>
 				<button
 					className={
-						'rounded-lg bg-neutral-200 px-3 py-1 text-xs text-neutral-700 transition-colors hover:bg-neutral-300'
+						'rounded-lg bg-neutral-200 px-5 py-2 text-xs text-neutral-700 transition-colors hover:bg-neutral-300'
 					}
-					onClick={onAddToken}>
-					{'+Add token'}
+					onClick={onAddReceiver}>
+					{'+Add receiver'}
 				</button>
 			</div>
-			<SendWarning isReceiverERC20={isReceiverERC20} />
-			<SendWizard isReceiverERC20={isReceiverERC20} /> */}
+			{/* <SendWarning isReceiverERC20={isReceiverERC20} /> */}
+			<DisperseWizard />
 		</div>
 	);
 });

@@ -3,7 +3,7 @@ import {zeroNormalizedBN} from '@builtbymom/web3/utils';
 import {optionalRenderProps} from '@utils/react/optionalRenderProps';
 import {defaultInputAddressLike} from '@utils/tools.address';
 
-import type {TSendInputElement} from 'components/designSystem/SmolTokenAmountInput';
+import type {TTokenAmountInputElement} from 'components/designSystem/SmolTokenAmountInput';
 import type {Dispatch, ReactElement} from 'react';
 import type {TOptionalRenderProps} from '@utils/react/optionalRenderProps';
 import type {TInputAddressLike} from '@utils/tools.address';
@@ -11,14 +11,14 @@ import type {TPartialExhaustive} from '@utils/types/types';
 
 export type TSendConfiguration = {
 	receiver: TInputAddressLike;
-	inputs: TSendInputElement[];
+	inputs: TTokenAmountInputElement[];
 };
 
 export type TSendActions =
 	| {type: 'SET_RECEIVER'; payload: TInputAddressLike}
 	| {type: 'ADD_INPUT'; payload: undefined}
 	| {type: 'REMOVE_INPUT'; payload: {UUID: string}}
-	| {type: 'SET_VALUE'; payload: Partial<TSendInputElement>}
+	| {type: 'SET_VALUE'; payload: Partial<TTokenAmountInputElement>}
 	| {type: 'RESET'; payload: undefined};
 
 export type TSendQuery = TPartialExhaustive<{
@@ -33,7 +33,7 @@ export type TSend = {
 	dispatchConfiguration: Dispatch<TSendActions>;
 };
 
-export function getNewInput(): TSendInputElement {
+export function getNewInput(): TTokenAmountInputElement {
 	return {
 		amount: '',
 		normalizedBigAmount: zeroNormalizedBN,
