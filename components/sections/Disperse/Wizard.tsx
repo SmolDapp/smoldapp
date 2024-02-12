@@ -171,6 +171,7 @@ function ApprovalWizard({onSuccess, allowance}: TApprovalWizardProps): ReactElem
 				<Warning
 					statusIcon={renderStatusIndicator()}
 					type={'info'}
+					title={'Info'}
 					message={
 						<>
 							<div className={'flex w-full flex-col'}>
@@ -225,8 +226,7 @@ function ApprovalWizard({onSuccess, allowance}: TApprovalWizardProps): ReactElem
 
 function NothingToDisperse(): ReactElement {
 	return (
-		<div className={'flex w-full flex-row items-center space-x-3 md:flex-row md:items-center'}>
-			<div className={'size-3'} />
+		<div className={'flex w-full flex-row items-center md:flex-row md:items-center'}>
 			<div className={'text-left text-sm text-neutral-900/40'}>
 				{'Please add some receivers to disperse tokens'}
 			</div>
@@ -508,11 +508,8 @@ export function DisperseWizard(): ReactElement {
 		return toAddress(configuration.tokenToSend?.address) !== ETH_TOKEN_ADDRESS;
 	}, [configuration.tokenToSend]);
 
-	const totalToDisperse = useMemo((): number => {
-		return configuration.inputs.reduce(
-			(acc, row): number => acc + Number(row.value.normalizedBigAmount.normalized || 0),
-			0
-		);
+	const totalToDisperse = useMemo((): bigint => {
+		return configuration.inputs.reduce((acc, row): bigint => acc + row.value.normalizedBigAmount.raw, 0n);
 	}, [configuration.inputs]);
 
 	const isAboveBalance =
