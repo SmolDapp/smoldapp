@@ -1,13 +1,6 @@
 import {useCallback, useState} from 'react';
-import {
-	cl,
-	fromNormalized,
-	parseUnits,
-	percentOf,
-	toBigInt,
-	toNormalizedBN,
-	zeroNormalizedBN
-} from '@builtbymom/web3/utils';
+import {cl, fromNormalized, toBigInt, toNormalizedBN, zeroNormalizedBN} from '@builtbymom/web3/utils';
+import {useUpdateEffect} from '@react-hookz/web';
 import {handleLowAmount} from '@utils/helpers';
 
 import type {ReactElement} from 'react';
@@ -47,6 +40,16 @@ export function SmolAmountInput({onSetValue, value, token}: TAmountInput): React
 		if (+amount > 0) {
 			const inputBigInt = amount ? fromNormalized(amount, token?.decimals || 18) : toBigInt(0);
 			const asNormalizedBN = toNormalizedBN(inputBigInt, token?.decimals || 18);
+
+			if (!token) {
+				return onSetValue({
+					amount: asNormalizedBN.display,
+					normalizedBigAmount: asNormalizedBN,
+					isValid: false,
+					error: 'No token selected'
+				});
+			}
+
 			if (inputBigInt > balance.raw) {
 				return onSetValue({
 					amount: asNormalizedBN.display,
@@ -71,23 +74,10 @@ export function SmolAmountInput({onSetValue, value, token}: TAmountInput): React
 		});
 	};
 
-	const onSetFractional = (percentage: number): void => {
-		if (percentage === 100) {
-			return onSetValue({
-				amount: selectedTokenBalance.display,
-				normalizedBigAmount: selectedTokenBalance,
-				isValid: true,
-				error: undefined
-			});
-		}
-
-		const calculatedPercent = percentOf(+selectedTokenBalance.normalized, percentage);
-		onSetValue({
-			amount: calculatedPercent.toString(),
-			normalizedBigAmount: toNormalizedBN(
-				parseUnits(String(calculatedPercent), token?.decimals || 18),
-				token?.decimals || 18
-			),
+	const onSetMax = (): void => {
+		return onSetValue({
+			amount: selectedTokenBalance.display,
+			normalizedBigAmount: selectedTokenBalance,
 			isValid: true,
 			error: undefined
 		});
@@ -102,6 +92,13 @@ export function SmolAmountInput({onSetValue, value, token}: TAmountInput): React
 		}
 		return 'border-neutral-400';
 	}, [isFocused, value.isValid]);
+
+	/**
+	 * Validate the input if selected token changes
+	 */
+	useUpdateEffect(() => {
+		onChange(value.amount || '', selectedTokenBalance, token);
+	}, [token]);
 
 	return (
 		<>
@@ -138,7 +135,7 @@ export function SmolAmountInput({onSetValue, value, token}: TAmountInput): React
 								<p className={'text-red'}>{value.error}</p>
 							) : selectedTokenBalance.normalized ? (
 								<button
-									onClick={() => onSetFractional(100)}
+									onClick={onSetMax}
 									disabled={!token || selectedTokenBalance.raw === 0n}>
 									<p>{`You have ${handleLowAmount(selectedTokenBalance, 2, 6)}`}</p>
 								</button>

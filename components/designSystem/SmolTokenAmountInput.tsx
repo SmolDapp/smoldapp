@@ -58,6 +58,16 @@ export function SmolTokenAmountInput({
 		if (+amount > 0) {
 			const inputBigInt = amount ? fromNormalized(amount, token?.decimals || 18) : toBigInt(0);
 			const asNormalizedBN = toNormalizedBN(inputBigInt, token?.decimals || 18);
+
+			if (!token) {
+				return onSetValue({
+					amount: asNormalizedBN.display,
+					normalizedBigAmount: asNormalizedBN,
+					isValid: false,
+					error: 'No token selected'
+				});
+			}
+
 			if (inputBigInt > balance.raw) {
 				return onSetValue({
 					amount: asNormalizedBN.display,
