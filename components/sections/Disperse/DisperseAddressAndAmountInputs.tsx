@@ -5,15 +5,24 @@ import {SmolAmountInput} from '../../designSystem/SmolAmountInput';
 import {useDisperse} from './useDisperse';
 
 import type {ReactElement} from 'react';
+import type {TToken} from '@builtbymom/web3/types';
 import type {TInputAddressLike} from '@utils/tools.address';
 import type {TAmountInputElement} from '../../designSystem/SmolAmountInput';
 import type {TDisperseInput} from './useDisperse';
 
 type TDisperseAddressAndAmountInputs = {
 	input: TDisperseInput;
+	initialToken: TToken | undefined;
+	initialReceiver: string | undefined;
+	initialAmount: bigint | undefined;
 };
 
-export function DisperseAddressAndAmountInputs({input}: TDisperseAddressAndAmountInputs): ReactElement {
+export function DisperseAddressAndAmountInputs({
+	input,
+	initialReceiver,
+	initialToken,
+	initialAmount
+}: TDisperseAddressAndAmountInputs): ReactElement {
 	const {configuration, dispatchConfiguration} = useDisperse();
 
 	const onSetReceiver = (value: Partial<TInputAddressLike>): void => {
@@ -33,6 +42,7 @@ export function DisperseAddressAndAmountInputs({input}: TDisperseAddressAndAmoun
 			<div className={'basis-[64rem] mr-4'}>
 				<SmolAddressInput
 					onSetValue={onSetReceiver}
+					initialStateFromUrl={initialReceiver}
 					value={input.receiver}
 				/>
 			</div>
@@ -40,6 +50,7 @@ export function DisperseAddressAndAmountInputs({input}: TDisperseAddressAndAmoun
 				<SmolAmountInput
 					onSetValue={onSetAmount}
 					value={input.value}
+					initialValue={{amount: initialAmount, token: initialToken}}
 					token={configuration.tokenToSend}
 				/>
 			</div>

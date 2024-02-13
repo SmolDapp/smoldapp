@@ -2,6 +2,7 @@ import React, {Fragment} from 'react';
 import {DefaultSeo} from 'next-seo';
 import Disperse from 'components/sections/Disperse/index';
 import {DisperseContextApp} from 'components/sections/Disperse/useDisperse';
+import {DisperseQueryManagement} from 'components/sections/Disperse/useDisperseQuery';
 import {BalancesCurtainContextApp} from 'contexts/useBalancesCurtain';
 
 import type {ReactElement} from 'react';
@@ -10,12 +11,14 @@ function DispersePage(): ReactElement {
 	return (
 		<DisperseContextApp>
 			{({configuration}) => (
-				<BalancesCurtainContextApp
-					selectedTokenAddresses={
-						configuration.tokenToSend?.address ? [configuration.tokenToSend?.address] : []
-					}>
-					<Disperse />
-				</BalancesCurtainContextApp>
+				<DisperseQueryManagement>
+					<BalancesCurtainContextApp
+						selectedTokenAddresses={
+							configuration.tokenToSend?.address ? [configuration.tokenToSend?.address] : []
+						}>
+						<Disperse />
+					</BalancesCurtainContextApp>
+				</DisperseQueryManagement>
 			)}
 		</DisperseContextApp>
 	);

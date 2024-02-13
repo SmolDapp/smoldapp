@@ -8,6 +8,7 @@ import type {Dispatch, ReactElement} from 'react';
 import type {TToken} from '@builtbymom/web3/types';
 import type {TOptionalRenderProps} from '@utils/react/optionalRenderProps';
 import type {TInputAddressLike} from '@utils/tools.address';
+import type {TPartialExhaustive} from '@utils/types/types';
 
 export type TDisperseInput = {receiver: TInputAddressLike; value: TAmountInputElement; UUID: string};
 
@@ -24,6 +25,12 @@ export type TDisperseActions =
 	| {type: 'SET_RECEIVER'; payload: Partial<TInputAddressLike> & {UUID: string}}
 	| {type: 'SET_VALUE'; payload: Partial<TAmountInputElement> & {UUID: string}}
 	| {type: 'RESET'; payload: undefined};
+
+export type TDisperseQuery = TPartialExhaustive<{
+	token: string;
+	addresses: string[];
+	values: string[];
+}>;
 
 export type TDisperse = {
 	configuration: TDisperseConfiguration;

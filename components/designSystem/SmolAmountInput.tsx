@@ -1,6 +1,6 @@
 import {useCallback, useState} from 'react';
 import {cl, fromNormalized, toBigInt, toNormalizedBN, zeroNormalizedBN} from '@builtbymom/web3/utils';
-import {useUpdateEffect} from '@react-hookz/web';
+import {useDeepCompareEffect, useUpdateEffect} from '@react-hookz/web';
 import {handleLowAmount} from '@utils/helpers';
 
 import type {ReactElement} from 'react';
@@ -21,11 +21,11 @@ type TAmountInput = {
 	token: TToken | undefined;
 	initialValue?: Partial<{amount: bigint; token: TToken}>;
 };
-export function SmolAmountInput({onSetValue, value, token}: TAmountInput): ReactElement {
+export function SmolAmountInput({onSetValue, value, token, initialValue}: TAmountInput): ReactElement {
 	const [isFocused, set_isFocused] = useState<boolean>(false);
 
 	const selectedTokenBalance = token?.balance ?? zeroNormalizedBN;
-	//const initialTokenBalance = initialValue?.token?.balance ?? zeroNormalizedBN;
+	const initialTokenBalance = initialValue?.token?.balance ?? zeroNormalizedBN;
 
 	const onChange = (amount: string, balance: TNormalizedBN, token?: TToken): void => {
 		if (amount === '') {
@@ -99,6 +99,19 @@ export function SmolAmountInput({onSetValue, value, token}: TAmountInput): React
 	useUpdateEffect(() => {
 		onChange(value.amount || '', selectedTokenBalance, token);
 	}, [token]);
+
+	useDeepCompareEffect(() => {
+		if (!initialValue) {
+			return;
+		}
+		if (initialValue.amount) {
+			const normalizedAmount = String(
+				toNormalizedBN(initialValue.amount, initialValue?.token?.decimals || 18).normalized
+			);
+
+			onChange(normalizedAmount, initialTokenBalance, initialValue.token);
+		}
+	}, [initialValue, initialTokenBalance]);
 
 	return (
 		<>

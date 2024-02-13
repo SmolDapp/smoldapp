@@ -120,6 +120,7 @@ export function Send(): ReactElement {
 		if (!initialStateFromUrl || !Array.isArray(initialStateFromUrl.tokens)) {
 			return;
 		}
+		// TODO: fix magic number
 		initialStateFromUrl.tokens.slice(1).forEach(() => onAddToken());
 	}, [initialStateFromUrl]);
 

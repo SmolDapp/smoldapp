@@ -35,7 +35,11 @@ export function SmolTokenSelectorButton({
 					<ImageWithFallback
 						alt={token?.symbol || ''}
 						unoptimized
-						src={token?.logoURI || ''}
+						src={
+							token?.logoURI ||
+							`${process.env.SMOL_ASSETS_URL}/token/${token?.chainID}/${token?.address}/logo-32.png`
+						}
+						altSrc={`${process.env.SMOL_ASSETS_URL}/token/${token?.chainID}/${token?.address}/logo-32.png`}
 						quality={90}
 						width={32}
 						height={32}
