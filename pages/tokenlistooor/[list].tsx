@@ -77,6 +77,11 @@ function TokenListHero({list}: {list: TTokenListItem}): ReactElement {
 									? `https://ipfs.io/ipfs/${list.logoURI.replace('ipfs://', '')}`
 									: list.logoURI
 							}
+							altSrc={
+								list.logoURI?.startsWith('ipfs://')
+									? `https://ipfs.io/ipfs/${list.logoURI.replace('ipfs://', '')}`
+									: list.logoURI
+							}
 							width={64}
 							height={64}
 							alt={''}
@@ -101,7 +106,7 @@ function TokenListHero({list}: {list: TTokenListItem}): ReactElement {
 							href={`https://github.com/SmolDapp/tokenLists/blob/main/lists/${fileName}`}
 							target={'_blank'}>
 							<Button>
-								<IconSocialGithub className={'mr-4 h-6 w-6'} />
+								<IconSocialGithub className={'mr-4 size-6'} />
 								{'Github'}
 							</Button>
 						</Link>
