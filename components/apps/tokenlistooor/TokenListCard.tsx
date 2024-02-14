@@ -30,6 +30,11 @@ function TokenListCard({item}: {item: TTokenListItem}): ReactElement {
 								? `https://ipfs.io/ipfs/${item.logoURI.replace('ipfs://', '')}`
 								: item.logoURI
 						}
+						altSrc={
+							item.logoURI?.startsWith('ipfs://')
+								? `https://ipfs.io/ipfs/${item.logoURI.replace('ipfs://', '')}`
+								: item.logoURI
+						}
 						width={36}
 						height={36}
 						alt={''}
