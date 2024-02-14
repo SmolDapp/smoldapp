@@ -6,7 +6,7 @@ import {extend} from 'dayjs';
 import dayjsDuration from 'dayjs/plugin/duration.js';
 import relativeTime from 'dayjs/plugin/relativeTime.js';
 import weekday from 'dayjs/plugin/weekday.js';
-import {SUPPORTED_CHAIN_IDS} from 'utils/constants';
+import * as chains from 'wagmi/chains';
 import {motion} from 'framer-motion';
 import {MigratooorContextApp} from '@migratooor/useMigratooor';
 import {useMountEffect} from '@react-hookz/web';
@@ -22,6 +22,7 @@ import type {Variants} from 'framer-motion';
 import type {GetServerSidePropsResult, NextPageContext} from 'next';
 import type {TTokenListItem} from 'pages/tokenlistooor';
 import type {ReactElement} from 'react';
+import type {TNDict} from '@yearn-finance/web-lib/types';
 import type {TExtendedChain} from '@yearn-finance/web-lib/utils/wagmi/utils';
 
 extend(relativeTime);
@@ -222,11 +223,17 @@ function TokenListContent({list}: {list: TTokenListItem}): ReactElement {
 
 	const availableNetworks = useMemo((): {value: number; label: string}[] => {
 		const networks: {value: number; label: string}[] = [];
+		const exists: TNDict<boolean> = {};
 		([...list.tokens] || []).forEach((item): void => {
-			if (!networks.find((network): boolean => network.value === item.chainId)) {
+			const network = Object.values(chains).find((network): boolean => network.id === item.chainId);
+			if (network) {
+				if (exists[network.id]) {
+					return;
+				}
+				exists[network.id] = true;
 				networks.push({
-					value: item.chainId,
-					label: (SUPPORTED_CHAIN_IDS[item.chainId] as any) || `Chain #${item.chainId}`
+					value: network.id,
+					label: network.name
 				});
 			}
 		});
