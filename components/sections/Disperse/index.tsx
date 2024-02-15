@@ -1,8 +1,11 @@
-import React, {memo} from 'react';
+import React, {memo, useCallback} from 'react';
 import {SmolTokenSelector} from 'components/designSystem/SmolTokenSelector';
+import {Button} from 'components/Primitives/Button';
+import Papa from 'papaparse';
 import {useBalances} from '@builtbymom/web3/hooks/useBalances.multichains';
 import {useChainID} from '@builtbymom/web3/hooks/useChainID';
 import {toAddress, toBigInt} from '@builtbymom/web3/utils';
+import IconImport from '@icons/IconImport';
 import {useDeepCompareEffect} from '@react-hookz/web';
 
 import {DisperseAddressAndAmountInputs} from './DisperseAddressAndAmountInputs';
@@ -12,6 +15,41 @@ import {DisperseWizard} from './Wizard';
 
 import type {ReactElement} from 'react';
 import type {TToken} from '@builtbymom/web3/types';
+
+function ExportConfigurationButton(): ReactElement {
+	const {configuration} = useDisperse();
+
+	const downloadConfiguration = useCallback(async () => {
+		const receiverEntries = configuration.inputs
+			.map((input, index) => ({
+				tokenAddress: index === 0 ? configuration.tokenToSend?.address : '',
+				receiverAddress: input.receiver.address,
+				value: input.value.normalizedBigAmount.raw.toString()
+			}))
+			.filter(entry => entry.value && entry.receiverAddress);
+
+		const csv = Papa.unparse(receiverEntries, {header: true});
+		const blob = new Blob([csv], {type: 'text/csv;charset=utf-8'});
+		const url = window.URL.createObjectURL(blob);
+		const a = document.createElement('a');
+		const name = `smol-disperse-${new Date().toISOString().split('T')[0]}.csv`;
+		a.setAttribute('hidden', '');
+		a.setAttribute('href', url);
+		a.setAttribute('download', name);
+		document.body.appendChild(a);
+		a.click();
+		document.body.removeChild(a);
+	}, [configuration]);
+
+	return (
+		<Button
+			onClick={downloadConfiguration}
+			className={'!h-8'}>
+			<IconImport className={'mr-2 size-3 rotate-180 text-neutral-900'} />
+			{'Download CSV'}
+		</Button>
+	);
+}
 
 const Disperse = memo(function Disperse(): ReactElement {
 	const {safeChainID} = useChainID();
@@ -56,6 +94,9 @@ const Disperse = memo(function Disperse(): ReactElement {
 
 	return (
 		<div className={'w-full'}>
+			<div className={'flex mb-4 gap-2'}>
+				<ExportConfigurationButton />
+			</div>
 			<div className={'mb-6 max-w-[432px]'}>
 				<p className={'mb-2 font-medium'}>{'Token'}</p>
 				<SmolTokenSelector
