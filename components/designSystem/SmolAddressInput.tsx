@@ -186,19 +186,18 @@ export function SmolAddressInput({onSetValue, value, initialStateFromUrl}: TAddr
 		if (isFocused) {
 			return currentInput.current;
 		}
-		if (!isFocused) {
-			if (value.source === 'addressBook' && addressBookEntry?.label) {
-				return addressBookEntry.label;
-			}
-			if (isAddress(currentLabel.current) && addressBookEntry) {
-				return truncateHex(currentLabel.current, 5);
-			}
-			if (isAddress(currentLabel.current)) {
-				return truncateHex(currentLabel.current, 5);
-			}
-			if (!isAddress(currentLabel.current)) {
-				return currentLabel.current;
-			}
+
+		if (value.source === 'addressBook' && addressBookEntry?.label) {
+			return addressBookEntry.label;
+		}
+		if (isAddress(currentLabel.current) && addressBookEntry) {
+			return truncateHex(currentLabel.current, 5);
+		}
+		if (isAddress(currentLabel.current)) {
+			return truncateHex(currentLabel.current, 5);
+		}
+		if (!isAddress(currentLabel.current)) {
+			return currentLabel.current;
 		}
 		return undefined;
 	}, [addressBookEntry, isFocused, value.source, currentInput, currentLabel]);

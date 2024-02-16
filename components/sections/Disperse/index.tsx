@@ -2,6 +2,7 @@ import React, {memo, useCallback} from 'react';
 import {SmolTokenSelector} from 'components/designSystem/SmolTokenSelector';
 import {Button} from 'components/Primitives/Button';
 import Papa from 'papaparse';
+import {useTokenList} from '@builtbymom/web3/contexts/WithTokenList';
 import {useBalances} from '@builtbymom/web3/hooks/useBalances.multichains';
 import {useChainID} from '@builtbymom/web3/hooks/useChainID';
 import {toAddress, toBigInt} from '@builtbymom/web3/utils';
@@ -13,8 +14,70 @@ import {newVoidRow, useDisperse} from './useDisperse';
 import {useDisperseQueryManagement} from './useDisperseQuery';
 import {DisperseWizard} from './Wizard';
 
-import type {ReactElement} from 'react';
-import type {TToken} from '@builtbymom/web3/types';
+import type {ChangeEvent,ReactElement} from 'react';
+import type {TAddress, TToken} from '@builtbymom/web3/types';
+
+function ImportConfigurationButton(): ReactElement {
+	const {dispatchConfiguration} = useDisperse();
+
+	const {getToken} = useTokenList();
+
+	const handleFileUpload = (e: ChangeEvent<HTMLInputElement>): void => {
+		if (!e.target.files) {
+			return;
+		}
+		const [file] = e.target.files as unknown as Blob[];
+		const reader = new FileReader();
+		reader.onload = event => {
+			if (!event?.target?.result) {
+				return;
+			}
+			const {result} = event.target;
+			const parsedCSV = Papa.parse(result, {header: true});
+			let records: any[] = [];
+
+			// If we are working with a safe file, we should get 4 columns.
+			const isProbablySafeFile = parsedCSV.meta.fields.length === 4;
+			if (isProbablySafeFile) {
+				const [tokenAddress, chainId, receiverAddress, value] = parsedCSV.meta.fields;
+				records = parsedCSV.data.map((item: unknown[]) => {
+					return {
+						tokenAddress: item[tokenAddress] as TAddress,
+						receiverAddress: item[receiverAddress] as TAddress,
+						value: item[value] as string,
+						chainId: item[chainId] as string
+					};
+				});
+			}
+			console.log(records);
+			dispatchConfiguration({
+				type: 'SET_TOKEN_TO_SEND',
+				payload: getToken({address: records[0].tokenAddress, chainID: records[0].chainId})
+			});
+			// for (const record of records) {
+			// 	dispatchConfiguration({type})
+			// }
+		};
+		reader.readAsBinaryString(file);
+	};
+	return (
+		<Button
+			onClick={() => document.querySelector<HTMLInputElement>('#file-upload')?.click()}
+			className={'!h-8'}>
+			<input
+				id={'file-upload'}
+				tabIndex={-1}
+				className={'absolute inset-0 !cursor-pointer opacity-0'}
+				type={'file'}
+				accept={'.csv'}
+				onClick={event => event.stopPropagation()}
+				onChange={handleFileUpload}
+			/>
+			<IconImport className={'mr-2 size-3 text-neutral-900'} />
+			{'Import Contacts'}
+		</Button>
+	);
+}
 
 function ExportConfigurationButton(): ReactElement {
 	const {configuration} = useDisperse();
@@ -23,6 +86,7 @@ function ExportConfigurationButton(): ReactElement {
 		const receiverEntries = configuration.inputs
 			.map((input, index) => ({
 				tokenAddress: index === 0 ? configuration.tokenToSend?.address : '',
+				chainId: index === 0 ? configuration.tokenToSend?.chainID : '',
 				receiverAddress: input.receiver.address,
 				value: input.value.normalizedBigAmount.raw.toString()
 			}))
@@ -95,6 +159,7 @@ const Disperse = memo(function Disperse(): ReactElement {
 	return (
 		<div className={'w-full'}>
 			<div className={'flex mb-4 gap-2'}>
+				<ImportConfigurationButton />
 				<ExportConfigurationButton />
 			</div>
 			<div className={'mb-6 max-w-[432px]'}>
