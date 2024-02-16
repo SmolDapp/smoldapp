@@ -22,6 +22,8 @@ function ViewUserStreams(): ReactElement {
 		set_actualReceiver({address: address, isValid: true, label: ens || address || ''});
 	}, [address, ens]);
 
+	console.log(userVestings);
+
 	return (
 		<section>
 			<div className={'box-0 grid w-full grid-cols-12'}>
@@ -68,7 +70,7 @@ function ViewUserStreams(): ReactElement {
 						) : userVestings.length === 0 ? (
 							<div className={'col-span-12 flex min-h-[200px] flex-col items-center justify-center p-4'}>
 								<svg
-									className={'h-4 w-4 text-neutral-400'}
+									className={'size-4 text-neutral-400'}
 									xmlns={'http://www.w3.org/2000/svg'}
 									viewBox={'0 0 512 512'}>
 									<path
