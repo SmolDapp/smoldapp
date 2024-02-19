@@ -97,7 +97,8 @@ export function VestingElement({vesting}: {vesting: TStreamArgs}): ReactElement 
 		}
 	});
 	const [symbol, decimals, totalClaimed] = (data || ['', 18, 0n]) as [string, number, bigint];
-	const isButtonDisabled = !address || (!vesting.open_claim && address !== vesting.recipient);
+	const isButtonDisabled =
+		!address || (!vesting.open_claim && address !== vesting.recipient) || totalClaimed === vesting.amount;
 
 	const onClaim = useCallback(async (): Promise<void> => {
 		const result = await claimFromVesting({
@@ -112,7 +113,7 @@ export function VestingElement({vesting}: {vesting: TStreamArgs}): ReactElement 
 		}
 	}, [chainID, provider, refetch, vesting.escrow, vesting.recipient]);
 
-	if (!isFetchedAfterMount || totalClaimed === vesting.amount) {
+	if (!isFetchedAfterMount) {
 		return <Fragment />;
 	}
 

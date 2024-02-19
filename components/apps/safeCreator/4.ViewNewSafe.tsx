@@ -97,7 +97,7 @@ function ViewNewSafe({owners, threshold}: TViewNewSafe): ReactElement {
 			}
 			const newSalt = hexToBigInt(keccak256(concat([toHex('smol'), toHex(Math.random().toString())])));
 			set_currentSeed(newSalt);
-			await new Promise((resolve): NodeJS.Timeout => setTimeout(resolve, 0));
+			await new Promise(resolve => setTimeout(resolve, 0));
 			return compute({argInitializers, bytecode, prefix, suffix, saltNonce: newSalt});
 		},
 		[shouldCancel, factory]
