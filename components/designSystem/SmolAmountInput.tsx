@@ -1,7 +1,9 @@
 import {useCallback, useState} from 'react';
-import {cl, fromNormalized, toBigInt, toNormalizedBN, zeroNormalizedBN} from '@builtbymom/web3/utils';
+import {cl, zeroNormalizedBN} from '@builtbymom/web3/utils';
 import {useDeepCompareEffect, useUpdateEffect} from '@react-hookz/web';
 import {handleLowAmount} from '@utils/helpers';
+
+import {useValidateAmountInput} from './SmolTokenAmountInput';
 
 import type {ReactElement} from 'react';
 import type {TNormalizedBN, TToken} from '@builtbymom/web3/types';
@@ -19,60 +21,11 @@ type TAmountInput = {
 	onSetValue: (value: Partial<TAmountInputElement>) => void;
 	value: TAmountInputElement;
 	token: TToken | undefined;
-	initialValue?: Partial<{amount: bigint; token: TToken}>;
 };
-export function SmolAmountInput({onSetValue, value, token, initialValue}: TAmountInput): ReactElement {
+export function SmolAmountInput({onSetValue, value, token}: TAmountInput): ReactElement {
 	const [isFocused, set_isFocused] = useState<boolean>(false);
-
+	const {result, validate} = useValidateAmountInput();
 	const selectedTokenBalance = token?.balance ?? zeroNormalizedBN;
-	const initialTokenBalance = initialValue?.token?.balance ?? zeroNormalizedBN;
-
-	const onChange = (amount: string, balance: TNormalizedBN, token?: TToken): void => {
-		if (amount === '') {
-			return onSetValue({
-				amount,
-				normalizedBigAmount: zeroNormalizedBN,
-				isValid: false,
-				error: 'The amount is invalid'
-			});
-		}
-
-		if (+amount > 0) {
-			const inputBigInt = amount ? fromNormalized(amount, token?.decimals || 18) : toBigInt(0);
-			const asNormalizedBN = toNormalizedBN(inputBigInt, token?.decimals || 18);
-
-			if (!token) {
-				return onSetValue({
-					amount: asNormalizedBN.display,
-					normalizedBigAmount: asNormalizedBN,
-					isValid: false,
-					error: 'No token selected'
-				});
-			}
-
-			if (inputBigInt > balance.raw) {
-				return onSetValue({
-					amount: asNormalizedBN.display,
-					normalizedBigAmount: asNormalizedBN,
-					isValid: false,
-					error: 'Insufficient Balance'
-				});
-			}
-			return onSetValue({
-				amount: asNormalizedBN.display,
-				normalizedBigAmount: asNormalizedBN,
-				isValid: true,
-				error: undefined
-			});
-		}
-
-		onSetValue({
-			amount: '0',
-			normalizedBigAmount: zeroNormalizedBN,
-			isValid: false,
-			error: 'The amount is invalid'
-		});
-	};
 
 	const onSetMax = (): void => {
 		return onSetValue({
@@ -93,25 +46,21 @@ export function SmolAmountInput({onSetValue, value, token, initialValue}: TAmoun
 		return 'border-neutral-400';
 	}, [isFocused, value.isValid]);
 
-	/**
-	 * Validate the input if selected token changes
-	 */
-	useUpdateEffect(() => {
-		onChange(value.amount || '', selectedTokenBalance, token);
-	}, [token]);
-
+	/** Set the validation result to the context */
 	useDeepCompareEffect(() => {
-		if (!initialValue) {
+		if (!result) {
 			return;
 		}
-		if (initialValue.amount) {
-			const normalizedAmount = String(
-				toNormalizedBN(initialValue.amount, initialValue?.token?.decimals || 18).normalized
-			);
+		onSetValue(result);
+	}, [result]);
 
-			onChange(normalizedAmount, initialTokenBalance, initialValue.token);
+	/** Validate the field when token changes. Only filled inputs should be validated */
+	useUpdateEffect(() => {
+		if (!value.amount) {
+			return;
 		}
-	}, [initialValue, initialTokenBalance]);
+		validate(value.amount, token);
+	}, [token?.address]);
 
 	return (
 		<>
@@ -135,7 +84,7 @@ export function SmolAmountInput({onSetValue, value, token, initialValue}: TAmoun
 							placeholder={'0.00'}
 							value={value.amount}
 							onChange={e => {
-								onChange(e.target.value, selectedTokenBalance, token);
+								validate(e.target.value, token);
 							}}
 							max={selectedTokenBalance.normalized}
 							onFocus={() => set_isFocused(true)}

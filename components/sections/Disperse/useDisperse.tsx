@@ -58,7 +58,7 @@ const defaultProps: TDisperse = {
 	onResetDisperse: (): void => undefined,
 	configuration: {
 		tokenToSend: undefined,
-		inputs: [newVoidRow(), newVoidRow()]
+		inputs: []
 	}
 };
 
@@ -69,7 +69,10 @@ const configurationReducer = (state: TDisperseConfiguration, action: TDisperseAc
 		case 'SET_RECEIVERS':
 			return {...state, inputs: action.payload};
 		case 'ADD_RECEIVERS':
-			return {...state, inputs: [...state.inputs, ...action.payload]};
+			return {
+				...state,
+				inputs: [...state.inputs, ...action.payload]
+			};
 
 		case 'DEL_RECEIVER_BY_UUID':
 			if (state.inputs.length === 1) {

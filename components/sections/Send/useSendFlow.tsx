@@ -15,8 +15,8 @@ export type TSendConfiguration = {
 };
 
 export type TSendActions =
-	| {type: 'SET_RECEIVER'; payload: TInputAddressLike}
-	| {type: 'ADD_INPUT'; payload: undefined}
+	| {type: 'SET_RECEIVER'; payload: Partial<TInputAddressLike>}
+	| {type: 'ADD_INPUT'; payload: TTokenAmountInputElement | undefined}
 	| {type: 'REMOVE_INPUT'; payload: {UUID: string}}
 	| {type: 'SET_VALUE'; payload: Partial<TTokenAmountInputElement>}
 	| {type: 'RESET'; payload: undefined};
@@ -47,7 +47,7 @@ export function getNewInput(): TTokenAmountInputElement {
 const defaultProps: TSend = {
 	configuration: {
 		receiver: defaultInputAddressLike,
-		inputs: [getNewInput()]
+		inputs: []
 	},
 
 	dispatchConfiguration: (): void => undefined
@@ -58,11 +58,11 @@ export const SendContextApp = ({children}: {children: TOptionalRenderProps<TSend
 	const configurationReducer = (state: TSendConfiguration, action: TSendActions): TSendConfiguration => {
 		switch (action.type) {
 			case 'SET_RECEIVER':
-				return {...state, receiver: action.payload};
+				return {...state, receiver: {...state.receiver, ...action.payload}};
 			case 'ADD_INPUT':
 				return {
 					...state,
-					inputs: [...state.inputs, getNewInput()]
+					inputs: [...state.inputs, action.payload ? action.payload : getNewInput()]
 				};
 			case 'REMOVE_INPUT':
 				return {

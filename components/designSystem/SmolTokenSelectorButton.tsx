@@ -1,5 +1,5 @@
 import {useBalancesCurtain} from 'contexts/useBalancesCurtain';
-import {cl, parseUnits} from '@builtbymom/web3/utils';
+import {cl} from '@builtbymom/web3/utils';
 import {IconChevron} from '@icons/IconChevron';
 import {ImageWithFallback} from '@common/ImageWithFallback';
 
@@ -7,14 +7,10 @@ import type {TToken} from '@builtbymom/web3/types';
 
 export function SmolTokenSelectorButton({
 	onSelectToken,
-	onSetTokenValue,
-	token,
-	amount
+	token
 }: {
 	onSelectToken: (token: TToken) => void;
-	onSetTokenValue?: (value: bigint, token: TToken) => void;
 	token: TToken | undefined;
-	amount?: string;
 }): JSX.Element {
 	const {onOpenCurtain} = useBalancesCurtain();
 
@@ -28,7 +24,6 @@ export function SmolTokenSelectorButton({
 				onClick={() =>
 					onOpenCurtain(token => {
 						onSelectToken(token);
-						amount && onSetTokenValue?.(parseUnits(amount, token?.decimals || 18), token);
 					})
 				}>
 				<div className={'flex w-full max-w-[116px] items-center gap-2'}>

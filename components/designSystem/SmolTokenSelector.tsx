@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useState} from 'react';
+import {useCallback, useState} from 'react';
 import {cl} from '@builtbymom/web3/utils';
 
 import {SmolTokenSelectorButton} from './SmolTokenSelectorButton';
@@ -7,12 +7,10 @@ import type {TToken} from '@builtbymom/web3/types';
 
 export function SmolTokenSelector({
 	onSelectToken,
-	token,
-	initialToken
+	token
 }: {
 	onSelectToken: (token: TToken) => void;
 	token: TToken | undefined;
-	initialToken: TToken | undefined;
 }): JSX.Element {
 	const [isFocused] = useState<boolean>(false);
 
@@ -25,13 +23,6 @@ export function SmolTokenSelector({
 		// }
 		return 'border-neutral-400';
 	}, [isFocused]);
-
-	useEffect(() => {
-		if (!initialToken) {
-			return;
-		}
-		onSelectToken(initialToken);
-	}, [initialToken]);
 
 	return (
 		<div className={'relative h-full w-full rounded-lg'}>

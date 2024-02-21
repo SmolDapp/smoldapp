@@ -1,20 +1,16 @@
-import React, {memo, useCallback} from 'react';
+import React, {memo, useCallback, useEffect} from 'react';
 import {SmolTokenSelector} from 'components/designSystem/SmolTokenSelector';
 import {Button} from 'components/Primitives/Button';
 import Papa from 'papaparse';
 import {useTokenList} from '@builtbymom/web3/contexts/WithTokenList';
-import {useBalances} from '@builtbymom/web3/hooks/useBalances.multichains';
-import {useChainID} from '@builtbymom/web3/hooks/useChainID';
-import {toAddress, toBigInt} from '@builtbymom/web3/utils';
 import IconImport from '@icons/IconImport';
-import {useDeepCompareEffect} from '@react-hookz/web';
 
 import {DisperseAddressAndAmountInputs} from './DisperseAddressAndAmountInputs';
 import {newVoidRow, useDisperse} from './useDisperse';
 import {useDisperseQueryManagement} from './useDisperseQuery';
 import {DisperseWizard} from './Wizard';
 
-import type {ChangeEvent,ReactElement} from 'react';
+import type {ChangeEvent, ReactElement} from 'react';
 import type {TAddress, TToken} from '@builtbymom/web3/types';
 
 function ImportConfigurationButton(): ReactElement {
@@ -116,45 +112,29 @@ function ExportConfigurationButton(): ReactElement {
 }
 
 const Disperse = memo(function Disperse(): ReactElement {
-	const {safeChainID} = useChainID();
 	const {configuration, dispatchConfiguration} = useDisperse();
 
-	const {initialStateFromUrl} = useDisperseQueryManagement();
-	const {data: initialTokenRaw} = useBalances({
-		tokens: [{address: toAddress(initialStateFromUrl?.token), chainID: safeChainID}]
-	});
-
-	const initialToken =
-		initialTokenRaw[safeChainID] && initialStateFromUrl?.token
-			? initialTokenRaw[safeChainID][initialStateFromUrl?.token]
-			: undefined;
+	const {hasInitialInputs} = useDisperseQueryManagement();
 
 	const onSelectToken = (token: TToken): void => {
 		dispatchConfiguration({type: 'SET_TOKEN_TO_SEND', payload: token});
 	};
 
-	const onAddReceiver = (): void => {
-		dispatchConfiguration({type: 'ADD_RECEIVERS', payload: [newVoidRow()]});
+	const onAddReceivers = (amount: number): void => {
+		dispatchConfiguration({
+			type: 'ADD_RECEIVERS',
+			payload: Array(amount)
+				.fill(null)
+				.map(() => newVoidRow())
+		});
 	};
 
-	const getInitialAmount = (index: number): bigint | undefined => {
-		return initialStateFromUrl?.values?.[index] ? toBigInt(initialStateFromUrl?.values[index]) : undefined;
-	};
-
-	const getInitialReceiver = (index: number): string | undefined => {
-		return initialStateFromUrl?.addresses?.[index] ?? undefined;
-	};
-
-	/**
-	 * Add missing receiver inputs if they are present in the url query
-	 */
-	useDeepCompareEffect(() => {
-		if (!initialStateFromUrl || !Array.isArray(initialStateFromUrl.addresses)) {
-			return;
+	/** Add initial inputs */
+	useEffect(() => {
+		if (!hasInitialInputs) {
+			onAddReceivers(2);
 		}
-		// TODO: fix magic number
-		initialStateFromUrl.addresses.slice(2).forEach(() => onAddReceiver());
-	}, [initialStateFromUrl]);
+	}, [hasInitialInputs]);
 
 	return (
 		<div className={'w-full'}>
@@ -166,18 +146,14 @@ const Disperse = memo(function Disperse(): ReactElement {
 				<p className={'mb-2 font-medium'}>{'Token'}</p>
 				<SmolTokenSelector
 					token={configuration.tokenToSend}
-					initialToken={initialToken}
 					onSelectToken={onSelectToken}
 				/>
 			</div>
 			<div>
 				<p className={'font-medium mb-2'}>{'Send to'}</p>
-				{configuration.inputs.map((input, index) => (
+				{configuration.inputs.map(input => (
 					<DisperseAddressAndAmountInputs
 						key={input.UUID}
-						initialToken={initialToken}
-						initialAmount={getInitialAmount(index)}
-						initialReceiver={getInitialReceiver(index)}
 						input={input}
 					/>
 				))}
@@ -187,7 +163,7 @@ const Disperse = memo(function Disperse(): ReactElement {
 					className={
 						'rounded-lg bg-neutral-200 px-5 py-2 text-xs text-neutral-700 transition-colors hover:bg-neutral-300'
 					}
-					onClick={onAddReceiver}>
+					onClick={() => onAddReceivers(1)}>
 					{'+Add receiver'}
 				</button>
 			</div>
