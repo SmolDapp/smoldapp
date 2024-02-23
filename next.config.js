@@ -42,9 +42,8 @@ module.exports = phase =>
 						permanent: true
 					},
 					{
-						source: '/',
-						has: [{type: 'host', value: 'tokenlistooor.com'}],
-						destination: '/tokenlistooor',
+						source: '/tokenlistooor/:path*',
+						destination: 'https://tokenlistooor.com/:path*',
 						permanent: true
 					},
 					{

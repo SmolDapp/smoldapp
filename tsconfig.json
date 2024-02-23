@@ -8,7 +8,6 @@
 			"@disperse/*": ["components/apps/disperse/*"],
 			"@migratooor/*": ["components/apps/migratooor/*"],
 			"@nftmigratooor/*": ["components/apps/nftmigratooor/*"],
-			"@tokenlistooor/*": ["components/apps/tokenlistooor/*"],
 			"@safeCreatooor/*": ["components/apps/safeCreator/*"],
 			"@stream/*": ["components/apps/stream/*"],
 			"@utils/*": ["utils/*"]

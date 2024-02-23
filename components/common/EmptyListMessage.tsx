@@ -4,7 +4,7 @@ export function EmptyListMessage({children}: {children: ReactNode}): ReactElemen
 	return (
 		<div className={'col-span-12 flex min-h-[200px] flex-col items-center justify-center'}>
 			<svg
-				className={'h-4 w-4 text-neutral-400'}
+				className={'size-4 text-neutral-400'}
 				xmlns={'http://www.w3.org/2000/svg'}
 				viewBox={'0 0 512 512'}>
 				<path
