@@ -6,7 +6,7 @@ import {Button} from 'components/Primitives/Button';
 import Papa from 'papaparse';
 import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
 import {useBalances} from '@builtbymom/web3/hooks/useBalances.multichains';
-import {toAddress, toNormalizedBN} from '@builtbymom/web3/utils';
+import {cl, toAddress, toNormalizedBN} from '@builtbymom/web3/utils';
 import IconImport from '@icons/IconImport';
 
 import {DisperseAddressAndAmountInputs} from './DisperseAddressAndAmountInputs';
@@ -14,7 +14,7 @@ import {newVoidRow, useDisperse} from './useDisperse';
 import {useDisperseQueryManagement} from './useDisperseQuery';
 import {DisperseWizard} from './Wizard';
 
-import type {ChangeEvent, ReactElement} from 'react';
+import type {ChangeEvent, ComponentPropsWithoutRef,ReactElement} from 'react';
 import type {TAddress, TToken} from '@builtbymom/web3/types';
 import type {TDisperseInput} from './useDisperse';
 
@@ -146,7 +146,7 @@ function ImportConfigurationButton({onSelectToken}: {onSelectToken: (token: TTok
 	);
 }
 
-function ExportConfigurationButton(): ReactElement {
+export function ExportConfigurationButton(buttonProps: ComponentPropsWithoutRef<'button'>): ReactElement {
 	const {configuration} = useDisperse();
 
 	const downloadConfiguration = useCallback(async () => {
@@ -175,7 +175,7 @@ function ExportConfigurationButton(): ReactElement {
 	return (
 		<Button
 			onClick={downloadConfiguration}
-			className={'!h-8'}>
+			className={cl('!h-8', buttonProps.className)}>
 			<IconImport className={'mr-2 size-3 rotate-180 text-neutral-900'} />
 			{'Download CSV'}
 		</Button>

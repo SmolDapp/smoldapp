@@ -18,9 +18,7 @@ export function SmolTokenSelector({
 		if (isFocused) {
 			return 'border-neutral-600';
 		}
-		// if (value.isValid === false) {
-		// 	return 'border-red';
-		// }
+
 		return 'border-neutral-400';
 	}, [isFocused]);
 

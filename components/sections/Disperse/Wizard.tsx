@@ -10,21 +10,14 @@ import {erc20ABI, useContractRead} from 'wagmi';
 import useWallet from '@builtbymom/web3/contexts/useWallet';
 import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
 import {useChainID} from '@builtbymom/web3/hooks/useChainID';
-import {
-	formatAmount,
-	isZeroAddress,
-	toAddress,
-	toBigInt,
-	toBigNumberAsAmount,
-	toNormalizedAmount,
-	toNormalizedValue
-} from '@builtbymom/web3/utils';
+import {formatAmount, isZeroAddress, toAddress, toBigInt, toNormalizedValue} from '@builtbymom/web3/utils';
 import {defaultTxStatus} from '@builtbymom/web3/utils/wagmi/transaction';
 import {useSafeAppsSDK} from '@gnosis.pm/safe-apps-react-sdk';
 import {toast} from '@yearn-finance/web-lib/components/yToast';
 import {ETH_TOKEN_ADDRESS, ZERO_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
 import {SuccessModal} from '@common/ConfirmationModal';
 
+import {ExportConfigurationButton} from '.';
 import {useDisperse} from './useDisperse';
 
 import type {ReactElement} from 'react';
@@ -106,13 +99,11 @@ const useApproveDisperse = ({
 const useConfirmDisperse = ({
 	onTrigger,
 	onSuccess,
-	onError,
-	set_disperseStatus
+	onError
 }: {
 	onTrigger: () => void;
 	onSuccess: () => void;
 	onError: () => void;
-	set_disperseStatus: (status: TTxStatus) => void;
 }): {onDisperseTokens: () => void} => {
 	const {address, provider, isWalletSafe} = useWeb3();
 	const {safeChainID} = useChainID();
@@ -205,8 +196,7 @@ const useConfirmDisperse = ({
 				chainID: safeChainID,
 				contractAddress: toAddress(process.env.DISPERSE_ADDRESS),
 				receivers: disperseAddresses,
-				amounts: disperseAmount,
-				statusHandler: set_disperseStatus
+				amounts: disperseAmount
 			}).then(result => {
 				if (result.isSuccessful) {
 					onSuccess();
@@ -231,10 +221,10 @@ const useConfirmDisperse = ({
 						});
 					}
 					return;
-				}
+				} 
+					onError();
+				
 			});
-
-			onError();
 		} else {
 			disperseERC20({
 				connector: provider,
@@ -242,8 +232,7 @@ const useConfirmDisperse = ({
 				contractAddress: toAddress(process.env.DISPERSE_ADDRESS),
 				tokenToDisperse: toAddress(configuration.tokenToSend?.address),
 				receivers: disperseAddresses,
-				amounts: disperseAmount,
-				statusHandler: set_disperseStatus
+				amounts: disperseAmount
 			}).then(result => {
 				if (result.isSuccessful) {
 					onSuccess();
@@ -268,8 +257,9 @@ const useConfirmDisperse = ({
 						});
 					}
 					return;
-				}
-				onError();
+				} 
+					onError();
+				
 			});
 		}
 	}, [isWalletSafe, configuration.inputs, configuration.tokenToSend, provider, safeChainID, onRefresh]);
@@ -329,29 +319,30 @@ function ApprovalStatus({approvalStatus, allowance, totalToDisperse}: TApprovalS
 						suppressHydrationWarning
 						className={'font-number font-bold'}>
 						{formatAmount(
-							toNormalizedAmount(totalToDisperse, configuration.tokenToSend?.decimals || 18),
+							toNormalizedValue(totalToDisperse, configuration.tokenToSend?.decimals || 18),
 							6,
 							configuration.tokenToSend?.decimals || 18
 						)}
+						{` ${configuration.tokenToSend?.symbol || 'Tokens'}`}
 					</span>
-					{` ${configuration.tokenToSend?.symbol || 'Tokens'}`}
 				</div>
 			);
 		}
+
 		if (approvalStatus.pending) {
 			return (
-				<div className={'text-left text-sm'}>
+				<div className={'text-left text-xs'}>
 					{'Approving '}
 					<span
 						suppressHydrationWarning
 						className={'font-number font-bold'}>
 						{formatAmount(
-							toBigNumberAsAmount(totalToDisperse, configuration.tokenToSend?.decimals || 18),
+							toNormalizedValue(totalToDisperse, configuration.tokenToSend?.decimals || 18),
 							6,
 							configuration.tokenToSend?.decimals || 18
 						)}
+						{` ${configuration.tokenToSend?.symbol || 'Tokens'} ...`}
 					</span>
-					{` ${configuration.tokenToSend?.symbol || 'Tokens'} ...`}
 				</div>
 			);
 		}
@@ -534,16 +525,25 @@ export function DisperseWizard(): ReactElement {
 
 	const {shouldApprove, approvalStatus, allowance, isApproved, onApproveToken} = useApproveDisperse({
 		onSuccess: () => {
+			console.log('on success approve');
 			set_disperseStatus(defaultTxStatus);
 		},
 		totalToDisperse
 	});
 
 	const {onDisperseTokens} = useConfirmDisperse({
-		onError: () => set_disperseStatus({...defaultTxStatus, error: true}),
-		onSuccess: () => set_disperseStatus({...defaultTxStatus, pending: true}),
-		onTrigger: () => set_disperseStatus({...defaultTxStatus, pending: true}),
-		set_disperseStatus
+		onError: () => {
+			console.log('error disperse');
+			set_disperseStatus({...defaultTxStatus, error: true});
+		},
+		onSuccess: () => {
+			console.log('success disperse');
+			set_disperseStatus({...defaultTxStatus, success: true});
+		},
+		onTrigger: () => {
+			console.log('trigger disperse');
+			set_disperseStatus({...defaultTxStatus, pending: true});
+		}
 	});
 
 	const isAboveBalance =
@@ -581,6 +581,19 @@ export function DisperseWizard(): ReactElement {
 		});
 	}, [configuration.inputs, checkAlreadyExists]);
 
+	const getButtonTitle = (): string => {
+		if (isWalletSafe) {
+			return 'Disperse';
+		}
+		if (toAddress(configuration.tokenToSend?.address) === ETH_TOKEN_ADDRESS) {
+			return 'Disperse';
+		}
+		if (isApproved) {
+			return 'Disperse';
+		}
+		return 'Approve';
+	};
+
 	return (
 		<div className={'col-span-12 mt-4'}>
 			{/* <small className={'pb-1 pl-1'}>{'Summary'}</small> */}
@@ -596,15 +609,7 @@ export function DisperseWizard(): ReactElement {
 					/>
 				)}
 
-				<DisperseStatus
-					disperseStatus={{
-						none: false,
-						pending: false,
-						success: false,
-						error: false,
-						errorMessage: undefined
-					}}
-				/>
+				<DisperseStatus disperseStatus={disperseStatus} />
 			</div>
 			<Button
 				isBusy={disperseStatus.pending}
@@ -622,13 +627,14 @@ export function DisperseWizard(): ReactElement {
 					return onApproveToken();
 				}}
 				className={'!h-10 w-full max-w-[240px] mt-2'}>
-				{isApproved ? 'Disperse' : 'Approve'}
+				{getButtonTitle()}
 			</Button>
 
 			<SuccessModal
 				title={'It looks like a success!'}
 				content={'Your tokens have been dispersed! Just like ashes in the wind... Whao, dark.'}
 				ctaLabel={'Close'}
+				downloadConfigButton={<ExportConfigurationButton className={'w-full'} />}
 				isOpen={disperseStatus.success}
 				onClose={(): void => {
 					onResetDisperse();
