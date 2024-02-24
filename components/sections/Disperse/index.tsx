@@ -1,8 +1,12 @@
-import React, {memo, useCallback, useEffect} from 'react';
+import React, {memo, useCallback, useEffect, useMemo, useState} from 'react';
+import {useValidateAddressInput} from 'components/designSystem/SmolAddressInput';
+import {useValidateAmountInput} from 'components/designSystem/SmolTokenAmountInput';
 import {SmolTokenSelector} from 'components/designSystem/SmolTokenSelector';
 import {Button} from 'components/Primitives/Button';
 import Papa from 'papaparse';
-import {useTokenList} from '@builtbymom/web3/contexts/WithTokenList';
+import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
+import {useBalances} from '@builtbymom/web3/hooks/useBalances.multichains';
+import {toAddress, toNormalizedBN} from '@builtbymom/web3/utils';
 import IconImport from '@icons/IconImport';
 
 import {DisperseAddressAndAmountInputs} from './DisperseAddressAndAmountInputs';
@@ -12,11 +16,49 @@ import {DisperseWizard} from './Wizard';
 
 import type {ChangeEvent, ReactElement} from 'react';
 import type {TAddress, TToken} from '@builtbymom/web3/types';
+import type {TDisperseInput} from './useDisperse';
 
-function ImportConfigurationButton(): ReactElement {
+type TRecord = {
+	tokenAddress: TAddress;
+	receiverAddress: TAddress;
+	value: string;
+	chainId: string;
+};
+
+function ImportConfigurationButton({onSelectToken}: {onSelectToken: (token: TToken) => void}): ReactElement {
 	const {dispatchConfiguration} = useDisperse();
 
-	const {getToken} = useTokenList();
+	const {chainID: safeChainID} = useWeb3();
+	// const {safeChainID} = useChainID();
+
+	const {validate: validateAddress} = useValidateAddressInput();
+	const {validate: validateAmount} = useValidateAmountInput();
+
+	const [importedTokenToSend, set_importedTokenToSend] = useState<string | undefined>(undefined);
+	const [records, set_records] = useState<TRecord[] | undefined>(undefined);
+
+	/** Token in URL may not be present in csv file, so better to be fetched  */
+	const {data: initialTokenRaw} = useBalances({
+		tokens: [{address: toAddress(importedTokenToSend), chainID: safeChainID}]
+	});
+
+	const initialToken = useMemo((): TToken | undefined => {
+		return initialTokenRaw[safeChainID] && importedTokenToSend
+			? initialTokenRaw[safeChainID][importedTokenToSend]
+			: undefined;
+	}, [initialTokenRaw]);
+
+	const getInitialAmount = (amount: string, token: TToken | undefined): string => {
+		return amount && token ? toNormalizedBN(amount, token.decimals).display : '0';
+	};
+
+	const onAddInputs = (inputs: TDisperseInput[]): void => {
+		dispatchConfiguration({type: 'ADD_RECEIVERS', payload: inputs});
+	};
+
+	const clearReceivers = (): void => {
+		dispatchConfiguration({type: 'CLEAR_RECEIVERS', payload: undefined});
+	};
 
 	const handleFileUpload = (e: ChangeEvent<HTMLInputElement>): void => {
 		if (!e.target.files) {
@@ -30,7 +72,7 @@ function ImportConfigurationButton(): ReactElement {
 			}
 			const {result} = event.target;
 			const parsedCSV = Papa.parse(result, {header: true});
-			let records: any[] = [];
+			let records: TRecord[] = [];
 
 			// If we are working with a safe file, we should get 4 columns.
 			const isProbablySafeFile = parsedCSV.meta.fields.length === 4;
@@ -45,17 +87,46 @@ function ImportConfigurationButton(): ReactElement {
 					};
 				});
 			}
-			console.log(records);
-			dispatchConfiguration({
-				type: 'SET_TOKEN_TO_SEND',
-				payload: getToken({address: records[0].tokenAddress, chainID: records[0].chainId})
-			});
-			// for (const record of records) {
-			// 	dispatchConfiguration({type})
-			// }
+			set_importedTokenToSend(records[0].tokenAddress);
+			set_records(records);
 		};
 		reader.readAsBinaryString(file);
 	};
+
+	/** Set imported token from url if present */
+	useEffect(() => {
+		console.log(initialToken);
+		if (initialToken) {
+			onSelectToken(initialToken);
+		}
+	}, [initialToken]);
+
+	useEffect(() => {
+		if (!records || !Array.isArray(records)) {
+			return;
+		}
+
+		const resultInputs: TDisperseInput[] = [];
+		const promises = records.map(async record => validateAddress(undefined, record.receiverAddress));
+		Promise.all(promises)
+			.then(values => {
+				values.forEach((validatedReceiver, index) => {
+					const stringAmount = getInitialAmount(records[index].value, initialToken);
+					console.log(records[index].value, initialToken);
+					const value = {
+						receiver: validatedReceiver,
+						value: {...newVoidRow().value, ...validateAmount(stringAmount, initialToken)},
+						UUID: crypto.randomUUID()
+					};
+					resultInputs.push(value);
+				});
+			})
+			.finally(() => {
+				clearReceivers();
+				onAddInputs(resultInputs);
+			});
+	}, [initialToken]);
+
 	return (
 		<Button
 			onClick={() => document.querySelector<HTMLInputElement>('#file-upload')?.click()}
@@ -139,7 +210,7 @@ const Disperse = memo(function Disperse(): ReactElement {
 	return (
 		<div className={'w-full'}>
 			<div className={'flex mb-4 gap-2'}>
-				<ImportConfigurationButton />
+				<ImportConfigurationButton onSelectToken={onSelectToken} />
 				<ExportConfigurationButton />
 			</div>
 			<div className={'mb-6 max-w-[432px]'}>

@@ -3,72 +3,295 @@ import {IconCircleCheck} from 'components/icons/IconCircleCheck';
 import {IconCircleCross} from 'components/icons/IconCircleCross';
 import {IconSpinner} from 'components/icons/IconSpinner';
 import {Button} from 'components/Primitives/Button';
-import {approveERC20, disperseERC20, disperseETH, isApprovedERC20} from 'utils/actions';
+import {approveERC20, disperseERC20, disperseETH} from 'utils/actions';
 import {notifyDisperse} from 'utils/notifier';
 import {getTransferTransaction} from 'utils/tools.gnosis';
 import {erc20ABI, useContractRead} from 'wagmi';
 import useWallet from '@builtbymom/web3/contexts/useWallet';
 import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
 import {useChainID} from '@builtbymom/web3/hooks/useChainID';
-import {formatAmount, isZeroAddress, toAddress, toBigInt, toBigNumberAsAmount} from '@builtbymom/web3/utils';
+import {
+	formatAmount,
+	isZeroAddress,
+	toAddress,
+	toBigInt,
+	toBigNumberAsAmount,
+	toNormalizedAmount,
+	toNormalizedValue
+} from '@builtbymom/web3/utils';
 import {defaultTxStatus} from '@builtbymom/web3/utils/wagmi/transaction';
 import {useSafeAppsSDK} from '@gnosis.pm/safe-apps-react-sdk';
 import {toast} from '@yearn-finance/web-lib/components/yToast';
 import {ETH_TOKEN_ADDRESS, ZERO_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
 import {SuccessModal} from '@common/ConfirmationModal';
-import {Warning} from '@common/Primitives/Warning';
 
 import {useDisperse} from './useDisperse';
 
 import type {ReactElement} from 'react';
 import type {BaseError, Hex} from 'viem';
 import type {TAddress} from '@builtbymom/web3/types';
+import type {TTxStatus} from '@builtbymom/web3/utils/wagmi/transaction';
 import type {BaseTransaction} from '@gnosis.pm/safe-apps-sdk';
 import type {TDisperseInput} from './useDisperse';
 
 type TApprovalWizardProps = {
-	allowance: bigint;
-	onSuccess: () => Promise<void>;
+	onSuccess: () => void;
+	totalToDisperse: bigint;
 };
-function ApprovalWizard({onSuccess, allowance}: TApprovalWizardProps): ReactElement {
+
+const useApproveDisperse = ({
+	onSuccess,
+	totalToDisperse
+}: TApprovalWizardProps): {
+	approvalStatus: TTxStatus;
+	shouldApprove: boolean;
+	allowance: bigint;
+	isApproved: boolean;
+	totalToDisperse: bigint;
+	isDisabled: boolean;
+	onApproveToken: () => void;
+} => {
 	const {provider} = useWeb3();
 	const {safeChainID} = useChainID();
 	const {configuration} = useDisperse();
-	const {getBalance} = useWallet();
 	const [approvalStatus, set_approvalStatus] = useState(defaultTxStatus);
+	const {address} = useWeb3();
 
-	const totalToDisperse = useMemo((): bigint => {
-		return configuration.inputs.reduce((acc, row): bigint => acc + toBigInt(row.value.normalizedBigAmount.raw), 0n);
-	}, [configuration.inputs]);
+	const shouldApprove = useMemo((): boolean => {
+		return toAddress(configuration.tokenToSend?.address) !== ETH_TOKEN_ADDRESS;
+	}, [configuration.tokenToSend]);
 
-	const onApproveToken = useCallback(async (): Promise<void> => {
-		const isApproved = await isApprovedERC20({
-			connector: provider,
-			contractAddress: toAddress(configuration.tokenToSend?.address),
-			spenderAddress: toAddress(process.env.DISPERSE_ADDRESS),
-			amount: totalToDisperse
-		});
+	const {data: allowance = 0n, refetch} = useContractRead({
+		abi: erc20ABI,
+		functionName: 'allowance',
+		args: [toAddress(address), toAddress(process.env.DISPERSE_ADDRESS)],
+		address: toAddress(configuration.tokenToSend?.address),
+		enabled:
+			configuration.tokenToSend !== undefined &&
+			toAddress(configuration.tokenToSend?.address) !== ETH_TOKEN_ADDRESS
+	});
+
+	const isApproved = allowance >= totalToDisperse;
+
+	const onApproveToken = useCallback((): void => {
 		if (isApproved) {
-			return document.getElementById('DISPERSE_TOKENS')?.click();
+			return;
 		}
-		const result = await approveERC20({
+		approveERC20({
 			connector: provider,
 			chainID: safeChainID,
 			contractAddress: toAddress(configuration.tokenToSend?.address),
 			spenderAddress: toAddress(process.env.DISPERSE_ADDRESS),
 			amount: totalToDisperse,
 			statusHandler: set_approvalStatus
+		}).then(result => {
+			if (result.isSuccessful) {
+				onSuccess();
+				refetch();
+			}
 		});
-		if (result.isSuccessful) {
-			await onSuccess();
-			return document.getElementById('DISPERSE_TOKENS')?.click();
-		}
 	}, [provider, configuration.tokenToSend, totalToDisperse, onSuccess, safeChainID]);
+
+	return {
+		approvalStatus,
+		shouldApprove,
+		allowance,
+		isApproved,
+		totalToDisperse,
+		isDisabled: !approvalStatus.none || !configuration.tokenToSend,
+		onApproveToken
+	};
+};
+
+const useConfirmDisperse = ({
+	onTrigger,
+	onSuccess,
+	onError,
+	set_disperseStatus
+}: {
+	onTrigger: () => void;
+	onSuccess: () => void;
+	onError: () => void;
+	set_disperseStatus: (status: TTxStatus) => void;
+}): {onDisperseTokens: () => void} => {
+	const {address, provider, isWalletSafe} = useWeb3();
+	const {safeChainID} = useChainID();
+	const {configuration} = useDisperse();
+	const {onRefresh} = useWallet();
+	const {sdk} = useSafeAppsSDK();
+
+	/**********************************************************************************************
+	 ** onDisperseTokensForGnosis will do just like disperseTokens but for Gnosis Safe and without
+	 ** the use of a smartcontract. It will just batch standard transfers.
+	 **********************************************************************************************/
+	const onDisperseTokensForGnosis = useCallback((): void => {
+		const transactions: BaseTransaction[] = [];
+		const disperseAddresses: TAddress[] = [];
+		const disperseAmount: bigint[] = [];
+		for (const row of configuration.inputs) {
+			if (!row.value.amount || row.value.normalizedBigAmount.raw === 0n) {
+				continue;
+			}
+			if (
+				!row.receiver.address ||
+				row.receiver.address === ZERO_ADDRESS ||
+				row.receiver.address === ETH_TOKEN_ADDRESS
+			) {
+				continue;
+			}
+			disperseAddresses.push(row.receiver.address);
+			disperseAmount.push(row.value.normalizedBigAmount.raw);
+			const newTransactionForBatch = getTransferTransaction(
+				row.value.normalizedBigAmount.raw.toString(),
+				toAddress(configuration.tokenToSend?.address),
+				row.receiver.address
+			);
+			transactions.push(newTransactionForBatch);
+		}
+		try {
+			sdk.txs.send({txs: transactions}).then(({safeTxHash}) => {
+				console.log({hash: safeTxHash});
+				toast({
+					type: 'success',
+					content: 'Your transaction has been created! You can now sign and execute it!'
+				});
+				notifyDisperse({
+					chainID: safeChainID,
+					tokenToDisperse: configuration.tokenToSend,
+					receivers: disperseAddresses,
+					amounts: disperseAmount,
+					type: 'SAFE',
+					from: toAddress(address),
+					hash: safeTxHash as Hex
+				});
+				onSuccess();
+			});
+		} catch (error) {
+			toast({
+				type: 'error',
+				content: (error as BaseError)?.message || 'An error occured while creating your transaction!'
+			});
+			onError();
+		}
+	}, [address, safeChainID, configuration.inputs, sdk.txs, configuration.tokenToSend]);
+
+	const onDisperseTokens = useCallback((): void => {
+		onTrigger();
+		if (isWalletSafe) {
+			return onDisperseTokensForGnosis();
+		}
+
+		const [disperseAddresses, disperseAmount] = configuration.inputs
+			.filter((row): boolean => {
+				return (
+					(toBigInt(row.value.normalizedBigAmount.raw) > 0n &&
+						row.receiver.address &&
+						!isZeroAddress(row.receiver.address)) ||
+					false
+				);
+			})
+			.reduce(
+				(acc, row): [TAddress[], bigint[]] => {
+					acc[0].push(toAddress(row.receiver.address));
+					acc[1].push(toBigInt(row.value.normalizedBigAmount.raw));
+					return acc;
+				},
+				[[] as TAddress[], [] as bigint[]]
+			);
+
+		if (configuration.tokenToSend?.address === ETH_TOKEN_ADDRESS) {
+			disperseETH({
+				connector: provider,
+				chainID: safeChainID,
+				contractAddress: toAddress(process.env.DISPERSE_ADDRESS),
+				receivers: disperseAddresses,
+				amounts: disperseAmount,
+				statusHandler: set_disperseStatus
+			}).then(result => {
+				if (result.isSuccessful) {
+					onSuccess();
+					onRefresh([
+						{
+							decimals: configuration.tokenToSend?.decimals,
+							name: configuration.tokenToSend?.name,
+							symbol: configuration.tokenToSend?.symbol,
+							address: ETH_TOKEN_ADDRESS,
+							chainID: safeChainID
+						}
+					]);
+					if (result.receipt) {
+						notifyDisperse({
+							chainID: safeChainID,
+							tokenToDisperse: configuration.tokenToSend,
+							receivers: disperseAddresses,
+							amounts: disperseAmount,
+							type: 'EOA',
+							from: result.receipt.from,
+							hash: result.receipt.transactionHash
+						});
+					}
+					return;
+				}
+			});
+
+			onError();
+		} else {
+			disperseERC20({
+				connector: provider,
+				chainID: safeChainID,
+				contractAddress: toAddress(process.env.DISPERSE_ADDRESS),
+				tokenToDisperse: toAddress(configuration.tokenToSend?.address),
+				receivers: disperseAddresses,
+				amounts: disperseAmount,
+				statusHandler: set_disperseStatus
+			}).then(result => {
+				if (result.isSuccessful) {
+					onSuccess();
+					onRefresh([
+						{
+							decimals: configuration.tokenToSend?.decimals,
+							name: configuration.tokenToSend?.name,
+							symbol: configuration.tokenToSend?.symbol,
+							address: toAddress(configuration.tokenToSend?.address),
+							chainID: Number(configuration.tokenToSend?.chainID)
+						}
+					]);
+					if (result.receipt) {
+						notifyDisperse({
+							chainID: safeChainID,
+							tokenToDisperse: configuration.tokenToSend,
+							receivers: disperseAddresses,
+							amounts: disperseAmount,
+							type: 'EOA',
+							from: result.receipt.from,
+							hash: result.receipt.transactionHash
+						});
+					}
+					return;
+				}
+				onError();
+			});
+		}
+	}, [isWalletSafe, configuration.inputs, configuration.tokenToSend, provider, safeChainID, onRefresh]);
+
+	return {onDisperseTokens};
+};
+
+type TApprovalStatusProps = {
+	approvalStatus: TTxStatus;
+	allowance: bigint;
+	totalToDisperse: bigint;
+};
+
+function ApprovalStatus({approvalStatus, allowance, totalToDisperse}: TApprovalStatusProps): ReactElement {
+	const {configuration} = useDisperse();
+	const {getBalance} = useWallet();
 
 	function renderStatusIndicator(): ReactElement {
 		if (!configuration.tokenToSend) {
 			return <div className={'size-4 rounded-full border border-neutral-200 bg-neutral-300'} />;
 		}
+		// TODO: fix when totaltodiserse is 0 (values are not set)
 		if (allowance >= totalToDisperse) {
 			return <IconCircleCheck className={'size-4 text-green'} />;
 		}
@@ -96,17 +319,17 @@ function ApprovalWizard({onSuccess, allowance}: TApprovalWizardProps): ReactElem
 
 	function renderStatusMessage(): ReactElement {
 		if (totalToDisperse === 0n) {
-			return <div className={'text-left text-sm'}>{'You have nothing to approve '}</div>;
+			return <div className={'text-left text-xs'}>{'You have nothing to approve '}</div>;
 		}
 		if (allowance >= totalToDisperse || approvalStatus.success) {
 			return (
-				<div className={'text-left text-sm'}>
+				<div className={'text-left text-xs'}>
 					{'You have already approved '}
 					<span
 						suppressHydrationWarning
 						className={'font-number font-bold'}>
 						{formatAmount(
-							toBigNumberAsAmount(allowance, configuration.tokenToSend?.decimals || 18),
+							toNormalizedAmount(totalToDisperse, configuration.tokenToSend?.decimals || 18),
 							6,
 							configuration.tokenToSend?.decimals || 18
 						)}
@@ -140,94 +363,73 @@ function ApprovalWizard({onSuccess, allowance}: TApprovalWizardProps): ReactElem
 			}).raw
 		) {
 			return (
-				<div className={'text-left text-sm'}>
+				<div className={'text-left text-xs'}>
 					{`You don't have enough ${configuration.tokenToSend?.symbol || 'Tokens'}`}
 				</div>
 			);
 		}
 
 		return (
-			<div className={'text-left text-sm'}>
+			<div className={'text-left text-xs'}>
 				{'You need to approve the spending of '}
 				<span
 					suppressHydrationWarning
 					className={'font-number font-bold'}>
 					{formatAmount(
-						toBigNumberAsAmount(totalToDisperse, configuration.tokenToSend?.decimals || 18),
+						toNormalizedValue(totalToDisperse, configuration.tokenToSend?.decimals || 18),
 						6,
 						configuration.tokenToSend?.decimals || 18
 					)}
+					{` ${configuration.tokenToSend?.symbol || 'Tokens'}`}
 				</span>
-				{` ${configuration.tokenToSend?.symbol || 'Tokens'}`}
 			</div>
 		);
 	}
 
 	if (!configuration.tokenToSend) {
 		return (
-			<button
-				id={'APPROVE_TOKEN_TO_DISPERSE'}
-				disabled>
-				<Warning
-					statusIcon={renderStatusIndicator()}
-					type={'info'}
-					title={'Info'}
-					message={
-						<>
-							<div className={'flex w-full flex-col'}>
-								<div className={'text-left text-sm text-neutral-900/40'}>{'Please select a token'}</div>
-							</div>
-						</>
-					}
-				/>
-			</button>
+			<div className={'flex flex-col'}>
+				<div className={'font-bold'}>{'Info'}</div>
+				<div className={'text-left text-xs text-neutral-900/40'}>{'Please select a token'}</div>
+			</div>
 		);
 	}
 
 	return (
-		<button
-			id={'APPROVE_TOKEN_TO_DISPERSE'}
-			disabled={!approvalStatus.none || !configuration.tokenToSend}
-			onClick={onApproveToken}>
-			<Warning
-				statusIcon={renderStatusIndicator()}
-				type={'info'}
-				title={'Approve Summary'}
-				message={
-					<div>
-						<div className={'flex w-full flex-col'}>
-							<div className={'text-left text-sm'}>
-								{'You have '}
-								<span
-									suppressHydrationWarning
-									className={'font-number font-bold'}>
-									{formatAmount(
-										Number(
-											getBalance({
-												address: toAddress(configuration.tokenToSend?.address),
-												chainID: Number(configuration.tokenToSend?.chainID)
-											}).normalized
-										),
-										6,
-										configuration.tokenToSend?.decimals || 18
-									)}
-								</span>
-								{` ${configuration.tokenToSend?.symbol || 'Tokens'}`}
-							</div>
-							{renderStatusMessage()}
-						</div>
+		<div className={'flex flex-col'}>
+			<div className={'flex items-center gap-2'}>
+				<div className={'font-bold'}>{'Approve Summary'}</div>
+				{renderStatusIndicator()}
+			</div>
+			<div className={'text-left text-xs'}>
+				<div className={'flex w-full flex-col'}>
+					<div className={''}>
+						{'You have '}
+						<span
+							suppressHydrationWarning
+							className={'font-number font-bold'}>
+							{formatAmount(
+								getBalance({
+									address: toAddress(configuration.tokenToSend?.address),
+									chainID: Number(configuration.tokenToSend?.chainID)
+								}).normalized,
+								6,
+								configuration.tokenToSend?.decimals || 18
+							)}
+							{` ${configuration.tokenToSend?.symbol || 'Tokens'}`}
+						</span>
 					</div>
-				}
-			/>
-			<div className={'flex w-full flex-row items-center space-x-3 md:flex-row md:items-start'}></div>
-		</button>
+					{renderStatusMessage()}
+				</div>
+			</div>
+		</div>
 	);
 }
 
 function NothingToDisperse(): ReactElement {
 	return (
 		<div className={'flex w-full flex-row items-center md:flex-row md:items-center'}>
-			<div className={'text-left text-sm text-neutral-900/40'}>
+			<div className={'text-left text-xs text-neutral-900/40'}>
 				{'Please add some receivers to disperse tokens'}
 			</div>
 		</div>
@@ -239,7 +441,7 @@ function DisperseElement({row}: {row: TDisperseInput}): ReactElement {
 
 	return (
 		<div className={'flex w-full flex-row items-center md:flex-row md:items-center'}>
-			<div className={'text-left text-sm'}>
+			<div className={'text-left text-xs'}>
 				{'Sending '}
 				<span className={'font-number font-bold'}>
 					{formatAmount(
@@ -249,6 +451,7 @@ function DisperseElement({row}: {row: TDisperseInput}): ReactElement {
 					)}
 				</span>
 				{` ${configuration.tokenToSend?.symbol || 'Tokens'} to `}
+				<br />
 				<span className={'font-number inline-flex'}>
 					{toAddress(row.receiver.label) === ZERO_ADDRESS ? (
 						<div className={'font-number'}>
@@ -266,18 +469,11 @@ function DisperseElement({row}: {row: TDisperseInput}): ReactElement {
 	);
 }
 
-type TSpendingWizardProps = {
-	onTrigger: () => void;
-	onSuccess: () => void;
-	onError: () => void;
+type TSpendingStatusProps = {
+	disperseStatus: TTxStatus;
 };
-function SpendingWizard(props: TSpendingWizardProps): ReactElement {
-	const {address, provider, isWalletSafe} = useWeb3();
-	const {safeChainID} = useChainID();
+function DisperseStatus({disperseStatus}: TSpendingStatusProps): ReactElement {
 	const {isDispersed, configuration} = useDisperse();
-	const {onRefresh} = useWallet();
-	const {sdk} = useSafeAppsSDK();
-	const [disperseStatus, set_disperseStatus] = useState(defaultTxStatus);
 
 	const validReceivers = useMemo((): TDisperseInput[] => {
 		return configuration.inputs.filter(
@@ -285,162 +481,6 @@ function SpendingWizard(props: TSpendingWizardProps): ReactElement {
 				toBigInt(row.value.normalizedBigAmount.raw) !== 0n && row.receiver.address !== ZERO_ADDRESS
 		);
 	}, [configuration.inputs]);
-
-	/**********************************************************************************************
-	 ** onDisperseTokensForGnosis will do just like disperseTokens but for Gnosis Safe and without
-	 ** the use of a smartcontract. It will just batch standard transfers.
-	 **********************************************************************************************/
-	const onDisperseTokensForGnosis = useCallback(async (): Promise<void> => {
-		const transactions: BaseTransaction[] = [];
-		const disperseAddresses: TAddress[] = [];
-		const disperseAmount: bigint[] = [];
-		for (const row of configuration.inputs) {
-			if (!row.value.amount || row.value.normalizedBigAmount.raw === 0n) {
-				continue;
-			}
-			if (
-				!row.receiver.address ||
-				row.receiver.address === ZERO_ADDRESS ||
-				row.receiver.address === ETH_TOKEN_ADDRESS
-			) {
-				continue;
-			}
-			disperseAddresses.push(row.receiver.address);
-			disperseAmount.push(row.value.normalizedBigAmount.raw);
-			const newTransactionForBatch = getTransferTransaction(
-				row.value.normalizedBigAmount.raw.toString(),
-				toAddress(configuration.tokenToSend?.address),
-				row.receiver.address
-			);
-			transactions.push(newTransactionForBatch);
-		}
-		try {
-			const {safeTxHash} = await sdk.txs.send({txs: transactions});
-			console.log({hash: safeTxHash});
-			toast({type: 'success', content: 'Your transaction has been created! You can now sign and execute it!'});
-			notifyDisperse({
-				chainID: safeChainID,
-				tokenToDisperse: configuration.tokenToSend,
-				receivers: disperseAddresses,
-				amounts: disperseAmount,
-				type: 'SAFE',
-				from: toAddress(address),
-				hash: safeTxHash as Hex
-			});
-			props.onSuccess();
-		} catch (error) {
-			toast({
-				type: 'error',
-				content: (error as BaseError)?.message || 'An error occured while creating your transaction!'
-			});
-			props.onError();
-		}
-	}, [address, safeChainID, configuration.inputs, sdk.txs, configuration.tokenToSend, props]);
-
-	const onDisperseTokens = useCallback(async (): Promise<void> => {
-		props.onTrigger();
-		if (isWalletSafe) {
-			return await onDisperseTokensForGnosis();
-		}
-
-		const [disperseAddresses, disperseAmount] = configuration.inputs
-			.filter((row): boolean => {
-				return (
-					(toBigInt(row.value.normalizedBigAmount.raw) > 0n &&
-						row.receiver.address &&
-						!isZeroAddress(row.receiver.address)) ||
-					false
-				);
-			})
-			.reduce(
-				(acc, row): [TAddress[], bigint[]] => {
-					acc[0].push(toAddress(row.receiver.address));
-					acc[1].push(toBigInt(row.value.normalizedBigAmount.raw));
-					return acc;
-				},
-				[[] as TAddress[], [] as bigint[]]
-			);
-
-		if (configuration.tokenToSend?.address === ETH_TOKEN_ADDRESS) {
-			const result = await disperseETH({
-				connector: provider,
-				chainID: safeChainID,
-				contractAddress: toAddress(process.env.DISPERSE_ADDRESS),
-				receivers: disperseAddresses,
-				amounts: disperseAmount,
-				statusHandler: set_disperseStatus
-			});
-			if (result.isSuccessful) {
-				props.onSuccess();
-				onRefresh([
-					{
-						decimals: configuration.tokenToSend.decimals,
-						name: configuration.tokenToSend.name,
-						symbol: configuration.tokenToSend.symbol,
-						address: configuration.tokenToSend.address,
-						chainID: configuration.tokenToSend.chainID
-					}
-				]);
-				if (result.receipt) {
-					notifyDisperse({
-						chainID: safeChainID,
-						tokenToDisperse: configuration.tokenToSend,
-						receivers: disperseAddresses,
-						amounts: disperseAmount,
-						type: 'EOA',
-						from: result.receipt.from,
-						hash: result.receipt.transactionHash
-					});
-				}
-				return;
-			}
-			props.onError();
-		} else {
-			const result = await disperseERC20({
-				connector: provider,
-				chainID: safeChainID,
-				contractAddress: toAddress(process.env.DISPERSE_ADDRESS),
-				tokenToDisperse: toAddress(configuration.tokenToSend?.address),
-				receivers: disperseAddresses,
-				amounts: disperseAmount,
-				statusHandler: set_disperseStatus
-			});
-			if (result.isSuccessful) {
-				props.onSuccess();
-				onRefresh([
-					{
-						decimals: configuration.tokenToSend?.decimals,
-						name: configuration.tokenToSend?.name,
-						symbol: configuration.tokenToSend?.symbol,
-						address: toAddress(configuration.tokenToSend?.address),
-						chainID: Number(configuration.tokenToSend?.chainID)
-					}
-				]);
-				if (result.receipt) {
-					notifyDisperse({
-						chainID: safeChainID,
-						tokenToDisperse: configuration.tokenToSend,
-						receivers: disperseAddresses,
-						amounts: disperseAmount,
-						type: 'EOA',
-						from: result.receipt.from,
-						hash: result.receipt.transactionHash
-					});
-				}
-				return;
-			}
-			props.onError();
-		}
-	}, [
-		props,
-		isWalletSafe,
-		configuration.inputs,
-		configuration.tokenToSend,
-		onDisperseTokensForGnosis,
-		provider,
-		safeChainID,
-		onRefresh
-	]);
 
 	function renderStatusIndicator(): ReactElement {
 		if (isDispersed) {
@@ -459,58 +499,52 @@ function SpendingWizard(props: TSpendingWizardProps): ReactElement {
 	}
 
 	return (
-		<div className={'relative w-full'}>
-			<div className={'absolute left-4 top-4 flex h-6 items-center'}>{}</div>
-			<button
-				id={'DISPERSE_TOKENS'}
-				disabled={!disperseStatus.none || !configuration.tokenToSend}
-				onClick={onDisperseTokens}>
-				<Warning
-					type={'info'}
-					title={'Disperse Summary'}
-					statusIcon={renderStatusIndicator()}
-					message={
-						validReceivers.length === 0 ? (
-							<NothingToDisperse />
-						) : (
-							validReceivers.map(
-								(row): ReactElement => (
-									<DisperseElement
-										key={row.UUID}
-										row={row}
-									/>
-								)
-							)
+		<div className={'flex flex-col'}>
+			<div className={'flex gap-2 items-center'}>
+				<div className={'font-bold'}>{'Disperse Summary'}</div>
+				{renderStatusIndicator()}
+			</div>
+			<div>
+				{validReceivers.length === 0 ? (
+					<NothingToDisperse />
+				) : (
+					validReceivers.map(
+						(row): ReactElement => (
+							<DisperseElement
+								key={row.UUID}
+								row={row}
+							/>
 						)
-					}
-				/>
-			</button>
+					)
+				)}
+			</div>
 		</div>
 	);
 }
 
 export function DisperseWizard(): ReactElement {
 	const {getBalance} = useWallet();
-	const {address, isWalletSafe} = useWeb3();
+	const {isWalletSafe} = useWeb3();
 	const {configuration, onResetDisperse} = useDisperse();
 	const [disperseStatus, set_disperseStatus] = useState(defaultTxStatus);
-	const {data: allowance, refetch} = useContractRead({
-		abi: erc20ABI,
-		functionName: 'allowance',
-		args: [toAddress(address), toAddress(process.env.DISPERSE_ADDRESS)],
-		address: toAddress(configuration.tokenToSend?.address),
-		enabled:
-			configuration.tokenToSend !== undefined &&
-			toAddress(configuration.tokenToSend?.address) !== ETH_TOKEN_ADDRESS
-	});
-
-	const shouldApprove = useMemo((): boolean => {
-		return toAddress(configuration.tokenToSend?.address) !== ETH_TOKEN_ADDRESS;
-	}, [configuration.tokenToSend]);
 
 	const totalToDisperse = useMemo((): bigint => {
 		return configuration.inputs.reduce((acc, row): bigint => acc + row.value.normalizedBigAmount.raw, 0n);
 	}, [configuration.inputs]);
+
+	const {shouldApprove, approvalStatus, allowance, isApproved, onApproveToken} = useApproveDisperse({
+		onSuccess: () => {
+			set_disperseStatus(defaultTxStatus);
+		},
+		totalToDisperse
+	});
+
+	const {onDisperseTokens} = useConfirmDisperse({
+		onError: () => set_disperseStatus({...defaultTxStatus, error: true}),
+		onSuccess: () => set_disperseStatus({...defaultTxStatus, pending: true}),
+		onTrigger: () => set_disperseStatus({...defaultTxStatus, pending: true}),
+		set_disperseStatus
+	});
 
 	const isAboveBalance =
 		totalToDisperse >
@@ -550,21 +584,26 @@ export function DisperseWizard(): ReactElement {
 	return (
 		<div className={'col-span-12 mt-4'}>
 			{/* <small className={'pb-1 pl-1'}>{'Summary'}</small> */}
-			<div className={'flex flex-col gap-2'}>
+			<div
+				className={
+					'flex flex-col md:flex-row gap border gap-12 rounded-lg border-neutral-600 text-neutral-700 bg-neutral-100 p-4'
+				}>
 				{shouldApprove && !isWalletSafe && (
-					<ApprovalWizard
+					<ApprovalStatus
+						approvalStatus={approvalStatus}
 						allowance={toBigInt(allowance)}
-						onSuccess={async (): Promise<void> => {
-							await refetch();
-							set_disperseStatus(defaultTxStatus);
-						}}
+						totalToDisperse={totalToDisperse}
 					/>
 				)}
 
-				<SpendingWizard
-					onTrigger={() => set_disperseStatus({...defaultTxStatus, pending: true})}
-					onSuccess={() => set_disperseStatus({...defaultTxStatus, pending: true})}
-					onError={() => set_disperseStatus({...defaultTxStatus, error: true})}
+				<DisperseStatus
+					disperseStatus={{
+						none: false,
+						pending: false,
+						success: false,
+						error: false,
+						errorMessage: undefined
+					}}
 				/>
 			</div>
 			<Button
@@ -572,15 +611,18 @@ export function DisperseWizard(): ReactElement {
 				isDisabled={isAboveBalance || configuration.inputs.length === 0 || !isValid}
 				onClick={(): void => {
 					if (isWalletSafe) {
-						return document.getElementById('DISPERSE_TOKENS')?.click();
+						return onDisperseTokens();
 					}
 					if (toAddress(configuration.tokenToSend?.address) === ETH_TOKEN_ADDRESS) {
-						return document.getElementById('DISPERSE_TOKENS')?.click();
+						return onDisperseTokens();
 					}
-					return document.getElementById('APPROVE_TOKEN_TO_DISPERSE')?.click();
+					if (isApproved) {
+						return onDisperseTokens();
+					}
+					return onApproveToken();
 				}}
 				className={'!h-10 w-full max-w-[240px] mt-2'}>
-				{'Disperse'}
+				{isApproved ? 'Disperse' : 'Approve'}
 			</Button>
 
 			<SuccessModal

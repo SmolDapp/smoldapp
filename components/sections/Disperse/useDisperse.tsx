@@ -24,6 +24,7 @@ export type TDisperseActions =
 	| {type: 'DEL_RECEIVER_BY_UUID'; payload: string}
 	| {type: 'SET_RECEIVER'; payload: Partial<TInputAddressLike> & {UUID: string}}
 	| {type: 'SET_VALUE'; payload: Partial<TAmountInputElement> & {UUID: string}}
+	| {type: 'CLEAR_RECEIVERS'; payload: undefined}
 	| {type: 'RESET'; payload: undefined};
 
 export type TDisperseQuery = TPartialExhaustive<{
@@ -73,6 +74,8 @@ const configurationReducer = (state: TDisperseConfiguration, action: TDisperseAc
 				...state,
 				inputs: [...state.inputs, ...action.payload]
 			};
+		case 'CLEAR_RECEIVERS':
+			return {...state, inputs: []};
 
 		case 'DEL_RECEIVER_BY_UUID':
 			if (state.inputs.length === 1) {
