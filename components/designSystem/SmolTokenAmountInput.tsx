@@ -103,7 +103,6 @@ export function SmolTokenAmountInput({showPercentButtons = false, onSetValue, va
 	const [isFocused, set_isFocused] = useState<boolean>(false);
 	const {token: selectedToken} = value;
 	const selectedTokenBalance = selectedToken?.balance ?? zeroNormalizedBN;
-
 	const {result, validate} = useValidateAmountInput();
 
 	const onSetFractional = (percentage: number): void => {
@@ -124,6 +123,45 @@ export function SmolTokenAmountInput({showPercentButtons = false, onSetValue, va
 		}
 		return 'border-neutral-400';
 	}, [isFocused, value.isValid]);
+
+	const getErrorOrButton = (): JSX.Element => {
+		const button = (
+			<button
+				onClick={() => onSetFractional(100)}
+				onMouseDown={e => e.preventDefault()}
+				disabled={!selectedToken || selectedTokenBalance.raw === 0n}>
+				<p>{`You have ${handleLowAmount(selectedTokenBalance, 2, 6)}`}</p>
+			</button>
+		);
+
+		if (showPercentButtons) {
+			return (
+				<div className={'flex gap-1 '}>
+					{percentIntervals.map(percent => (
+						<button
+							className={'rounded-full bg-neutral-200 px-2 py-0.5 transition-colors hover:bg-neutral-300'}
+							onClick={() => onSetFractional(percent)}
+							onMouseDown={e => e.preventDefault()}>
+							{percent}
+							{'%'}
+						</button>
+					))}
+				</div>
+			);
+		}
+
+		if (!selectedTokenBalance.normalized) {
+			return <p>{'No token selected'}</p>;
+		}
+		if (isFocused) {
+			return button;
+		}
+		if (value.error) {
+			return <p className={'text-red'}>{value.error}</p>;
+		}
+
+		return button;
+	};
 
 	useDeepCompareEffect(() => {
 		if (!result) {
@@ -162,36 +200,13 @@ export function SmolTokenAmountInput({showPercentButtons = false, onSetValue, va
 						step={1}
 					/>
 					<div className={'flex items-center justify-between text-xs text-[#ADB1BD]'}>
-						{value.error ? (
-							<p className={'text-red'}>{value.error}</p>
-						) : showPercentButtons ? (
-							<div className={'flex gap-1 '}>
-								{percentIntervals.map(percent => (
-									<button
-										className={
-											'rounded-full bg-neutral-200 px-2 py-0.5 transition-colors hover:bg-neutral-300'
-										}
-										onClick={() => onSetFractional(percent)}>
-										{percent}
-										{'%'}
-									</button>
-								))}
-							</div>
-						) : selectedTokenBalance.normalized ? (
-							<button
-								onClick={() => onSetFractional(100)}
-								disabled={!selectedToken || selectedTokenBalance.raw === 0n}>
-								<p>{`You have ${handleLowAmount(selectedTokenBalance, 2, 6)}`}</p>
-							</button>
-						) : (
-							<p>{'No token selected'}</p>
-						)}
-
+						{getErrorOrButton()}
 						<button
 							className={
 								'rounded-md px-2 py-1 transition-colors hover:bg-neutral-200 disabled:cursor-not-allowed disabled:opacity-40'
 							}
 							onClick={() => onSetFractional(100)}
+							onMouseDown={e => e.preventDefault()}
 							disabled={!selectedToken || selectedTokenBalance.raw === 0n}>
 							{'MAX'}
 						</button>

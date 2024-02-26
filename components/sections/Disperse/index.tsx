@@ -14,7 +14,7 @@ import {newVoidRow, useDisperse} from './useDisperse';
 import {useDisperseQueryManagement} from './useDisperseQuery';
 import {DisperseWizard} from './Wizard';
 
-import type {ChangeEvent, ComponentPropsWithoutRef,ReactElement} from 'react';
+import type {ChangeEvent, ComponentPropsWithoutRef, ReactElement} from 'react';
 import type {TAddress, TToken} from '@builtbymom/web3/types';
 import type {TDisperseInput} from './useDisperse';
 

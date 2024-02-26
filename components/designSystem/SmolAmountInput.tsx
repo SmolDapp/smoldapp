@@ -46,6 +46,28 @@ export function SmolAmountInput({onSetValue, value, token}: TAmountInput): React
 		return 'border-neutral-400';
 	}, [isFocused, value.isValid]);
 
+	const getErrorOrButton = (): JSX.Element => {
+		const button = (
+			<button
+				onClick={onSetMax}
+				onMouseDown={e => e.preventDefault()}
+				disabled={!token || selectedTokenBalance.raw === 0n}>
+				<p>{`You have ${handleLowAmount(selectedTokenBalance, 2, 6)}`}</p>
+			</button>
+		);
+		if (!selectedTokenBalance.normalized) {
+			return <p>{'No token selected'}</p>;
+		}
+		if (isFocused) {
+			return button;
+		}
+		if (value.error) {
+			return <p className={'text-red'}>{value.error}</p>;
+		}
+
+		return button;
+	};
+
 	/** Set the validation result to the context */
 	useDeepCompareEffect(() => {
 		if (!result) {
@@ -93,17 +115,7 @@ export function SmolAmountInput({onSetValue, value, token}: TAmountInput): React
 							step={1}
 						/>
 						<div className={'flex items-center justify-between text-xs text-[#ADB1BD]'}>
-							{value.error ? (
-								<p className={'text-red'}>{value.error}</p>
-							) : selectedTokenBalance.normalized ? (
-								<button
-									onClick={onSetMax}
-									disabled={!token || selectedTokenBalance.raw === 0n}>
-									<p>{`You have ${handleLowAmount(selectedTokenBalance, 2, 6)}`}</p>
-								</button>
-							) : (
-								<p>{'No token selected'}</p>
-							)}
+							{getErrorOrButton()}
 						</div>
 					</div>
 				</label>

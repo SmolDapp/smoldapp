@@ -221,9 +221,8 @@ const useConfirmDisperse = ({
 						});
 					}
 					return;
-				} 
-					onError();
-				
+				}
+				onError();
 			});
 		} else {
 			disperseERC20({
@@ -257,9 +256,8 @@ const useConfirmDisperse = ({
 						});
 					}
 					return;
-				} 
-					onError();
-				
+				}
+				onError();
 			});
 		}
 	}, [isWalletSafe, configuration.inputs, configuration.tokenToSend, provider, safeChainID, onRefresh]);
