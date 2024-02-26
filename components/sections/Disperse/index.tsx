@@ -141,7 +141,7 @@ function ImportConfigurationButton({onSelectToken}: {onSelectToken: (token: TTok
 				onChange={handleFileUpload}
 			/>
 			<IconImport className={'mr-2 size-3 text-neutral-900'} />
-			{'Import Contacts'}
+			{'Import CSV'}
 		</Button>
 	);
 }
