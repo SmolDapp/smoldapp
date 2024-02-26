@@ -14,7 +14,6 @@ import {IconLoader} from '@yearn-finance/web-lib/icons/IconLoader';
 
 import {AvatarWrapper} from './Avatar';
 
-import type {TAddressBookEntry} from 'contexts/useAddressBook';
 import type {ReactElement} from 'react';
 import type {TInputAddressLike} from '@utils/tools.address';
 
@@ -142,18 +141,9 @@ export function SmolAddressInput({onSetValue, value}: TAddressInput): ReactEleme
 
 	const onChange = (input: string): void => {
 		actions.abort();
-		actions.execute(input);
 		onSetValue({label: input});
+		actions.execute(input);
 	};
-
-	const onSelectItem = useCallback((item: TAddressBookEntry): void => {
-		onSetValue({
-			address: toAddress(item.address),
-			label: item.label || item.ens || toAddress(item.address),
-			isValid: true,
-			source: 'addressBook'
-		});
-	}, []);
 
 	const getInputValue = useCallback((): string | undefined => {
 		if (isFocused) {
@@ -195,7 +185,7 @@ export function SmolAddressInput({onSetValue, value}: TAddressInput): ReactEleme
 	}, [isFocused, value.isValid, isCheckingValidity]);
 
 	return (
-		<div className={'group relative size-full rounded-lg'}>
+		<div className={'group relative size-full rounded-[8px]'}>
 			<label
 				className={cl(
 					'h-20 z-20 relative',
@@ -265,25 +255,26 @@ export function SmolAddressInput({onSetValue, value}: TAddressInput): ReactEleme
 							set_isFocused(false);
 						}}
 					/>
-
-					<p
+					<input
+						disabled
 						className={cl(
-							'text-xs transition-all ',
+							'text-xs w-full border-none p-0 transition-all line-clamp-1 max-w-full truncate disabled',
 							isFocused ? 'opacity-0' : 'opacity-100',
 							isFocused ? 'translate-y-8' : 'translate-y-0',
 							isFocused ? 'pointer-events-none' : 'pointer-events-auto',
 							value.error ? 'text-red' : 'text-neutral-600'
-						)}>
-						{(isAddress(value?.address) && toAddress(value.address)) || value.error || ''}
-						{/* Adding &nbsp; to make sure we have an element here */}
-						&nbsp;
-					</p>
+						)}
+						defaultValue={''}
+						value={(isAddress(value?.address) && toAddress(value.address)) || value.error || ''}
+					/>
+
+					{/* Adding &nbsp; to make sure we have an element here */}
 				</div>
 				<div className={'w-fit flex-1'}>
 					<button
-						onClick={() => onOpenCurtain(selectedEntry => onSelectItem(selectedEntry))}
+						onClick={() => onOpenCurtain(selectedEntry => onChange(selectedEntry.label))}
 						className={cl(
-							'flex items-center gap-4 rounded-sm p-4 w-22',
+							'flex items-center gap-4 rounded-[4px] p-4 w-22',
 							'bg-neutral-200 hover:bg-neutral-300 transition-colors'
 						)}>
 						<div className={'flex size-8 min-w-8 items-center justify-center rounded-full bg-neutral-0'}>

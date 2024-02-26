@@ -29,19 +29,21 @@ export function DisperseAddressAndAmountInputs({input}: TDisperseAddressAndAmoun
 	};
 
 	return (
-		<div className={'flex py-2 pl-2 mb-4 w-full bg-neutral-200 rounded-xl items-center'}>
-			<div className={'basis-[64rem] mr-4'}>
-				<SmolAddressInput
-					onSetValue={onSetReceiver}
-					value={input.receiver}
-				/>
-			</div>
-			<div className={'w-full'}>
-				<SmolAmountInput
-					onSetValue={onSetAmount}
-					value={input.value}
-					token={configuration.tokenToSend}
-				/>
+		<div className={'flex py-2 pl-2 mb-4 w-full bg-neutral-200 rounded-xl items-center max-w-4xl'}>
+			<div className={'flex flex-col md:flex-row w-full gap-4'}>
+				<div className={'md:flex-[12] w-full '}>
+					<SmolAddressInput
+						onSetValue={onSetReceiver}
+						value={input.receiver}
+					/>
+				</div>
+				<div className={'md:flex-[7]'}>
+					<SmolAmountInput
+						onSetValue={onSetAmount}
+						value={input.value}
+						token={configuration.tokenToSend}
+					/>
+				</div>
 			</div>
 			<button
 				className={'p-2 mx-2 text-neutral-600 transition-colors hover:text-neutral-700'}
