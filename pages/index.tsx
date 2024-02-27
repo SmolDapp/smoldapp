@@ -3,12 +3,12 @@ import Image from 'next/image';
 import Link from 'next/link';
 import LogoDisperse from '@disperse/Logo';
 import {LogoTokenAssets} from '@icons/LogoTokenAssets';
+import LogoTokenlistooor from '@icons/LogoTokenListooor';
 import LogoMigratooor from '@migratooor/Logo';
 import LogoNFTMigratooor from '@nftmigratooor/Logo';
 import LogoPeanutCreator from '@peanut/create/Logo';
 import LogoSafeCreator from '@safeCreatooor/Logo';
 import LogoStream from '@stream/Logo';
-import LogoTokenlistooor from '@tokenlistooor/Logo';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 
 import type {ReactElement} from 'react';
@@ -40,7 +40,7 @@ const apps = [
 				{'.'}
 			</span>
 		),
-		icon: <LogoSafeCreator className={'h-[80px] w-[80px]'} />
+		icon: <LogoSafeCreator className={'size-[80px]'} />
 	},
 	{
 		href: '/stream',
@@ -53,7 +53,7 @@ const apps = [
 				{' salaries, token vest, or something else… simply, safely and sexily with SmolStream'}
 			</span>
 		),
-		icon: <LogoStream className={'h-[80px] w-[80px]'} />
+		icon: <LogoStream className={'size-[80px]'} />
 	},
 	{
 		href: '/disperse',
@@ -66,7 +66,7 @@ const apps = [
 				{' ether or tokens to multiple addresses.'}
 			</span>
 		),
-		icon: <LogoDisperse className={'h-[80px] w-[80px]'} />
+		icon: <LogoDisperse className={'size-[80px]'} />
 	},
 	{
 		href: 'https://gib.to',
@@ -121,7 +121,7 @@ const apps = [
 				{' your tokens.'}
 			</span>
 		),
-		icon: <LogoMigratooor className={'h-[80px] w-[80px]'} />
+		icon: <LogoMigratooor className={'size-[80px]'} />
 	},
 	{
 		href: '/nftmigratooor',
@@ -135,10 +135,10 @@ const apps = [
 				{' to your new wallet.'}
 			</span>
 		),
-		icon: <LogoNFTMigratooor className={'h-[80px] w-[80px]'} />
+		icon: <LogoNFTMigratooor className={'size-[80px]'} />
 	},
 	{
-		href: '/tokenlistooor',
+		href: 'https://tokenlistooor.com',
 		title: 'Tokenlistooor',
 		description: (
 			<span>
@@ -149,7 +149,7 @@ const apps = [
 				{' for your dApp.'}
 			</span>
 		),
-		icon: <LogoTokenlistooor className={'h-[80px] w-[80px]'} />
+		icon: <LogoTokenlistooor className={'size-[80px]'} />
 	},
 	{
 		href: '/tokenlistooor/smolAssets',
@@ -163,7 +163,7 @@ const apps = [
 				{'. Noice.'}
 			</span>
 		),
-		icon: <LogoTokenAssets className={'h-[80px] w-[80px]'} />
+		icon: <LogoTokenAssets className={'size-[80px]'} />
 	}
 ];
 
