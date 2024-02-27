@@ -21,7 +21,15 @@ function ViewChainToSend({onProceed}: {onProceed: VoidFunction}): ReactElement {
 							'grid w-full grid-cols-12 flex-row items-center justify-between gap-4 md:w-3/4 md:gap-6'
 						}>
 						<div className={'grow-1 col-span-12 flex h-10 w-full items-center md:col-span-9'}>
-							<NetworkSelector networks={[]} />
+							<div
+								className={
+									'relative flex w-full flex-row items-center space-x-4 border-[#B0D5CD] rounded-md border-solid p-2 px-4 border'
+								}>
+								<NetworkSelector
+									fullWidth
+									networks={[]}
+								/>
+							</div>{' '}
 						</div>
 						<div className={'col-span-12 md:col-span-3'}>
 							<Button

@@ -4,7 +4,7 @@ import ViewChainToSend from '@peanut/create/1.ViewChainToSend';
 import ViewTokenToSend from '@peanut/create/2.ViewTokenToSend';
 import ViewAmountToSend from '@peanut/create/3.ViewAmountToSend';
 import ViewSuccesToSend from '@peanut/create/4.ViewSuccesToSend';
-import {CreateLinkPeanutContextApp, Step,useCreateLinkPeanut} from '@peanut/create/useCreateLinkPeanut';
+import {CreateLinkPeanutContextApp, Step, useCreateLinkPeanut} from '@peanut/create/useCreateLinkPeanut';
 
 import type {ReactElement} from 'react';
 

@@ -2,7 +2,7 @@ import React, {memo, useCallback, useMemo, useState} from 'react';
 import {useWallet} from 'contexts/useWallet';
 import {handleInputChangeEventValue} from 'utils/handleInputChangeEventValue';
 import {IconSpinner} from '@icons/IconSpinner';
-import {CHAIN_DETAILS, getLinksFromTx, getRandomString, prepareTxs} from '@squirrel-labs/peanut-sdk';
+import {CHAIN_DETAILS, getLinksFromTx, getRandomString, prepareDepositTxs} from '@squirrel-labs/peanut-sdk';
 import {prepareSendTransaction, sendTransaction, waitForTransaction} from '@wagmi/core';
 import {Button} from '@yearn-finance/web-lib/components/Button';
 import {useWeb3} from '@yearn-finance/web-lib/contexts/useWeb3';
@@ -92,7 +92,7 @@ const ViewAmountToSend = memo(function ViewAmountToSend({onProceed}: {onProceed:
 					: 1;
 
 			const linkDetails = {
-				chainId: safeChainID,
+				chainId: safeChainID.toString(),
 				tokenAmount: Number(amountToSend?.normalized),
 				tokenAddress: tokenToSend?.address,
 				tokenDecimals: tokenToSend?.decimals,
@@ -103,7 +103,7 @@ const ViewAmountToSend = memo(function ViewAmountToSend({onProceed}: {onProceed:
 
 			const password = await getRandomString(16);
 
-			const preparedTxs = await prepareTxs({
+			const preparedTxs = await prepareDepositTxs({
 				address: address ?? '',
 				linkDetails: linkDetails,
 				passwords: [password]
@@ -116,8 +116,7 @@ const ViewAmountToSend = memo(function ViewAmountToSend({onProceed}: {onProceed:
 				const config = await prepareSendTransaction({
 					to: tx.to ?? undefined,
 					data: (tx.data as `0x${string}`) ?? undefined,
-					value: tx.value?.valueOf() ?? undefined,
-					nonce: tx.nonce ?? undefined
+					value: tx.value?.valueOf() ?? undefined
 				});
 				const sendTxResponse = await sendTransaction(config);
 				set_loadingStates('Creating');
@@ -198,7 +197,7 @@ const ViewAmountToSend = memo(function ViewAmountToSend({onProceed}: {onProceed:
 						<Button
 							className={'yearn--button !w-fit !px-6 !text-sm'}
 							variant={'reverted'}
-							isDisabled={isAboveBalance}
+							isDisabled={isAboveBalance || isLoading}
 							onClick={() => {
 								if (createdLink.link !== '') {
 									onResetCreateLink();

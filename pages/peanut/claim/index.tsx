@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import {DefaultSeo} from 'next-seo';
 import ViewLinkDetails from '@peanut/claim/1.LinkDetails';
 import ViewClaimSuccess from '@peanut/claim/2.ClaimSuccess';
-import {ClaimLinkPeanutContextApp,Step, useClaimLinkPeanut} from '@peanut/claim/useClaimLinkPeanut';
+import {ClaimLinkPeanutContextApp, Step, useClaimLinkPeanut} from '@peanut/claim/useClaimLinkPeanut';
 
 import type {ReactElement} from 'react';
 

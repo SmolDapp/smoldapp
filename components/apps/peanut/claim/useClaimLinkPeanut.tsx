@@ -1,4 +1,4 @@
-import React, {createContext, type Dispatch, type SetStateAction, useEffect, useMemo,useState} from 'react';
+import React, {createContext, type Dispatch, type SetStateAction, useEffect, useMemo, useState} from 'react';
 import {useUpdateEffect} from '@react-hookz/web';
 import {getLinkDetails} from '@squirrel-labs/peanut-sdk';
 import {scrollToTargetAdjusted} from '@utils/animations';

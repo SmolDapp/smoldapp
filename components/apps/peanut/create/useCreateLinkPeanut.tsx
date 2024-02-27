@@ -1,4 +1,4 @@
-import React, {createContext, type Dispatch, type SetStateAction, useEffect, useMemo,useState} from 'react';
+import React, {createContext, type Dispatch, type SetStateAction, useEffect, useMemo, useState} from 'react';
 import {useUpdateEffect} from '@react-hookz/web';
 import {scrollToTargetAdjusted} from '@utils/animations';
 import {HEADER_HEIGHT} from '@utils/constants';

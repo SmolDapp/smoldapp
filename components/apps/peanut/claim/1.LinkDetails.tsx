@@ -33,8 +33,7 @@ function ViewLinkDetails({onProceed}: {onProceed: VoidFunction}): ReactElement {
 			const claimLinkGaslessResp = await claimLinkGasless({
 				link: linkDetails.link,
 				recipientAddress: address ? address.toString() : '',
-				APIKey: process.env.PEANUT_API_KEY ?? '',
-				baseUrl: 'https://peanut-api-ts-9lo6.onrender.com/claim-v2'
+				APIKey: process.env.NEXT_PUBLIC_PEANUT_API_KEY ?? ''
 			});
 			waitForTransaction({hash: claimLinkGaslessResp.txHash});
 			set_claimTxHash(claimLinkGaslessResp.txHash);
@@ -70,7 +69,11 @@ function ViewLinkDetails({onProceed}: {onProceed: VoidFunction}): ReactElement {
 							{linkDetails.chainId ? (
 								CHAIN_DETAILS[linkDetails.chainId]?.name
 							) : (
-								<IconSpinner className={'h-4 w-4 text-neutral-500 transition-colors group-hover:text-neutral-900'} />
+								<IconSpinner
+									className={
+										'h-4 w-4 text-neutral-500 transition-colors group-hover:text-neutral-900'
+									}
+								/>
 							)}
 						</p>
 					</div>
@@ -83,7 +86,11 @@ function ViewLinkDetails({onProceed}: {onProceed: VoidFunction}): ReactElement {
 							{linkDetails.tokenAmount ? (
 								linkDetails.tokenAmount
 							) : (
-								<IconSpinner className={'h-4 w-4 text-neutral-500 transition-colors group-hover:text-neutral-900'} />
+								<IconSpinner
+									className={
+										'h-4 w-4 text-neutral-500 transition-colors group-hover:text-neutral-900'
+									}
+								/>
 							)}
 						</p>
 					</div>
@@ -95,7 +102,27 @@ function ViewLinkDetails({onProceed}: {onProceed: VoidFunction}): ReactElement {
 							{linkDetails.tokenName ? (
 								linkDetails.tokenName
 							) : (
-								<IconSpinner className={'h-4 w-4 text-neutral-500 transition-colors group-hover:text-neutral-900'} />
+								<IconSpinner
+									className={
+										'h-4 w-4 text-neutral-500 transition-colors group-hover:text-neutral-900'
+									}
+								/>
+							)}
+						</p>
+					</div>
+					<div>
+						<p className={'text-s text-neutral-500'}>{'Address:'}</p>
+					</div>
+					<div>
+						<p className={'text-s text-neutral-500'}>
+							{linkDetails.tokenAddress ? (
+								linkDetails.tokenAddress
+							) : (
+								<IconSpinner
+									className={
+										'h-4 w-4 text-neutral-500 transition-colors group-hover:text-neutral-900'
+									}
+								/>
 							)}
 						</p>
 					</div>
