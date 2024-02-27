@@ -1,4 +1,5 @@
 import {useCallback, useState} from 'react';
+import InputNumber from 'rc-input-number';
 import {cl, zeroNormalizedBN} from '@builtbymom/web3/utils';
 import {useDeepCompareEffect, useUpdateEffect} from '@react-hookz/web';
 import {handleLowAmount} from '@utils/helpers';
@@ -96,23 +97,20 @@ export function SmolAmountInput({onSetValue, value, token}: TAmountInput): React
 						getBorderColor()
 					)}>
 					<div className={'relative w-full pr-2'}>
-						<input
-							className={cl(
+						<InputNumber
+							prefixCls={cl(
 								'w-full border-none bg-transparent p-0 text-xl transition-all',
 								'text-neutral-900 placeholder:text-neutral-400 focus:placeholder:text-neutral-400/30',
 								'placeholder:transition-colors overflow-hidden'
 							)}
-							type={'number'}
-							placeholder={'0.00'}
+							min={'0'}
+							step={0.1}
 							value={value.amount}
-							onChange={e => {
-								validate(e.target.value, token);
-							}}
-							max={selectedTokenBalance.normalized}
+							decimalSeparator={'.'}
+							placeholder={'0.00'}
+							onChange={value => validate(value || '', token)}
 							onFocus={() => set_isFocused(true)}
 							onBlur={() => set_isFocused(false)}
-							min={0}
-							step={1}
 						/>
 						<div className={'flex items-center justify-between text-xs text-[#ADB1BD]'}>
 							{getErrorOrButton()}
