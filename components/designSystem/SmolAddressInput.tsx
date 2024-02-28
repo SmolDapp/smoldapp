@@ -1,4 +1,4 @@
-import React, {useCallback, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {useAddressBook} from 'contexts/useAddressBook';
 import {getEnsName} from 'viem/ens';
 import {cl, isAddress, toAddress, truncateHex} from '@builtbymom/web3/utils';
@@ -6,7 +6,7 @@ import {IconAppAddressBook} from '@icons/IconApps';
 import {IconChevron} from '@icons/IconChevron';
 import {IconCircleCheck} from '@icons/IconCircleCheck';
 import {IconCircleCross} from '@icons/IconCircleCross';
-import {useAsyncAbortable, useDeepCompareEffect} from '@react-hookz/web';
+import {useAsyncAbortable} from '@react-hookz/web';
 import {defaultInputAddressLike} from '@utils/tools.address';
 import {checkENSValidity} from '@utils/tools.ens';
 import {getPublicClient} from '@wagmi/core';
@@ -167,7 +167,7 @@ export function SmolAddressInput({onSetValue, value}: TAddressInput): ReactEleme
 		return 'border-neutral-400';
 	}, [isFocused, value.isValid]);
 
-	useDeepCompareEffect(() => {
+	useEffect(() => {
 		onSetValue(result);
 	}, [result]);
 
