@@ -106,11 +106,16 @@ export function SmolTokenAmountInput({showPercentButtons = false, onSetValue, va
 	const selectedTokenBalance = selectedToken?.balance ?? zeroNormalizedBN;
 	const {result, validate} = useValidateAmountInput();
 
-	const onSetFractional = (percentage: number): void => {
-		if (percentage === 100) {
-			validate(selectedTokenBalance.display, selectedToken);
-		}
+	const onSetMax = (): void => {
+		return onSetValue({
+			amount: selectedTokenBalance.display,
+			normalizedBigAmount: selectedTokenBalance,
+			isValid: true,
+			error: undefined
+		});
+	};
 
+	const onSetFractional = (percentage: number): void => {
 		const calculatedPercent = percentOf(+selectedTokenBalance.normalized, percentage);
 		validate(calculatedPercent.toString(), selectedToken);
 	};
@@ -128,7 +133,7 @@ export function SmolTokenAmountInput({showPercentButtons = false, onSetValue, va
 	const getErrorOrButton = (): JSX.Element => {
 		const button = (
 			<button
-				onClick={() => onSetFractional(100)}
+				onClick={onSetMax}
 				onMouseDown={e => e.preventDefault()}
 				disabled={!selectedToken || selectedTokenBalance.raw === 0n}>
 				<p>{`You have ${handleLowAmount(selectedTokenBalance, 2, 6)}`}</p>
@@ -205,7 +210,7 @@ export function SmolTokenAmountInput({showPercentButtons = false, onSetValue, va
 							className={
 								'rounded-md px-2 py-1 transition-colors hover:bg-neutral-200 disabled:cursor-not-allowed disabled:opacity-40'
 							}
-							onClick={() => onSetFractional(100)}
+							onClick={onSetMax}
 							onMouseDown={e => e.preventDefault()}
 							disabled={!selectedToken || selectedTokenBalance.raw === 0n}>
 							{'MAX'}
