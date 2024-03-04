@@ -95,7 +95,6 @@ function ImportConfigurationButton({onSelectToken}: {onSelectToken: (token: TTok
 
 	/** Set imported token from url if present */
 	useEffect(() => {
-		console.log(initialToken);
 		if (initialToken) {
 			onSelectToken(initialToken);
 		}
@@ -130,7 +129,7 @@ function ImportConfigurationButton({onSelectToken}: {onSelectToken: (token: TTok
 	return (
 		<Button
 			onClick={() => document.querySelector<HTMLInputElement>('#file-upload')?.click()}
-			className={'!h-8'}>
+			className={'!h-[unset] py-1.5 !text-sm'}>
 			<input
 				id={'file-upload'}
 				tabIndex={-1}
@@ -175,7 +174,7 @@ export function ExportConfigurationButton(buttonProps: ComponentPropsWithoutRef<
 	return (
 		<Button
 			onClick={downloadConfiguration}
-			className={cl('!h-8', buttonProps.className)}>
+			className={cl('!h-[unset]', buttonProps.className)}>
 			<IconImport className={'mr-2 size-3 rotate-180 text-neutral-900'} />
 			{'Download CSV'}
 		</Button>
@@ -211,16 +210,16 @@ const Disperse = memo(function Disperse(): ReactElement {
 		<div className={'w-full'}>
 			<div className={'flex mb-4 gap-2'}>
 				<ImportConfigurationButton onSelectToken={onSelectToken} />
-				<ExportConfigurationButton />
+				<ExportConfigurationButton className={'!text-sm'} />
 			</div>
-			<div className={'mb-6 max-w-[432px]'}>
+			<div className={'mb-6 max-w-full w-full md:max-w-[432px]'}>
 				<p className={'mb-2 font-medium'}>{'Token'}</p>
 				<SmolTokenSelector
 					token={configuration.tokenToSend}
 					onSelectToken={onSelectToken}
 				/>
 			</div>
-			<div>
+			<div className={'flex flex-col items-start'}>
 				<p className={'font-medium mb-2'}>{'Send to'}</p>
 				{configuration.inputs.map(input => (
 					<DisperseAddressAndAmountInputs
@@ -238,7 +237,6 @@ const Disperse = memo(function Disperse(): ReactElement {
 					{'+Add receiver'}
 				</button>
 			</div>
-			{/* <SendWarning isReceiverERC20={isReceiverERC20} /> */}
 			<DisperseWizard />
 		</div>
 	);

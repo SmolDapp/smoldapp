@@ -523,7 +523,6 @@ export function DisperseWizard(): ReactElement {
 
 	const {shouldApprove, approvalStatus, allowance, isApproved, onApproveToken} = useApproveDisperse({
 		onSuccess: () => {
-			console.log('on success approve');
 			set_disperseStatus(defaultTxStatus);
 		},
 		totalToDisperse
@@ -531,15 +530,12 @@ export function DisperseWizard(): ReactElement {
 
 	const {onDisperseTokens} = useConfirmDisperse({
 		onError: () => {
-			console.log('error disperse');
 			set_disperseStatus({...defaultTxStatus, error: true});
 		},
 		onSuccess: () => {
-			console.log('success disperse');
 			set_disperseStatus({...defaultTxStatus, success: true});
 		},
 		onTrigger: () => {
-			console.log('trigger disperse');
 			set_disperseStatus({...defaultTxStatus, pending: true});
 		}
 	});

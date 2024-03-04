@@ -257,6 +257,7 @@ export function SmolAddressInput({onSetValue, value}: TAddressInput): ReactEleme
 					/>
 					<input
 						disabled
+						type={'text'}
 						className={cl(
 							'text-xs w-full border-none p-0 transition-all line-clamp-1 max-w-full truncate disabled',
 							isFocused ? 'opacity-0' : 'opacity-100',
@@ -264,7 +265,6 @@ export function SmolAddressInput({onSetValue, value}: TAddressInput): ReactEleme
 							isFocused ? 'pointer-events-none' : 'pointer-events-auto',
 							value.error ? 'text-red' : 'text-neutral-600'
 						)}
-						defaultValue={''}
 						value={(isAddress(value?.address) && toAddress(value.address)) || value.error || ''}
 					/>
 
