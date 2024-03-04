@@ -250,7 +250,7 @@ export function SmolTokenAmountInput({
 						</div>
 						<p
 							className={cl(
-								'truncate',
+								'truncate max-w-[72px]',
 								isAddress(token?.address) ? 'font-bold' : 'text-neutral-600 text-sm font-normal'
 							)}>
 							{token?.symbol || 'Select token'}
