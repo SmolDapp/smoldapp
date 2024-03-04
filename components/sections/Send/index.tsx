@@ -115,7 +115,7 @@ export function Send(): ReactElement {
 			<div className={'mb-4'}>
 				<button
 					className={
-						'rounded-lg bg-neutral-200 px-3 py-1 text-xs text-neutral-700 transition-colors hover:bg-neutral-300'
+						'rounded-lg bg-neutral-200 px-5 py-2 text-xs text-neutral-700 transition-colors hover:bg-neutral-300'
 					}
 					onClick={onAddToken}>
 					{'+Add token'}
