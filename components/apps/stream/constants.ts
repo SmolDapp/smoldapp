@@ -9,7 +9,7 @@ export const FACTORY_VESTING_CONTRACTS: TDict<TChainContract[]> = {
 		{address: toAddress('0x200C92Dd85730872Ab6A1e7d5E40A067066257cF'), blockCreated: 18291969} //Yearn OG
 	],
 	10: [{address: toAddress('0xb2bf69c30753a1a3accf75872bda1b7cffd98efb'), blockCreated: 113087926}],
-	56: [],
+	56: [{address: toAddress('0xb2bf69c30753a1a3accf75872bda1b7cffd98efb'), blockCreated: 36698277}],
 	100: [{address: toAddress('0xb2bf69c30753a1a3accf75872bda1b7cffd98efb'), blockCreated: 31288273}],
 	137: [{address: toAddress('0xb2bf69c30753a1a3accf75872bda1b7cffd98efb'), blockCreated: 50768528}],
 	250: [],
