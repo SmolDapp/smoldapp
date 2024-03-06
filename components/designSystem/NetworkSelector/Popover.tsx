@@ -52,12 +52,26 @@ export function NetworkPopoverSelector(): ReactElement {
 					aria-expanded={isOpen}
 					className={cl(
 						'flex w-full items-center justify-between rounded-lg p-2',
-						'bg-neutral-200 hover:bg-neutral-300 transition-colors'
+						'bg-neutral-200 hover:bg-neutral-300 transition-colors '
 					)}>
-					<p className={'truncate text-xs'}>
-						{isMounted() && currentNetwork?.label ? currentNetwork?.label : 'Select chain...'}
-					</p>
-					<IconChevron className={'size-4 rotate-90'} />
+					<div className={'w-full flex gap-1 max-w-full justify-between text-left text-xs'}>
+						{isMounted() && currentNetwork?.label ? (
+							<div className={'flex gap-1 truncate w-full max-w-full'}>
+								<ImageWithFallback
+									width={16}
+									height={16}
+									alt={currentNetwork.label}
+									src={`${process.env.SMOL_ASSETS_URL}/chain/${currentNetwork.value}/logo-32.png`}
+								/>
+								<p className={'truncate'}>{currentNetwork?.label}</p>
+							</div>
+						) : (
+							'Select chain...'
+						)}
+						<div>
+							<IconChevron className={'size-4 rotate-90 ml-1'} />
+						</div>
+					</div>
 				</button>
 			</Popover.Trigger>
 
