@@ -56,7 +56,7 @@ export function NetworkPopoverSelector(): ReactElement {
 					)}>
 					<div className={'w-full flex gap-1 max-w-full justify-between text-left text-xs'}>
 						{isMounted() && currentNetwork?.label ? (
-							<div className={'flex gap-1 truncate w-full max-w-full'}>
+							<div className={'flex gap-2 truncate w-full max-w-full'}>
 								<ImageWithFallback
 									width={16}
 									height={16}
