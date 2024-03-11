@@ -59,7 +59,7 @@ const defaultProps: TAddressBookCurtainProps = {
  *****************************************************************************/
 const addressBookIDBConfig: IndexedDBConfig = {
 	databaseName: 'smol',
-	version: 1,
+	version: 2,
 	stores: [
 		{
 			name: 'address-book',
@@ -70,6 +70,8 @@ const addressBookIDBConfig: IndexedDBConfig = {
 				{name: 'slugifiedLabel', keyPath: 'slugifiedLabel'},
 				{name: 'chains', keyPath: 'chains'},
 				{name: 'isFavorite', keyPath: 'isFavorite'},
+				{name: 'isHidden', keyPath: 'isHidden'},
+				{name: 'tags', keyPath: 'tags'},
 				{name: 'numberOfInteractions', keyPath: 'numberOfInteractions'}
 			]
 		}
