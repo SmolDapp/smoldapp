@@ -21,6 +21,7 @@ export type TAddressBookEntry = {
 	slugifiedLabel: string; // Slugified version of the label. Used for searching.
 	ens?: string; // ENS name of the address. Not saved in the database.
 	isFavorite?: boolean; // Indicates if the address is a favorite.
+	isHidden?: boolean; // Indicates if the address is hidden from the address book.
 	numberOfInteractions?: number; // Number of times the address has been used for a action via Smol.
 	tags?: string[]; // List of tags associated with the address.
 };
@@ -33,6 +34,7 @@ export type TAddressBookCurtainProps = {
 	getCachedEntry: (props: {address?: TAddress; label?: string}) => TAddressBookEntry | undefined;
 	addEntry: (entry: TAddressBookEntry) => Promise<void>;
 	updateEntry: (entry: TAddressBookEntry) => Promise<void>;
+	bumpEntryInteractions: (entry: TAddressBookEntry) => Promise<void>;
 	deleteEntry: (address: TAddress) => Promise<void>;
 	onOpenCurtain: (callbackFn: TSelectCallback) => void;
 	onCloseCurtain: () => void;
@@ -45,6 +47,7 @@ const defaultProps: TAddressBookCurtainProps = {
 	getCachedEntry: (): TAddressBookEntry | undefined => undefined,
 	addEntry: async (): Promise<void> => undefined,
 	updateEntry: async (): Promise<void> => undefined,
+	bumpEntryInteractions: async (): Promise<void> => undefined,
 	deleteEntry: async (): Promise<void> => undefined,
 	onOpenCurtain: (): void => undefined,
 	onCloseCurtain: (): void => undefined
@@ -179,7 +182,8 @@ export const WithAddressBook = ({children}: {children: React.ReactElement}): Rea
 						chains,
 						slugifiedLabel: slugify(entry.label),
 						isFavorite: entry.isFavorite || false,
-						numberOfInteractions: entry.numberOfInteractions || 0
+						numberOfInteractions: entry.numberOfInteractions || 0,
+						isHidden: false
 					});
 					set_entryNonce(nonce => nonce + 1);
 				}
@@ -219,7 +223,8 @@ export const WithAddressBook = ({children}: {children: React.ReactElement}): Rea
 						...entry,
 						slugifiedLabel: slugify(entry.label),
 						isFavorite: entry.isFavorite || false,
-						numberOfInteractions: entry.numberOfInteractions || 0
+						numberOfInteractions: entry.numberOfInteractions || 0,
+						isHidden: false
 					});
 					set_entryNonce(nonce => nonce + 1);
 				}
@@ -250,6 +255,41 @@ export const WithAddressBook = ({children}: {children: React.ReactElement}): Rea
 	);
 
 	/**************************************************************************
+	 * Callback function that can be used to increment an entry
+	 * `numberOfInteractions` field. This is used to keep track of how many
+	 * times an address has been used for a transaction.
+	 *************************************************************************/
+	const bumpEntryInteractions = useCallback(
+		async (entry: TAddressBookEntry): Promise<void> => {
+			try {
+				const existingEntry = await getEntry({address: entry.address});
+				if (existingEntry) {
+					existingEntry.numberOfInteractions = (existingEntry.numberOfInteractions || 0) + 1;
+					update(existingEntry);
+					set_entryNonce(nonce => nonce + 1);
+				} else {
+					assert(isAddress(entry.address));
+					const chains = entry.chains || [];
+					if (chains.length === 0) {
+						chains.push(safeChainID);
+					}
+					add({
+						...entry,
+						chains,
+						slugifiedLabel: slugify(entry.label),
+						isHidden: true,
+						numberOfInteractions: 1
+					});
+					set_entryNonce(nonce => nonce + 1);
+				}
+			} catch {
+				// Do nothing
+			}
+		},
+		[add, getEntry, update, safeChainID]
+	);
+
+	/**************************************************************************
 	 * Context value that is passed to all children of this component.
 	 *************************************************************************/
 	const contextValue = useMemo(
@@ -262,6 +302,7 @@ export const WithAddressBook = ({children}: {children: React.ReactElement}): Rea
 			addEntry,
 			updateEntry,
 			deleteEntry,
+			bumpEntryInteractions,
 			onOpenCurtain: (callbackFn): void => {
 				set_currentCallbackFunction(() => callbackFn);
 				set_shouldOpenCurtain(true);
@@ -273,6 +314,7 @@ export const WithAddressBook = ({children}: {children: React.ReactElement}): Rea
 			listEntries,
 			addEntry,
 			listCachedEntries,
+			bumpEntryInteractions,
 			getEntry,
 			getCachedEntry,
 			updateEntry,
