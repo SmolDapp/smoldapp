@@ -1,40 +1,29 @@
-import {Fragment, useState} from 'react';
-import Confetti from 'react-dom-confetti';
+import {Fragment} from 'react';
 import {Button} from 'components/Primitives/Button';
 import {cl} from '@builtbymom/web3/utils';
 import {Dialog, Transition} from '@headlessui/react';
-import {IconCheck} from '@icons/IconCheck';
-import {useUpdateEffect} from '@react-hookz/web';
+import {IconErrorTriangle} from '@icons/IconErrorTriangle';
 
 import type {ReactElement} from 'react';
 
-type TSuccessModal = {
+type TErrorModal = {
 	isOpen: boolean;
 	onClose: VoidFunction;
 	title: string;
 	content: string;
 	ctaLabel: string;
-	downloadConfigButton?: JSX.Element;
+	type?: 'hard' | 'soft';
 };
-function SuccessModal(props: TSuccessModal): ReactElement {
-	const [shouldTriggerConfettis, set_shouldTriggerConfettis] = useState(false);
 
-	useUpdateEffect((): void => {
-		if (props.isOpen) {
-			setTimeout((): void => set_shouldTriggerConfettis(true), 300);
-		} else {
-			set_shouldTriggerConfettis(false);
-		}
-	}, [props.isOpen]);
-
+export function ErrorModal({isOpen, onClose, title, content, ctaLabel, type = 'hard'}: TErrorModal): ReactElement {
 	return (
 		<Transition.Root
-			show={props.isOpen}
+			show={isOpen}
 			as={Fragment}>
 			<Dialog
 				as={'div'}
 				className={'relative z-[1000]'}
-				onClose={props.onClose}>
+				onClose={onClose}>
 				<Transition.Child
 					as={Fragment}
 					enter={'ease-out duration-300'}
@@ -46,12 +35,6 @@ function SuccessModal(props: TSuccessModal): ReactElement {
 					<div className={'bg-primary-900/40 fixed inset-0 backdrop-blur-sm transition-opacity'} />
 				</Transition.Child>
 
-				<div className={'size-screen fixed inset-0 z-[1001] flex items-center justify-center'}>
-					<Confetti
-						active={shouldTriggerConfettis}
-						config={{spread: 500}}
-					/>
-				</div>
 				<div className={'fixed inset-0 z-[1001] w-screen overflow-y-auto'}>
 					<div className={'flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0'}>
 						<Transition.Child
@@ -67,18 +50,20 @@ function SuccessModal(props: TSuccessModal): ReactElement {
 									'relative overflow-hidden flex flex-col items-center justify-center rounded-md !bg-neutral-200 !p-10 transition-all',
 									'sm:my-8 sm:w-full sm:max-w-lg sm:p-6'
 								)}>
-								<div className={'mb-10 bg-green p-7 rounded-full'}>
-									<IconCheck className={'size-6 text-white'} />
+								<div
+									className={cl('mb-10 p-7 rounded-full', type === 'soft' ? 'bg-primary' : 'bg-red')}>
+									<IconErrorTriangle className={'size-6 text-white'} />
 								</div>
+
 								<div>
 									<div className={'text-center'}>
 										<Dialog.Title
 											as={'h3'}
 											className={'text-primary-900 text-3xl font-bold leading-6'}>
-											{props.title}
+											{title}
 										</Dialog.Title>
 										<div className={'mt-6'}>
-											<p className={'text-neutral-900/80'}>{props.content}</p>
+											<p className={'text-neutral-900/80'}>{content}</p>
 										</div>
 									</div>
 								</div>
@@ -86,11 +71,10 @@ function SuccessModal(props: TSuccessModal): ReactElement {
 									className={
 										'flex items-center w-[200px] flex-col gap-2 justify-center pt-10 text-center'
 									}>
-									{props.downloadConfigButton}
 									<Button
 										className={'w-full'}
-										onClick={props.onClose}>
-										{props.ctaLabel}
+										onClick={onClose}>
+										{ctaLabel}
 									</Button>
 								</div>
 							</Dialog.Panel>
@@ -101,4 +85,3 @@ function SuccessModal(props: TSuccessModal): ReactElement {
 		</Transition.Root>
 	);
 }
-export {SuccessModal};

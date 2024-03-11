@@ -593,17 +593,20 @@ export function DisperseWizard(): ReactElement {
 			{/* <small className={'pb-1 pl-1'}>{'Summary'}</small> */}
 			<div
 				className={
-					'flex flex-col md:flex-row gap border gap-12 rounded-lg border-neutral-600 text-neutral-700 bg-neutral-100 p-4'
+					'grid grid-cols-3 md:flex-row gap border gap-12 rounded-lg border-neutral-600 text-neutral-700 bg-neutral-100 p-4'
 				}>
 				{shouldApprove && !isWalletSafe && (
-					<ApprovalStatus
-						approvalStatus={approvalStatus}
-						allowance={toBigInt(allowance)}
-						totalToDisperse={totalToDisperse}
-					/>
+					<div className={'col-span-1'}>
+						<ApprovalStatus
+							approvalStatus={approvalStatus}
+							allowance={toBigInt(allowance)}
+							totalToDisperse={totalToDisperse}
+						/>
+					</div>
 				)}
-
-				<DisperseStatus disperseStatus={disperseStatus} />
+				<div className={'col-span-2'}>
+					<DisperseStatus disperseStatus={disperseStatus} />
+				</div>
 			</div>
 			<Button
 				isBusy={disperseStatus.pending}

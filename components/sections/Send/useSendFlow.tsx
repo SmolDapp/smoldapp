@@ -18,6 +18,7 @@ export type TSendActions =
 	| {type: 'SET_RECEIVER'; payload: Partial<TInputAddressLike>}
 	| {type: 'ADD_INPUT'; payload: TTokenAmountInputElement | undefined}
 	| {type: 'REMOVE_INPUT'; payload: {UUID: string}}
+	| {type: 'REMOVE_SUCCESFUL_INPUTS'; payload: undefined}
 	| {type: 'SET_VALUE'; payload: Partial<TTokenAmountInputElement>}
 	| {type: 'RESET'; payload: undefined};
 
@@ -69,6 +70,14 @@ export const SendContextApp = ({children}: {children: TOptionalRenderProps<TSend
 					...state,
 					inputs: state.inputs.filter(input => input.UUID !== action.payload.UUID)
 				};
+			case 'REMOVE_SUCCESFUL_INPUTS':
+				return {
+					...state,
+					inputs: state.inputs
+						.filter(input => input.status !== 'success')
+						.map(input => ({...input, status: 'none'}))
+				};
+
 			case 'SET_VALUE': {
 				return {
 					...state,
