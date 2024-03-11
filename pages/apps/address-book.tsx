@@ -112,6 +112,9 @@ function ImportContactsButton(props: {className?: string}): ReactElement {
 			}, []);
 
 			for (const record of uniqueRecords) {
+				record.label = record.label.replaceAll('.', '-'); // Dots are not allowed in the label
+				record.label = record.label.replaceAll('0x', 'Ox'); // We don't want to start with 0x
+				record.label = record.label.length > 22 ? record.label.slice(0, 22) : record.label;
 				addEntry(record);
 			}
 		};

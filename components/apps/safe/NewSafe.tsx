@@ -70,7 +70,7 @@ function NewSafe(): ReactElement {
 			if (addrCreate2.startsWith(props.prefix) && addrCreate2.endsWith(props.suffix)) {
 				return {address: addrCreate2, salt: saltNonce};
 			}
-			await new Promise((resolve): NodeJS.Timeout => setTimeout(resolve, 0));
+			await new Promise((resolve): Timer => setTimeout(resolve, 0));
 			return compute(props);
 		},
 		[configuration.factory, configuration.seed, configuration.settings.shouldUseExpertMode, dispatchConfiguration]
