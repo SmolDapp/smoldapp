@@ -16,6 +16,7 @@ import {useSafeAppsSDK} from '@gnosis.pm/safe-apps-react-sdk';
 import {toast} from '@yearn-finance/web-lib/components/yToast';
 import {ETH_TOKEN_ADDRESS, ZERO_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
 import {SuccessModal} from '@common/ConfirmationModal';
+import {ErrorModal} from '@common/ErrorModal';
 
 import {ExportConfigurationButton} from '.';
 import {useDisperse} from './useDisperse';
@@ -629,10 +630,21 @@ export function DisperseWizard(): ReactElement {
 
 			<SuccessModal
 				title={'It looks like a success!'}
-				content={'Your tokens have been dispersed! Just like ashes in the wind... Whao, dark.'}
+				content={`Successfully dispersed ${configuration.tokenToSend?.name} to ${configuration.inputs.length} receivers!`}
 				ctaLabel={'Close'}
 				downloadConfigButton={<ExportConfigurationButton className={'w-full'} />}
 				isOpen={disperseStatus.success}
+				onClose={(): void => {
+					onResetDisperse();
+					set_disperseStatus(defaultTxStatus);
+				}}
+			/>
+
+			<ErrorModal
+				title={'Error'}
+				content={'An error occured while dispersing your token, please try again.'}
+				ctaLabel={'Close'}
+				isOpen={disperseStatus.error}
 				onClose={(): void => {
 					onResetDisperse();
 					set_disperseStatus(defaultTxStatus);

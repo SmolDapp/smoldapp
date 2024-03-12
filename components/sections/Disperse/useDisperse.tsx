@@ -137,7 +137,7 @@ export const DisperseContextApp = ({
 		setTimeout((): void => {
 			dispatch({type: 'RESET', payload: undefined});
 			set_isDispersed(false);
-		}, 5000);
+		}, 500);
 	};
 
 	const contextValue = useMemo(
