@@ -1,7 +1,8 @@
 import {useCallback, useState} from 'react';
+import {useBalancesCurtain} from 'contexts/useBalancesCurtain';
 import {cl} from '@builtbymom/web3/utils';
 
-import {SmolTokenSelectorButton} from './SmolTokenSelectorButton';
+import {SmolTokenButton} from './SmolTokenButton';
 
 import type {TToken} from '@builtbymom/web3/types';
 
@@ -13,6 +14,7 @@ export function SmolTokenSelector({
 	token: TToken | undefined;
 }): JSX.Element {
 	const [isFocused] = useState<boolean>(false);
+	const {onOpenCurtain} = useBalancesCurtain();
 
 	const getBorderColor = useCallback((): string => {
 		if (isFocused) {
@@ -32,9 +34,10 @@ export function SmolTokenSelector({
 					'p-2 group bg-neutral-0 rounded-[8px]',
 					getBorderColor()
 				)}>
-				<SmolTokenSelectorButton
-					onSelectToken={onSelectToken}
+				<SmolTokenButton
+					onClick={() => onOpenCurtain(selected => onSelectToken(selected))}
 					token={token}
+					displayChevron
 				/>
 			</div>
 		</div>

@@ -2,6 +2,7 @@
 
 import React, {createContext, useContext, useEffect, useMemo, useState} from 'react';
 import {CloseCurtainButton} from 'components/designSystem/Curtains/InfoCurtain';
+import {SmolTokenButton} from 'components/designSystem/SmolTokenButton';
 import {CurtainContent} from 'components/Primitives/Curtain';
 import {useTokensWithBalance} from 'hooks/useTokensWithBalance';
 import {isAddressEqual} from 'viem';
@@ -9,11 +10,10 @@ import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
 import {useTokenList} from '@builtbymom/web3/contexts/WithTokenList';
 import {useBalances} from '@builtbymom/web3/hooks/useBalances.multichains';
 import {useChainID} from '@builtbymom/web3/hooks/useChainID';
-import {cl, formatAmount, isAddress, toAddress, truncateHex} from '@builtbymom/web3/utils';
+import {cl, isAddress, toAddress} from '@builtbymom/web3/utils';
 import * as Dialog from '@radix-ui/react-dialog';
 import {useDeepCompareMemo} from '@react-hookz/web';
 import {IconLoader} from '@yearn-finance/web-lib/icons/IconLoader';
-import {ImageWithFallback} from '@common/ImageWithFallback';
 
 import type {ReactElement} from 'react';
 import type {TAddress, TToken} from '@builtbymom/web3/types';
@@ -34,50 +34,6 @@ const defaultProps: TBalancesCurtainProps = {
 	onCloseCurtain: (): void => undefined
 };
 
-function Token({
-	token,
-	isDisabled,
-	onSelect
-}: {
-	token: TToken;
-	isDisabled: boolean;
-	onSelect: (token: TToken) => void;
-}): ReactElement {
-	return (
-		<button
-			onClick={() => onSelect(token)}
-			className={cl(
-				'mb-2 flex flex-row items-center justify-between rounded-lg p-4 w-full',
-				'bg-neutral-200 hover:bg-neutral-300 transition-colors',
-				'disabled:cursor-not-allowed disabled:hover:bg-neutral-200 disabled:opacity-20'
-			)}
-			disabled={isDisabled}>
-			<div className={'flex items-center gap-2'}>
-				<ImageWithFallback
-					alt={token.symbol}
-					unoptimized
-					src={
-						token?.logoURI ||
-						`${process.env.SMOL_ASSETS_URL}/token/${token.chainID}/${token.address}/logo-32.png`
-					}
-					altSrc={`${process.env.SMOL_ASSETS_URL}/token/${token.chainID}/${token.address}/logo-32.png`}
-					quality={90}
-					width={32}
-					height={32}
-				/>
-				<div className={'text-left'}>
-					<b className={'text-left text-base'}>{token.symbol}</b>
-					<p className={'text-xs text-neutral-600'}>{truncateHex(token.address, 5)}</p>
-				</div>
-			</div>
-			<div className={'text-right'}>
-				<b className={'text-left text-base'}>{formatAmount(token.balance.normalized, 0, 6)}</b>
-				<p className={'text-xs text-neutral-600'}>{'$420.69'}</p>
-			</div>
-		</button>
-	);
-}
-
 function FetchedToken({
 	tokenAddress,
 	onSelect
@@ -95,10 +51,10 @@ function FetchedToken({
 	}
 
 	return (
-		<Token
+		<SmolTokenButton
 			token={token}
 			isDisabled={false}
-			onSelect={onSelect}
+			onClick={() => onSelect(token)}
 		/>
 	);
 }
@@ -206,7 +162,7 @@ function BalancesCurtain(props: {
 							disabled={!address}
 							onChange={e => set_searchValue(e.target.value)}
 						/>
-						<div className={'scrollable mb-8 flex flex-col items-center pb-2'}>
+						<div className={'scrollable mb-8 flex flex-col items-center gap-2 pb-2'}>
 							{balancesTextLayout}
 							{searchTokenAddress && (
 								<FetchedToken
@@ -220,12 +176,12 @@ function BalancesCurtain(props: {
 							)}
 							{address ? (
 								filteredTokens.map(token => (
-									<Token
+									<SmolTokenButton
 										key={token.address}
 										token={token}
 										isDisabled={props.selectedTokenAddresses?.includes(token.address) || false}
-										onSelect={selected => {
-											props.onSelect?.(selected);
+										onClick={() => {
+											props.onSelect?.(token);
 											props.onOpenChange(false);
 										}}
 									/>
