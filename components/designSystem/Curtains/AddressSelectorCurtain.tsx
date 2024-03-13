@@ -41,11 +41,13 @@ export function AddressSelectorCurtain(props: {
 	 * will be returned.
 	 *************************************************************************/
 	const filteredEntries = useMemo(() => {
-		return listCachedEntries().filter(
-			entry =>
-				entry.label.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase()) ||
-				toAddress(entry.address).toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())
-		);
+		return listCachedEntries()
+			.filter(entry => !entry.isHidden)
+			.filter(
+				entry =>
+					entry.label.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase()) ||
+					toAddress(entry.address).toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())
+			);
 	}, [listCachedEntries, searchValue]);
 
 	/**************************************************************************
