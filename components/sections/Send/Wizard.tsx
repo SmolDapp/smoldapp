@@ -6,7 +6,7 @@ import {isAddressEqual} from 'viem';
 import {useWallet} from '@builtbymom/web3/contexts/useWallet';
 import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
 import {useChainID} from '@builtbymom/web3/hooks/useChainID';
-import {isEthAddress, isZeroAddress, toAddress, toBigInt} from '@builtbymom/web3/utils';
+import {isEthAddress, isZeroAddress, slugify, toAddress, toBigInt, truncateHex} from '@builtbymom/web3/utils';
 import {getNetwork} from '@builtbymom/web3/utils/wagmi';
 import {defaultTxStatus, type TTxResponse} from '@builtbymom/web3/utils/wagmi';
 import {useSafeAppsSDK} from '@gnosis.pm/safe-apps-react-sdk';
@@ -25,6 +25,7 @@ import type {TUseBalancesTokens} from '@builtbymom/web3/hooks/useBalances.multic
 import type {TAddress, TChainTokens, TToken} from '@builtbymom/web3/types';
 import type {BaseTransaction} from '@gnosis.pm/safe-apps-sdk';
 import type {TModify} from '@utils/types/types';
+import {useAddressBook} from 'contexts/useAddressBook';
 
 type TInputWithToken = TModify<TTokenAmountInputElement, {token: TToken}>;
 
@@ -33,6 +34,7 @@ export function SendWizard({isReceiverERC20}: {isReceiverERC20: boolean}): React
 	const {address} = useWeb3();
 	const {configuration, dispatchConfiguration} = useSendFlow();
 	const {getToken, getBalance, onRefresh} = useWallet();
+	const {bumpEntryInteractions} = useAddressBook();
 	const {isWalletSafe, provider} = useWeb3();
 	const {sdk} = useSafeAppsSDK();
 	const [migrateStatus, set_migrateStatus] = useState(defaultTxStatus);
@@ -248,6 +250,13 @@ export function SendWizard({isReceiverERC20}: {isReceiverERC20: boolean}): React
 		} else {
 			set_migrateStatus({...defaultTxStatus, error: true});
 		}
+
+		bumpEntryInteractions({
+			address: configuration.receiver.address,
+			label: truncateHex(toAddress(configuration.receiver.address), 5),
+			chains: [safeChainID],
+			slugifiedLabel: slugify(configuration.receiver.address || '')
+		});
 
 		notifySend({
 			chainID: safeChainID,
