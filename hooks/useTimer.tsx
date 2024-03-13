@@ -22,7 +22,7 @@ export function computeTimeLeft({endTime}: {endTime?: TSeconds}): number {
 }
 
 function useTimer({endTime}: TProps): string {
-	const interval = useRef<NodeJS.Timeout | null>(null);
+	const interval = useRef<Timer | null>(null);
 	const timeLeft = computeTimeLeft({endTime});
 	const [time, set_time] = useState<TMilliseconds>(timeLeft);
 

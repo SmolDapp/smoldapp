@@ -112,6 +112,9 @@ function ImportContactsButton(props: {className?: string}): ReactElement {
 			}, []);
 
 			for (const record of uniqueRecords) {
+				record.label = record.label.replaceAll('.', '-'); // Dots are not allowed in the label
+				record.label = record.label.replaceAll('0x', 'Ox'); // We don't want to start with 0x
+				record.label = record.label.length > 22 ? record.label.slice(0, 22) : record.label;
 				addEntry(record);
 			}
 		};
@@ -148,15 +151,18 @@ function ExportContactsButton(): ReactElement {
 		const entries = await listEntries();
 		const clonedEntries = structuredClone(entries);
 		//Remove id and ens from the entries
-		const entriesWithoutId = clonedEntries.map(entry => {
-			const {id, ens, slugifiedLabel, numberOfInteractions, tags, ...rest} = entry;
-			id;
-			ens;
-			slugifiedLabel;
-			numberOfInteractions;
-			tags;
-			return rest;
-		});
+		const entriesWithoutId = clonedEntries
+			.filter(entry => !entry.isHidden)
+			.map(entry => {
+				const {id, ens, slugifiedLabel, numberOfInteractions, tags, isHidden, ...rest} = entry;
+				id;
+				ens;
+				slugifiedLabel;
+				numberOfInteractions;
+				tags;
+				isHidden;
+				return rest;
+			});
 		const csv = Papa.unparse(entriesWithoutId, {header: true});
 		const blob = new Blob([csv], {type: 'text/csv;charset=utf-8'});
 		const url = window.URL.createObjectURL(blob);
@@ -260,11 +266,13 @@ function AddressBookPage(): ReactElement {
 	 * will be returned.
 	 *************************************************************************/
 	const filteredEntries = useMemo(() => {
-		return listCachedEntries().filter(
-			entry =>
-				entry.label.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase()) ||
-				toAddress(entry.address).toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())
-		);
+		return listCachedEntries()
+			.filter(entry => !entry.isHidden)
+			.filter(
+				entry =>
+					entry.label.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase()) ||
+					toAddress(entry.address).toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())
+			);
 	}, [listCachedEntries, searchValue]);
 
 	/**************************************************************************
@@ -285,7 +293,7 @@ function AddressBookPage(): ReactElement {
 		});
 	}, [filteredEntries]);
 
-	const hasNoEntries = listCachedEntries().length === 0;
+	const hasNoEntries = listCachedEntries().filter(entry => !entry.isHidden).length === 0;
 	const hasNoFilteredEntry = entries.length === 0;
 	return (
 		<div className={'w-108'}>
