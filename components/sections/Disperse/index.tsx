@@ -3,7 +3,9 @@ import {useValidateAddressInput} from 'components/designSystem/SmolAddressInput'
 import {useValidateAmountInput} from 'components/designSystem/SmolTokenAmountInput';
 import {SmolTokenSelector} from 'components/designSystem/SmolTokenSelector';
 import {Button} from 'components/Primitives/Button';
+import {useDownloadFile} from 'hooks/useDownloadFile';
 import Papa from 'papaparse';
+import axios from 'axios';
 import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
 import {useBalances} from '@builtbymom/web3/hooks/useBalances.multichains';
 import {cl, toAddress, toNormalizedBN} from '@builtbymom/web3/utils';
@@ -14,6 +16,7 @@ import {newVoidRow, useDisperse} from './useDisperse';
 import {useDisperseQueryManagement} from './useDisperseQuery';
 import {DisperseWizard} from './Wizard';
 
+import type {AxiosResponse} from 'axios';
 import type {ChangeEvent, ComponentPropsWithoutRef, ReactElement} from 'react';
 import type {TAddress, TToken} from '@builtbymom/web3/types';
 import type {TDisperseInput} from './useDisperse';
@@ -75,7 +78,9 @@ function ImportConfigurationButton({onSelectToken}: {onSelectToken: (token: TTok
 			let records: TRecord[] = [];
 
 			// If we are working with a safe file, we should get 4 columns.
-			const isProbablySafeFile = parsedCSV.meta.fields.length === 4;
+			const isProbablySafeFile =
+				parsedCSV.meta.fields.length === 4 && parsedCSV.meta.fields[0] === 'tokenAddress';
+
 			if (isProbablySafeFile) {
 				const [tokenAddress, chainId, receiverAddress, value] = parsedCSV.meta.fields;
 				records = parsedCSV.data.map((item: unknown[]) => {
@@ -86,9 +91,11 @@ function ImportConfigurationButton({onSelectToken}: {onSelectToken: (token: TTok
 						chainId: item[chainId] as string
 					};
 				});
+				set_importedTokenToSend(records[0].tokenAddress);
+				set_records(records);
+			} else {
+				console.error('The file you are trying to upload seems to be broken');
 			}
-			set_importedTokenToSend(records[0].tokenAddress);
-			set_records(records);
 		};
 		reader.readAsBinaryString(file);
 	};
@@ -140,7 +147,7 @@ function ImportConfigurationButton({onSelectToken}: {onSelectToken: (token: TTok
 				onChange={handleFileUpload}
 			/>
 			<IconImport className={'mr-2 size-3 text-neutral-900'} />
-			{'Import CSV'}
+			{'Import Configuration'}
 		</Button>
 	);
 }
@@ -176,7 +183,7 @@ export function ExportConfigurationButton(buttonProps: ComponentPropsWithoutRef<
 			onClick={downloadConfiguration}
 			className={cl('!h-[unset]', buttonProps.className)}>
 			<IconImport className={'mr-2 size-3 rotate-180 text-neutral-900'} />
-			{'Download CSV'}
+			{'Export Configuration'}
 		</Button>
 	);
 }
@@ -185,6 +192,21 @@ const Disperse = memo(function Disperse(): ReactElement {
 	const {configuration, dispatchConfiguration} = useDisperse();
 
 	const {hasInitialInputs} = useDisperseQueryManagement();
+
+	const downloadFile = async (): Promise<AxiosResponse<Blob>> => {
+		const url =
+			'https://chocolate-gleaming-armadillo-579.mypinata.cloud/ipfs/QmQDj9Cwxx8YABPfbt65LvttrVGeb5qDG8Q6TPJDHy4Li2';
+
+		return axios.get(url, {
+			responseType: 'blob'
+		});
+	};
+
+	const {download: downloadTemplate} = useDownloadFile({
+		apiDefinition: downloadFile,
+		fileName: 'smol-disperse-template',
+		fileType: 'csv'
+	});
 
 	const onSelectToken = (token: TToken): void => {
 		dispatchConfiguration({type: 'SET_TOKEN_TO_SEND', payload: token});
@@ -208,6 +230,11 @@ const Disperse = memo(function Disperse(): ReactElement {
 
 	return (
 		<div className={'w-full'}>
+			<button
+				className={'hover:underline mb-2'}
+				onClick={downloadTemplate}>
+				{'Download Template'}
+			</button>
 			<div className={'flex mb-4 gap-2'}>
 				<ImportConfigurationButton onSelectToken={onSelectToken} />
 				<ExportConfigurationButton className={'!text-sm'} />
