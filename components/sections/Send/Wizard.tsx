@@ -1,5 +1,6 @@
 import React, {useCallback, useState} from 'react';
 import {Button} from 'components/Primitives/Button';
+import {useAddressBook} from 'contexts/useAddressBook';
 import {transferERC20, transferEther} from 'utils/actions';
 import {getTransferTransaction} from 'utils/tools.gnosis';
 import {isAddressEqual} from 'viem';
@@ -25,7 +26,6 @@ import type {TUseBalancesTokens} from '@builtbymom/web3/hooks/useBalances.multic
 import type {TAddress, TChainTokens, TToken} from '@builtbymom/web3/types';
 import type {BaseTransaction} from '@gnosis.pm/safe-apps-sdk';
 import type {TModify} from '@utils/types/types';
-import {useAddressBook} from 'contexts/useAddressBook';
 
 type TInputWithToken = TModify<TTokenAmountInputElement, {token: TToken}>;
 
@@ -192,7 +192,7 @@ export function SendWizard({isReceiverERC20}: {isReceiverERC20: boolean}): React
 				set_migrateStatus({...defaultTxStatus, error: true});
 			}
 		},
-		[address, configuration.receiver?.address, safeChainID, sdk.txs]
+		[address, configuration.receiver?.address, migratedTokens, onUpdateStatus, safeChainID, sdk.txs]
 	);
 
 	/**********************************************************************************************
@@ -268,14 +268,15 @@ export function SendWizard({isReceiverERC20}: {isReceiverERC20: boolean}): React
 		});
 	}, [
 		configuration.inputs,
-		configuration.receiver?.address,
+		configuration.receiver.address,
 		isWalletSafe,
+		bumpEntryInteractions,
 		safeChainID,
+		migratedTokens,
 		address,
 		onMigrateSelectedForGnosis,
 		onMigrateERC20,
-		onMigrateETH,
-		dispatchConfiguration
+		onMigrateETH
 	]);
 
 	const errorModalContent =

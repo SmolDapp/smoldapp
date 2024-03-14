@@ -58,7 +58,7 @@ export const SendQueryManagement = ({
 			initialStateFromUrl,
 			hasInitialInputs
 		}),
-		[initialStateFromUrl, stateFromUrl, hasInitialInputs]
+		[hasInitialInputs, initialStateFromUrl, stateFromUrl]
 	);
 
 	return (
@@ -124,7 +124,8 @@ export function useSendQuery(): {
 	/** Trigger validation when initial value changes */
 	useEffect(() => {
 		validateAddressInput(undefined, initialStateFromUrl?.to || '').then(result => onSetRecipient(result));
-	}, [initialStateFromUrl?.to, onSetRecipient, validateAddressInput]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [initialStateFromUrl?.to]);
 
 	const {validate: validateTokenAmount} = useValidateAmountInput();
 
