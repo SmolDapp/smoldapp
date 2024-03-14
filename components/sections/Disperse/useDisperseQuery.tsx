@@ -57,7 +57,7 @@ export const DisperseQueryManagement = ({
 			initialStateFromUrl,
 			hasInitialInputs
 		}),
-		[initialStateFromUrl, stateFromUrl]
+		[hasInitialInputs, initialStateFromUrl, stateFromUrl]
 	);
 
 	return (

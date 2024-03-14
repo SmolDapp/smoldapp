@@ -7,7 +7,11 @@ import {IconCheckboxChecked} from '@icons/IconCheckboxChecked';
 import {CheckboxItem, Content, Portal, Separator} from '@radix-ui/react-dropdown-menu';
 
 import type {ReactElement, Ref} from 'react';
-import type {DropdownMenuCheckboxItemProps, DropdownMenuContentProps} from '@radix-ui/react-dropdown-menu';
+import type {
+	DropdownMenuCheckboxItemProps,
+	DropdownMenuContentProps,
+	DropdownMenuSeparatorProps
+} from '@radix-ui/react-dropdown-menu';
 
 export const DropdownMenuContent = forwardRef(
 	(
@@ -68,12 +72,14 @@ export const DropdownMenuCheckboxItem = forwardRef(
 );
 DropdownMenuCheckboxItem.displayName = CheckboxItem.displayName;
 
-export const DropdownMenuSeparator = forwardRef(({className, ...props}: any, ref) => (
-	<Separator
-		ref={ref}
-		style={{width: 'calc(100% - 16px)'}}
-		className={cl('my-1 h-px w-full mx-auto bg-neutral-400', className)}
-		{...props}
-	/>
-));
+export const DropdownMenuSeparator = forwardRef(
+	({className, ...props}: DropdownMenuSeparatorProps, ref: Ref<HTMLDivElement> | undefined) => (
+		<Separator
+			ref={ref}
+			style={{width: 'calc(100% - 16px)'}}
+			className={cl('my-1 h-px w-full mx-auto bg-neutral-400', className)}
+			{...props}
+		/>
+	)
+);
 DropdownMenuSeparator.displayName = Separator.displayName;
