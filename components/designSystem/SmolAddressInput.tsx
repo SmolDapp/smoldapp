@@ -168,6 +168,9 @@ export function SmolAddressInput({onSetValue, value}: TAddressInput): ReactEleme
 	}, [isFocused, value.isValid]);
 
 	useEffect(() => {
+		if (!result) {
+			return;
+		}
 		onSetValue(result);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [result]);
