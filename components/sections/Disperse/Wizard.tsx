@@ -1,5 +1,6 @@
 import React, {useCallback, useMemo, useState} from 'react';
 import {Button} from 'components/Primitives/Button';
+import {useAddressBook} from 'contexts/useAddressBook';
 import {approveERC20, disperseERC20, disperseETH} from 'utils/actions';
 import {notifyDisperse} from 'utils/notifier';
 import {getTransferTransaction} from 'utils/tools.gnosis';
@@ -7,7 +8,15 @@ import {erc20ABI, useContractRead} from 'wagmi';
 import useWallet from '@builtbymom/web3/contexts/useWallet';
 import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
 import {useChainID} from '@builtbymom/web3/hooks/useChainID';
-import {formatAmount, isZeroAddress, toAddress, toBigInt, toNormalizedValue} from '@builtbymom/web3/utils';
+import {
+	formatAmount,
+	isZeroAddress,
+	slugify,
+	toAddress,
+	toBigInt,
+	toNormalizedValue,
+	truncateHex
+} from '@builtbymom/web3/utils';
 import {defaultTxStatus} from '@builtbymom/web3/utils/wagmi/transaction';
 import {useSafeAppsSDK} from '@gnosis.pm/safe-apps-react-sdk';
 import {toast} from '@yearn-finance/web-lib/components/yToast';
@@ -105,6 +114,7 @@ const useConfirmDisperse = ({
 	const {address, provider, isWalletSafe} = useWeb3();
 	const {safeChainID} = useChainID();
 	const {configuration} = useDisperse();
+	const {bumpEntryInteractions} = useAddressBook();
 	const {onRefresh} = useWallet();
 	const {sdk} = useSafeAppsSDK();
 
@@ -206,6 +216,14 @@ const useConfirmDisperse = ({
 							chainID: safeChainID
 						}
 					]);
+					disperseAddresses.forEach(address => {
+						bumpEntryInteractions({
+							address: address,
+							label: truncateHex(address, 5),
+							chains: [safeChainID],
+							slugifiedLabel: slugify(address)
+						});
+					});
 					if (result.receipt) {
 						notifyDisperse({
 							chainID: safeChainID,
@@ -241,6 +259,14 @@ const useConfirmDisperse = ({
 							chainID: Number(configuration.tokenToSend?.chainID)
 						}
 					]);
+					disperseAddresses.forEach(address => {
+						bumpEntryInteractions({
+							address: address,
+							label: truncateHex(address, 5),
+							chains: [safeChainID],
+							slugifiedLabel: slugify(address)
+						});
+					});
 					if (result.receipt) {
 						notifyDisperse({
 							chainID: safeChainID,
@@ -267,7 +293,8 @@ const useConfirmDisperse = ({
 		safeChainID,
 		onError,
 		onSuccess,
-		onRefresh
+		onRefresh,
+		bumpEntryInteractions
 	]);
 
 	return {onDisperseTokens};
