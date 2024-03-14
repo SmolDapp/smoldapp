@@ -25,7 +25,7 @@ export function SmolTokenSelector({
 	}, [isFocused]);
 
 	return (
-		<div className={'relative h-full w-full'}>
+		<div className={'relative size-full'}>
 			<div
 				className={cl(
 					'h-20 z-20 relative border transition-all',

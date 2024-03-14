@@ -49,6 +49,7 @@ function ImportConfigurationButton({onSelectToken}: {onSelectToken: (token: TTok
 		return initialTokenRaw[safeChainID] && importedTokenToSend
 			? initialTokenRaw[safeChainID][importedTokenToSend]
 			: undefined;
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [initialTokenRaw]);
 
 	const getInitialAmount = (amount: string, token: TToken | undefined): string => {
@@ -105,6 +106,7 @@ function ImportConfigurationButton({onSelectToken}: {onSelectToken: (token: TTok
 		if (initialToken) {
 			onSelectToken(initialToken);
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [initialToken]);
 
 	useEffect(() => {
@@ -131,6 +133,7 @@ function ImportConfigurationButton({onSelectToken}: {onSelectToken: (token: TTok
 				clearReceivers();
 				onAddInputs(resultInputs);
 			});
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [initialToken]);
 
 	return (
@@ -226,20 +229,21 @@ const Disperse = memo(function Disperse(): ReactElement {
 		if (!hasInitialInputs) {
 			onAddReceivers(2);
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [hasInitialInputs]);
 
 	return (
 		<div className={'w-full'}>
 			<button
-				className={'hover:underline mb-2'}
+				className={'mb-2 hover:underline'}
 				onClick={downloadTemplate}>
 				{'Download Template'}
 			</button>
-			<div className={'flex mb-4 gap-2'}>
+			<div className={'mb-4 flex gap-2'}>
 				<ImportConfigurationButton onSelectToken={onSelectToken} />
 				<ExportConfigurationButton className={'!text-sm'} />
 			</div>
-			<div className={'mb-6 max-w-full w-full md:max-w-[432px]'}>
+			<div className={'mb-6 w-full max-w-full md:max-w-[432px]'}>
 				<p className={'mb-2 font-medium'}>{'Token'}</p>
 				<SmolTokenSelector
 					token={configuration.tokenToSend}
@@ -247,7 +251,7 @@ const Disperse = memo(function Disperse(): ReactElement {
 				/>
 			</div>
 			<div className={'flex flex-col items-start'}>
-				<p className={'font-medium mb-2'}>{'Send to'}</p>
+				<p className={'mb-2 font-medium'}>{'Send to'}</p>
 				{configuration.inputs.map(input => (
 					<DisperseAddressAndAmountInputs
 						key={input.UUID}

@@ -169,6 +169,7 @@ export function SmolAddressInput({onSetValue, value}: TAddressInput): ReactEleme
 
 	useEffect(() => {
 		onSetValue(result);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [result]);
 
 	const getHasStatusIcon = useCallback((): boolean => {
@@ -182,7 +183,7 @@ export function SmolAddressInput({onSetValue, value}: TAddressInput): ReactEleme
 			return true;
 		}
 		return false;
-	}, [isFocused, value.isValid, isCheckingValidity]);
+	}, [value.label, value.isValid, isFocused, isCheckingValidity]);
 
 	return (
 		<div className={'group relative size-full rounded-[8px]'}>

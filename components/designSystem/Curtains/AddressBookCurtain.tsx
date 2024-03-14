@@ -343,6 +343,8 @@ export function AddressBookCurtain(props: {
 
 	useEffect(() => set_currentEntry(props.selectedEntry), [props.selectedEntry]);
 	useEffect(() => set_isEditMode(props.isEditing), [props.isEditing]);
+
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	useEffect(() => set_currentEntry({...currentEntry, label: props.initialLabel ?? ''}), [props.initialLabel]);
 
 	return (

@@ -91,6 +91,7 @@ export function Send(): ReactElement {
 		if (!hasInitialInputs) {
 			onAddToken();
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [hasInitialInputs]);
 
 	return (

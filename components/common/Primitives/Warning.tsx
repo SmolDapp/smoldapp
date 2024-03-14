@@ -27,7 +27,7 @@ export function Warning({
 
 	return (
 		<div className={cl('rounded-lg border p-4 text-left', getWarningColors())}>
-			{title && <b className={'capitalize text-left'}>{title}</b>}
+			{title && <b className={'text-left capitalize'}>{title}</b>}
 			<div className={'flex gap-3'}>
 				{statusIcon && <div className={'flex items-center'}>{statusIcon}</div>}
 				{message && <div className={'text-xs'}>{message}</div>}

@@ -217,7 +217,7 @@ export function SmolTokenAmountInput({showPercentButtons = false, onSetValue, va
 						</button>
 					</div>
 				</div>
-				<div className={'max-w-[176px] w-full'}>
+				<div className={'w-full max-w-[176px]'}>
 					<SmolTokenSelectorButton
 						onSelectToken={token => {
 							validate(value.amount, token);

@@ -29,9 +29,9 @@ export function DisperseAddressAndAmountInputs({input}: TDisperseAddressAndAmoun
 	};
 
 	return (
-		<div className={'flex py-2 pl-2 mb-4 bg-neutral-200 rounded-xl items-center w-full md:w-auto'}>
-			<div className={'flex flex-col md:flex-row gap-4 w-full'}>
-				<div className={'flex md:max-w-[424px] max-w-full w-full'}>
+		<div className={'mb-4 flex w-full items-center rounded-xl bg-neutral-200 py-2 pl-2 md:w-auto'}>
+			<div className={'flex w-full flex-col gap-4 md:flex-row'}>
+				<div className={'flex w-full max-w-full md:max-w-[424px]'}>
 					<SmolAddressInput
 						onSetValue={onSetReceiver}
 						value={input.receiver}
@@ -46,7 +46,7 @@ export function DisperseAddressAndAmountInputs({input}: TDisperseAddressAndAmoun
 				</div>
 			</div>
 			<button
-				className={'p-2 mx-2 text-neutral-600 transition-colors hover:text-neutral-700'}
+				className={'mx-2 p-2 text-neutral-600 transition-colors hover:text-neutral-700'}
 				onClick={onRemoveInput}>
 				<IconCross className={'size-4'} />
 			</button>

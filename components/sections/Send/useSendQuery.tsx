@@ -1,4 +1,4 @@
-import {createContext, useContext, useEffect, useMemo} from 'react';
+import {createContext, useCallback, useContext, useEffect, useMemo} from 'react';
 import {useRouter} from 'next/router';
 import {useValidateAddressInput} from 'components/designSystem/SmolAddressInput';
 import {useValidateAmountInput} from 'components/designSystem/SmolTokenAmountInput';
@@ -58,7 +58,7 @@ export const SendQueryManagement = ({
 			initialStateFromUrl,
 			hasInitialInputs
 		}),
-		[initialStateFromUrl, stateFromUrl]
+		[initialStateFromUrl, stateFromUrl, hasInitialInputs]
 	);
 
 	return (
@@ -88,6 +88,7 @@ export function useSendQuery(): {
 
 	const initialStateFromUrl = useMemo(() => {
 		return stateFromUrl;
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	const hasInitialInputs = Array.isArray(initialStateFromUrl.tokens) || Array.isArray(initialStateFromUrl.values);
@@ -98,9 +99,12 @@ export function useSendQuery(): {
 	/** Some tokens in URL may not be present in token list, so they should be fetched  */
 	const {data: initialTokens} = useBalances({tokens: initialTokensRaw});
 
-	const onSetRecipient = (value: Partial<TInputAddressLike>): void => {
-		dispatchConfiguration({type: 'SET_RECEIVER', payload: value});
-	};
+	const onSetRecipient = useCallback(
+		(value: Partial<TInputAddressLike>): void => {
+			dispatchConfiguration({type: 'SET_RECEIVER', payload: value});
+		},
+		[dispatchConfiguration]
+	);
 
 	const onAddToken = (initalValue: TTokenAmountInputElement): void => {
 		dispatchConfiguration({
@@ -120,7 +124,7 @@ export function useSendQuery(): {
 	/** Trigger validation when initial value changes */
 	useEffect(() => {
 		validateAddressInput(undefined, initialStateFromUrl?.to || '').then(result => onSetRecipient(result));
-	}, [initialStateFromUrl?.to]);
+	}, [initialStateFromUrl?.to, onSetRecipient, validateAddressInput]);
 
 	const {validate: validateTokenAmount} = useValidateAmountInput();
 

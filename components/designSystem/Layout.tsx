@@ -70,15 +70,15 @@ export default function Layout(props: AppProps): ReactElement {
 					initial={{scale: 0.9, opacity: 0}}
 					animate={{scale: 1, opacity: 1}}
 					transition={{duration: 0.6, ease: 'easeInOut'}}
-					className={'sticky top-10 z-20 col-sidebar h-app flex-col rounded-lg bg-neutral-0 md:flex hidden'}>
+					className={'sticky top-10 z-20 col-sidebar hidden h-app flex-col rounded-lg bg-neutral-0 md:flex'}>
 					<SideMenu />
 				</motion.nav>
 
-				<div className={'flex md:hidden col-span-full px-4 mb-4'}>
+				<div className={'col-span-full mb-4 flex px-4 md:hidden'}>
 					<SideMenuMobile />
 				</div>
 
-				<div className={'col-span-full md:col-main px-4 '}>
+				<div className={'col-span-full px-4 md:col-main '}>
 					<AnimatePresence mode={'wait'}>
 						<motion.main
 							key={appName}

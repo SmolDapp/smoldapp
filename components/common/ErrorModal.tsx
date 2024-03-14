@@ -69,7 +69,7 @@ export function ErrorModal({isOpen, onClose, title, content, ctaLabel, type = 'h
 								</div>
 								<div
 									className={
-										'flex items-center w-[200px] flex-col gap-2 justify-center pt-10 text-center'
+										'flex w-[200px] flex-col items-center justify-center gap-2 pt-10 text-center'
 									}>
 									<Button
 										className={'w-full'}

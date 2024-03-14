@@ -136,7 +136,7 @@ export function SmolAddressInputSimple(
 			actions.abort();
 			actions.execute(label);
 		},
-		[actions]
+		[actions, inputRef]
 	);
 
 	const getInputValue = useCallback((): string | undefined => {

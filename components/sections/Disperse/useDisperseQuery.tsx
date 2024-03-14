@@ -87,6 +87,7 @@ export function useDisperseQuery(): {
 
 	const initialStateFromUrl = useMemo(() => {
 		return stateFromUrl;
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	const hasInitialInputs = Array.isArray(initialStateFromUrl.addresses) || Array.isArray(initialStateFromUrl.values);
@@ -108,16 +109,19 @@ export function useDisperseQuery(): {
 	const onAddInputs = (inputs: TDisperseInput[]): void => {
 		dispatchConfiguration({type: 'ADD_RECEIVERS', payload: inputs});
 	};
+
 	const getInitialAmount = (index: number, token: TToken | undefined): string => {
 		return initialStateFromUrl?.values?.[index] && token
 			? toNormalizedBN(initialStateFromUrl?.values[index], token.decimals).display
 			: '0';
 	};
+
 	/** Set initial token from url if present */
 	useEffect(() => {
 		if (initialToken) {
 			onSelectToken(initialToken);
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [initialToken]);
 
 	const {validate: validateAddress} = useValidateAddressInput();

@@ -54,9 +54,9 @@ export function NetworkPopoverSelector(): ReactElement {
 						'flex w-full items-center justify-between rounded-lg p-2',
 						'bg-neutral-200 hover:bg-neutral-300 transition-colors '
 					)}>
-					<div className={'w-full flex gap-1 max-w-full justify-between text-left text-xs'}>
+					<div className={'flex w-full max-w-full justify-between gap-1 text-left text-xs'}>
 						{isMounted() && currentNetwork?.label ? (
-							<div className={'flex gap-2 truncate w-full max-w-full'}>
+							<div className={'flex w-full max-w-full gap-2 truncate'}>
 								<ImageWithFallback
 									width={16}
 									height={16}
@@ -69,7 +69,7 @@ export function NetworkPopoverSelector(): ReactElement {
 							'Select chain...'
 						)}
 						<div>
-							<IconChevron className={'size-4 rotate-90 ml-1'} />
+							<IconChevron className={'ml-1 size-4 rotate-90'} />
 						</div>
 					</div>
 				</button>

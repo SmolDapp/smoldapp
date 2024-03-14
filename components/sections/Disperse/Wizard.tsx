@@ -80,7 +80,7 @@ const useApproveDisperse = ({
 				refetch();
 			}
 		});
-	}, [provider, configuration.tokenToSend, totalToDisperse, onSuccess, safeChainID]);
+	}, [isApproved, provider, safeChainID, configuration.tokenToSend?.address, totalToDisperse, onSuccess, refetch]);
 
 	return {
 		approvalStatus,
@@ -161,7 +161,7 @@ const useConfirmDisperse = ({
 			});
 			onError();
 		}
-	}, [address, safeChainID, configuration.inputs, sdk.txs, configuration.tokenToSend]);
+	}, [configuration.inputs, configuration.tokenToSend, sdk.txs, safeChainID, address, onSuccess, onError]);
 
 	const onDisperseTokens = useCallback((): void => {
 		onTrigger();
@@ -257,7 +257,18 @@ const useConfirmDisperse = ({
 				onError();
 			});
 		}
-	}, [isWalletSafe, configuration.inputs, configuration.tokenToSend, provider, safeChainID, onRefresh]);
+	}, [
+		onTrigger,
+		isWalletSafe,
+		configuration.inputs,
+		configuration.tokenToSend,
+		onDisperseTokensForGnosis,
+		provider,
+		safeChainID,
+		onError,
+		onSuccess,
+		onRefresh
+	]);
 
 	return {onDisperseTokens};
 };
@@ -373,7 +384,7 @@ export function DisperseWizard(): ReactElement {
 					}
 					return onApproveToken();
 				}}
-				className={'!h-10 w-full max-w-[240px] mt-2'}>
+				className={'mt-2 !h-10 w-full max-w-[240px]'}>
 				{getButtonTitle()}
 			</Button>
 

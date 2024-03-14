@@ -67,7 +67,7 @@ function SuccessModal(props: TSuccessModal): ReactElement {
 									'relative overflow-hidden flex flex-col items-center justify-center rounded-md !bg-neutral-200 !p-10 transition-all',
 									'sm:my-8 sm:w-full sm:max-w-lg sm:p-6'
 								)}>
-								<div className={'mb-10 bg-green p-7 rounded-full'}>
+								<div className={'mb-10 rounded-full bg-green p-7'}>
 									<IconCheck className={'size-6 text-white'} />
 								</div>
 								<div>
@@ -84,7 +84,7 @@ function SuccessModal(props: TSuccessModal): ReactElement {
 								</div>
 								<div
 									className={
-										'flex items-center w-[200px] flex-col gap-2 justify-center pt-10 text-center'
+										'flex w-[200px] flex-col items-center justify-center gap-2 pt-10 text-center'
 									}>
 									{props.downloadConfigButton}
 									<Button

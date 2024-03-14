@@ -26,7 +26,7 @@ export function SmolTokenButton({
 				'disabled:cursor-not-allowed disabled:hover:bg-neutral-200 disabled:opacity-20'
 			)}
 			disabled={isDisabled}>
-			<div className={'flex justify-between items-center w-full'}>
+			<div className={'flex w-full items-center justify-between'}>
 				<div className={'flex items-center gap-2'}>
 					{token && isAddress(token.address) ? (
 						<ImageWithFallback

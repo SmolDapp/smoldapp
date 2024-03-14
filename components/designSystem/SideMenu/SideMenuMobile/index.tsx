@@ -30,15 +30,15 @@ export function SideMenuMobile(): ReactElement {
 	return (
 		<>
 			<div className={cl('py-4 pl-4 pr-6 bg-neutral-0 w-full rounded-lg')}>
-				<div className={'flex justify-between items-center mb-4'}>
+				<div className={'mb-4 flex items-center justify-between'}>
 					<ProfileBox />
 					<button
-						className={'transition-colors hover:bg-neutral-200 p-2 rounded-full'}
+						className={'rounded-full p-2 transition-colors hover:bg-neutral-200'}
 						onClick={() => set_isOpen(true)}>
 						<IconHamburger className={'size-4'} />
 					</button>
 				</div>
-				<div className={'flex justify-between items-center gap-6'}>
+				<div className={'flex items-center justify-between gap-6'}>
 					<div>
 						<small>{'Chain'}</small>
 						<NetworkPopoverSelector />
@@ -53,7 +53,7 @@ export function SideMenuMobile(): ReactElement {
 				as={Fragment}>
 				<Dialog
 					as={'div'}
-					className={'relative z-[1000] w-full md:hidden block'}
+					className={'relative z-[1000] block w-full md:hidden'}
 					onClose={() => set_isOpen(!isOpen)}>
 					<Transition.Child
 						as={Fragment}
