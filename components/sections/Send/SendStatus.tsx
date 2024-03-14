@@ -38,6 +38,7 @@ export function SendStatus({isReceiverERC20}: {isReceiverERC20: boolean}): React
 						{'Hello. Looks like you’re sending to a '}
 						<Link
 							target={'_blank'}
+							// TODO: add link
 							href={'/'}>
 							<span className={'font-semibold hover:underline'}>{'smart contract address'}</span>
 						</Link>
@@ -61,7 +62,15 @@ export function SendStatus({isReceiverERC20}: {isReceiverERC20: boolean}): React
 				type: 'error'
 			});
 		}
+
 		if (configuration.receiver.address && !fromAddressBook) {
+			return set_status({
+				message: 'This is the first time you interact with this address, please be careful',
+				type: 'warning'
+			});
+		}
+
+		if (configuration.receiver.address && fromAddressBook?.isHidden) {
 			return set_status({message: 'This address isn’t in your address book. Wanna add it?', type: 'warning'});
 		}
 

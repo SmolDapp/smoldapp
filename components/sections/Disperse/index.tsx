@@ -12,6 +12,7 @@ import {cl, toAddress, toNormalizedBN} from '@builtbymom/web3/utils';
 import IconImport from '@icons/IconImport';
 
 import {DisperseAddressAndAmountInputs} from './DisperseAddressAndAmountInputs';
+import {DisperseStatus} from './DisperseStatus';
 import {newVoidRow, useDisperse} from './useDisperse';
 import {useDisperseQueryManagement} from './useDisperseQuery';
 import {DisperseWizard} from './Wizard';
@@ -268,6 +269,7 @@ const Disperse = memo(function Disperse(): ReactElement {
 					{'+Add receiver'}
 				</button>
 			</div>
+			<DisperseStatus />
 			<DisperseWizard />
 		</div>
 	);
