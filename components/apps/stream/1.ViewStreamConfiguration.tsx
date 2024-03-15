@@ -41,7 +41,7 @@ function StreamCustomizedDates(): ReactElement {
 						<Tooltip>
 							<TooltipTrigger className={'flex w-fit items-center gap-1 pb-1'}>
 								<small className={'text-left'}>{'Start Date'}</small>
-								<IconInfo className={'h-3 w-3 text-neutral-900/30'} />
+								<IconInfo className={'size-3 text-neutral-900/30'} />
 							</TooltipTrigger>
 							<TooltipContent>
 								<p className={'max-w-xs whitespace-break-spaces text-center'}>
@@ -67,7 +67,7 @@ function StreamCustomizedDates(): ReactElement {
 						<Tooltip>
 							<TooltipTrigger className={'flex w-fit items-center gap-1 pb-1'}>
 								<small className={'text-left'}>{'End Date'}</small>
-								<IconInfo className={'h-3 w-3 text-neutral-900/30'} />
+								<IconInfo className={'size-3 text-neutral-900/30'} />
 							</TooltipTrigger>
 							<TooltipContent>
 								<p className={'max-w-xs whitespace-break-spaces text-center'}>
@@ -99,7 +99,7 @@ function StreamCustomizedDates(): ReactElement {
 						<Tooltip>
 							<TooltipTrigger className={'flex w-fit items-center gap-1 pb-1'}>
 								<small className={'text-left'}>{'Cliff End'}</small>
-								<IconInfo className={'h-3 w-3 text-neutral-900/30'} />
+								<IconInfo className={'size-3 text-neutral-900/30'} />
 							</TooltipTrigger>
 							<TooltipContent>
 								<p className={'max-w-xs whitespace-break-spaces text-center'}>

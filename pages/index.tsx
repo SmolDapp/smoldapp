@@ -152,7 +152,7 @@ const apps = [
 		icon: <LogoTokenlistooor className={'size-[80px]'} />
 	},
 	{
-		href: '/tokenlistooor/smolAssets',
+		href: '/tokenlistooor/list/smolAssets',
 		title: 'Token Assets',
 		description: (
 			<span>
