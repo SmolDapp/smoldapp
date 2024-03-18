@@ -26,7 +26,7 @@ export type TAddressBookEntry = {
 	tags?: string[]; // List of tags associated with the address.
 };
 export type TSelectCallback = (item: TAddressBookEntry) => void;
-export type TAddressBookCurtainProps = {
+export type TAddressBookProps = {
 	shouldOpenCurtain: boolean;
 	listEntries: () => Promise<TAddressBookEntry[]>;
 	listCachedEntries: () => TAddressBookEntry[];
@@ -39,7 +39,7 @@ export type TAddressBookCurtainProps = {
 	onOpenCurtain: (callbackFn: TSelectCallback) => void;
 	onCloseCurtain: () => void;
 };
-const defaultProps: TAddressBookCurtainProps = {
+const defaultProps: TAddressBookProps = {
 	shouldOpenCurtain: false,
 	listEntries: async (): Promise<TAddressBookEntry[]> => [],
 	listCachedEntries: (): TAddressBookEntry[] => [],
@@ -78,7 +78,7 @@ const addressBookIDBConfig: IndexedDBConfig = {
 	]
 };
 
-const AddressBookContext = createContext<TAddressBookCurtainProps>(defaultProps);
+const AddressBookContext = createContext<TAddressBookProps>(defaultProps);
 export const WithAddressBook = ({children}: {children: React.ReactElement}): React.ReactElement => {
 	const [shouldOpenCurtain, set_shouldOpenCurtain] = useState(false);
 	const [cachedEntries, set_cachedEntries] = useState<TAddressBookEntry[]>([]);
@@ -295,7 +295,7 @@ export const WithAddressBook = ({children}: {children: React.ReactElement}): Rea
 	 * Context value that is passed to all children of this component.
 	 *************************************************************************/
 	const contextValue = useMemo(
-		(): TAddressBookCurtainProps => ({
+		(): TAddressBookProps => ({
 			shouldOpenCurtain,
 			listEntries,
 			listCachedEntries,
@@ -336,4 +336,4 @@ export const WithAddressBook = ({children}: {children: React.ReactElement}): Rea
 	);
 };
 
-export const useAddressBook = (): TAddressBookCurtainProps => useContext(AddressBookContext);
+export const useAddressBook = (): TAddressBookProps => useContext(AddressBookContext);

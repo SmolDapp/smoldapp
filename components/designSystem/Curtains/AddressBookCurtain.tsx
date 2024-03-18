@@ -19,7 +19,7 @@ import {AvatarWrapper} from '../Avatar';
 import {NetworkDropdownSelector} from '../NetworkSelector/Dropdown';
 import {SmolAddressInputSimple} from '../SmolAddressInput.simple';
 
-import type {TAddressBookEntryReducer} from 'pages/apps/address-book';
+import type {TAddressBookEntryReducer} from 'contexts/useAddressBookCurtain';
 import type {Dispatch, ReactElement, SetStateAction} from 'react';
 import type {TInputAddressLike} from '@utils/tools.address';
 

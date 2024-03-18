@@ -1,5 +1,6 @@
 import {type ReactElement, type ReactNode} from 'react';
 import {WithAddressBook} from 'contexts/useAddressBook';
+import {WithAddressBookCurtain} from 'contexts/useAddressBookCurtain';
 import {AnimatePresence, motion} from 'framer-motion';
 import {cl} from '@builtbymom/web3/utils';
 import {IconQuestionMark} from '@icons/IconQuestionMark';
@@ -89,21 +90,23 @@ export default function Layout(props: AppProps): ReactElement {
 							initial={'initial'}
 							className={'relative mb-10 min-h-app w-full overflow-x-hidden rounded-lg bg-neutral-0'}>
 							<WithAddressBook>
-								<App
-									title={appName}
-									description={appDescription}
-									action={appAction()}>
-									<motion.div
-										initial={{scale: 0.9, opacity: 0}}
-										animate={{scale: 1, opacity: 1}}
-										transition={{
-											delay: router.isReady ? 0.2 : 0.4,
-											duration: 0.6,
-											ease: 'easeInOut'
-										}}>
-										{getLayout(<Component {...props} />, router)}
-									</motion.div>
-								</App>
+								<WithAddressBookCurtain>
+									<App
+										title={appName}
+										description={appDescription}
+										action={appAction()}>
+										<motion.div
+											initial={{scale: 0.9, opacity: 0}}
+											animate={{scale: 1, opacity: 1}}
+											transition={{
+												delay: router.isReady ? 0.2 : 0.4,
+												duration: 0.6,
+												ease: 'easeInOut'
+											}}>
+											{getLayout(<Component {...props} />, router)}
+										</motion.div>
+									</App>
+								</WithAddressBookCurtain>
 							</WithAddressBook>
 						</motion.main>
 					</AnimatePresence>
