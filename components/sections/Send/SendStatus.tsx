@@ -1,6 +1,7 @@
-import {useState} from 'react';
+import {useCallback, useState} from 'react';
 import Link from 'next/link';
 import {useAddressBook} from 'contexts/useAddressBook';
+import {useAddressBookCurtain} from 'contexts/useAddressBookCurtain';
 import {useAsyncTrigger} from '@builtbymom/web3/hooks/useAsyncTrigger';
 import {useChainID} from '@builtbymom/web3/hooks/useChainID';
 import {isEthAddress} from '@builtbymom/web3/utils';
@@ -20,6 +21,32 @@ export function SendStatus({isReceiverERC20}: {isReceiverERC20: boolean}): React
 	const [status, set_status] = useState<{type: TWarningType; message: string | ReactElement} | null>(null);
 
 	const {getEntry} = useAddressBook();
+	const {set_curtainStatus, dispatchConfiguration} = useAddressBookCurtain();
+
+	const getAddressBookButton = useCallback(
+		(title: string): JSX.Element => {
+			return (
+				<button
+					className={'font-bold transition-all'}
+					onClick={() => {
+						set_curtainStatus({isOpen: true, isEditing: true});
+						dispatchConfiguration({
+							type: 'SET_SELECTED_ENTRY',
+							payload: {
+								address: configuration.receiver.address,
+								label: '',
+								slugifiedLabel: '',
+								chains: [],
+								isFavorite: false
+							}
+						});
+					}}>
+					{title}
+				</button>
+			);
+		},
+		[configuration.receiver.address, dispatchConfiguration, set_curtainStatus]
+	);
 
 	useAsyncTrigger(async (): Promise<void> => {
 		const isSmartContract =
@@ -63,15 +90,30 @@ export function SendStatus({isReceiverERC20}: {isReceiverERC20: boolean}): React
 			});
 		}
 
-		if (configuration.receiver.address && !fromAddressBook) {
+		if (
+			configuration.receiver.address &&
+			(!fromAddressBook || (fromAddressBook?.numberOfInteractions === 0 && fromAddressBook.isHidden))
+		) {
 			return set_status({
-				message: 'This is the first time you interact with this address, please be careful',
+				message: (
+					<>
+						{'This is the first time you interact with this address, please be careful.'}
+						{getAddressBookButton('Wanna add it to Address Book?')}
+					</>
+				),
 				type: 'warning'
 			});
 		}
 
 		if (configuration.receiver.address && fromAddressBook?.isHidden) {
-			return set_status({message: 'This address isn’t in your address book. Wanna add it?', type: 'warning'});
+			return set_status({
+				message: (
+					<>
+						{'This address isn’t in your address book.'} {getAddressBookButton('Wanna add it?')}
+					</>
+				),
+				type: 'warning'
+			});
 		}
 
 		if (configuration.receiver.address && !fromAddressBook?.chains.includes(safeChainID)) {
@@ -87,7 +129,7 @@ export function SendStatus({isReceiverERC20}: {isReceiverERC20: boolean}): React
 		}
 
 		return set_status(null);
-	}, [configuration.receiver.address, getEntry, isReceiverERC20, safeChainID]);
+	}, [configuration.receiver.address, getAddressBookButton, getEntry, isReceiverERC20, safeChainID]);
 
 	if (!status) {
 		return null;

@@ -84,7 +84,7 @@ export const WithAddressBook = ({children}: {children: React.ReactElement}): Rea
 	const [cachedEntries, set_cachedEntries] = useState<TAddressBookEntry[]>([]);
 	const [entryNonce, set_entryNonce] = useState<number>(0);
 	const [currentCallbackFunction, set_currentCallbackFunction] = useState<TSelectCallback | undefined>(undefined);
-	const {add, getAll, getOneByKey, deleteByID, update} = useIndexedDBStore<TAddressBookEntry>('address-book');
+	const {add, getAll, getOneByKey, update} = useIndexedDBStore<TAddressBookEntry>('address-book');
 	const {safeChainID} = useChainID();
 
 	useMountEffect(async () => setupIndexedDB(addressBookIDBConfig));
@@ -246,14 +246,14 @@ export const WithAddressBook = ({children}: {children: React.ReactElement}): Rea
 			try {
 				const existingEntry = await getEntry({address: address});
 				if (existingEntry) {
-					deleteByID(existingEntry.id);
+					update({...existingEntry, isHidden: true});
 					set_entryNonce(nonce => nonce + 1);
 				}
 			} catch {
 				// Do nothing
 			}
 		},
-		[deleteByID, getEntry]
+		[getEntry, update]
 	);
 
 	/**************************************************************************
