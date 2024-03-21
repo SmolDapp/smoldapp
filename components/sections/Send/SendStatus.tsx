@@ -1,4 +1,4 @@
-import {useCallback, useState} from 'react';
+import {useState} from 'react';
 import Link from 'next/link';
 import {useAddressBook} from 'contexts/useAddressBook';
 import {useAddressBookCurtain} from 'contexts/useAddressBookCurtain';
@@ -11,8 +11,33 @@ import {Warning} from '@common/Primitives/Warning';
 
 import {useSendFlow} from './useSendFlow';
 
-import type {ReactElement} from 'react';
+import type {ReactElement, ReactNode} from 'react';
 import type {TWarningType} from '@common/Primitives/Warning';
+
+function TriggerAddressBookButton({children}: {children: ReactNode}): ReactElement {
+	const {set_curtainStatus, dispatchConfiguration} = useAddressBookCurtain();
+	const {configuration} = useSendFlow();
+
+	return (
+		<button
+			className={'font-bold transition-all'}
+			onClick={() => {
+				set_curtainStatus({isOpen: true, isEditing: true});
+				dispatchConfiguration({
+					type: 'SET_SELECTED_ENTRY',
+					payload: {
+						address: configuration.receiver.address,
+						label: '',
+						slugifiedLabel: '',
+						chains: [],
+						isFavorite: false
+					}
+				});
+			}}>
+			{children}
+		</button>
+	);
+}
 
 export function SendStatus({isReceiverERC20}: {isReceiverERC20: boolean}): ReactElement | null {
 	const {configuration} = useSendFlow();
@@ -21,32 +46,6 @@ export function SendStatus({isReceiverERC20}: {isReceiverERC20: boolean}): React
 	const [status, set_status] = useState<{type: TWarningType; message: string | ReactElement} | null>(null);
 
 	const {getEntry} = useAddressBook();
-	const {set_curtainStatus, dispatchConfiguration} = useAddressBookCurtain();
-
-	const getAddressBookButton = useCallback(
-		(title: string): JSX.Element => {
-			return (
-				<button
-					className={'font-bold transition-all'}
-					onClick={() => {
-						set_curtainStatus({isOpen: true, isEditing: true});
-						dispatchConfiguration({
-							type: 'SET_SELECTED_ENTRY',
-							payload: {
-								address: configuration.receiver.address,
-								label: '',
-								slugifiedLabel: '',
-								chains: [],
-								isFavorite: false
-							}
-						});
-					}}>
-					{title}
-				</button>
-			);
-		},
-		[configuration.receiver.address, dispatchConfiguration, set_curtainStatus]
-	);
 
 	useAsyncTrigger(async (): Promise<void> => {
 		const isSmartContract =
@@ -98,7 +97,7 @@ export function SendStatus({isReceiverERC20}: {isReceiverERC20: boolean}): React
 				message: (
 					<>
 						{'This is the first time you interact with this address, please be careful.'}
-						{getAddressBookButton('Wanna add it to Address Book?')}
+						<TriggerAddressBookButton>{'Wanna add it to Address Book?'}</TriggerAddressBookButton>
 					</>
 				),
 				type: 'warning'
@@ -109,7 +108,8 @@ export function SendStatus({isReceiverERC20}: {isReceiverERC20: boolean}): React
 			return set_status({
 				message: (
 					<>
-						{'This address isn’t in your address book.'} {getAddressBookButton('Wanna add it?')}
+						{'This address isn’t in your address book.'}{' '}
+						<TriggerAddressBookButton>{'Wanna add it?'}</TriggerAddressBookButton>
 					</>
 				),
 				type: 'warning'
@@ -129,7 +129,7 @@ export function SendStatus({isReceiverERC20}: {isReceiverERC20: boolean}): React
 		}
 
 		return set_status(null);
-	}, [configuration.receiver.address, getAddressBookButton, getEntry, isReceiverERC20, safeChainID]);
+	}, [configuration.receiver.address, getEntry, isReceiverERC20, safeChainID]);
 
 	if (!status) {
 		return null;
