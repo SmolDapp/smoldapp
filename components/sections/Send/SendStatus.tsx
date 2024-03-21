@@ -1,6 +1,7 @@
 import {useState} from 'react';
 import Link from 'next/link';
 import {useAddressBook} from 'contexts/useAddressBook';
+import {useAddressBookCurtain} from 'contexts/useAddressBookCurtain';
 import {useAsyncTrigger} from '@builtbymom/web3/hooks/useAsyncTrigger';
 import {useChainID} from '@builtbymom/web3/hooks/useChainID';
 import {isEthAddress} from '@builtbymom/web3/utils';
@@ -10,8 +11,33 @@ import {Warning} from '@common/Primitives/Warning';
 
 import {useSendFlow} from './useSendFlow';
 
-import type {ReactElement} from 'react';
+import type {ReactElement, ReactNode} from 'react';
 import type {TWarningType} from '@common/Primitives/Warning';
+
+function TriggerAddressBookButton({children}: {children: ReactNode}): ReactElement {
+	const {set_curtainStatus, dispatchConfiguration} = useAddressBookCurtain();
+	const {configuration} = useSendFlow();
+
+	return (
+		<button
+			className={'font-bold transition-all'}
+			onClick={() => {
+				set_curtainStatus({isOpen: true, isEditing: true});
+				dispatchConfiguration({
+					type: 'SET_SELECTED_ENTRY',
+					payload: {
+						address: configuration.receiver.address,
+						label: '',
+						slugifiedLabel: '',
+						chains: [],
+						isFavorite: false
+					}
+				});
+			}}>
+			{children}
+		</button>
+	);
+}
 
 export function SendStatus({isReceiverERC20}: {isReceiverERC20: boolean}): ReactElement | null {
 	const {configuration} = useSendFlow();
@@ -63,15 +89,31 @@ export function SendStatus({isReceiverERC20}: {isReceiverERC20: boolean}): React
 			});
 		}
 
-		if (configuration.receiver.address && !fromAddressBook) {
+		if (
+			configuration.receiver.address &&
+			(!fromAddressBook || (fromAddressBook?.numberOfInteractions === 0 && fromAddressBook.isHidden))
+		) {
 			return set_status({
-				message: 'This is the first time you interact with this address, please be careful',
+				message: (
+					<>
+						{'This is the first time you interact with this address, please be careful.'}
+						<TriggerAddressBookButton>{'Wanna add it to Address Book?'}</TriggerAddressBookButton>
+					</>
+				),
 				type: 'warning'
 			});
 		}
 
 		if (configuration.receiver.address && fromAddressBook?.isHidden) {
-			return set_status({message: 'This address isn’t in your address book. Wanna add it?', type: 'warning'});
+			return set_status({
+				message: (
+					<>
+						{'This address isn’t in your address book.'}{' '}
+						<TriggerAddressBookButton>{'Wanna add it?'}</TriggerAddressBookButton>
+					</>
+				),
+				type: 'warning'
+			});
 		}
 
 		if (configuration.receiver.address && !fromAddressBook?.chains.includes(safeChainID)) {

@@ -19,7 +19,7 @@ import {AvatarWrapper} from '../Avatar';
 import {NetworkDropdownSelector} from '../NetworkSelector/Dropdown';
 import {SmolAddressInputSimple} from '../SmolAddressInput.simple';
 
-import type {TAddressBookEntryReducer} from 'pages/apps/address-book';
+import type {TAddressBookEntryReducer} from 'contexts/useAddressBookCurtain';
 import type {Dispatch, ReactElement, SetStateAction} from 'react';
 import type {TInputAddressLike} from '@utils/tools.address';
 
@@ -122,7 +122,7 @@ function NameInput(props: {
 	useEffect(() => {
 		const entry = getCachedEntry({label: selectedEntry.label});
 		const currentCustomValidity = inputRef.current?.validationMessage;
-		if (entry !== undefined && entry.id !== selectedEntry.id) {
+		if (entry !== undefined && entry.id !== selectedEntry.id && !entry.isHidden) {
 			inputRef.current?.setCustomValidity('This name is already used in your address book');
 			props.onRefresh?.();
 		} else if (currentCustomValidity !== '') {
@@ -220,7 +220,7 @@ function AddressInput(props: {
 		const entry = getCachedEntry({address: props.addressLike.address});
 		const currentCustomValidity = inputRef.current?.validationMessage;
 
-		if (entry !== undefined && entry.id !== props.selectedEntry.id) {
+		if (entry !== undefined && entry.id !== props.selectedEntry.id && !entry.isHidden) {
 			inputRef.current?.setCustomValidity('This address is already in your address book');
 			onChange();
 		} else if (currentCustomValidity !== '') {
@@ -316,10 +316,10 @@ export function AddressBookCurtain(props: {
 				});
 			}
 			if (props.selectedEntry.id === undefined) {
-				updateEntry({...currentEntry, address: addressLike.address});
+				updateEntry({...currentEntry, address: addressLike.address, isHidden: false});
 				props.onOpenChange({isOpen: false, isEditing: false});
 			} else {
-				updateEntry({...currentEntry, address: addressLike.address});
+				updateEntry({...currentEntry, address: addressLike.address, isHidden: false});
 				set_isEditMode(false);
 				props.onOpenChange({isOpen: true, isEditing: false});
 			}
