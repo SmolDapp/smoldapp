@@ -1,6 +1,6 @@
 import axios from 'axios';
 import {formatAmount, toNormalizedBN, truncateHex, zeroNormalizedBN} from '@builtbymom/web3/utils';
-import {getNetwork} from '@wagmi/core';
+import {getNetwork} from '@builtbymom/web3/utils/wagmi';
 
 import {EIP3770_PREFIX} from './eip-3770';
 
@@ -49,8 +49,7 @@ export function notifyDisperse(props: {
 	if (!props.tokenToDisperse) {
 		return;
 	}
-	const {chains} = getNetwork();
-	const currentChain = chains.find((chain): boolean => chain.id === props.chainID);
+	const currentChain = getNetwork(props.chainID);
 	const explorerBaseURI = currentChain?.blockExplorers?.default?.url || 'https://etherscan.io';
 	const decimals = props.tokenToDisperse.decimals || 18;
 	const sumDispersed = props.amounts.reduce((sum, amount): bigint => sum + amount, 0n);
@@ -91,8 +90,7 @@ export function notifySend(props: {
 	from: TAddress;
 	type: 'EOA' | 'SAFE';
 }): void {
-	const {chains} = getNetwork();
-	const currentChain = chains.find((chain): boolean => chain.id === props.chainID);
+	const currentChain = getNetwork(props.chainID);
 	const explorerBaseURI = currentChain?.blockExplorers?.default?.url || 'https://etherscan.io';
 	const getChainPrefix = EIP3770_PREFIX.find((item): boolean => item.chainId === props.chainID);
 	const chainPrefix = getChainPrefix?.shortName || 'eth';

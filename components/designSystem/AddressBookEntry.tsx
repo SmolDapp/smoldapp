@@ -113,7 +113,9 @@ export function AddressBookEntry(props: {
 	const {data: avatar, isLoading: isLoadingAvatar} = useEnsAvatar({
 		chainId: 1,
 		name: ensName || props.entry.ens,
-		enabled: Boolean(ensName || props.entry.ens)
+		query: {
+			enabled: Boolean(ensName || props.entry.ens)
+		}
 	});
 
 	useEffect((): void => {

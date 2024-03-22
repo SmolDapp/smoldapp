@@ -1,6 +1,5 @@
 import type {Dispatch} from 'react';
 import type {TAddress, TDict} from '@builtbymom/web3/types';
-import type {FetchTransactionResult} from '@wagmi/core';
 
 export type TPriceFromGecko = TDict<{usd: number}>;
 
@@ -17,7 +16,7 @@ export type TMultiSafeConfiguration = {
 	seed: bigint;
 	threshold: number;
 	owners: TOwners[];
-	originalTx: FetchTransactionResult | undefined;
+	originalTx: any | undefined;
 	settings: {
 		shouldUseExpertMode: boolean;
 		shouldUseTestnets: boolean;

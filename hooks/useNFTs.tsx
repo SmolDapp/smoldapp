@@ -2,14 +2,12 @@ import {useCallback} from 'react';
 import {ETHEREUM_ENS_ADDRESS, POLYGON_LENS_ADDRESS} from 'utils/constants';
 import {decodeAsset} from 'utils/decodeAsset';
 import {retrieveENSNameFromNode} from 'utils/tools.ens';
-import {getAbiItem, parseAbi} from 'viem';
-import {erc721ABI} from 'wagmi';
+import {erc721Abi, getAbiItem, parseAbi} from 'viem';
 import {toAddress, toBigInt} from '@builtbymom/web3/utils';
-import {getClient} from '@builtbymom/web3/utils/wagmi';
+import {getClient, retrieveConfig} from '@builtbymom/web3/utils/wagmi';
 import {multicall} from '@wagmi/core';
 
 import type {TNFT} from 'utils/types/nftMigratooor';
-import type {ContractFunctionConfig} from 'viem';
 import type {TAddress} from '@builtbymom/web3/types';
 
 type TNFTLogged = {
@@ -19,7 +17,7 @@ type TNFTLogged = {
 	type: 'ERC721' | 'ERC1155';
 };
 
-type TMulticallContract = Parameters<typeof multicall>[0]['contracts'][0];
+type TMulticallContract = Parameters<any>;
 
 function useNFTs(): (userAddress: TAddress, chainID: number) => Promise<TNFT[]> {
 	const filterEvents = useCallback(async (userAddress: TAddress, chainID: number): Promise<TNFT[]> => {
@@ -31,7 +29,7 @@ function useNFTs(): (userAddress: TAddress, chainID: number) => Promise<TNFT[]> 
 		const detectedNFTs: TNFTLogged[] = [];
 		for (let i = initialBlockNumber; i < currentBlockNumber; i += rangeLimit) {
 			console.log(`Scanning block ${i} to ${i + rangeLimit}`);
-			const abiItem = getAbiItem({abi: erc721ABI, name: 'Transfer'});
+			const abiItem = getAbiItem({abi: erc721Abi, name: 'Transfer'});
 			const [erc721Sent, erc721Received] = await Promise.all([
 				publicClient.getLogs({
 					event: abiItem,
@@ -71,23 +69,23 @@ function useNFTs(): (userAddress: TAddress, chainID: number) => Promise<TNFT[]> 
 		}
 
 		const calls = detectedNFTs.map((detected): TMulticallContract[] => {
-			const basicCalls: TMulticallContract[] = [
+			const basicCalls: any[] = [
 				{
-					abi: erc721ABI,
+					abi: erc721Abi,
 					functionName: 'tokenURI',
 					args: [detected.tokenID],
 					address: detected.address
-				} satisfies ContractFunctionConfig<typeof erc721ABI>,
+				},
 				{
-					abi: erc721ABI,
+					abi: erc721Abi,
 					functionName: 'name',
 					address: detected.address
-				} satisfies ContractFunctionConfig<typeof erc721ABI>,
+				},
 				{
-					abi: erc721ABI,
+					abi: erc721Abi,
 					functionName: 'symbol',
 					address: detected.address
-				} satisfies ContractFunctionConfig<typeof erc721ABI>
+				}
 			];
 
 			if (toAddress(detected.address) === POLYGON_LENS_ADDRESS) {
@@ -97,11 +95,11 @@ function useNFTs(): (userAddress: TAddress, chainID: number) => Promise<TNFT[]> 
 					functionName: 'getHandle',
 					args: [detected.tokenID],
 					address: detected.address
-				} satisfies ContractFunctionConfig<typeof abi>);
+				});
 			}
 			return basicCalls;
 		});
-		const result = await multicall({contracts: calls.flat(), chainId: chainID});
+		const result = await multicall(retrieveConfig(), {contracts: calls.flat() as any, chainId: chainID});
 
 		let resultIndex = 0;
 		const allDetectedNFTs: TNFT[] = [];

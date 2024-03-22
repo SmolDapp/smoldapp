@@ -4,7 +4,8 @@ import {useAddressBook} from 'contexts/useAddressBook';
 import {approveERC20, disperseERC20, disperseETH} from 'utils/actions';
 import {notifyDisperse} from 'utils/notifier';
 import {getTransferTransaction} from 'utils/tools.gnosis';
-import {erc20ABI, useContractRead} from 'wagmi';
+import {type BaseError, erc20Abi, type Hex} from 'viem';
+import {useReadContract} from 'wagmi';
 import useWallet from '@builtbymom/web3/contexts/useWallet';
 import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
 import {useChainID} from '@builtbymom/web3/hooks/useChainID';
@@ -28,7 +29,6 @@ import {ExportConfigurationButton} from '.';
 import {useDisperse} from './useDisperse';
 
 import type {ReactElement} from 'react';
-import type {BaseError, Hex} from 'viem';
 import type {TAddress} from '@builtbymom/web3/types';
 import type {TTxStatus} from '@builtbymom/web3/utils/wagmi/transaction';
 import type {BaseTransaction} from '@gnosis.pm/safe-apps-sdk';
@@ -60,14 +60,16 @@ const useApproveDisperse = ({
 		return toAddress(configuration.tokenToSend?.address) !== ETH_TOKEN_ADDRESS;
 	}, [configuration.tokenToSend]);
 
-	const {data: allowance = 0n, refetch} = useContractRead({
-		abi: erc20ABI,
+	const {data: allowance = 0n, refetch} = useReadContract({
+		abi: erc20Abi,
 		functionName: 'allowance',
 		args: [toAddress(address), toAddress(process.env.DISPERSE_ADDRESS)],
 		address: toAddress(configuration.tokenToSend?.address),
-		enabled:
-			configuration.tokenToSend !== undefined &&
-			toAddress(configuration.tokenToSend?.address) !== ETH_TOKEN_ADDRESS
+		query: {
+			enabled:
+				configuration.tokenToSend !== undefined &&
+				toAddress(configuration.tokenToSend?.address) !== ETH_TOKEN_ADDRESS
+		}
 	});
 
 	const isApproved = allowance >= totalToDisperse;

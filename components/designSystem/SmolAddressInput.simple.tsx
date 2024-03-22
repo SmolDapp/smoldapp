@@ -1,12 +1,12 @@
 import React, {useCallback, useRef, useState} from 'react';
-import {getEnsName} from 'viem/ens';
 import {cl, isAddress, toAddress, truncateHex} from '@builtbymom/web3/utils';
+import {retrieveConfig} from '@builtbymom/web3/utils/wagmi';
 import {IconCircleCheck} from '@icons/IconCircleCheck';
 import {IconCircleCross} from '@icons/IconCircleCross';
 import {useAsyncAbortable, useUpdateEffect} from '@react-hookz/web';
 import {defaultInputAddressLike} from '@utils/tools.address';
 import {checkENSValidity} from '@utils/tools.ens';
-import {getPublicClient} from '@wagmi/core';
+import {getEnsName} from '@wagmi/core';
 import {IconLoader} from '@yearn-finance/web-lib/icons/IconLoader';
 
 import type {InputHTMLAttributes, ReactElement, RefObject} from 'react';
@@ -97,8 +97,7 @@ export function SmolAddressInputSimple(
 						}
 						set_isCheckingValidity(true);
 						onChange({address: toAddress(input), label: input, isValid: true, source: 'typed'});
-						const client = getPublicClient({chainId: 1});
-						const ensName = await getEnsName(client, {address: toAddress(input)});
+						const ensName = await getEnsName(retrieveConfig(), {address: toAddress(input)});
 						if (signal.aborted) {
 							reject(new Error('Aborted!'));
 						}

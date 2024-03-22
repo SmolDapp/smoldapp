@@ -1,12 +1,14 @@
 import React, {useCallback, useMemo, useRef, useState} from 'react';
 import {Button} from 'components/Primitives/Button';
+import {erc20Abi} from 'viem';
 import axios from 'axios';
 import {useChainID} from '@builtbymom/web3/hooks/useChainID';
 import {decodeAsBigInt, decodeAsNumber, decodeAsString, zeroNormalizedBN} from '@builtbymom/web3/utils';
+import {retrieveConfig} from '@builtbymom/web3/utils/wagmi';
 import {IconCircleCheck} from '@icons/IconCircleCheck';
 import {IconCircleCross} from '@icons/IconCircleCross';
 import {defaultInputAddressLike} from '@utils/tools.address';
-import {erc20ABI, readContracts} from '@wagmi/core';
+import {readContracts} from '@wagmi/core';
 import {IconLoader} from '@yearn-finance/web-lib/icons/IconLoader';
 import AddressInput from '@common/AddressInput';
 
@@ -106,11 +108,11 @@ function TokenListAddBox({onAddTokenList, onAddToken}: TTokenListAddBox): React.
 			e.preventDefault();
 			if (extraToken.isValid === true && extraToken.address) {
 				set_isLoadingTokenAddress(true);
-				const [name, symbol, decimals] = await readContracts({
+				const [name, symbol, decimals] = await readContracts(retrieveConfig(), {
 					contracts: [
-						{abi: erc20ABI, address: extraToken.address, functionName: 'name'},
-						{abi: erc20ABI, address: extraToken.address, functionName: 'symbol'},
-						{abi: erc20ABI, address: extraToken.address, functionName: 'decimals'}
+						{abi: erc20Abi, address: extraToken.address, functionName: 'name'},
+						{abi: erc20Abi, address: extraToken.address, functionName: 'symbol'},
+						{abi: erc20Abi, address: extraToken.address, functionName: 'decimals'}
 					]
 				});
 				onAddToken({
@@ -121,7 +123,6 @@ function TokenListAddBox({onAddTokenList, onAddToken}: TTokenListAddBox): React.
 					decimals: Number(decodeAsBigInt(decimals)) || decodeAsNumber(decimals),
 					logoURI: `${process.env.SMOL_ASSETS_URL}/token/${safeChainID}/${extraToken.address}/logo-32.png`,
 					value: 0,
-					price: zeroNormalizedBN,
 					balance: zeroNormalizedBN
 				});
 				set_extraToken(defaultInputAddressLike);

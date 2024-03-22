@@ -223,7 +223,6 @@ function TokenSelector(props: {onChangeTokenToReceiveValidity: (v: boolean | 'un
 				symbol: wrappedToken.coinSymbol,
 				decimals: wrappedToken.decimals,
 				value: 0,
-				price: zeroNormalizedBN,
 				balance: zeroNormalizedBN,
 				logoURI: `${process.env.SMOL_ASSETS_URL}/token/${safeChainID}/${ETH_TOKEN_ADDRESS}/logo-32.png`
 			};

@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {useAddressBook} from 'contexts/useAddressBook';
-import {getEnsName} from 'viem/ens';
 import {cl, isAddress, toAddress, truncateHex} from '@builtbymom/web3/utils';
+import {retrieveConfig} from '@builtbymom/web3/utils/wagmi';
 import {IconAppAddressBook} from '@icons/IconApps';
 import {IconChevron} from '@icons/IconChevron';
 import {IconCircleCheck} from '@icons/IconCircleCheck';
@@ -9,7 +9,7 @@ import {IconCircleCross} from '@icons/IconCircleCross';
 import {useAsyncAbortable} from '@react-hookz/web';
 import {defaultInputAddressLike} from '@utils/tools.address';
 import {checkENSValidity} from '@utils/tools.ens';
-import {getPublicClient} from '@wagmi/core';
+import {getEnsName} from '@wagmi/core';
 import {IconLoader} from '@yearn-finance/web-lib/icons/IconLoader';
 
 import {AvatarWrapper} from './Avatar';
@@ -100,8 +100,7 @@ export function useValidateAddressInput(): {
 				throw new Error('Aborted!');
 			}
 			set_isCheckingValidity(true);
-			const client = getPublicClient({chainId: 1});
-			const ensName = await getEnsName(client, {address: toAddress(input)});
+			const ensName = await getEnsName(retrieveConfig(), {address: toAddress(input)});
 			if (signal?.aborted) {
 				throw new Error('Aborted!');
 			}
