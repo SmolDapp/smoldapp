@@ -1,5 +1,7 @@
 import {useCallback, useState} from 'react';
 import {useBalancesCurtain} from 'contexts/useBalancesCurtain';
+import {useChainID} from '@builtbymom/web3/hooks/useChainID';
+import {usePrices} from '@builtbymom/web3/hooks/usePrices';
 import {cl} from '@builtbymom/web3/utils';
 
 import {SmolTokenButton} from './SmolTokenButton';
@@ -13,8 +15,10 @@ export function SmolTokenSelector({
 	onSelectToken: (token: TToken) => void;
 	token: TToken | undefined;
 }): JSX.Element {
+	const {safeChainID} = useChainID();
 	const [isFocused] = useState<boolean>(false);
 	const {onOpenCurtain} = useBalancesCurtain();
+	const {data: price} = usePrices({tokens: token ? [token] : [], chainId: safeChainID});
 
 	const getBorderColor = useCallback((): string => {
 		if (isFocused) {
@@ -37,6 +41,7 @@ export function SmolTokenSelector({
 				<SmolTokenButton
 					onClick={() => onOpenCurtain(selected => onSelectToken(selected))}
 					token={token}
+					price={price && token?.address ? price[token?.address] : undefined}
 					displayChevron
 				/>
 			</div>

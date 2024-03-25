@@ -1,21 +1,23 @@
-import {cl, formatAmount, isAddress, truncateHex} from '@builtbymom/web3/utils';
+import {cl, formatAmount, formatCounterValue, isAddress, truncateHex} from '@builtbymom/web3/utils';
 import {IconChevron} from '@icons/IconChevron';
 import {IconWallet} from '@icons/IconWallet';
 import {ImageWithFallback} from '@common/ImageWithFallback';
 
 import type {ReactElement} from 'react';
-import type {TToken} from '@builtbymom/web3/types';
+import type {TNormalizedBN, TToken} from '@builtbymom/web3/types';
 
 export function SmolTokenButton({
 	token,
 	isDisabled = false,
 	displayChevron = false,
+	price,
 	onClick
 }: {
 	token: TToken | undefined;
 	isDisabled?: boolean;
 	displayChevron?: boolean;
 	onClick: () => void;
+	price?: TNormalizedBN;
 }): ReactElement {
 	return (
 		<button
@@ -63,7 +65,12 @@ export function SmolTokenButton({
 				{token && (
 					<div className={'text-right'}>
 						<b className={'text-left text-base'}>{formatAmount(token.balance.normalized, 0, 6)}</b>
-						<p className={'text-xs text-neutral-600'}>{'$420.69'}</p>
+
+						<p className={'text-xs text-neutral-600'}>
+							{price?.normalized === 0
+								? 'N/A'
+								: formatCounterValue(token.balance.normalized, price?.normalized ?? 0)}
+						</p>
 					</div>
 				)}
 			</div>

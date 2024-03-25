@@ -10,6 +10,7 @@ import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
 import {useTokenList} from '@builtbymom/web3/contexts/WithTokenList';
 import {useBalances} from '@builtbymom/web3/hooks/useBalances.multichains';
 import {useChainID} from '@builtbymom/web3/hooks/useChainID';
+import {usePrices} from '@builtbymom/web3/hooks/usePrices';
 import {cl, isAddress, toAddress} from '@builtbymom/web3/utils';
 import * as Dialog from '@radix-ui/react-dialog';
 import {useDeepCompareMemo} from '@react-hookz/web';
@@ -44,6 +45,9 @@ function FetchedToken({
 	const {safeChainID} = useChainID();
 	const {data} = useBalances({tokens: [{address: tokenAddress, chainID: safeChainID}]});
 	const token = data[safeChainID]?.[tokenAddress];
+
+	const {data: price} = usePrices({tokens: [token], chainId: safeChainID});
+
 	console.warn(data);
 
 	if (!token) {
@@ -54,6 +58,7 @@ function FetchedToken({
 		<SmolTokenButton
 			token={token}
 			isDisabled={false}
+			price={price ? price[token.address] : undefined}
 			onClick={() => onSelect(token)}
 		/>
 	);
@@ -67,6 +72,7 @@ function BalancesCurtain(props: {
 	onSelect: TSelectCallback | undefined;
 	selectedTokenAddresses?: TAddress[];
 }): ReactElement {
+	const {safeChainID} = useChainID();
 	const [searchValue, set_searchValue] = useState('');
 	const {address} = useWeb3();
 	const {onConnect} = useWeb3();
@@ -112,6 +118,8 @@ function BalancesCurtain(props: {
 				toAddress(token.address).toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())
 		);
 	}, [searchValue, props.tokensWithBalance]);
+
+	const {data: prices} = usePrices({tokens: filteredTokens, chainId: safeChainID});
 
 	const balancesTextLayout = useMemo(() => {
 		let balancesText = undefined;
@@ -179,6 +187,7 @@ function BalancesCurtain(props: {
 									<SmolTokenButton
 										key={token.address}
 										token={token}
+										price={prices ? prices[token.address] : undefined}
 										isDisabled={props.selectedTokenAddresses?.includes(token.address) || false}
 										onClick={() => {
 											props.onSelect?.(token);

@@ -244,7 +244,7 @@ const Disperse = memo(function Disperse(): ReactElement {
 				<ImportConfigurationButton onSelectToken={onSelectToken} />
 				<ExportConfigurationButton className={'!text-sm'} />
 			</div>
-			<div className={'mb-6 w-full max-w-full md:max-w-[432px]'}>
+			<div className={'mb-6 w-full max-w-full md:max-w-108'}>
 				<p className={'mb-2 font-medium'}>{'Token'}</p>
 				<SmolTokenSelector
 					token={configuration.tokenToSend}
