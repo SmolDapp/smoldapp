@@ -139,7 +139,7 @@ function BalancesCurtain(props: {
 		}
 
 		return null;
-	}, [address, filteredTokens.length]);
+	}, [address, filteredTokens.length, searchTokenAddress]);
 
 	return (
 		<Dialog.Root
