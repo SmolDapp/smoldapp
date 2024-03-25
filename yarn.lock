@@ -1029,6 +1029,28 @@
     wagmi "^2.5.7"
     zod "^3.22.4"
 
+"@builtbymom/web3@^0.0.62":
+  version "0.0.62"
+  resolved "https://registry.yarnpkg.com/@builtbymom/web3/-/web3-0.0.62.tgz#a2b77ea33659b9b72a5770b927490393e741f91b"
+  integrity sha512-XvAOzC0efjsX7oFnPTvXe81pZ3F5vT99ZWOWTMdaMylusYZ5I9yhqQpFstCubxp2vTz7Gyh1KTcUE/Xgm4k89w==
+  dependencies:
+    "@rainbow-me/rainbowkit" "^2.0.2"
+    "@react-hookz/web" "^24.0.4"
+    "@tanstack/react-query" "^5.28.2"
+    "@total-typescript/ts-reset" "^0.5.1"
+    "@wagmi/core" "^2.6.5"
+    bun-types "^1.0.30"
+    ethers "5.7.2"
+    eventemitter3 "^5.0.1"
+    lint-staged "^15.2.2"
+    next "^14.1.3"
+    prettier "^3.2.5"
+    react-hot-toast "2.4.1"
+    swr "^2.2.5"
+    viem "^2.8.9"
+    wagmi "^2.5.7"
+    zod "^3.22.4"
+
 "@closeio/use-abortable-effect@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@closeio/use-abortable-effect/-/use-abortable-effect-1.0.0.tgz#b1ae42106509ce888899c20465d9a33236cfe1a1"
