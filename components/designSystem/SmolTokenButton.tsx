@@ -16,16 +16,16 @@ export function SmolTokenButton({
 	token: TToken | undefined;
 	isDisabled?: boolean;
 	displayChevron?: boolean;
-	onClick: () => void;
+	onClick?: () => void;
 	price?: TNormalizedBN;
 }): ReactElement {
 	return (
 		<button
 			onClick={onClick}
 			className={cl(
-				'flex flex-row gap-2 items-center justify-between rounded-[4px] p-4 w-full h-full',
-				'bg-neutral-200 hover:bg-neutral-300 transition-colors',
-				'disabled:cursor-not-allowed disabled:hover:bg-neutral-200 disabled:opacity-20'
+				'flex flex-row gap-2 items-center justify-between rounded-[4px] py-4 w-full h-full cursor-default',
+				'disabled:cursor-not-allowed disabled:hover:bg-neutral-200 disabled:opacity-20',
+				onClick && 'px-4 bg-neutral-200 hover:bg-neutral-300 transition-colors cursor-pointer'
 			)}
 			disabled={isDisabled}>
 			<div className={'flex w-full items-center justify-between'}>

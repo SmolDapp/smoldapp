@@ -15,6 +15,7 @@ import {cl, isAddress, toAddress} from '@builtbymom/web3/utils';
 import * as Dialog from '@radix-ui/react-dialog';
 import {useDeepCompareMemo} from '@react-hookz/web';
 import {IconLoader} from '@yearn-finance/web-lib/icons/IconLoader';
+import {Warning} from '@common/Primitives/Warning';
 
 import type {ReactElement} from 'react';
 import type {TAddress, TToken} from '@builtbymom/web3/types';
@@ -35,12 +36,15 @@ const defaultProps: TBalancesCurtainProps = {
 	onCloseCurtain: (): void => undefined
 };
 
-function FetchedToken({
+// TODO: move to common
+export function FetchedToken({
 	tokenAddress,
+	displayInfo = false,
 	onSelect
 }: {
 	tokenAddress: TAddress;
-	onSelect: (token: TToken) => void;
+	displayInfo?: boolean;
+	onSelect?: (token: TToken) => void;
 }): ReactElement {
 	const {safeChainID} = useChainID();
 	const {data} = useBalances({tokens: [{address: tokenAddress, chainID: safeChainID}]});
@@ -55,12 +59,22 @@ function FetchedToken({
 	}
 
 	return (
-		<SmolTokenButton
-			token={token}
-			isDisabled={false}
-			price={price ? price[token.address] : undefined}
-			onClick={() => onSelect(token)}
-		/>
+		<>
+			{displayInfo && (
+				<div className={'w-full'}>
+					<Warning
+						message={'Found 1 token that is not present in token list, click it to add'}
+						type={'info'}
+					/>
+				</div>
+			)}
+			<SmolTokenButton
+				token={token}
+				isDisabled={false}
+				price={price ? price[token.address] : undefined}
+				onClick={() => onSelect?.(token)}
+			/>
+		</>
 	);
 }
 
