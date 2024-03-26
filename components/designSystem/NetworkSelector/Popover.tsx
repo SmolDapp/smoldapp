@@ -1,5 +1,6 @@
 import {type ReactElement, useMemo, useState} from 'react';
-import {Command, CommandEmpty, CommandGroup, CommandInput, CommandItem} from 'components/Primitives/Commands';
+import {CommandList} from 'cmdk';
+import {Command, CommandEmpty, CommandInput, CommandItem} from 'components/Primitives/Commands';
 import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
 import {toSafeChainID} from '@builtbymom/web3/hooks/useChainID';
 import {cl} from '@builtbymom/web3/utils';
@@ -18,7 +19,6 @@ export function NetworkPopoverSelector(): ReactElement {
 		() => supportedNetworks.find((network): boolean => network.id === safeChainID),
 		[safeChainID]
 	);
-
 	const [isOpen, set_isOpen] = useState(false);
 	return (
 		<Popover.Root
@@ -65,7 +65,7 @@ export function NetworkPopoverSelector(): ReactElement {
 				<Command>
 					<CommandInput placeholder={'Search chain...'} />
 					<CommandEmpty>{'No chain found.'}</CommandEmpty>
-					<CommandGroup className={'max-h-48 overflow-y-auto'}>
+					<CommandList className={'max-h-48 overflow-y-auto'}>
 						{supportedNetworks.map(network => (
 							<CommandItem
 								key={network.id}
@@ -74,7 +74,7 @@ export function NetworkPopoverSelector(): ReactElement {
 									'relative flex cursor-pointer items-center rounded-lg p-2',
 									'outline-none select-none transition-colors',
 									'text-xs text-neutral-800 group',
-									'focus:bg-neutral-300 data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+									'focus:bg-neutral-300',
 									'bg-neutral-0 hover:bg-neutral-200',
 									currentNetwork?.id === network.id ? 'bg-neutral-200' : ''
 								)}
@@ -83,7 +83,7 @@ export function NetworkPopoverSelector(): ReactElement {
 										return;
 									}
 									const chain = supportedNetworks.find(
-										network => network.name.toLowerCase() === selectedNetwork
+										network => network.name.toLowerCase() === selectedNetwork.toLocaleLowerCase()
 									);
 									onSwitchChain(chain?.id || 1);
 									set_isOpen(false);
@@ -98,7 +98,7 @@ export function NetworkPopoverSelector(): ReactElement {
 								{network.name}
 							</CommandItem>
 						))}
-					</CommandGroup>
+					</CommandList>
 				</Command>
 			</Popover.Content>
 		</Popover.Root>
