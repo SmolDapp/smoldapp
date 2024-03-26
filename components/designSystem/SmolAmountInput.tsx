@@ -1,6 +1,6 @@
 import {useCallback, useState} from 'react';
 import InputNumber from 'rc-input-number';
-import {cl, zeroNormalizedBN} from '@builtbymom/web3/utils';
+import {cl, formatCounterValue, zeroNormalizedBN} from '@builtbymom/web3/utils';
 import {useDeepCompareEffect, useUpdateEffect} from '@react-hookz/web';
 import {handleLowAmount} from '@utils/helpers';
 
@@ -22,8 +22,9 @@ type TAmountInput = {
 	onSetValue: (value: Partial<TAmountInputElement>) => void;
 	value: TAmountInputElement;
 	token: TToken | undefined;
+	price: TNormalizedBN | undefined;
 };
-export function SmolAmountInput({onSetValue, value, token}: TAmountInput): ReactElement {
+export function SmolAmountInput({onSetValue, value, token, price}: TAmountInput): ReactElement {
 	const [isFocused, set_isFocused] = useState<boolean>(false);
 	const {result, validate} = useValidateAmountInput();
 	const selectedTokenBalance = token?.balance ?? zeroNormalizedBN;
@@ -48,25 +49,24 @@ export function SmolAmountInput({onSetValue, value, token}: TAmountInput): React
 	}, [isFocused, value.isValid]);
 
 	const getErrorOrButton = (): JSX.Element => {
-		const button = (
-			<button
-				onClick={onSetMax}
-				onMouseDown={e => e.preventDefault()}
-				disabled={!token || selectedTokenBalance.raw === 0n}>
-				<p>{`You have ${handleLowAmount(selectedTokenBalance, 2, 6)}`}</p>
-			</button>
-		);
 		if (!selectedTokenBalance.normalized) {
 			return <p>{'No token selected'}</p>;
 		}
-		if (isFocused) {
-			return button;
+		if (!value.amount) {
+			return (
+				<button
+					onClick={onSetMax}
+					onMouseDown={e => e.preventDefault()}
+					disabled={!token || selectedTokenBalance.raw === 0n}>
+					<p>{`You have ${handleLowAmount(selectedTokenBalance, 2, 6)}`}</p>
+				</button>
+			);
 		}
 		if (value.error) {
 			return <p className={'text-red'}>{value.error}</p>;
 		}
 
-		return button;
+		return <p>{formatCounterValue(value.normalizedBigAmount.normalized, price?.normalized ?? 0)}</p>;
 	};
 
 	/** Set the validation result to the context */

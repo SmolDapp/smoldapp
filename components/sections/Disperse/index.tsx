@@ -8,6 +8,8 @@ import Papa from 'papaparse';
 import axios from 'axios';
 import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
 import {useBalances} from '@builtbymom/web3/hooks/useBalances.multichains';
+import {useChainID} from '@builtbymom/web3/hooks/useChainID';
+import {usePrices} from '@builtbymom/web3/hooks/usePrices';
 import {cl, toAddress, toNormalizedBN} from '@builtbymom/web3/utils';
 import IconImport from '@icons/IconImport';
 
@@ -193,6 +195,7 @@ export function ExportConfigurationButton(buttonProps: ComponentPropsWithoutRef<
 }
 
 const Disperse = memo(function Disperse(): ReactElement {
+	const {safeChainID} = useChainID();
 	const {configuration, dispatchConfiguration} = useDisperse();
 
 	const {hasInitialInputs} = useDisperseQueryManagement();
@@ -211,6 +214,12 @@ const Disperse = memo(function Disperse(): ReactElement {
 		fileName: 'smol-disperse-template',
 		fileType: 'csv'
 	});
+
+	const {data: prices} = usePrices({
+		tokens: configuration.tokenToSend ? [configuration.tokenToSend] : [],
+		chainId: safeChainID
+	});
+	const price = prices && configuration.tokenToSend ? prices[configuration.tokenToSend.address] : undefined;
 
 	const onSelectToken = (token: TToken): void => {
 		dispatchConfiguration({type: 'SET_TOKEN_TO_SEND', payload: token});
@@ -257,6 +266,7 @@ const Disperse = memo(function Disperse(): ReactElement {
 					<DisperseAddressAndAmountInputs
 						key={input.UUID}
 						input={input}
+						price={price}
 					/>
 				))}
 			</div>

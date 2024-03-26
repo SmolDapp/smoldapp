@@ -5,15 +5,17 @@ import {SmolAmountInput} from '../../designSystem/SmolAmountInput';
 import {useDisperse} from './useDisperse';
 
 import type {ReactElement} from 'react';
+import type {TNormalizedBN} from '@builtbymom/web3/types';
 import type {TInputAddressLike} from '@utils/tools.address';
 import type {TAmountInputElement} from '../../designSystem/SmolAmountInput';
 import type {TDisperseInput} from './useDisperse';
 
 type TDisperseAddressAndAmountInputs = {
 	input: TDisperseInput;
+	price: TNormalizedBN | undefined;
 };
 
-export function DisperseAddressAndAmountInputs({input}: TDisperseAddressAndAmountInputs): ReactElement {
+export function DisperseAddressAndAmountInputs({input, price}: TDisperseAddressAndAmountInputs): ReactElement {
 	const {configuration, dispatchConfiguration} = useDisperse();
 
 	const onSetReceiver = (value: Partial<TInputAddressLike>): void => {
@@ -42,6 +44,7 @@ export function DisperseAddressAndAmountInputs({input}: TDisperseAddressAndAmoun
 						onSetValue={onSetAmount}
 						value={input.value}
 						token={configuration.tokenToSend}
+						price={price}
 					/>
 				</div>
 			</div>

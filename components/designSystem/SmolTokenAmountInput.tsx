@@ -1,7 +1,17 @@
 import React, {useCallback, useState} from 'react';
 import {getNewInput} from 'components/sections/Send/useSendFlow';
 import InputNumber from 'rc-input-number';
-import {cl, fromNormalized, percentOf, toBigInt, toNormalizedBN, zeroNormalizedBN} from '@builtbymom/web3/utils';
+import {useChainID} from '@builtbymom/web3/hooks/useChainID';
+import {usePrices} from '@builtbymom/web3/hooks/usePrices';
+import {
+	cl,
+	formatCounterValue,
+	fromNormalized,
+	percentOf,
+	toBigInt,
+	toNormalizedBN,
+	zeroNormalizedBN
+} from '@builtbymom/web3/utils';
 import {useDeepCompareEffect} from '@react-hookz/web';
 import {handleLowAmount} from '@utils/helpers';
 
@@ -101,10 +111,14 @@ export function useValidateAmountInput(): {
 }
 
 export function SmolTokenAmountInput({showPercentButtons = false, onSetValue, value}: TTokenAmountInput): ReactElement {
+	const {safeChainID} = useChainID();
 	const [isFocused, set_isFocused] = useState<boolean>(false);
 	const {token: selectedToken} = value;
 	const selectedTokenBalance = selectedToken?.balance ?? zeroNormalizedBN;
 	const {result, validate} = useValidateAmountInput();
+
+	const {data: prices} = usePrices({tokens: selectedToken ? [selectedToken] : [], chainId: safeChainID});
+	const price = prices && selectedToken ? prices[selectedToken.address] : undefined;
 
 	const onSetMax = (): void => {
 		return onSetValue({
@@ -131,15 +145,6 @@ export function SmolTokenAmountInput({showPercentButtons = false, onSetValue, va
 	}, [isFocused, value.isValid]);
 
 	const getErrorOrButton = (): JSX.Element => {
-		const button = (
-			<button
-				onClick={onSetMax}
-				onMouseDown={e => e.preventDefault()}
-				disabled={!selectedToken || selectedTokenBalance.raw === 0n}>
-				<p>{`You have ${handleLowAmount(selectedTokenBalance, 2, 6)}`}</p>
-			</button>
-		);
-
 		if (showPercentButtons) {
 			return (
 				<div className={'flex gap-1 '}>
@@ -159,14 +164,23 @@ export function SmolTokenAmountInput({showPercentButtons = false, onSetValue, va
 		if (!selectedTokenBalance.normalized) {
 			return <p>{'No token selected'}</p>;
 		}
-		if (isFocused) {
-			return button;
+
+		if (!value.amount) {
+			return (
+				<button
+					onClick={onSetMax}
+					onMouseDown={e => e.preventDefault()}
+					disabled={!selectedToken || selectedTokenBalance.raw === 0n}>
+					<p>{`You have ${handleLowAmount(selectedTokenBalance, 2, 6)}`}</p>
+				</button>
+			);
 		}
+
 		if (value.error) {
 			return <p className={'text-red'}>{value.error}</p>;
 		}
 
-		return button;
+		return <p>{formatCounterValue(value.normalizedBigAmount.normalized, price?.normalized ?? 0)}</p>;
 	};
 
 	useDeepCompareEffect(() => {
