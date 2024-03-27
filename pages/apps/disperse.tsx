@@ -1,12 +1,27 @@
 import React, {Fragment} from 'react';
 import {DefaultSeo} from 'next-seo';
-import Disperse from '@disperse/index';
-import {DisperseContextApp} from '@disperse/useDisperse';
+import Disperse from 'components/sections/Disperse/index';
+import {DisperseContextApp} from 'components/sections/Disperse/useDisperse';
+import {DisperseQueryManagement} from 'components/sections/Disperse/useDisperseQuery';
+import {BalancesCurtainContextApp} from 'contexts/useBalancesCurtain';
 
 import type {ReactElement} from 'react';
 
 function DispersePage(): ReactElement {
-	return <Disperse />;
+	return (
+		<DisperseContextApp>
+			{({configuration}) => (
+				<DisperseQueryManagement>
+					<BalancesCurtainContextApp
+						selectedTokenAddresses={
+							configuration.tokenToSend?.address ? [configuration.tokenToSend?.address] : []
+						}>
+						<Disperse />
+					</BalancesCurtainContextApp>
+				</DisperseQueryManagement>
+			)}
+		</DisperseContextApp>
+	);
 }
 
 DispersePage.getLayout = function getLayout(page: ReactElement): ReactElement {
@@ -38,7 +53,7 @@ DispersePage.getLayout = function getLayout(page: ReactElement): ReactElement {
 					cardType: 'summary_large_image'
 				}}
 			/>
-			<DisperseContextApp>{page}</DisperseContextApp>
+			{page}
 		</Fragment>
 	);
 };

@@ -1,7 +1,8 @@
 import React, {Fragment, useCallback, useMemo, useState} from 'react';
 import {Button} from 'components/Primitives/Button';
 import {addSeconds, differenceInSeconds, format} from 'date-fns';
-import {erc20ABI, useContractReads} from 'wagmi';
+import {erc20Abi} from 'viem';
+import {useReadContracts} from 'wagmi';
 import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
 import {useTokenList} from '@builtbymom/web3/contexts/WithTokenList';
 import {useChainID} from '@builtbymom/web3/hooks/useChainID';
@@ -69,17 +70,17 @@ export function VestingElement({vesting}: {vesting: TStreamArgs}): ReactElement 
 	const {chainID} = useChainID();
 	const {getToken} = useTokenList();
 	const [txStatus, set_txStatus] = useState(defaultTxStatus);
-	const {data, refetch, isFetchedAfterMount} = useContractReads({
+	const {data, refetch, isFetchedAfterMount} = useReadContracts({
 		contracts: [
 			{
 				address: toAddress(vesting.token),
-				abi: erc20ABI,
+				abi: erc20Abi,
 				chainId: vesting.chainID,
 				functionName: 'symbol'
 			},
 			{
 				address: toAddress(vesting.token),
-				abi: erc20ABI,
+				abi: erc20Abi,
 				chainId: vesting.chainID,
 				functionName: 'decimals'
 			},
@@ -90,8 +91,14 @@ export function VestingElement({vesting}: {vesting: TStreamArgs}): ReactElement 
 				functionName: 'total_claimed'
 			}
 		],
-		select(data) {
-			return [data?.[0]?.result || '', Number(toBigInt(data?.[1]?.result || 18)), toBigInt(data?.[2]?.result)];
+		query: {
+			select(data) {
+				return [
+					data?.[0]?.result || '',
+					Number(toBigInt(data?.[1]?.result || 18)),
+					toBigInt(data?.[2]?.result)
+				];
+			}
 		}
 	});
 	const [symbol, decimals, totalClaimed] = (data || ['', 18, 0n]) as [string, number, bigint];

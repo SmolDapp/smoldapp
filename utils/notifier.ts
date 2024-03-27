@@ -1,10 +1,10 @@
 import axios from 'axios';
 import {formatAmount, toNormalizedBN, truncateHex, zeroNormalizedBN} from '@builtbymom/web3/utils';
-import {getNetwork} from '@wagmi/core';
+import {getNetwork} from '@builtbymom/web3/utils/wagmi';
 
 import {EIP3770_PREFIX} from './eip-3770';
 
-import type {TSendInputElement} from 'components/designSystem/SmolTokenAmountInput';
+import type {TTokenAmountInputElement} from 'components/designSystem/SmolTokenAmountInput';
 import type {Hex} from 'viem';
 import type {TAddress, TToken} from '@builtbymom/web3/types';
 
@@ -49,8 +49,7 @@ export function notifyDisperse(props: {
 	if (!props.tokenToDisperse) {
 		return;
 	}
-	const {chains} = getNetwork();
-	const currentChain = chains.find((chain): boolean => chain.id === props.chainID);
+	const currentChain = getNetwork(props.chainID);
 	const explorerBaseURI = currentChain?.blockExplorers?.default?.url || 'https://etherscan.io';
 	const decimals = props.tokenToDisperse.decimals || 18;
 	const sumDispersed = props.amounts.reduce((sum, amount): bigint => sum + amount, 0n);
@@ -85,14 +84,13 @@ export function notifyDisperse(props: {
 
 export function notifySend(props: {
 	chainID: number;
-	tokensMigrated: TSendInputElement[];
+	tokensMigrated: TTokenAmountInputElement[];
 	hashes: Hex[];
 	to: TAddress;
 	from: TAddress;
 	type: 'EOA' | 'SAFE';
 }): void {
-	const {chains} = getNetwork();
-	const currentChain = chains.find((chain): boolean => chain.id === props.chainID);
+	const currentChain = getNetwork(props.chainID);
 	const explorerBaseURI = currentChain?.blockExplorers?.default?.url || 'https://etherscan.io';
 	const getChainPrefix = EIP3770_PREFIX.find((item): boolean => item.chainId === props.chainID);
 	const chainPrefix = getChainPrefix?.shortName || 'eth';

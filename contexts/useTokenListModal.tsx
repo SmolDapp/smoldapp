@@ -71,7 +71,6 @@ export const TokenListModalContextApp = ({children}: {children: React.ReactEleme
 					chainID: eachToken.chainId,
 					logoURI: eachToken.logoURI,
 					value: 0,
-					price: zeroNormalizedBN,
 					balance: zeroNormalizedBN
 				};
 			}
@@ -97,7 +96,6 @@ export const TokenListModalContextApp = ({children}: {children: React.ReactEleme
 							chainID: eachToken.chainId,
 							logoURI: eachToken.logoURI,
 							value: 0,
-							price: zeroNormalizedBN,
 							balance: zeroNormalizedBN
 						};
 					}
@@ -123,7 +121,6 @@ export const TokenListModalContextApp = ({children}: {children: React.ReactEleme
 						chainID: eachToken.chainId,
 						logoURI: eachToken.logoURI,
 						value: 0,
-						price: zeroNormalizedBN,
 						balance: zeroNormalizedBN
 					};
 				}
@@ -151,7 +148,6 @@ export const TokenListModalContextApp = ({children}: {children: React.ReactEleme
 								chainID: eachToken.chainId,
 								logoURI: eachToken.logoURI,
 								value: 0,
-								price: zeroNormalizedBN,
 								balance: zeroNormalizedBN
 							};
 						}

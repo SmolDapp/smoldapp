@@ -4,8 +4,9 @@ import {IconCircleCheck} from 'components/icons/IconCircleCheck';
 import {IconCircleCross} from 'components/icons/IconCircleCross';
 import {IconSpinner} from 'components/icons/IconSpinner';
 import {ETHEREUM_ENS_ADDRESS} from 'utils/constants';
-import {useNetwork} from 'wagmi';
+import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
 import {toAddress, truncateHex} from '@builtbymom/web3/utils';
+import {getNetwork} from '@builtbymom/web3/utils/wagmi';
 import {useNFTMigratooor} from '@nftmigratooor/useNFTMigratooor';
 
 import type {ReactElement} from 'react';
@@ -23,8 +24,8 @@ function ApprovalWizardItem({
 	collectionApprovalStatus,
 	index
 }: TApprovalWizardItemProps): ReactElement {
+	const {chainID} = useWeb3();
 	const {destinationAddress} = useNFTMigratooor();
-	const {chain} = useNetwork();
 	const [firstItemInCollection] = collection;
 	const hasMultipleItems = collection.length > 1;
 
@@ -58,7 +59,7 @@ function ApprovalWizardItem({
 		if (collectionStatus?.receipt) {
 			return (
 				<a
-					href={`${chain?.blockExplorers?.default?.url || 'https://etherscan.io'}/tx/${
+					href={`${getNetwork(chainID)?.blockExplorers?.default?.url || 'https://etherscan.io'}/tx/${
 						collectionStatus.receipt.transactionHash
 					}`}
 					className={'text-neutral-500 text-xs transition-colors hover:text-neutral-900 hover:underline'}

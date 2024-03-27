@@ -101,8 +101,10 @@ export function AvatarWrapper(props: {address: TAddress; sizeClassname?: string}
 		isError: isErrorAvatar
 	} = useEnsAvatar({
 		chainId: 1,
-		name: ensName,
-		enabled: Boolean(ensName)
+		name: ensName || undefined,
+		query: {
+			enabled: Boolean(ensName)
+		}
 	});
 	const hasENS = isFetchedENS || isErrorENS;
 	const hasAvatar = isFetchedAvatar || isErrorAvatar;

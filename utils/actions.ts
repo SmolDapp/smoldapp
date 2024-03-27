@@ -1,18 +1,10 @@
 import assert from 'assert';
 import {SINGLETON_L2} from 'components/apps/safe/utils';
 import DISPERSE_ABI from 'utils/abi/disperse.abi';
-import {isAddressEqual} from 'viem';
-import {assertAddress, toBigInt} from '@builtbymom/web3/utils';
-import {defaultTxStatus, handleTx, toWagmiProvider} from '@builtbymom/web3/utils/wagmi';
-import {
-	erc20ABI,
-	erc721ABI,
-	getPublicClient,
-	prepareSendTransaction,
-	readContract,
-	sendTransaction,
-	waitForTransaction
-} from '@wagmi/core';
+import {erc20Abi, erc721Abi, isAddressEqual} from 'viem';
+import {assertAddress, toAddress, toBigInt} from '@builtbymom/web3/utils';
+import {defaultTxStatus, handleTx, retrieveConfig, toWagmiProvider} from '@builtbymom/web3/utils/wagmi';
+import {readContract, sendTransaction, waitForTransactionReceipt} from '@wagmi/core';
 import {MAX_UINT_256} from '@yearn-finance/web-lib/utils/constants';
 
 import ERC1155_ABI from './abi/ERC1155.abi';
@@ -56,10 +48,10 @@ type TIsApprovedERC20 = {
 };
 export async function isApprovedERC20(props: TIsApprovedERC20): Promise<boolean> {
 	const wagmiProvider = await toWagmiProvider(props.connector);
-	const result = await readContract({
+	const result = await readContract(retrieveConfig(), {
 		...wagmiProvider,
-		abi: erc20ABI,
-		address: props.contractAddress,
+		abi: erc20Abi,
+		address: toAddress(props.contractAddress),
 		functionName: 'allowance',
 		args: [wagmiProvider.address, props.spenderAddress]
 	});
@@ -83,7 +75,7 @@ export async function approveERC20(props: TApproveERC20): Promise<TTxResponse> {
 	props.onTrySomethingElse = async (): Promise<TTxResponse> => {
 		assertAddress(props.spenderAddress, 'spenderAddress');
 		return await handleTx(props, {
-			address: props.contractAddress,
+			address: toAddress(props.contractAddress),
 			abi: ALTERNATE_ERC20_APPROVE_ABI,
 			functionName: 'approve',
 			args: [props.spenderAddress, props.amount]
@@ -91,8 +83,8 @@ export async function approveERC20(props: TApproveERC20): Promise<TTxResponse> {
 	};
 
 	return await handleTx(props, {
-		address: props.contractAddress,
-		abi: erc20ABI,
+		address: toAddress(props.contractAddress),
+		abi: erc20Abi,
 		functionName: 'approve',
 		args: [props.spenderAddress, props.amount]
 	});
@@ -114,8 +106,8 @@ export async function approveAllERC721(props: TApproveAllERC721): Promise<TTxRes
 	assertAddress(props.contractAddress);
 
 	return await handleTx(props, {
-		address: props.contractAddress,
-		abi: erc721ABI,
+		address: toAddress(props.contractAddress),
+		abi: erc721Abi,
 		functionName: 'setApprovalForAll',
 		args: [props.spenderAddress, props.shouldAllow]
 	});
@@ -139,8 +131,8 @@ export async function transferERC721(props: TTransferERC721): Promise<TTxRespons
 	assertAddress(wagmiProvider.address, 'User address');
 
 	return await handleTx(props, {
-		address: props.contractAddress,
-		abi: erc721ABI,
+		address: toAddress(props.contractAddress),
+		abi: erc721Abi,
 		functionName: 'safeTransferFrom',
 		args: [wagmiProvider.address, props.receiverAddress, props.tokenID]
 	});
@@ -165,7 +157,7 @@ export async function batchTransferERC721(props: TBatchTransferERC721): Promise<
 	assertAddress(props.contractAddress, 'Contract address');
 
 	return await handleTx(props, {
-		address: props.contractAddress,
+		address: toAddress(props.contractAddress),
 		abi: NFT_MIGRATOOOR_ABI,
 		functionName: 'migrate',
 		args: [props.collectionAddress, props.receiverAddress, props.tokenIDs]
@@ -189,10 +181,10 @@ export async function transferERC1155(props: TTransferERC1155): Promise<TTxRespo
 	const wagmiProvider = await toWagmiProvider(props.connector);
 	assertAddress(wagmiProvider.address, 'User address');
 
-	const balanceOfBatch = await readContract({
+	const balanceOfBatch = await readContract(retrieveConfig(), {
 		...wagmiProvider,
 		abi: ERC1155_ABI,
-		address: props.contractAddress,
+		address: toAddress(props.contractAddress),
 		functionName: 'balanceOfBatch',
 		args: [Array(props.tokenIDs.length).fill(wagmiProvider.address), props.tokenIDs]
 	});
@@ -207,7 +199,7 @@ export async function transferERC1155(props: TTransferERC1155): Promise<TTxRespo
 	assert(filteredTokenIDs.length > 0, 'No tokens to transfer');
 
 	return await handleTx(props, {
-		address: props.contractAddress,
+		address: toAddress(props.contractAddress),
 		abi: ERC1155_ABI,
 		functionName: 'safeBatchTransferFrom',
 		args: [wagmiProvider.address, props.receiverAddress, filteredTokenIDs, filteredAmounts, '0x']
@@ -222,10 +214,10 @@ export async function listERC1155(props: TListERC1155): Promise<[bigint[], bigin
 	const wagmiProvider = await toWagmiProvider(props.connector);
 	assertAddress(wagmiProvider.address, 'User address');
 
-	const balanceOfBatch = await readContract({
+	const balanceOfBatch = await readContract(retrieveConfig(), {
 		...wagmiProvider,
 		abi: ERC1155_ABI,
-		address: props.contractAddress,
+		address: toAddress(props.contractAddress),
 		functionName: 'balanceOfBatch',
 		args: [Array(props.tokenIDs.length).fill(wagmiProvider.address), props.tokenIDs]
 	});
@@ -255,8 +247,8 @@ export async function transferERC20(props: TTransferERC20): Promise<TTxResponse>
 	assertAddress(props.contractAddress);
 
 	return await handleTx(props, {
-		address: props.contractAddress,
-		abi: isAddressEqual(props.contractAddress, usdtAddress) ? (usdtAbi as Abi) : erc20ABI,
+		address: toAddress(props.contractAddress),
+		abi: isAddressEqual(props.contractAddress, usdtAddress) ? (usdtAbi as Abi) : erc20Abi,
 		functionName: 'transfer',
 		args: [props.receiverAddress, props.amount]
 	});
@@ -282,26 +274,12 @@ export async function transferEther(props: TTransferEther): Promise<TTxResponse>
 
 	assertAddress(wagmiProvider.address, 'userAddress');
 	try {
-		let config = await prepareSendTransaction({
+		const hash = await sendTransaction(retrieveConfig(), {
 			...wagmiProvider,
 			to: props.receiverAddress,
 			value: props.amount
 		});
-		if (props.shouldAdjustForGas) {
-			if (!config.maxPriorityFeePerGas) {
-				const client = await getPublicClient({chainId: wagmiProvider.chainId});
-				const gasPrice = await client.getGasPrice();
-				config.maxPriorityFeePerGas = gasPrice;
-			}
-			const newAmount = toBigInt(config.gas) * toBigInt(config.maxPriorityFeePerGas) + 21_000n;
-			config = await prepareSendTransaction({
-				...wagmiProvider,
-				to: props.receiverAddress,
-				value: props.amount - newAmount
-			});
-		}
-		const {hash} = await sendTransaction(config);
-		const receipt = await waitForTransaction({chainId: wagmiProvider.chainId, hash});
+		const receipt = await waitForTransactionReceipt(retrieveConfig(), {chainId: wagmiProvider.chainId, hash});
 		if (receipt.status === 'success') {
 			props.statusHandler?.({...defaultTxStatus, success: true});
 		} else if (receipt.status === 'reverted') {
@@ -341,7 +319,7 @@ export async function disperseETH(props: TDisperseETH): Promise<TTxResponse> {
 	assert(props.receivers.length === props.amounts.length, 'receivers and amounts must be the same length');
 
 	return await handleTx(props, {
-		address: props.contractAddress,
+		address: toAddress(props.contractAddress),
 		abi: DISPERSE_ABI,
 		functionName: 'disperseEther',
 		args: [props.receivers, props.amounts],
@@ -373,7 +351,7 @@ export async function disperseERC20(props: TDisperseERC20): Promise<TTxResponse>
 	assert(props.receivers.length === props.amounts.length, 'receivers and amounts must be the same length');
 
 	return await handleTx(props, {
-		address: props.contractAddress,
+		address: toAddress(props.contractAddress),
 		abi: DISPERSE_ABI,
 		functionName: 'disperseToken',
 		args: [props.tokenToDisperse, props.receivers, props.amounts]
@@ -395,7 +373,7 @@ export async function cloneSafe(props: TCloneSafe): Promise<TTxResponse> {
 	assertAddress(props.contractAddress);
 
 	return await handleTx(props, {
-		address: props.contractAddress,
+		address: toAddress(props.contractAddress),
 		abi: GNOSIS_SAFE_PROXY_FACTORY,
 		functionName: 'createProxyWithNonce',
 		args: [SINGLETON_L2, props.initializers, props.salt]
@@ -424,7 +402,7 @@ export async function multicall(props: TMulticall): Promise<TTxResponse> {
 
 	const value = props.multicallData.reduce((a, b): bigint => a + b.value, 0n);
 	return await handleTx(props, {
-		address: props.contractAddress,
+		address: toAddress(props.contractAddress),
 		abi: MULTICALL_ABI,
 		functionName: 'aggregate3Value',
 		args: [props.multicallData],
@@ -456,7 +434,7 @@ type TNewVestingContract = TWriteTransaction & {
 export async function deployVestingContract(props: TNewVestingContract): Promise<TTxResponse> {
 	assertAddress(props.contractAddress);
 	return await handleTx(props, {
-		address: props.contractAddress,
+		address: toAddress(props.contractAddress),
 		abi: YVESTING_FACTORY_ABI,
 		functionName: 'deploy_vesting_contract',
 		args: [
@@ -483,7 +461,7 @@ type TClaimFromVesting = TWriteTransaction & {
 export async function claimFromVesting(props: TClaimFromVesting): Promise<TTxResponse> {
 	assertAddress(props.contractAddress);
 	return await handleTx(props, {
-		address: props.contractAddress,
+		address: toAddress(props.contractAddress),
 		abi: YVESTING_SIMPLE_ABI,
 		functionName: 'claim',
 		args: [props.streamOwner]

@@ -5,8 +5,9 @@ import LogoLooksRare from 'components/icons/LogoLooksRare';
 import LogoOpensea from 'components/icons/LogoOpensea';
 import LogoRarible from 'components/icons/LogoRarible';
 import {ETHEREUM_ENS_ADDRESS} from 'utils/constants';
-import {useNetwork} from 'wagmi';
+import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
 import {toAddress, truncateHex} from '@builtbymom/web3/utils';
+import {getNetwork} from '@builtbymom/web3/utils/wagmi';
 import {IconLinkOut} from '@yearn-finance/web-lib/icons/IconLinkOut';
 import {NFTWithFallback} from '@common/NFTWithFallback';
 
@@ -53,7 +54,7 @@ function AssetImage(props: {nft: TNFT}): ReactElement {
 	);
 }
 const NFTAsset = memo(function NFTAsset(props: TNFTAssetProps): ReactElement {
-	const {chain} = useNetwork();
+	const {chainID} = useWeb3();
 	const {nft, onSelect, isSelected} = props;
 
 	return (
@@ -98,7 +99,7 @@ const NFTAsset = memo(function NFTAsset(props: TNFTAssetProps): ReactElement {
 							<b className={'capitalize'}>{nft?.name || nft?.collection?.name}</b>
 						</div>
 						<Link
-							href={`${chain?.blockExplorers?.default?.url || 'https://etherscan.io'}/nft/${
+							href={`${getNetwork(chainID)?.blockExplorers?.default?.url || 'https://etherscan.io'}/nft/${
 								nft.collection.address
 							}/${nft.tokenID}`}
 							onClick={(e): void => e.stopPropagation()}
@@ -130,7 +131,7 @@ const NFTAsset = memo(function NFTAsset(props: TNFTAssetProps): ReactElement {
 					className={'hidden items-center space-x-4 md:flex'}>
 					<div>
 						<Link
-							href={`${chain?.blockExplorers?.default?.url || 'https://etherscan.io'}/nft/${
+							href={`${getNetwork(chainID)?.blockExplorers?.default?.url || 'https://etherscan.io'}/nft/${
 								nft.collection.address
 							}/${nft.tokenID}`}
 							className={

@@ -11,6 +11,7 @@ import {
 	IconAppSend,
 	IconAppSwap
 } from '@icons/IconApps';
+import {IconWallet} from '@icons/IconWallet';
 import {useIsMounted} from '@react-hookz/web';
 
 type TNavItemProps = {
@@ -73,6 +74,12 @@ export function SideMenuNav(): ReactElement {
 		<div className={'scrollable scrollbar-show h-full py-4'}>
 			<section className={'flex h-full flex-col justify-between'}>
 				<ul className={'grid gap-2 pb-8'}>
+					<NavItem
+						href={'/apps/wallet'}
+						isSelected={pathname.startsWith('/apps/wallet')}
+						label={'Wallet'}
+						icon={<IconWallet />}
+					/>
 					<NavItem
 						href={'/apps/send'}
 						isSelected={pathname.startsWith('/apps/send')}
