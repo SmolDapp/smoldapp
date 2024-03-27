@@ -21,14 +21,14 @@ export function SkeletonPlaceholder(): ReactElement {
 
 			<hr className={'mb-2 mt-4 text-neutral-200'} />
 
-			<div className={'grid grid-cols-2 gap-6'}>
-				<div>
+			<div className={'grid grid-cols-4 gap-6 md:grid-cols-5'}>
+				<div className={'col-span-1 md:col-span-3'}>
 					<small className={'text-xxs'}>{'Chain'}</small>
 					<NetworkPopoverSelector />
 				</div>
-				<div>
+				<div className={'col-span-1 col-start-4 md:col-span-2'}>
 					<small className={'text-xxs'}>{'Coin'}</small>
-					<div className={'skeleton-lg mt-1 h-6 w-2/3'} />
+					<div className={'skeleton-lg mt-1 h-6'} />
 				</div>
 			</div>
 		</section>

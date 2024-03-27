@@ -44,7 +44,7 @@ export function NetworkPopoverSelector(): ReactElement {
 								<p className={'truncate'}>{currentNetwork?.name}</p>
 							</div>
 						) : (
-							'Select chain...'
+							<p className={'truncate'}>{'Select chain'}</p>
 						)}
 						<div>
 							<IconChevron className={'ml-1 size-4 rotate-90'} />

@@ -20,9 +20,12 @@ export function SideMenuMobile(): ReactElement {
 	const {address} = useWeb3();
 
 	if (!isMounted()) {
-		return <SkeletonPlaceholder />;
+		return (
+			<div className={'w-full'}>
+				<SkeletonPlaceholder />
+			</div>
+		);
 	}
-
 	if (!isAddress(address)) {
 		return <ConnectButton />;
 	}

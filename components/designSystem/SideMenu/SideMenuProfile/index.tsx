@@ -27,7 +27,7 @@ export function SideMenuProfile(): ReactElement {
 
 			<hr className={'mb-2 mt-4 text-neutral-200'} />
 
-			<div className={'grid grid-cols-5 gap-6'}>
+			<div className={'grid md:grid-cols-1 md:gap-2 lg:grid-cols-5 lg:gap-6'}>
 				<div className={'col-span-3'}>
 					<small>{'Chain'}</small>
 					<NetworkPopoverSelector />

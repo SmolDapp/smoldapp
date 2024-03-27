@@ -56,7 +56,7 @@ export function AddressBookEntryAddress(props: {
 
 	if (!isMounted || props.isConnecting) {
 		return (
-			<div className={'grid w-full min-w-[288px] gap-2'}>
+			<div className={'grid w-full max-w-[288px] gap-2'}>
 				<div className={'skeleton-lg h-4 w-full'} />
 				<div className={'skeleton-lg h-4 w-2/3'} />
 			</div>
