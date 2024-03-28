@@ -1029,10 +1029,10 @@
     wagmi "^2.5.7"
     zod "^3.22.4"
 
-"@builtbymom/web3@^0.0.66":
-  version "0.0.66"
-  resolved "https://registry.yarnpkg.com/@builtbymom/web3/-/web3-0.0.66.tgz#a8385982044631dfe1bba233381a6bb8e7636df4"
-  integrity sha512-rqgndh1NdoXWC/Paz5r5Cp6skWHY5Z61Ad/3BJO06MGAED8Csz0kD08GzS6GtsjWtO2VzjfkzYfSsHnrmhdfJw==
+"@builtbymom/web3@^0.0.67":
+  version "0.0.67"
+  resolved "https://registry.yarnpkg.com/@builtbymom/web3/-/web3-0.0.67.tgz#fb97fdcd26797f8b61afc9c9557c167d64175994"
+  integrity sha512-6zWmUO8ZWJAC2IssMe22OZxuPzC6LWbPhsoSfkAZETHaPMfMYV1KVIujyWbv8G1PaqbCEvLhr9gNF0BHegG+zw==
   dependencies:
     "@rainbow-me/rainbowkit" "^2.0.2"
     "@react-hookz/web" "^24.0.4"
