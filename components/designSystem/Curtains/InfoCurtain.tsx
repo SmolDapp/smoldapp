@@ -1,10 +1,20 @@
 import {Fragment, type ReactElement} from 'react';
+import {useRouter} from 'next/router';
+import {usePlausible} from 'next-plausible';
 import {CurtainContent} from 'components/Primitives/Curtain';
 import {useIsMounted} from 'hooks/useIsMounted';
 import {IconCross} from '@icons/IconCross';
 import * as Dialog from '@radix-ui/react-dialog';
+import {useMountEffect} from '@react-hookz/web';
 
 export function CloseCurtainButton(): ReactElement {
+	const plausible = usePlausible();
+	const {route} = useRouter();
+
+	useMountEffect(() => {
+		plausible('open ? curtain', {props: {page: route}});
+	});
+
 	return (
 		<Dialog.Close className={'withRing group -mr-1 -mt-1 rounded p-1'}>
 			<IconCross className={'size-4 text-neutral-600 transition-colors group-hover:text-neutral-900'} />

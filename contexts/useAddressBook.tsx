@@ -211,7 +211,13 @@ export const WithAddressBook = ({children}: {children: React.ReactElement}): Rea
 						mergedChains.push(safeChainID);
 					}
 					const mergedTags = [...(entry.tags || []), ...(existingEntry.tags || [])];
-					const mergedFields = {...entry, ...existingEntry, chains: mergedChains, tags: mergedTags};
+					const mergedFields = {
+						...entry,
+						...existingEntry,
+						chains: mergedChains,
+						tags: mergedTags,
+						isHidden: false
+					};
 					mergedFields.chains = [...new Set(mergedFields.chains)].filter(chain => chain !== 0);
 					update({...mergedFields, slugifiedLabel: slugify(mergedFields.label)});
 					set_entryNonce(nonce => nonce + 1);

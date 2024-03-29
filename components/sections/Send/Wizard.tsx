@@ -1,4 +1,5 @@
 import React, {useCallback, useState} from 'react';
+import {usePlausible} from 'next-plausible';
 import {Button} from 'components/Primitives/Button';
 import {useAddressBook} from 'contexts/useAddressBook';
 import {transferERC20, transferEther} from 'utils/actions';
@@ -38,6 +39,8 @@ export function SendWizard({isReceiverERC20}: {isReceiverERC20: boolean}): React
 	const {isWalletSafe, provider} = useWeb3();
 	const {sdk} = useSafeAppsSDK();
 	const [migrateStatus, set_migrateStatus] = useState(defaultTxStatus);
+
+	const plausible = usePlausible();
 
 	const migratedTokens = useDeepCompareMemo(
 		() => configuration.inputs.filter(input => input.status === 'success'),
@@ -266,7 +269,16 @@ export function SendWizard({isReceiverERC20}: {isReceiverERC20: boolean}): React
 			type: 'EOA',
 			from: toAddress(address)
 		});
+
+		plausible('send', {
+			props: {
+				sendChainID: safeChainID,
+				sendTo: toAddress(configuration.receiver?.address),
+				sendFrom: toAddress(address)
+			}
+		});
 	}, [
+		plausible,
 		configuration.inputs,
 		configuration.receiver.address,
 		isWalletSafe,

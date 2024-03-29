@@ -58,7 +58,6 @@ function ImportContactsButton(props: {className?: string}): ReactElement {
 					};
 				});
 			}
-
 			// If we are working with a smol file, we should get 4 columns.
 			const isProbablySmolFile = parsedCSV.meta.fields.length === 4;
 			if (isProbablySmolFile) {
@@ -72,7 +71,8 @@ function ImportContactsButton(props: {className?: string}): ReactElement {
 						address: item[addressLike] as TAddress,
 						label: entryLabel,
 						chains: uniqueChainIDs,
-						isFavorite: Boolean(item[isFavorite] === 'true' || item[isFavorite] === true)
+						isFavorite: Boolean(item[isFavorite] === 'true' || item[isFavorite] === true),
+						isHidden: false
 					};
 				});
 			}

@@ -1,4 +1,5 @@
 import React, {memo, useCallback, useEffect, useMemo, useState} from 'react';
+import {usePlausible} from 'next-plausible';
 import {useValidateAddressInput} from 'components/designSystem/SmolAddressInput';
 import {useValidateAmountInput} from 'components/designSystem/SmolTokenAmountInput';
 import {SmolTokenSelector} from 'components/designSystem/SmolTokenSelector';
@@ -160,8 +161,10 @@ function ImportConfigurationButton({onSelectToken}: {onSelectToken: (token: TTok
 
 export function ExportConfigurationButton(buttonProps: ComponentPropsWithoutRef<'button'>): ReactElement {
 	const {configuration} = useDisperse();
+	const plausible = usePlausible();
 
 	const downloadConfiguration = useCallback(async () => {
+		plausible('download configuration');
 		const receiverEntries = configuration.inputs
 			.map((input, index) => ({
 				tokenAddress: index === 0 ? configuration.tokenToSend?.address : '',
@@ -182,7 +185,7 @@ export function ExportConfigurationButton(buttonProps: ComponentPropsWithoutRef<
 		document.body.appendChild(a);
 		a.click();
 		document.body.removeChild(a);
-	}, [configuration]);
+	}, [configuration.inputs, configuration.tokenToSend?.address, configuration.tokenToSend?.chainID, plausible]);
 
 	return (
 		<Button
@@ -199,6 +202,8 @@ const Disperse = memo(function Disperse(): ReactElement {
 	const {configuration, dispatchConfiguration} = useDisperse();
 
 	const {hasInitialInputs} = useDisperseQueryManagement();
+
+	const plausible = usePlausible();
 
 	const downloadFile = async (): Promise<AxiosResponse<Blob>> => {
 		const url =
@@ -246,7 +251,10 @@ const Disperse = memo(function Disperse(): ReactElement {
 		<div className={'w-full'}>
 			<button
 				className={'mb-2 hover:underline'}
-				onClick={downloadTemplate}>
+				onClick={() => {
+					plausible('download template');
+					downloadTemplate();
+				}}>
 				{'Download Template'}
 			</button>
 			<div className={'mb-4 flex gap-2'}>

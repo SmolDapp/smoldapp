@@ -2,6 +2,7 @@
 
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {useRouter} from 'next/router';
+import {usePlausible} from 'next-plausible';
 import {CloseCurtainButton} from 'components/designSystem/Curtains/InfoCurtain';
 import {Button} from 'components/Primitives/Button';
 import {CurtainContent} from 'components/Primitives/Curtain';
@@ -286,7 +287,7 @@ export function AddressBookCurtain(props: {
 	onOpenChange: (props: {isOpen: boolean; isEditing: boolean}) => void;
 }): ReactElement {
 	const router = useRouter();
-	const {updateEntry} = useAddressBook();
+	const {updateEntry, listCachedEntries} = useAddressBook();
 	const formRef = useRef<HTMLFormElement>(null);
 	const [currentEntry, set_currentEntry] = useState<TAddressBookEntry>(props.selectedEntry);
 	const [, set_nonce] = useState<number>(0);
@@ -301,6 +302,8 @@ export function AddressBookCurtain(props: {
 		isValid: isAddress(props.selectedEntry.address) ? true : 'undetermined',
 		source: 'defaultValue'
 	});
+
+	const plausible = usePlausible();
 
 	const onIncrementNonce = useCallback(() => set_nonce(n => n + 1), []);
 
@@ -318,6 +321,9 @@ export function AddressBookCurtain(props: {
 			if (props.selectedEntry.id === undefined) {
 				updateEntry({...currentEntry, address: addressLike.address, isHidden: false});
 				props.onOpenChange({isOpen: false, isEditing: false});
+				if (listCachedEntries().length === 0) {
+					plausible('add 1st ab contact');
+				}
 			} else {
 				updateEntry({...currentEntry, address: addressLike.address, isHidden: false});
 				set_isEditMode(false);
@@ -325,7 +331,7 @@ export function AddressBookCurtain(props: {
 			}
 			return;
 		},
-		[isEditMode, props, addressLike.address, router, updateEntry, currentEntry]
+		[isEditMode, props, addressLike.address, router, updateEntry, currentEntry, listCachedEntries, plausible]
 	);
 
 	const onResetAddressLike = useAsyncTrigger(async () => {

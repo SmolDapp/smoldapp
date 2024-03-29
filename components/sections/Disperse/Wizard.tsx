@@ -1,4 +1,5 @@
 import React, {useCallback, useMemo, useState} from 'react';
+import {usePlausible} from 'next-plausible';
 import {Button} from 'components/Primitives/Button';
 import {useAddressBook} from 'contexts/useAddressBook';
 import {approveERC20, disperseERC20, disperseETH} from 'utils/actions';
@@ -30,7 +31,7 @@ import {useDisperse} from './useDisperse';
 
 import type {ReactElement} from 'react';
 import type {TAddress} from '@builtbymom/web3/types';
-import type {TTxStatus} from '@builtbymom/web3/utils/wagmi/transaction';
+import type {TTxResponse, TTxStatus} from '@builtbymom/web3/utils/wagmi/transaction';
 import type {BaseTransaction} from '@gnosis.pm/safe-apps-sdk';
 
 type TApprovalWizardProps = {
@@ -46,7 +47,6 @@ const useApproveDisperse = ({
 	shouldApprove: boolean;
 	allowance: bigint;
 	isApproved: boolean;
-	totalToDisperse: bigint;
 	isDisabled: boolean;
 	onApproveToken: () => void;
 } => {
@@ -98,7 +98,6 @@ const useApproveDisperse = ({
 		shouldApprove,
 		allowance,
 		isApproved,
-		totalToDisperse,
 		isDisabled: !approvalStatus.none || !configuration.tokenToSend,
 		onApproveToken
 	};
@@ -107,11 +106,13 @@ const useApproveDisperse = ({
 const useConfirmDisperse = ({
 	onTrigger,
 	onSuccess,
-	onError
+	onError,
+	totalToDisperse
 }: {
 	onTrigger: () => void;
 	onSuccess: () => void;
 	onError: () => void;
+	totalToDisperse: bigint;
 }): {onDisperseTokens: () => void} => {
 	const {address, provider, isWalletSafe} = useWeb3();
 	const {safeChainID} = useChainID();
@@ -119,7 +120,62 @@ const useConfirmDisperse = ({
 	const {bumpEntryInteractions} = useAddressBook();
 	const {onRefresh} = useWallet();
 	const {sdk} = useSafeAppsSDK();
+	const plausible = usePlausible();
 
+	const successDisperseCallback = useCallback(
+		(disperseAddresses: TAddress[], disperseAmount: bigint[], result: TTxResponse) => {
+			onSuccess();
+			onRefresh([
+				{
+					decimals: configuration.tokenToSend?.decimals,
+					name: configuration.tokenToSend?.name,
+					symbol: configuration.tokenToSend?.symbol,
+					address: toAddress(configuration.tokenToSend?.address),
+					chainID: Number(configuration.tokenToSend?.chainID)
+				}
+			]);
+			disperseAddresses.forEach(address => {
+				bumpEntryInteractions({
+					address: address,
+					label: truncateHex(address, 5),
+					chains: [safeChainID],
+					slugifiedLabel: slugify(address)
+				});
+			});
+			plausible('disperse', {
+				props: {
+					disperseChainID: safeChainID,
+					tokenToDisperse: configuration.tokenToSend?.address,
+					totalToDisperse: `${formatAmount(
+						toNormalizedValue(totalToDisperse, configuration.tokenToSend?.decimals || 18),
+						6,
+						configuration.tokenToSend?.decimals || 18
+					)} ${configuration.tokenToSend?.symbol || 'Tokens'}`
+				}
+			});
+			if (result.receipt) {
+				notifyDisperse({
+					chainID: safeChainID,
+					tokenToDisperse: configuration.tokenToSend,
+					receivers: disperseAddresses,
+					amounts: disperseAmount,
+					type: 'EOA',
+					from: result.receipt.from,
+					hash: result.receipt.transactionHash
+				});
+			}
+			return;
+		},
+		[
+			bumpEntryInteractions,
+			configuration.tokenToSend,
+			onRefresh,
+			onSuccess,
+			plausible,
+			safeChainID,
+			totalToDisperse
+		]
+	);
 	/**********************************************************************************************
 	 ** onDisperseTokensForGnosis will do just like disperseTokens but for Gnosis Safe and without
 	 ** the use of a smartcontract. It will just batch standard transfers.
@@ -208,36 +264,7 @@ const useConfirmDisperse = ({
 				amounts: disperseAmount
 			}).then(result => {
 				if (result.isSuccessful) {
-					onSuccess();
-					onRefresh([
-						{
-							decimals: configuration.tokenToSend?.decimals,
-							name: configuration.tokenToSend?.name,
-							symbol: configuration.tokenToSend?.symbol,
-							address: ETH_TOKEN_ADDRESS,
-							chainID: safeChainID
-						}
-					]);
-					disperseAddresses.forEach(address => {
-						bumpEntryInteractions({
-							address: address,
-							label: truncateHex(address, 5),
-							chains: [safeChainID],
-							slugifiedLabel: slugify(address)
-						});
-					});
-					if (result.receipt) {
-						notifyDisperse({
-							chainID: safeChainID,
-							tokenToDisperse: configuration.tokenToSend,
-							receivers: disperseAddresses,
-							amounts: disperseAmount,
-							type: 'EOA',
-							from: result.receipt.from,
-							hash: result.receipt.transactionHash
-						});
-					}
-					return;
+					return successDisperseCallback(disperseAddresses, disperseAmount, result);
 				}
 				onError();
 			});
@@ -251,36 +278,7 @@ const useConfirmDisperse = ({
 				amounts: disperseAmount
 			}).then(result => {
 				if (result.isSuccessful) {
-					onSuccess();
-					onRefresh([
-						{
-							decimals: configuration.tokenToSend?.decimals,
-							name: configuration.tokenToSend?.name,
-							symbol: configuration.tokenToSend?.symbol,
-							address: toAddress(configuration.tokenToSend?.address),
-							chainID: Number(configuration.tokenToSend?.chainID)
-						}
-					]);
-					disperseAddresses.forEach(address => {
-						bumpEntryInteractions({
-							address: address,
-							label: truncateHex(address, 5),
-							chains: [safeChainID],
-							slugifiedLabel: slugify(address)
-						});
-					});
-					if (result.receipt) {
-						notifyDisperse({
-							chainID: safeChainID,
-							tokenToDisperse: configuration.tokenToSend,
-							receivers: disperseAddresses,
-							amounts: disperseAmount,
-							type: 'EOA',
-							from: result.receipt.from,
-							hash: result.receipt.transactionHash
-						});
-					}
-					return;
+					return successDisperseCallback(disperseAddresses, disperseAmount, result);
 				}
 				onError();
 			});
@@ -289,14 +287,12 @@ const useConfirmDisperse = ({
 		onTrigger,
 		isWalletSafe,
 		configuration.inputs,
-		configuration.tokenToSend,
+		configuration.tokenToSend?.address,
 		onDisperseTokensForGnosis,
 		provider,
 		safeChainID,
 		onError,
-		onSuccess,
-		onRefresh,
-		bumpEntryInteractions
+		successDisperseCallback
 	]);
 
 	return {onDisperseTokens};
@@ -328,7 +324,8 @@ export function DisperseWizard(): ReactElement {
 		},
 		onTrigger: () => {
 			set_disperseStatus({...defaultTxStatus, pending: true});
-		}
+		},
+		totalToDisperse
 	});
 
 	const isAboveBalance =
