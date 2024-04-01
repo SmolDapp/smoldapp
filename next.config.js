@@ -73,7 +73,7 @@ module.exports = phase =>
 						source: '/',
 						has: [
 							{type: 'host', value: 'v2.smold.app'},
-							{type: 'host', value: 'https://smoldapp-git-feat-disperse.yearn.farm/'}
+							{type: 'host', value: 'smoldapp-git-feat-disperse.yearn.farm'}
 						],
 						destination: '/apps/send',
 						permanent: true
