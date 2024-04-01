@@ -3,6 +3,7 @@ import {useBalancesCurtain} from 'contexts/useBalancesCurtain';
 import {useChainID} from '@builtbymom/web3/hooks/useChainID';
 import {usePrices} from '@builtbymom/web3/hooks/usePrices';
 import {cl} from '@builtbymom/web3/utils';
+import {useUpdateEffect} from '@react-hookz/web';
 
 import {SmolTokenButton} from './SmolTokenButton';
 
@@ -12,7 +13,7 @@ export function SmolTokenSelector({
 	onSelectToken,
 	token
 }: {
-	onSelectToken: (token: TToken) => void;
+	onSelectToken: (token: TToken | undefined) => void;
 	token: TToken | undefined;
 }): JSX.Element {
 	const {safeChainID} = useChainID();
@@ -27,6 +28,11 @@ export function SmolTokenSelector({
 
 		return 'border-neutral-400';
 	}, [isFocused]);
+
+	/* Remove selected token on network change */
+	useUpdateEffect(() => {
+		onSelectToken(undefined);
+	}, [safeChainID]);
 
 	return (
 		<div className={'relative size-full'}>

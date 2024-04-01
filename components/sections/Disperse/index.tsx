@@ -226,7 +226,7 @@ const Disperse = memo(function Disperse(): ReactElement {
 	});
 	const price = prices && configuration.tokenToSend ? prices[configuration.tokenToSend.address] : undefined;
 
-	const onSelectToken = (token: TToken): void => {
+	const onSelectToken = (token: TToken | undefined): void => {
 		dispatchConfiguration({type: 'SET_TOKEN_TO_SEND', payload: token});
 	};
 

@@ -12,7 +12,7 @@ import {
 	toNormalizedBN,
 	zeroNormalizedBN
 } from '@builtbymom/web3/utils';
-import {useDeepCompareEffect} from '@react-hookz/web';
+import {useDeepCompareEffect, useUpdateEffect} from '@react-hookz/web';
 import {handleLowAmount} from '@utils/helpers';
 
 import {SmolTokenSelectorButton} from './SmolTokenSelectorButton';
@@ -189,6 +189,11 @@ export function SmolTokenAmountInput({showPercentButtons = false, onSetValue, va
 		}
 		onSetValue(result);
 	}, [result]);
+
+	/* Remove selected token on network change */
+	useUpdateEffect(() => {
+		validate(value.amount, undefined);
+	}, [safeChainID]);
 
 	return (
 		<div className={'relative size-full rounded-lg'}>
