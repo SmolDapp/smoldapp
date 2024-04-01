@@ -182,7 +182,7 @@ export const WithAddressBook = ({children}: {children: React.ReactElement}): Rea
 			try {
 				const existingEntry = await getEntry({address: entry.address});
 				if (existingEntry) {
-					const mergedChains = [...(existingEntry.chains || []), ...(entry.chains || [])];
+					const mergedChains = [...(entry.chains || [])];
 					if (mergedChains.length === 0) {
 						mergedChains.push(safeChainID);
 					}

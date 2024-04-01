@@ -83,7 +83,13 @@ export function NetworkDropdownSelector(
 		<DropdownMenu.Root
 			onOpenChange={isOpen => {
 				if (!isOpen) {
-					props.onChange(Object.keys(selectedNetworks).map(Number));
+					props.onChange(
+						Object.keys(selectedNetworks)
+							.filter(chainId => {
+								return selectedNetworks[+chainId];
+							})
+							.map(Number)
+					);
 				}
 			}}>
 			<DropdownMenu.Trigger
@@ -120,9 +126,7 @@ export function NetworkDropdownSelector(
 					<DropdownMenuCheckboxItem
 						key={network.id}
 						checked={selectedNetworks[network.id]}
-						onCheckedChange={() =>
-							set_selectedNetworks(prev => ({...prev, [network.id]: !prev[network.id]}))
-						}>
+						onCheckedChange={checked => set_selectedNetworks(prev => ({...prev, [network.id]: checked}))}>
 						{network.name}
 					</DropdownMenuCheckboxItem>
 				))}
