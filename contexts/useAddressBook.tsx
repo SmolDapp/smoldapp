@@ -96,10 +96,10 @@ export const WithAddressBook = ({children}: {children: React.ReactElement}): Rea
 		if (entriesFromDB.length === 0) {
 			add({
 				address: '0x10001192576E8079f12d6695b0948C2F41320040',
-				chains: supportedNetworks.map(chain => chain.id),
-				isFavorite: false,
-				isHidden: false,
 				label: 'smol',
+				isFavorite: false,
+				chains: supportedNetworks.map(chain => chain.id),
+				isHidden: false,
 				numberOfInteractions: 0,
 				slugifiedLabel: 'smol'
 			});
