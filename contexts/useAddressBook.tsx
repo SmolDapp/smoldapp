@@ -9,6 +9,7 @@ import {useChainID} from '@builtbymom/web3/hooks/useChainID';
 import {isAddress, toAddress} from '@builtbymom/web3/utils';
 import {useMountEffect} from '@react-hookz/web';
 import {slugify} from '@utils/helpers';
+import {supportedNetworks} from '@utils/tools.chains';
 
 import type {IndexedDBConfig} from 'use-indexeddb/dist/interfaces';
 import type {TAddress} from '@builtbymom/web3/types';
@@ -87,7 +88,24 @@ export const WithAddressBook = ({children}: {children: React.ReactElement}): Rea
 	const {add, getAll, getOneByKey, update} = useIndexedDBStore<TAddressBookEntry>('address-book');
 	const {safeChainID} = useChainID();
 
-	useMountEffect(async () => setupIndexedDB(addressBookIDBConfig));
+	useMountEffect(async () => {
+		setupIndexedDB(addressBookIDBConfig);
+
+		/* Initially add smol address in the AB */
+		const entriesFromDB = await getAll();
+		if (entriesFromDB.length === 0) {
+			add({
+				address: '0x10001192576E8079f12d6695b0948C2F41320040',
+				chains: supportedNetworks.map(chain => chain.id),
+				isFavorite: false,
+				isHidden: false,
+				label: 'smol',
+				numberOfInteractions: 0,
+				slugifiedLabel: 'smol'
+			});
+			set_entryNonce(nonce => nonce + 1);
+		}
+	});
 
 	useAsyncTrigger(async (): Promise<void> => {
 		entryNonce;
