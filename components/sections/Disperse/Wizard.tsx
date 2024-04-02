@@ -206,7 +206,6 @@ const useConfirmDisperse = ({
 		}
 		try {
 			sdk.txs.send({txs: transactions}).then(({safeTxHash}) => {
-				console.log({hash: safeTxHash});
 				toast({
 					type: 'success',
 					content: 'Your transaction has been created! You can now sign and execute it!'

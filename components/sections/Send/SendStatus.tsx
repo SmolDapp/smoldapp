@@ -1,5 +1,4 @@
 import {useState} from 'react';
-import Link from 'next/link';
 import {useAddressBook} from 'contexts/useAddressBook';
 import {useAddressBookCurtain} from 'contexts/useAddressBookCurtain';
 import {useAsyncTrigger} from '@builtbymom/web3/hooks/useAsyncTrigger';
@@ -61,14 +60,9 @@ export function SendStatus({isReceiverERC20}: {isReceiverERC20: boolean}): React
 			return set_status({
 				message: (
 					<>
-						{'Hello. Looks like you’re sending to a '}
-						<Link
-							target={'_blank'}
-							// TODO: add link
-							href={'/'}>
-							<span className={'font-semibold hover:underline'}>{'smart contract address'}</span>
-						</Link>
-						{'. If it’s intentional, go right ahead, otherwise you might want to double check.'}
+						{
+							'Hello. Looks like you’re sending to a smart contract address. If it’s intentional, go right ahead, otherwise you might want to double check.'
+						}
 					</>
 				),
 				type: 'warning'

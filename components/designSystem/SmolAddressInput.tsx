@@ -269,8 +269,6 @@ export function SmolAddressInput({onSetValue, value}: TAddressInput): ReactEleme
 						)}
 						value={(isAddress(value?.address) && toAddress(value.address)) || value.error || ''}
 					/>
-
-					{/* Adding &nbsp; to make sure we have an element here */}
 				</div>
 				<div className={'w-fit flex-1'}>
 					<button

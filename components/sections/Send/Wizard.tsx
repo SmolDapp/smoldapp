@@ -180,7 +180,6 @@ export function SendWizard({isReceiverERC20}: {isReceiverERC20: boolean}): React
 				allSelected.forEach(input => onUpdateStatus(input.UUID, 'pending'));
 				const {safeTxHash} = await sdk.txs.send({txs: transactions});
 				allSelected.forEach(input => onUpdateStatus(input.UUID, 'success'));
-				console.log({hash: safeTxHash});
 				set_migrateStatus({...defaultTxStatus, success: true});
 
 				notifySend({
@@ -229,7 +228,6 @@ export function SendWizard({isReceiverERC20}: {isReceiverERC20: boolean}): React
 			const result = await onMigrateERC20(input);
 
 			if (result.isSuccessful && result.receipt) {
-				// set_migratedTokens(prev => [...prev, input]);
 				hashMessage.push(result.receipt.transactionHash);
 			} else {
 				areAllSuccess = false;
@@ -241,7 +239,6 @@ export function SendWizard({isReceiverERC20}: {isReceiverERC20: boolean}): React
 		if (ethToken && toBigInt(ethAmountRaw) > 0n) {
 			const result = await onMigrateETH(ethToken);
 			if (result.isSuccessful && result.receipt) {
-				// ethToken && set_migratedTokens(prev => [...prev, ethToken as TInputWithToken]);
 				hashMessage.push(result.receipt.transactionHash);
 			} else {
 				areAllSuccess = false;
