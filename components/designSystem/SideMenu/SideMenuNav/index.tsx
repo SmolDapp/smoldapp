@@ -1,4 +1,5 @@
 import {cloneElement, Fragment, type ReactElement} from 'react';
+import Link from 'next/link';
 import {usePathname} from 'next/navigation';
 import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
 import {cl, isZeroAddress} from '@builtbymom/web3/utils';
@@ -69,13 +70,11 @@ function LogOutButton(): ReactElement {
 	}
 
 	return (
-		<div className={'mt-auto px-4 pb-2'}>
-			<button
-				className={'text-xxs text-neutral-600 transition-colors hover:text-neutral-900'}
-				onClick={onDesactivate}>
-				{'Log out'}
-			</button>
-		</div>
+		<button
+			className={'transition-colors hover:text-neutral-900'}
+			onClick={onDesactivate}>
+			{'Log out'}
+		</button>
 	);
 }
 
@@ -125,8 +124,23 @@ export function SideMenuNav(): ReactElement {
 						icon={<IconWallet />}
 					/>
 				</ul>
-
-				<LogOutButton />
+				<div className={'mt-auto flex justify-between px-6 pb-2 text-xxs text-neutral-600'}>
+					<div className={'flex gap-4'}>
+						<Link
+							className={'transition-colors hover:text-neutral-900'}
+							href={'https://github.com/SmolDapp'}
+							target={'_blank'}>
+							{'GitHub'}
+						</Link>
+						<Link
+							className={'transition-colors hover:text-neutral-900'}
+							href={'https://twitter.com/smoldapp'}
+							target={'_blank'}>
+							{'Twitter'}
+						</Link>
+					</div>
+					<LogOutButton />
+				</div>
 			</section>
 		</div>
 	);
