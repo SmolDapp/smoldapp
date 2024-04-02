@@ -105,7 +105,7 @@ export function Wallet(): ReactElement {
 				{address ? (
 					filteredTokens.map(token => (
 						<SmolTokenButton
-							key={token.address}
+							key={`${token.address}_${token.chainID}`}
 							token={token}
 							price={prices ? prices[token.address] : undefined}
 						/>

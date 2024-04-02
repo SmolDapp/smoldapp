@@ -199,7 +199,7 @@ function BalancesCurtain(props: {
 							{address ? (
 								filteredTokens.map(token => (
 									<SmolTokenButton
-										key={token.address}
+										key={`${token.address}_${token.chainID}`}
 										token={token}
 										price={prices ? prices[token.address] : undefined}
 										isDisabled={props.selectedTokenAddresses?.includes(token.address) || false}
