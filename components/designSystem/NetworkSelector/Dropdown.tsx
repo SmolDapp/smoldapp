@@ -79,19 +79,20 @@ export function NetworkDropdownSelector(
 		Object.values(selectedNetworks).every(Boolean) &&
 		Object.keys(selectedNetworks).length === supportedNetworks.length;
 
+	const onOpenChange = (isOpen: boolean): void => {
+		if (!isOpen) {
+			props.onChange(
+				Object.keys(selectedNetworks)
+					.filter(chainId => {
+						return selectedNetworks[+chainId];
+					})
+					.map(Number)
+			);
+		}
+	};
+
 	return (
-		<DropdownMenu.Root
-			onOpenChange={isOpen => {
-				if (!isOpen) {
-					props.onChange(
-						Object.keys(selectedNetworks)
-							.filter(chainId => {
-								return selectedNetworks[+chainId];
-							})
-							.map(Number)
-					);
-				}
-			}}>
+		<DropdownMenu.Root onOpenChange={onOpenChange}>
 			<DropdownMenu.Trigger
 				disabled={props.disabled}
 				className={'withRing w-lg group -m-1 rounded p-1'}>
