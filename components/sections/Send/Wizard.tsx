@@ -1,40 +1,51 @@
 import React, {useCallback, useState} from 'react';
+import {usePlausible} from 'next-plausible';
 import {Button} from 'components/Primitives/Button';
+import {useAddressBook} from 'contexts/useAddressBook';
 import {transferERC20, transferEther} from 'utils/actions';
 import {getTransferTransaction} from 'utils/tools.gnosis';
 import {isAddressEqual} from 'viem';
 import {useWallet} from '@builtbymom/web3/contexts/useWallet';
 import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
 import {useChainID} from '@builtbymom/web3/hooks/useChainID';
-import {isEthAddress, isZeroAddress, toAddress, toBigInt} from '@builtbymom/web3/utils';
+import {isEthAddress, isZeroAddress, slugify, toAddress, toBigInt, truncateHex} from '@builtbymom/web3/utils';
 import {getNetwork} from '@builtbymom/web3/utils/wagmi';
 import {defaultTxStatus, type TTxResponse} from '@builtbymom/web3/utils/wagmi';
 import {useSafeAppsSDK} from '@gnosis.pm/safe-apps-react-sdk';
+import {useDeepCompareMemo} from '@react-hookz/web';
 import {notifySend} from '@utils/notifier';
-import {toast} from '@yearn-finance/web-lib/components/yToast';
 import {ETH_TOKEN_ADDRESS, ZERO_ADDRESS} from '@yearn-finance/web-lib/utils/constants';
 import {SuccessModal} from '@common/ConfirmationModal';
+import {ErrorModal} from '@common/ErrorModal';
 
 import {useSendFlow} from './useSendFlow';
 
-import type {TSendInputElement} from 'components/designSystem/SmolTokenAmountInput';
+import type {TTokenAmountInputElement} from 'components/designSystem/SmolTokenAmountInput';
 import type {ReactElement} from 'react';
-import type {BaseError, Hex} from 'viem';
+import type {Hex} from 'viem';
 import type {TUseBalancesTokens} from '@builtbymom/web3/hooks/useBalances.multichains';
 import type {TAddress, TChainTokens, TToken} from '@builtbymom/web3/types';
 import type {BaseTransaction} from '@gnosis.pm/safe-apps-sdk';
 import type {TModify} from '@utils/types/types';
 
-type TInputWithToken = TModify<TSendInputElement, {token: TToken}>;
+type TInputWithToken = TModify<TTokenAmountInputElement, {token: TToken}>;
 
 export function SendWizard({isReceiverERC20}: {isReceiverERC20: boolean}): ReactElement {
 	const {safeChainID} = useChainID();
 	const {address} = useWeb3();
 	const {configuration, dispatchConfiguration} = useSendFlow();
 	const {getToken, getBalance, onRefresh} = useWallet();
+	const {bumpEntryInteractions} = useAddressBook();
 	const {isWalletSafe, provider} = useWeb3();
 	const {sdk} = useSafeAppsSDK();
 	const [migrateStatus, set_migrateStatus] = useState(defaultTxStatus);
+
+	const plausible = usePlausible();
+
+	const migratedTokens = useDeepCompareMemo(
+		() => configuration.inputs.filter(input => input.status === 'success'),
+		[configuration.inputs]
+	);
 
 	const onUpdateStatus = useCallback(
 		(UUID: string, status: 'pending' | 'success' | 'error' | 'none'): void => {
@@ -152,7 +163,7 @@ export function SendWizard({isReceiverERC20}: {isReceiverERC20: boolean}): React
 	const onMigrateSelectedForGnosis = useCallback(
 		async (allSelected: TInputWithToken[]): Promise<void> => {
 			const transactions: BaseTransaction[] = [];
-			const migratedTokens: TSendInputElement[] = [];
+
 			for (const input of allSelected) {
 				const amount = toBigInt(input.normalizedBigAmount.raw);
 				if (amount === 0n) {
@@ -164,16 +175,13 @@ export function SendWizard({isReceiverERC20}: {isReceiverERC20: boolean}): React
 					toAddress(configuration.receiver?.address)
 				);
 				transactions.push(newTransactionForBatch);
-				migratedTokens.push(input);
 			}
 			try {
+				allSelected.forEach(input => onUpdateStatus(input.UUID, 'pending'));
 				const {safeTxHash} = await sdk.txs.send({txs: transactions});
-				console.log({hash: safeTxHash});
+				allSelected.forEach(input => onUpdateStatus(input.UUID, 'success'));
 				set_migrateStatus({...defaultTxStatus, success: true});
-				toast({
-					type: 'success',
-					content: 'Your transaction has been created! You can now sign and execute it!'
-				});
+
 				notifySend({
 					chainID: safeChainID,
 					to: toAddress(configuration.receiver?.address),
@@ -183,14 +191,10 @@ export function SendWizard({isReceiverERC20}: {isReceiverERC20: boolean}): React
 					from: toAddress(address)
 				});
 			} catch (error) {
-				set_migrateStatus({...defaultTxStatus, success: false});
-				toast({
-					type: 'error',
-					content: (error as BaseError)?.message || 'An error occured while creating your transaction!'
-				});
+				set_migrateStatus({...defaultTxStatus, error: true});
 			}
 		},
-		[address, configuration.receiver?.address, safeChainID, sdk.txs]
+		[address, configuration.receiver?.address, migratedTokens, onUpdateStatus, safeChainID, sdk.txs]
 	);
 
 	/**********************************************************************************************
@@ -210,7 +214,6 @@ export function SendWizard({isReceiverERC20}: {isReceiverERC20: boolean}): React
 			return onMigrateSelectedForGnosis(allSelected);
 		}
 
-		const migratedTokens: TInputWithToken[] = [];
 		const hashMessage: Hex[] = [];
 
 		let ethToken: TInputWithToken | undefined = undefined;
@@ -225,7 +228,6 @@ export function SendWizard({isReceiverERC20}: {isReceiverERC20: boolean}): React
 			const result = await onMigrateERC20(input);
 
 			if (result.isSuccessful && result.receipt) {
-				migratedTokens.push(input);
 				hashMessage.push(result.receipt.transactionHash);
 			} else {
 				areAllSuccess = false;
@@ -237,7 +239,6 @@ export function SendWizard({isReceiverERC20}: {isReceiverERC20: boolean}): React
 		if (ethToken && toBigInt(ethAmountRaw) > 0n) {
 			const result = await onMigrateETH(ethToken);
 			if (result.isSuccessful && result.receipt) {
-				ethToken && migratedTokens.push(ethToken);
 				hashMessage.push(result.receipt.transactionHash);
 			} else {
 				areAllSuccess = false;
@@ -247,9 +248,15 @@ export function SendWizard({isReceiverERC20}: {isReceiverERC20: boolean}): React
 		if (areAllSuccess) {
 			set_migrateStatus({...defaultTxStatus, success: true});
 		} else {
-			set_migrateStatus(defaultTxStatus);
-			dispatchConfiguration({type: 'RESET', payload: undefined});
+			set_migrateStatus({...defaultTxStatus, error: true});
 		}
+
+		bumpEntryInteractions({
+			address: configuration.receiver.address,
+			label: truncateHex(toAddress(configuration.receiver.address), 5),
+			chains: [safeChainID],
+			slugifiedLabel: slugify(configuration.receiver.address || '')
+		});
 
 		notifySend({
 			chainID: safeChainID,
@@ -259,17 +266,32 @@ export function SendWizard({isReceiverERC20}: {isReceiverERC20: boolean}): React
 			type: 'EOA',
 			from: toAddress(address)
 		});
+
+		plausible('send', {
+			props: {
+				sendChainID: safeChainID,
+				sendTo: toAddress(configuration.receiver?.address),
+				sendFrom: toAddress(address)
+			}
+		});
 	}, [
+		plausible,
 		configuration.inputs,
-		configuration.receiver?.address,
+		configuration.receiver.address,
 		isWalletSafe,
+		bumpEntryInteractions,
 		safeChainID,
+		migratedTokens,
 		address,
 		onMigrateSelectedForGnosis,
 		onMigrateERC20,
-		onMigrateETH,
-		dispatchConfiguration
+		onMigrateETH
 	]);
+
+	const errorModalContent =
+		migratedTokens.length === 0
+			? 'No tokens were sent, please try again.'
+			: `${migratedTokens.map(token => token.token?.name).join(', ')} ${migratedTokens.length === 1 ? 'was' : 'were'} sent, please retry the rest.`;
 
 	const isSendButtonDisabled =
 		isZeroAddress(configuration.receiver?.address) ||
@@ -297,6 +319,23 @@ export function SendWizard({isReceiverERC20}: {isReceiverERC20: boolean}): React
 				onClose={(): void => {
 					dispatchConfiguration({type: 'RESET', payload: undefined});
 					set_migrateStatus(defaultTxStatus);
+				}}
+			/>
+
+			<ErrorModal
+				title={migratedTokens.length === 0 ? 'Error' : 'Partial Success'}
+				content={errorModalContent}
+				ctaLabel={'Close'}
+				isOpen={migrateStatus.error}
+				type={migratedTokens.length === 0 ? 'hard' : 'soft'}
+				onClose={(): void => {
+					set_migrateStatus(defaultTxStatus);
+					setTimeout(() => {
+						dispatchConfiguration({
+							type: 'REMOVE_SUCCESFUL_INPUTS',
+							payload: undefined
+						});
+					}, 500);
 				}}
 			/>
 		</>

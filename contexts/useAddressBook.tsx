@@ -9,6 +9,7 @@ import {useChainID} from '@builtbymom/web3/hooks/useChainID';
 import {isAddress, toAddress} from '@builtbymom/web3/utils';
 import {useMountEffect} from '@react-hookz/web';
 import {slugify} from '@utils/helpers';
+import {supportedNetworks} from '@utils/tools.chains';
 
 import type {IndexedDBConfig} from 'use-indexeddb/dist/interfaces';
 import type {TAddress} from '@builtbymom/web3/types';
@@ -26,7 +27,7 @@ export type TAddressBookEntry = {
 	tags?: string[]; // List of tags associated with the address.
 };
 export type TSelectCallback = (item: TAddressBookEntry) => void;
-export type TAddressBookCurtainProps = {
+export type TAddressBookProps = {
 	shouldOpenCurtain: boolean;
 	listEntries: () => Promise<TAddressBookEntry[]>;
 	listCachedEntries: () => TAddressBookEntry[];
@@ -39,7 +40,7 @@ export type TAddressBookCurtainProps = {
 	onOpenCurtain: (callbackFn: TSelectCallback) => void;
 	onCloseCurtain: () => void;
 };
-const defaultProps: TAddressBookCurtainProps = {
+const defaultProps: TAddressBookProps = {
 	shouldOpenCurtain: false,
 	listEntries: async (): Promise<TAddressBookEntry[]> => [],
 	listCachedEntries: (): TAddressBookEntry[] => [],
@@ -78,16 +79,33 @@ const addressBookIDBConfig: IndexedDBConfig = {
 	]
 };
 
-const AddressBookContext = createContext<TAddressBookCurtainProps>(defaultProps);
+const AddressBookContext = createContext<TAddressBookProps>(defaultProps);
 export const WithAddressBook = ({children}: {children: React.ReactElement}): React.ReactElement => {
 	const [shouldOpenCurtain, set_shouldOpenCurtain] = useState(false);
 	const [cachedEntries, set_cachedEntries] = useState<TAddressBookEntry[]>([]);
 	const [entryNonce, set_entryNonce] = useState<number>(0);
 	const [currentCallbackFunction, set_currentCallbackFunction] = useState<TSelectCallback | undefined>(undefined);
-	const {add, getAll, getOneByKey, deleteByID, update} = useIndexedDBStore<TAddressBookEntry>('address-book');
+	const {add, getAll, getOneByKey, update} = useIndexedDBStore<TAddressBookEntry>('address-book');
 	const {safeChainID} = useChainID();
 
-	useMountEffect(async () => setupIndexedDB(addressBookIDBConfig));
+	useMountEffect(async () => {
+		setupIndexedDB(addressBookIDBConfig);
+
+		/* Initially add smol address in the AB */
+		const entriesFromDB = await getAll();
+		if (entriesFromDB.length === 0) {
+			add({
+				address: '0x10001192576E8079f12d6695b0948C2F41320040',
+				label: 'smol',
+				isFavorite: false,
+				chains: supportedNetworks.map(chain => chain.id),
+				isHidden: false,
+				numberOfInteractions: 0,
+				slugifiedLabel: 'smol'
+			});
+			set_entryNonce(nonce => nonce + 1);
+		}
+	});
 
 	useAsyncTrigger(async (): Promise<void> => {
 		entryNonce;
@@ -164,7 +182,7 @@ export const WithAddressBook = ({children}: {children: React.ReactElement}): Rea
 			try {
 				const existingEntry = await getEntry({address: entry.address});
 				if (existingEntry) {
-					const mergedChains = [...(existingEntry.chains || []), ...(entry.chains || [])];
+					const mergedChains = [...(entry.chains || [])];
 					if (mergedChains.length === 0) {
 						mergedChains.push(safeChainID);
 					}
@@ -211,7 +229,13 @@ export const WithAddressBook = ({children}: {children: React.ReactElement}): Rea
 						mergedChains.push(safeChainID);
 					}
 					const mergedTags = [...(entry.tags || []), ...(existingEntry.tags || [])];
-					const mergedFields = {...entry, ...existingEntry, chains: mergedChains, tags: mergedTags};
+					const mergedFields = {
+						...entry,
+						...existingEntry,
+						chains: mergedChains,
+						tags: mergedTags,
+						isHidden: false
+					};
 					mergedFields.chains = [...new Set(mergedFields.chains)].filter(chain => chain !== 0);
 					update({...mergedFields, slugifiedLabel: slugify(mergedFields.label)});
 					set_entryNonce(nonce => nonce + 1);
@@ -246,14 +270,14 @@ export const WithAddressBook = ({children}: {children: React.ReactElement}): Rea
 			try {
 				const existingEntry = await getEntry({address: address});
 				if (existingEntry) {
-					deleteByID(existingEntry.id);
+					update({...existingEntry, isHidden: true});
 					set_entryNonce(nonce => nonce + 1);
 				}
 			} catch {
 				// Do nothing
 			}
 		},
-		[deleteByID, getEntry]
+		[getEntry, update]
 	);
 
 	/**************************************************************************
@@ -295,7 +319,7 @@ export const WithAddressBook = ({children}: {children: React.ReactElement}): Rea
 	 * Context value that is passed to all children of this component.
 	 *************************************************************************/
 	const contextValue = useMemo(
-		(): TAddressBookCurtainProps => ({
+		(): TAddressBookProps => ({
 			shouldOpenCurtain,
 			listEntries,
 			listCachedEntries,
@@ -336,4 +360,4 @@ export const WithAddressBook = ({children}: {children: React.ReactElement}): Rea
 	);
 };
 
-export const useAddressBook = (): TAddressBookCurtainProps => useContext(AddressBookContext);
+export const useAddressBook = (): TAddressBookProps => useContext(AddressBookContext);

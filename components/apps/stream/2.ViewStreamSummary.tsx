@@ -1,7 +1,8 @@
 import React, {Fragment, useCallback, useMemo, useState} from 'react';
 import {Button} from 'components/Primitives/Button';
 import {differenceInDays, differenceInMonths, differenceInSeconds, getUnixTime, isAfter, isBefore} from 'date-fns';
-import {erc20ABI, useContractRead} from 'wagmi';
+import {erc20Abi} from 'viem';
+import {useReadContract} from 'wagmi';
 import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
 import {useChainID} from '@builtbymom/web3/hooks/useChainID';
 import {formatAmount, toAddress, toBigInt} from '@builtbymom/web3/utils';
@@ -26,9 +27,9 @@ function Buttons(): ReactElement {
 	const [txStatusAllowance, set_txStatusAllowance] = useState(defaultTxStatus);
 	const [isSuccessModalOpen, set_isSuccessModalOpen] = useState(false);
 
-	const {data: allowance, refetch} = useContractRead({
+	const {data: allowance, refetch} = useReadContract({
 		address: toAddress(configuration.tokenToSend?.address),
-		abi: erc20ABI,
+		abi: erc20Abi,
 		chainId: chainID,
 		functionName: 'allowance',
 		args: [toAddress(address), toAddress(getDefaultVestingContract(chainID))]

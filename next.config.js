@@ -69,7 +69,6 @@ module.exports = phase =>
 						destination: '/migratooor',
 						permanent: true
 					},
-					// {source: '/', has: [{type: 'host', value: 'migrate.smold.app'}], destination: '/migratooor', permanent: true},
 					{
 						source: '/github',
 						destination: 'https://github.com/SmolDapp/smoldapp',

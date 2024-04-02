@@ -16,9 +16,10 @@ import {indexedWagmiChains} from '@builtbymom/web3/utils/wagmi';
 
 import {COINGECKO_GAS_COIN_IDS, NFTMIGRATOOOR_CONTRACT_PER_CHAIN, SAFE_API_URI} from './constants';
 
+import type {Chain} from 'wagmi/chains';
 import type {TChainContract, TExtendedChain} from '@builtbymom/web3/utils/wagmi';
 
-export const supportedNetworks = [
+export const supportedNetworks: Chain[] = [
 	mainnet,
 	{...optimism, name: 'Optimism'},
 	bsc,
@@ -30,7 +31,7 @@ export const supportedNetworks = [
 	base,
 	arbitrum
 ];
-export const supportedTestNetworks = [goerli, baseGoerli];
+export const supportedTestNetworks: Chain[] = [goerli, baseGoerli];
 
 export type TAppExtendedChain = TExtendedChain & {
 	safeApiUri?: string;

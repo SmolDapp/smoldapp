@@ -1,9 +1,9 @@
 import React from 'react';
 import {Rubik, Source_Code_Pro} from 'next/font/google';
+import PlausibleProvider from 'next-plausible';
 import Layout from 'components/designSystem/Layout';
 import {WalletContextApp} from '@builtbymom/web3/contexts/useWallet';
 import {WithMom} from '@builtbymom/web3/contexts/WithMom';
-import {WithTokenList} from '@builtbymom/web3/contexts/WithTokenList';
 import {localhost} from '@builtbymom/web3/utils/wagmi';
 import {SafeProvider} from '@gnosis.pm/safe-apps-react-sdk';
 import {useLocalStorageValue} from '@react-hookz/web';
@@ -45,18 +45,24 @@ function MyApp(props: AppProps): ReactElement {
 					}
 				`}
 			</style>
-			<WithMom supportedChains={[...supportedNetworks, ...supportedTestNetworks, localhost]}>
-				<WithTokenList>
-					<WalletContextApp>
-						<SafeProvider>
+			<WithMom
+				supportedChains={[...supportedNetworks, ...supportedTestNetworks, localhost]}
+				tokenLists={['https://raw.githubusercontent.com/SmolDapp/tokenLists/main/lists/tokenlistooor.json']}>
+				<WalletContextApp>
+					<SafeProvider>
+						<PlausibleProvider
+							// TODO: update all
+							domain={'test-localhost'}
+							enabled={true}
+							trackLocalhost={true}>
 							<main className={`flex h-app flex-col ${rubik.variable} ${sourceCodePro.variable}`}>
 								<Meta />
 								<Layout {...props} />
 							</main>
 							{!shouldHidePopover && <FeebackPopover />}
-						</SafeProvider>
-					</WalletContextApp>
-				</WithTokenList>
+						</PlausibleProvider>
+					</SafeProvider>
+				</WalletContextApp>
 			</WithMom>
 			<Analytics />
 		</>

@@ -1,7 +1,7 @@
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {useAddressBook} from 'contexts/useAddressBook';
-import {getEnsName} from 'viem/ens';
 import {cl, isAddress, toAddress, truncateHex} from '@builtbymom/web3/utils';
+import {retrieveConfig} from '@builtbymom/web3/utils/wagmi';
 import {IconAppAddressBook} from '@icons/IconApps';
 import {IconChevron} from '@icons/IconChevron';
 import {IconCircleCheck} from '@icons/IconCircleCheck';
@@ -9,199 +9,151 @@ import {IconCircleCross} from '@icons/IconCircleCross';
 import {useAsyncAbortable} from '@react-hookz/web';
 import {defaultInputAddressLike} from '@utils/tools.address';
 import {checkENSValidity} from '@utils/tools.ens';
-import {getPublicClient} from '@wagmi/core';
+import {getEnsName} from '@wagmi/core';
 import {IconLoader} from '@yearn-finance/web-lib/icons/IconLoader';
 
 import {AvatarWrapper} from './Avatar';
 
-import type {TAddressBookEntry} from 'contexts/useAddressBook';
 import type {ReactElement} from 'react';
-import type {TAddress} from '@builtbymom/web3/types';
 import type {TInputAddressLike} from '@utils/tools.address';
 
 type TAddressInput = {
-	onSetValue: (value: TInputAddressLike) => void;
+	onSetValue: (value: Partial<TInputAddressLike>) => void;
 	value: TInputAddressLike;
-	initialStateFromUrl?: string | undefined;
 };
 
-export function SmolAddressInput({onSetValue, value, initialStateFromUrl}: TAddressInput): ReactElement {
-	const {onOpenCurtain, getEntry, getCachedEntry} = useAddressBook();
-
-	const [isFocused, set_isFocused] = useState<boolean>(false);
+// TODO: add debounce
+export function useValidateAddressInput(): {
+	validate: (signal: AbortSignal | undefined, input: string) => Promise<TInputAddressLike>;
+	isCheckingValidity: boolean;
+} {
+	const {getEntry} = useAddressBook();
 	const [isCheckingValidity, set_isCheckingValidity] = useState<boolean>(false);
 
-	const currentAddress = useRef<TAddress | undefined>(defaultInputAddressLike.address);
-	const currentLabel = useRef<string>(defaultInputAddressLike.label);
-	const currentInput = useRef<string>(defaultInputAddressLike.label);
-	const inputRef = useRef<HTMLInputElement>(null);
-	const addressBookEntry = useMemo(
-		(): TAddressBookEntry | undefined => getCachedEntry({address: toAddress(value.address), label: value.label}),
-		[getCachedEntry, value]
-	);
-
-	const [, actions] = useAsyncAbortable(
-		async (signal, input: string): Promise<void> =>
-			new Promise<void>(async (resolve, reject): Promise<void> => {
-				if (signal.aborted) {
-					reject(new Error('Aborted!'));
-				} else {
-					currentLabel.current = input;
-					currentAddress.current = undefined;
-
-					if (input === '') {
-						onSetValue(defaultInputAddressLike);
-						return resolve();
-					}
-
-					/**********************************************************
-					 ** Check if the input is an address from the address book
-					 **********************************************************/
-					const fromAddressBook = await getEntry({label: input, address: toAddress(input)});
-					if (fromAddressBook) {
-						currentAddress.current = toAddress(fromAddressBook.address);
-						if (signal.aborted) {
-							reject(new Error('Aborted!'));
-						}
-						currentLabel.current = fromAddressBook.label || fromAddressBook.ens || input;
-						onSetValue({
-							address: toAddress(fromAddressBook.address),
-							label: fromAddressBook.label,
-							isValid: true,
-							source: 'addressBook'
-						});
-						return resolve();
-					}
-
-					/**********************************************************
-					 ** Check if the input is an ENS name
-					 **********************************************************/
-					if (input.endsWith('.eth') && input.length > 4) {
-						set_isCheckingValidity(true);
-						onSetValue({address: undefined, label: input, isValid: 'undetermined', source: 'typed'});
-						const [address, isValid] = await checkENSValidity(input);
-						if (signal.aborted) {
-							reject(new Error('Aborted!'));
-						}
-						if (currentLabel.current === input && isAddress(address)) {
-							set_isCheckingValidity(false);
-							const fromAddressBook = await getEntry({label: input, address: toAddress(address)});
-							if (fromAddressBook) {
-								currentLabel.current = fromAddressBook.label || fromAddressBook.ens || input;
-								onSetValue({
-									address: toAddress(fromAddressBook.address),
-									label: fromAddressBook.label || fromAddressBook.ens || input,
-									isValid: true,
-									source: 'addressBook'
-								});
-								return resolve();
-							}
-
-							currentAddress.current = address;
-							currentLabel.current = input;
-							onSetValue({address, label: input, isValid, source: 'typed'});
-						} else {
-							set_isCheckingValidity(false);
-							onSetValue({
-								address: undefined,
-								label: input,
-								isValid: false,
-								error: 'This ENS name looks invalid',
-								source: 'typed'
-							});
-						}
-						return resolve();
-					}
-
-					/**********************************************************
-					 ** Check if the input is an address
-					 **********************************************************/
-					if (isAddress(input)) {
-						currentAddress.current = toAddress(input);
-						if (signal.aborted) {
-							reject(new Error('Aborted!'));
-						}
-						set_isCheckingValidity(true);
-						onSetValue({address: toAddress(input), label: input, isValid: true, source: 'typed'});
-						const client = getPublicClient({chainId: 1});
-						const ensName = await getEnsName(client, {address: toAddress(input)});
-						if (signal.aborted) {
-							reject(new Error('Aborted!'));
-						}
-						currentLabel.current = ensName || input;
-						set_isCheckingValidity(false);
-						onSetValue({
-							address: toAddress(input),
-							label: ensName || input,
-							isValid: true,
-							source: 'typed'
-						});
-						return resolve();
-					}
-
-					currentAddress.current = undefined;
-					onSetValue({
-						address: undefined,
-						label: input,
-						isValid: input.startsWith('0x') && input.length === 42 ? false : 'undetermined',
-						error: 'This address looks invalid',
-						source: 'typed'
-					});
-					resolve();
-				}
-			}),
-		undefined
-	);
-
-	const onChange = useCallback(
-		(label: string): void => {
-			set_isCheckingValidity(false);
-			currentInput.current = label;
-			actions.abort();
-			actions.execute(label);
-		},
-		[actions]
-	);
-
-	useEffect(() => {
-		if (!initialStateFromUrl) {
-			return;
+	const validate = async (signal: AbortSignal | undefined, input: string): Promise<TInputAddressLike> => {
+		if (input === '') {
+			return defaultInputAddressLike;
 		}
-		onChange(initialStateFromUrl);
-	}, [initialStateFromUrl, onChange]);
 
-	const onSelectItem = useCallback((item: TAddressBookEntry): void => {
-		currentInput.current = item.label || item.ens || toAddress(item.address);
-		currentLabel.current = item.label || item.ens || toAddress(item.address);
-		currentAddress.current = toAddress(item.address);
-		onSetValue({
-			address: toAddress(item.address),
-			label: item.label || item.ens || toAddress(item.address),
-			isValid: true,
-			source: 'addressBook'
-		});
-	}, []);
+		/**********************************************************
+		 ** Check if the input is an address from the address book
+		 **********************************************************/
+		const fromAddressBook = await getEntry({label: input, address: toAddress(input)});
+		if (fromAddressBook && !fromAddressBook.isHidden) {
+			if (signal?.aborted) {
+				console.log('aborted');
+				throw new Error('Aborted!');
+			}
+
+			return {
+				address: toAddress(fromAddressBook.address),
+				label: fromAddressBook.label,
+				isValid: true,
+				error: undefined,
+				source: 'addressBook'
+			};
+		}
+
+		/**********************************************************
+		 ** Check if the input is an ENS name
+		 **********************************************************/
+		if (input.endsWith('.eth') && input.length > 4) {
+			set_isCheckingValidity(true);
+			// onSetValue({address: undefined, label: input, isValid: 'undetermined', source: 'typed'});
+			const [address, isValid] = await checkENSValidity(input);
+			if (signal?.aborted) {
+				console.log('aborted');
+				throw new Error('Aborted!');
+			}
+			if (isAddress(address)) {
+				set_isCheckingValidity(false);
+				const fromAddressBook = await getEntry({label: input, address: toAddress(address)});
+				if (fromAddressBook && !fromAddressBook.isHidden) {
+					return {
+						address: toAddress(fromAddressBook.address),
+						label: fromAddressBook.label || fromAddressBook.ens || input,
+						isValid: true,
+						error: undefined,
+						source: 'addressBook'
+					};
+				}
+
+				return {address, label: input, error: undefined, isValid, source: 'typed'};
+			}
+			set_isCheckingValidity(false);
+
+			return {
+				address: undefined,
+				label: input,
+				isValid: false,
+				error: 'This ENS name looks invalid',
+				source: 'typed'
+			};
+		}
+
+		/**********************************************************
+		 ** Check if the input is an address
+		 **********************************************************/
+		if (isAddress(input)) {
+			if (signal?.aborted) {
+				console.log('aborted');
+				throw new Error('Aborted!');
+			}
+			set_isCheckingValidity(true);
+			const ensName = await getEnsName(retrieveConfig(), {address: toAddress(input)});
+			if (signal?.aborted) {
+				throw new Error('Aborted!');
+			}
+			set_isCheckingValidity(false);
+
+			return {
+				address: toAddress(input),
+				label: ensName || toAddress(input),
+				error: undefined,
+				isValid: true,
+				source: 'typed'
+			};
+		}
+
+		return {
+			address: undefined,
+			label: input,
+			isValid: input.startsWith('0x') && input.length === 42 ? false : 'undetermined',
+			error: 'This address looks invalid',
+			source: 'typed'
+		};
+	};
+
+	return {isCheckingValidity, validate};
+}
+
+export function SmolAddressInput({onSetValue, value}: TAddressInput): ReactElement {
+	const {onOpenCurtain} = useAddressBook();
+
+	const [isFocused, set_isFocused] = useState<boolean>(false);
+
+	const inputRef = useRef<HTMLInputElement>(null);
+
+	const {isCheckingValidity, validate} = useValidateAddressInput();
+	const [{result}, actions] = useAsyncAbortable(validate, undefined);
+
+	const onChange = (input: string): void => {
+		actions.abort();
+		onSetValue({label: input});
+		actions.execute(input);
+	};
 
 	const getInputValue = useCallback((): string | undefined => {
 		if (isFocused) {
-			return currentInput.current;
+			return value.label;
 		}
-		if (!isFocused) {
-			if (value.source === 'addressBook' && addressBookEntry?.label) {
-				return addressBookEntry.label;
-			}
-			if (isAddress(currentLabel.current) && addressBookEntry) {
-				return truncateHex(currentLabel.current, 5);
-			}
-			if (isAddress(currentLabel.current)) {
-				return truncateHex(currentLabel.current, 5);
-			}
-			if (!isAddress(currentLabel.current)) {
-				return currentLabel.current;
-			}
+
+		if (isAddress(value.label)) {
+			return truncateHex(value.label, 5);
 		}
-		return undefined;
-	}, [addressBookEntry, isFocused, value.source, currentInput, currentLabel]);
+
+		return value.label;
+	}, [isFocused, value.label]);
 
 	const getBorderColor = useCallback((): string => {
 		if (isFocused) {
@@ -213,8 +165,16 @@ export function SmolAddressInput({onSetValue, value, initialStateFromUrl}: TAddr
 		return 'border-neutral-400';
 	}, [isFocused, value.isValid]);
 
+	useEffect(() => {
+		if (!result) {
+			return;
+		}
+		onSetValue(result);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [result]);
+
 	const getHasStatusIcon = useCallback((): boolean => {
-		if (!currentInput.current) {
+		if (!value.label) {
 			return false;
 		}
 		if (!isFocused) {
@@ -224,10 +184,10 @@ export function SmolAddressInput({onSetValue, value, initialStateFromUrl}: TAddr
 			return true;
 		}
 		return false;
-	}, [isFocused, value.isValid, isCheckingValidity]);
+	}, [value.label, value.isValid, isFocused, isCheckingValidity]);
 
 	return (
-		<div className={'group relative size-full max-w-108 rounded-lg'}>
+		<div className={'group relative size-full rounded-[8px]'}>
 			<label
 				className={cl(
 					'h-20 z-20 relative',
@@ -270,7 +230,7 @@ export function SmolAddressInput({onSetValue, value, initialStateFromUrl}: TAddr
 							'w-full border-none bg-transparent p-0 text-xl transition-all pr-6',
 							'text-neutral-900 placeholder:text-neutral-600 caret-neutral-700',
 							'focus:placeholder:text-neutral-300 placeholder:transition-colors',
-							!currentLabel.current ? 'translate-y-2' : 'translate-y-0',
+							!value.label ? 'translate-y-2' : 'translate-y-0',
 							isFocused ? 'translate-y-2' : 'translate-y-0'
 						)}
 						type={'text'}
@@ -279,12 +239,14 @@ export function SmolAddressInput({onSetValue, value, initialStateFromUrl}: TAddr
 						autoCorrect={'off'}
 						spellCheck={'false'}
 						value={getInputValue()}
-						onChange={e => onChange(e.target.value)}
+						onChange={e => {
+							onChange(e.target.value);
+						}}
 						onFocus={() => {
 							set_isFocused(true);
 							setTimeout(() => {
 								if (inputRef.current) {
-									const end = currentInput.current.length;
+									const end = value.label.length;
 									inputRef.current.setSelectionRange(0, end);
 									inputRef.current.scrollLeft = inputRef.current.scrollWidth;
 									inputRef.current.focus();
@@ -292,29 +254,27 @@ export function SmolAddressInput({onSetValue, value, initialStateFromUrl}: TAddr
 							}, 0);
 						}}
 						onBlur={() => {
-							currentInput.current = currentLabel.current;
 							set_isFocused(false);
 						}}
 					/>
-
-					<p
+					<input
+						disabled
+						type={'text'}
 						className={cl(
-							'text-xs transition-all ',
+							'text-xs w-full border-none p-0 transition-all line-clamp-1 max-w-full truncate disabled',
 							isFocused ? 'opacity-0' : 'opacity-100',
 							isFocused ? 'translate-y-8' : 'translate-y-0',
 							isFocused ? 'pointer-events-none' : 'pointer-events-auto',
 							value.error ? 'text-red' : 'text-neutral-600'
-						)}>
-						{(isAddress(value?.address) && toAddress(value.address)) || value.error || ''}
-						{/* Adding &nbsp; to make sure we have an element here */}
-						&nbsp;
-					</p>
+						)}
+						value={(isAddress(value?.address) && toAddress(value.address)) || value.error || ''}
+					/>
 				</div>
 				<div className={'w-fit flex-1'}>
 					<button
-						onClick={() => onOpenCurtain(selectedEntry => onSelectItem(selectedEntry))}
+						onClick={() => onOpenCurtain(selectedEntry => onChange(selectedEntry.label))}
 						className={cl(
-							'flex items-center gap-4 rounded-sm p-4 w-22',
+							'flex items-center gap-4 rounded-[4px] p-4 w-22',
 							'bg-neutral-200 hover:bg-neutral-300 transition-colors'
 						)}>
 						<div className={'flex size-8 min-w-8 items-center justify-center rounded-full bg-neutral-0'}>

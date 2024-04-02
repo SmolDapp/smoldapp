@@ -3,47 +3,61 @@ import Link from 'next/link';
 import {usePathname} from 'next/navigation';
 import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
 import {cl, isZeroAddress} from '@builtbymom/web3/utils';
-import {
-	IconAppAddressBook,
-	IconAppDisperse,
-	IconAppEarn,
-	IconAppMigrate,
-	IconAppSend,
-	IconAppSwap
-} from '@icons/IconApps';
+import {IconAppAddressBook, IconAppDisperse, IconAppEarn, IconAppSend, IconAppStream} from '@icons/IconApps';
+import {IconWallet} from '@icons/IconWallet';
 import {useIsMounted} from '@react-hookz/web';
+import {LinkOrDiv} from '@common/LinkOrDiv';
 
 type TNavItemProps = {
 	label: string;
 	href: string;
 	icon: ReactElement;
 	isSelected: boolean;
+	isDisabled?: boolean;
 };
-function NavItem(props: TNavItemProps): ReactElement {
+function NavItem({label, href, icon, isSelected, isDisabled = false}: TNavItemProps): ReactElement {
 	return (
 		<li className={'relative z-10 px-4'}>
-			<Link href={props.href}>
+			<LinkOrDiv
+				href={href}
+				isDisabled={isDisabled}>
 				<div
 					className={cl(
-						'flex items-center gap-2 rounded-3xl px-4 py-2 transition-colors w-full',
-						'group hover:bg-neutral-300',
-						props.isSelected ? 'bg-neutral-300' : 'hover:bg-neutral-300'
+						'flex items-center gap-2 justify-between rounded-3xl px-4 py-2 transition-colors w-full',
+						'group',
+						isSelected ? 'bg-neutral-300' : isDisabled ? '' : 'hover:bg-neutral-300',
+						isDisabled ? 'cursor-not-allowed' : ''
 					)}>
-					{cloneElement(props.icon, {
-						className: cl(
-							'h-4 w-4',
-							props.isSelected ? 'text-neutral-900' : 'text-neutral-600 group-hover:text-neutral-900'
-						)
-					})}
-					<p
-						className={cl(
-							'transition-colors',
-							props.isSelected ? 'text-neutral-900' : 'text-neutral-600 group-hover:text-neutral-900'
-						)}>
-						{props.label}
-					</p>
+					<div className={'flex items-center gap-2 text-neutral-600'}>
+						{cloneElement(icon, {
+							className: cl(
+								'h-4 w-4',
+								isSelected
+									? 'text-neutral-900 text-neutral-600'
+									: isDisabled
+										? 'text-neutral-400'
+										: 'group-hover:text-neutral-900'
+							)
+						})}
+						<p
+							className={cl(
+								'transition-colors',
+								isSelected
+									? 'text-neutral-900'
+									: isDisabled
+										? 'text-neutral-400'
+										: 'group-hover:text-neutral-900'
+							)}>
+							{label}
+						</p>
+					</div>
+					{isDisabled && (
+						<span className={'rounded-full bg-[#FFF3D3] px-2.5 py-0.5 text-center text-xxs text-[#FF9900]'}>
+							{'Soon'}
+						</span>
+					)}
 				</div>
-			</Link>
+			</LinkOrDiv>
 		</li>
 	);
 }
@@ -56,13 +70,11 @@ function LogOutButton(): ReactElement {
 	}
 
 	return (
-		<div className={'mt-auto px-4 pb-2'}>
-			<button
-				className={'text-xxs text-neutral-600 transition-colors hover:text-neutral-900'}
-				onClick={onDesactivate}>
-				{'Log out'}
-			</button>
-		</div>
+		<button
+			className={'transition-colors hover:text-neutral-900'}
+			onClick={onDesactivate}>
+			{'Log out'}
+		</button>
 	);
 }
 
@@ -86,22 +98,18 @@ export function SideMenuNav(): ReactElement {
 						icon={<IconAppDisperse />}
 					/>
 					<NavItem
-						href={'/apps/migrate'}
-						isSelected={pathname.startsWith('/apps/migrate')}
-						label={'Migrate'}
-						icon={<IconAppMigrate />}
-					/>
-					<NavItem
-						href={'/apps/swap'}
-						isSelected={pathname.startsWith('/apps/swap')}
-						label={'Swap'}
-						icon={<IconAppSwap />}
-					/>
-					<NavItem
 						href={'/apps/earn'}
 						isSelected={pathname.startsWith('/apps/earn')}
 						label={'Earn'}
 						icon={<IconAppEarn />}
+						isDisabled
+					/>
+					<NavItem
+						href={'/apps/stream'}
+						isSelected={pathname.startsWith('/apps/stream')}
+						label={'Stream'}
+						icon={<IconAppStream />}
+						isDisabled
 					/>
 					<NavItem
 						href={'/apps/address-book'}
@@ -109,9 +117,30 @@ export function SideMenuNav(): ReactElement {
 						label={'Address Book'}
 						icon={<IconAppAddressBook />}
 					/>
+					<NavItem
+						href={'/apps/wallet'}
+						isSelected={pathname.startsWith('/apps/wallet')}
+						label={'Wallet'}
+						icon={<IconWallet />}
+					/>
 				</ul>
-
-				<LogOutButton />
+				<div className={'mt-auto flex justify-between px-6 pb-2 text-xxs text-neutral-600'}>
+					<div className={'flex gap-4'}>
+						<Link
+							className={'transition-colors hover:text-neutral-900'}
+							href={'https://github.com/SmolDapp'}
+							target={'_blank'}>
+							{'GitHub'}
+						</Link>
+						<Link
+							className={'transition-colors hover:text-neutral-900'}
+							href={'https://twitter.com/smoldapp'}
+							target={'_blank'}>
+							{'Twitter'}
+						</Link>
+					</div>
+					<LogOutButton />
+				</div>
 			</section>
 		</div>
 	);

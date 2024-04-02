@@ -2,19 +2,19 @@ import React, {useCallback, useMemo, useState} from 'react';
 import {approveAllERC721, batchTransferERC721, listERC1155, transferERC721, transferERC1155} from 'utils/actions';
 import {NFTMIGRATOOOR_CONTRACT_PER_CHAIN} from 'utils/constants';
 import {getSafeBatchTransferFrom1155, getSafeTransferFrom721} from 'utils/tools.gnosis';
+import {erc721Abi, type TransactionReceipt} from 'viem';
 import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
 import {useChainID} from '@builtbymom/web3/hooks/useChainID';
 import {decodeAsBoolean, toAddress, toBigInt} from '@builtbymom/web3/utils';
-import {defaultTxStatus} from '@builtbymom/web3/utils/wagmi';
+import {defaultTxStatus, retrieveConfig} from '@builtbymom/web3/utils/wagmi';
 import {useSafeAppsSDK} from '@gnosis.pm/safe-apps-react-sdk';
 import ApprovalWizardItem from '@nftmigratooor/ApprovalWizardItem';
 import {useNFTMigratooor} from '@nftmigratooor/useNFTMigratooor';
 import {useUpdateEffect} from '@react-hookz/web';
-import {erc721ABI, multicall} from '@wagmi/core';
+import {multicall} from '@wagmi/core';
 
 import type {ReactElement} from 'react';
 import type {TApprovalStatus, TNFT, TWizardStatus} from 'utils/types/nftMigratooor';
-import type {ContractFunctionConfig, TransactionReceipt} from 'viem';
 import type {TDict} from '@builtbymom/web3/types';
 import type {BaseTransaction} from '@gnosis.pm/safe-apps-sdk';
 
@@ -88,18 +88,18 @@ function ViewApprovalWizard(): ReactElement {
 		if (!address || !NFTMIGRATOOOR_CONTRACT_PER_CHAIN[safeChainID]) {
 			return;
 		}
-		const calls: ContractFunctionConfig[] = [];
+		const calls: any[] = [];
 		Object.entries(groupedByCollection).forEach(([collectionAddress, collection]): void => {
 			if (collection?.[0]?.collection?.type === 'ERC721') {
 				calls.push({
 					address: toAddress(collectionAddress),
-					abi: erc721ABI,
+					abi: erc721Abi,
 					functionName: 'isApprovedForAll',
 					args: [address, NFTMIGRATOOOR_CONTRACT_PER_CHAIN[safeChainID]]
 				});
 			}
 		});
-		const result = await multicall({
+		const result = await multicall(retrieveConfig(), {
 			chainId: safeChainID,
 			contracts: calls as never[]
 		});

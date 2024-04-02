@@ -9,15 +9,9 @@ import {multicall} from 'utils/actions';
 import {encodeFunctionData, parseEther} from 'viem';
 import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
 import {toAddress} from '@builtbymom/web3/utils';
-import {defaultTxStatus, getClient, getNetwork} from '@builtbymom/web3/utils/wagmi';
+import {defaultTxStatus, getClient, getNetwork, retrieveConfig} from '@builtbymom/web3/utils/wagmi';
 import {EIP3770_PREFIX} from '@utils/eip-3770';
-import {
-	getNetwork as getWagmiNetwork,
-	prepareSendTransaction,
-	sendTransaction,
-	switchNetwork,
-	waitForTransaction
-} from '@wagmi/core';
+import {sendTransaction, switchChain, waitForTransactionReceipt} from '@wagmi/core';
 import {toast} from '@yearn-finance/web-lib/components/yToast';
 
 import {
@@ -32,9 +26,9 @@ import {
 } from './utils';
 
 import type {ReactElement} from 'react';
+import type {Chain} from 'viem';
 import type {TAddress} from '@builtbymom/web3/types';
 import type {TAppExtendedChain} from '@utils/tools.chains';
-import type {Chain} from '@wagmi/core';
 
 function getProxyFromSingleton(singleton: TAddress): TAddress {
 	if (singleton === SINGLETON_L2) {
@@ -165,9 +159,9 @@ function ChainStatus({chain, singleton}: TChainStatusArgs): ReactElement {
 		/* 🔵 - Smold App **************************************************************************
 		 ** First, make sure we are using the correct chainID to deploy this safe.
 		 ******************************************************************************************/
-		const currentNetwork = getWagmiNetwork();
-		if (currentNetwork.chain?.id !== chain.id) {
-			await switchNetwork({chainId: chain.id});
+		const currentNetwork = getNetwork(chain.id);
+		if (currentNetwork?.id !== chain.id) {
+			await switchChain(retrieveConfig(), {chainId: chain.id});
 		}
 
 		/* 🔵 - Smold App **************************************************************************
@@ -178,14 +172,13 @@ function ChainStatus({chain, singleton}: TChainStatusArgs): ReactElement {
 		if (canDeployOnThatChain.method === 'direct') {
 			try {
 				set_cloneStatus({...defaultTxStatus, pending: true});
-				const preparedTransaction = await prepareSendTransaction({
+				const hash = await sendTransaction(retrieveConfig(), {
 					to: toAddress(configuration.originalTx?.to),
 					chainId: chain.id,
 					account: address,
 					data: configuration.originalTx?.input
 				});
-				const {hash} = await sendTransaction(preparedTransaction);
-				const receipt = await waitForTransaction({hash, confirmations: 2});
+				const receipt = await waitForTransactionReceipt(retrieveConfig(), {hash, confirmations: 2});
 				if (receipt.status === 'success') {
 					set_cloneStatus({...defaultTxStatus, success: true});
 					checkIfDeployedOnThatChain();

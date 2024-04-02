@@ -1,5 +1,6 @@
 import {type ReactElement, type ReactNode} from 'react';
 import {WithAddressBook} from 'contexts/useAddressBook';
+import {WithAddressBookCurtain} from 'contexts/useAddressBookCurtain';
 import {AnimatePresence, motion} from 'framer-motion';
 import {cl} from '@builtbymom/web3/utils';
 import {IconQuestionMark} from '@icons/IconQuestionMark';
@@ -7,6 +8,7 @@ import {appWrapperVariants} from '@utils/animations';
 
 import {SideMenu} from './SideMenu';
 import {InfoCurtain} from './Curtains/InfoCurtain';
+import {SideMenuMobile} from './SideMenu/SideMenuMobile';
 
 import type {NextComponentType} from 'next';
 import type {AppProps} from 'next/app';
@@ -69,11 +71,15 @@ export default function Layout(props: AppProps): ReactElement {
 					initial={{scale: 0.9, opacity: 0}}
 					animate={{scale: 1, opacity: 1}}
 					transition={{duration: 0.6, ease: 'easeInOut'}}
-					className={'sticky top-10 z-20 col-sidebar flex h-app flex-col rounded-lg bg-neutral-0'}>
+					className={'sticky top-10 z-20 col-sidebar hidden h-app flex-col rounded-lg bg-neutral-0 md:flex'}>
 					<SideMenu />
 				</motion.nav>
 
-				<div className={'col-main pl-4'}>
+				<div className={'col-span-full mb-4 flex px-4 md:hidden'}>
+					<SideMenuMobile />
+				</div>
+
+				<div className={'col-span-full px-4 md:col-main '}>
 					<AnimatePresence mode={'wait'}>
 						<motion.main
 							key={appName}
@@ -84,21 +90,23 @@ export default function Layout(props: AppProps): ReactElement {
 							initial={'initial'}
 							className={'relative mb-10 min-h-app w-full overflow-x-hidden rounded-lg bg-neutral-0'}>
 							<WithAddressBook>
-								<App
-									title={appName}
-									description={appDescription}
-									action={appAction()}>
-									<motion.div
-										initial={{scale: 0.9, opacity: 0}}
-										animate={{scale: 1, opacity: 1}}
-										transition={{
-											delay: router.isReady ? 0.2 : 0.4,
-											duration: 0.6,
-											ease: 'easeInOut'
-										}}>
-										{getLayout(<Component {...props} />, router)}
-									</motion.div>
-								</App>
+								<WithAddressBookCurtain>
+									<App
+										title={appName}
+										description={appDescription}
+										action={appAction()}>
+										<motion.div
+											initial={{scale: 0.9, opacity: 0}}
+											animate={{scale: 1, opacity: 1}}
+											transition={{
+												delay: router.isReady ? 0.2 : 0.4,
+												duration: 0.6,
+												ease: 'easeInOut'
+											}}>
+											{getLayout(<Component {...props} />, router)}
+										</motion.div>
+									</App>
+								</WithAddressBookCurtain>
 							</WithAddressBook>
 						</motion.main>
 					</AnimatePresence>

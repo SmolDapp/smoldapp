@@ -2,6 +2,7 @@
 
 import React, {createContext, useContext, useEffect, useMemo, useState} from 'react';
 import {CloseCurtainButton} from 'components/designSystem/Curtains/InfoCurtain';
+import {SmolTokenButton} from 'components/designSystem/SmolTokenButton';
 import {CurtainContent} from 'components/Primitives/Curtain';
 import {useTokensWithBalance} from 'hooks/useTokensWithBalance';
 import {isAddressEqual} from 'viem';
@@ -9,11 +10,12 @@ import {useWeb3} from '@builtbymom/web3/contexts/useWeb3';
 import {useTokenList} from '@builtbymom/web3/contexts/WithTokenList';
 import {useBalances} from '@builtbymom/web3/hooks/useBalances.multichains';
 import {useChainID} from '@builtbymom/web3/hooks/useChainID';
-import {cl, formatAmount, isAddress, toAddress, truncateHex} from '@builtbymom/web3/utils';
+import {usePrices} from '@builtbymom/web3/hooks/usePrices';
+import {cl, isAddress, toAddress} from '@builtbymom/web3/utils';
 import * as Dialog from '@radix-ui/react-dialog';
 import {useDeepCompareMemo} from '@react-hookz/web';
 import {IconLoader} from '@yearn-finance/web-lib/icons/IconLoader';
-import {ImageWithFallback} from '@common/ImageWithFallback';
+import {Warning} from '@common/Primitives/Warning';
 
 import type {ReactElement} from 'react';
 import type {TAddress, TToken} from '@builtbymom/web3/types';
@@ -34,60 +36,22 @@ const defaultProps: TBalancesCurtainProps = {
 	onCloseCurtain: (): void => undefined
 };
 
-function Token({
-	token,
-	isDisabled,
-	onSelect
-}: {
-	token: TToken;
-	isDisabled: boolean;
-	onSelect: (token: TToken) => void;
-}): ReactElement {
-	return (
-		<button
-			onClick={() => onSelect(token)}
-			className={cl(
-				'mb-2 flex flex-row items-center justify-between rounded-lg p-4 w-full',
-				'bg-neutral-200 hover:bg-neutral-300 transition-colors',
-				'disabled:cursor-not-allowed disabled:hover:bg-neutral-200 disabled:opacity-20'
-			)}
-			disabled={isDisabled}>
-			<div className={'flex items-center gap-2'}>
-				<ImageWithFallback
-					alt={token.symbol}
-					unoptimized
-					src={
-						token?.logoURI ||
-						`${process.env.SMOL_ASSETS_URL}/token/${token.chainID}/${token.address}/logo-32.png`
-					}
-					altSrc={`${process.env.SMOL_ASSETS_URL}/token/${token.chainID}/${token.address}/logo-32.png`}
-					quality={90}
-					width={32}
-					height={32}
-				/>
-				<div className={'text-left'}>
-					<b className={'text-left text-base'}>{token.symbol}</b>
-					<p className={'text-xs text-neutral-600'}>{truncateHex(token.address, 5)}</p>
-				</div>
-			</div>
-			<div className={'text-right'}>
-				<b className={'text-left text-base'}>{formatAmount(token.balance.normalized, 0, 6)}</b>
-				<p className={'text-xs text-neutral-600'}>{'$420.69'}</p>
-			</div>
-		</button>
-	);
-}
-
-function FetchedToken({
+// TODO: move to common
+export function FetchedToken({
 	tokenAddress,
+	displayInfo = false,
 	onSelect
 }: {
 	tokenAddress: TAddress;
-	onSelect: (token: TToken) => void;
+	displayInfo?: boolean;
+	onSelect?: (token: TToken) => void;
 }): ReactElement {
 	const {safeChainID} = useChainID();
 	const {data} = useBalances({tokens: [{address: tokenAddress, chainID: safeChainID}]});
 	const token = data[safeChainID]?.[tokenAddress];
+
+	const {data: price} = usePrices({tokens: [token], chainId: safeChainID});
+
 	console.warn(data);
 
 	if (!token) {
@@ -95,11 +59,22 @@ function FetchedToken({
 	}
 
 	return (
-		<Token
-			token={token}
-			isDisabled={false}
-			onSelect={onSelect}
-		/>
+		<>
+			{displayInfo && (
+				<div className={'w-full'}>
+					<Warning
+						message={'Found 1 token that is not present in token list, click it to add'}
+						type={'info'}
+					/>
+				</div>
+			)}
+			<SmolTokenButton
+				token={token}
+				isDisabled={false}
+				price={price ? price[token.address] : undefined}
+				onClick={() => onSelect?.(token)}
+			/>
+		</>
 	);
 }
 
@@ -111,6 +86,7 @@ function BalancesCurtain(props: {
 	onSelect: TSelectCallback | undefined;
 	selectedTokenAddresses?: TAddress[];
 }): ReactElement {
+	const {safeChainID} = useChainID();
 	const [searchValue, set_searchValue] = useState('');
 	const {address} = useWeb3();
 	const {onConnect} = useWeb3();
@@ -157,6 +133,8 @@ function BalancesCurtain(props: {
 		);
 	}, [searchValue, props.tokensWithBalance]);
 
+	const {data: prices} = usePrices({tokens: filteredTokens, chainId: safeChainID});
+
 	const balancesTextLayout = useMemo(() => {
 		let balancesText = undefined;
 
@@ -175,7 +153,7 @@ function BalancesCurtain(props: {
 		}
 
 		return null;
-	}, [address, filteredTokens.length]);
+	}, [address, filteredTokens.length, searchTokenAddress]);
 
 	return (
 		<Dialog.Root
@@ -206,7 +184,7 @@ function BalancesCurtain(props: {
 							disabled={!address}
 							onChange={e => set_searchValue(e.target.value)}
 						/>
-						<div className={'scrollable mb-8 flex flex-col items-center pb-2'}>
+						<div className={'scrollable mb-8 flex flex-col items-center gap-2 pb-2'}>
 							{balancesTextLayout}
 							{searchTokenAddress && (
 								<FetchedToken
@@ -220,12 +198,13 @@ function BalancesCurtain(props: {
 							)}
 							{address ? (
 								filteredTokens.map(token => (
-									<Token
-										key={token.address}
+									<SmolTokenButton
+										key={`${token.address}_${token.chainID}`}
 										token={token}
+										price={prices ? prices[token.address] : undefined}
 										isDisabled={props.selectedTokenAddresses?.includes(token.address) || false}
-										onSelect={selected => {
-											props.onSelect?.(selected);
+										onClick={() => {
+											props.onSelect?.(token);
 											props.onOpenChange(false);
 										}}
 									/>

@@ -1,8 +1,8 @@
-import {Fragment, useCallback, useMemo, useReducer, useState} from 'react';
+import {Fragment, useCallback, useMemo, useState} from 'react';
 import {AddressBookEntry} from 'components/designSystem/AddressBookEntry';
-import {AddressBookCurtain} from 'components/designSystem/Curtains/AddressBookCurtain';
 import {TextInput} from 'components/Primitives/TextInput';
 import {useAddressBook} from 'contexts/useAddressBook';
+import {useAddressBookCurtain} from 'contexts/useAddressBookCurtain';
 import Papa from 'papaparse';
 import {LayoutGroup, motion} from 'framer-motion';
 import {cl, toAddress} from '@builtbymom/web3/utils';
@@ -14,13 +14,6 @@ import {IconPlus} from '@icons/IconPlus';
 import type {TAddressBookEntry} from 'contexts/useAddressBook';
 import type {ChangeEvent, ReactElement} from 'react';
 import type {TAddress} from '@builtbymom/web3/types';
-
-export type TAddressBookEntryReducer =
-	| {type: 'SET_SELECTED_ENTRY'; payload: TAddressBookEntry}
-	| {type: 'SET_ADDRESS'; payload: TAddress | undefined}
-	| {type: 'SET_LABEL'; payload: string}
-	| {type: 'SET_CHAINS'; payload: number[]}
-	| {type: 'SET_IS_FAVORITE'; payload: boolean};
 
 function AddContactButton(props: {onOpenCurtain: VoidFunction; label?: string}): ReactElement {
 	return (
@@ -65,7 +58,6 @@ function ImportContactsButton(props: {className?: string}): ReactElement {
 					};
 				});
 			}
-
 			// If we are working with a smol file, we should get 4 columns.
 			const isProbablySmolFile = parsedCSV.meta.fields.length === 4;
 			if (isProbablySmolFile) {
@@ -79,7 +71,8 @@ function ImportContactsButton(props: {className?: string}): ReactElement {
 						address: item[addressLike] as TAddress,
 						label: entryLabel,
 						chains: uniqueChainIDs,
-						isFavorite: Boolean(item[isFavorite] === 'true' || item[isFavorite] === true)
+						isFavorite: Boolean(item[isFavorite] === 'true' || item[isFavorite] === true),
+						isHidden: false
 					};
 				});
 			}
@@ -228,36 +221,10 @@ function EmptyAddressBook(props: {onOpenCurtain: VoidFunction}): ReactElement {
 }
 
 function AddressBookPage(): ReactElement {
-	const {listCachedEntries, updateEntry} = useAddressBook();
-	const [curtainStatus, set_curtainStatus] = useState<{isOpen: boolean; isEditing: boolean; label?: string}>({
-		isOpen: false,
-		isEditing: false
-	});
+	const {listCachedEntries} = useAddressBook();
+	const {set_curtainStatus, dispatchConfiguration} = useAddressBookCurtain();
+
 	const [searchValue, set_searchValue] = useState('');
-
-	const entryReducer = (state: TAddressBookEntry, action: TAddressBookEntryReducer): TAddressBookEntry => {
-		switch (action.type) {
-			case 'SET_SELECTED_ENTRY':
-				return action.payload;
-			case 'SET_ADDRESS':
-				return {...state, address: toAddress(action.payload)};
-			case 'SET_LABEL':
-				return {...state, label: action.payload};
-			case 'SET_CHAINS':
-				return {...state, chains: action.payload};
-			case 'SET_IS_FAVORITE':
-				updateEntry({...state, isFavorite: action.payload});
-				return {...state, isFavorite: action.payload};
-		}
-	};
-
-	const [selectedEntry, dispatch] = useReducer(entryReducer, {
-		address: undefined,
-		label: '',
-		slugifiedLabel: '',
-		chains: [],
-		isFavorite: false
-	});
 
 	/**************************************************************************
 	 * Memo function that filters the entries in the address book based on
@@ -295,6 +262,7 @@ function AddressBookPage(): ReactElement {
 
 	const hasNoEntries = listCachedEntries().filter(entry => !entry.isHidden).length === 0;
 	const hasNoFilteredEntry = entries.length === 0;
+
 	return (
 		<div className={'w-108'}>
 			{hasNoEntries ? (
@@ -323,7 +291,7 @@ function AddressBookPage(): ReactElement {
 									<AddressBookEntry
 										entry={entry}
 										onSelect={selected => {
-											dispatch({type: 'SET_SELECTED_ENTRY', payload: selected});
+											dispatchConfiguration({type: 'SET_SELECTED_ENTRY', payload: selected});
 											set_curtainStatus({isOpen: true, isEditing: false});
 										}}
 									/>
@@ -363,28 +331,6 @@ function AddressBookPage(): ReactElement {
 					</LayoutGroup>
 				</div>
 			)}
-			<AddressBookCurtain
-				selectedEntry={selectedEntry}
-				dispatch={dispatch}
-				isOpen={curtainStatus.isOpen}
-				isEditing={curtainStatus.isEditing}
-				initialLabel={curtainStatus.label}
-				onOpenChange={status => {
-					set_curtainStatus(status);
-					if (!status.isOpen) {
-						dispatch({
-							type: 'SET_SELECTED_ENTRY',
-							payload: {
-								address: undefined,
-								label: '',
-								slugifiedLabel: '',
-								chains: [],
-								isFavorite: false
-							}
-						});
-					}
-				}}
-			/>
 		</div>
 	);
 }

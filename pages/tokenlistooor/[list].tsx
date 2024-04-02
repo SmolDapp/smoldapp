@@ -190,7 +190,7 @@ function TokenListContent({list}: {list: TTokenListItem}): ReactElement {
 			if (!networks.find((network): boolean => network.value === item.chainId)) {
 				networks.push({
 					value: item.chainId,
-					label: (SUPPORTED_CHAIN_IDS[item.chainId] as any) || `Chain #${item.chainId}`
+					label: (SUPPORTED_CHAIN_IDS[item.chainId] as string) || `Chain #${item.chainId}`
 				});
 			}
 		});

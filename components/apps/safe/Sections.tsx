@@ -3,12 +3,13 @@ import assert from 'assert';
 import ChainStatus from 'components/apps/safe/ChainStatus';
 import {Button} from 'components/Primitives/Button';
 import {cl, isZeroAddress, toAddress} from '@builtbymom/web3/utils';
+import {retrieveConfig} from '@builtbymom/web3/utils/wagmi';
 import IconSquareMinus from '@icons/IconSquareMinus';
 import IconSquarePlus from '@icons/IconSquarePlus';
 import IconWarning from '@icons/IconWarning';
 import {defaultInputAddressLike} from '@utils/tools.address';
 import {supportedNetworks, supportedTestNetworks} from '@utils/tools.chains';
-import {fetchTransaction} from '@wagmi/core';
+import {getTransaction} from '@wagmi/core';
 import {AddressLike} from '@yearn-finance/web-lib/components/AddressLike';
 import {Renderable} from '@yearn-finance/web-lib/components/Renderable';
 import {toast} from '@yearn-finance/web-lib/components/yToast';
@@ -154,7 +155,7 @@ export function SectionSafeAddressInput(): ReactElement {
 					set_isLoadingSafe(false);
 					return;
 				}
-				const tx = await fetchTransaction({hash, chainId: chainID});
+				const tx = await getTransaction(retrieveConfig(), {hash, chainId: chainID});
 				const input = `0x${tx.input.substring(tx.input.indexOf(CALL_INIT_SIGNATURE))}`;
 				const {owners, threshold, salt, singleton} = decodeArgInitializers(input as Hex);
 

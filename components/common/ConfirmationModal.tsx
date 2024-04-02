@@ -3,6 +3,7 @@ import Confetti from 'react-dom-confetti';
 import {Button} from 'components/Primitives/Button';
 import {cl} from '@builtbymom/web3/utils';
 import {Dialog, Transition} from '@headlessui/react';
+import {IconCheck} from '@icons/IconCheck';
 import {useUpdateEffect} from '@react-hookz/web';
 
 import type {ReactElement} from 'react';
@@ -13,6 +14,7 @@ type TSuccessModal = {
 	title: string;
 	content: string;
 	ctaLabel: string;
+	downloadConfigButton?: JSX.Element;
 };
 function SuccessModal(props: TSuccessModal): ReactElement {
 	const [shouldTriggerConfettis, set_shouldTriggerConfettis] = useState(false);
@@ -62,9 +64,12 @@ function SuccessModal(props: TSuccessModal): ReactElement {
 							leaveTo={'opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95'}>
 							<Dialog.Panel
 								className={cl(
-									'relative overflow-hidden rounded-md !bg-neutral-200 !p-10 transition-all',
+									'relative overflow-hidden flex flex-col items-center justify-center rounded-md !bg-neutral-200 !p-10 transition-all',
 									'sm:my-8 sm:w-full sm:max-w-lg sm:p-6'
 								)}>
+								<div className={'mb-10 rounded-full bg-green p-7'}>
+									<IconCheck className={'size-6 text-white'} />
+								</div>
 								<div>
 									<div className={'text-center'}>
 										<Dialog.Title
@@ -77,9 +82,13 @@ function SuccessModal(props: TSuccessModal): ReactElement {
 										</div>
 									</div>
 								</div>
-								<div className={'flex items-center justify-center pt-10 text-center'}>
+								<div
+									className={
+										'flex w-[200px] flex-col items-center justify-center gap-2 pt-10 text-center'
+									}>
+									{props.downloadConfigButton}
 									<Button
-										className={'min-w-[200px]'}
+										className={'w-full'}
 										onClick={props.onClose}>
 										{props.ctaLabel}
 									</Button>
