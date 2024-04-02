@@ -12,7 +12,7 @@ export function CloseCurtainButton(): ReactElement {
 	const {route} = useRouter();
 
 	useMountEffect(() => {
-		plausible('open ? curtain', {props: {page: route}});
+		plausible('open info curtain', {props: {page: route}});
 	});
 
 	return (
