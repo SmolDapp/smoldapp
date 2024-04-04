@@ -11,6 +11,7 @@ import {useChainID} from '@yearn-finance/web-lib/hooks/useChainID';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {toBigInt, toNormalizedBN} from '@yearn-finance/web-lib/utils/format.bigNumber';
 import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
+import {getNetwork} from '@yearn-finance/web-lib/utils/wagmi/utils';
 import {defaultTxStatus} from '@yearn-finance/web-lib/utils/web3/transaction';
 import {Counter} from '@common/Counter';
 import {ImageWithFallback} from '@common/ImageWithFallback';
@@ -183,6 +184,17 @@ export function VestingElement({vesting}: {vesting: TStreamArgs}): ReactElement 
 							'PPPp'
 						)}
 					</dd>
+				</dl>
+				<dl className={'mb-2 flex flex-col justify-between md:mb-0 md:flex-row'}>
+					<dt className={'text-xs font-medium text-neutral-900'}>{'Escrow'}</dt>
+					<a
+						href={`${getNetwork(vesting.chainID).blockExplorers}/address/${vesting.escrow}`}
+						target={'_blank'}
+						rel={'noreferrer'}>
+						<dd className={'font-number cursor-pointer text-xs text-neutral-900 hover:underline'}>
+							{toAddress(vesting.escrow)}
+						</dd>
+					</a>
 				</dl>
 				{vesting.cliff_length === 0n ? (
 					<Fragment />
