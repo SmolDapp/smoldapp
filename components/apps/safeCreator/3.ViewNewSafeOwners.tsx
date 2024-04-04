@@ -163,7 +163,7 @@ function ViewNewSafeOwners(props: TViewNewSafeOwnersProps): ReactElement {
 												type={'button'}
 												tabIndex={-1}
 												className={
-													'flex h-10 w-10 items-center justify-center rounded-md border border-neutral-200 bg-neutral-0 text-center text-xl text-neutral-400 transition-colors hover:bg-neutral-900 hover:text-neutral-0'
+													'flex size-10 items-center justify-center rounded-md border border-neutral-200 bg-neutral-0 text-center text-xl text-neutral-400 transition-colors hover:bg-neutral-900 hover:text-neutral-0'
 												}
 												onClick={(): void => onRemoveOwnerByUUID(UUID)}>
 												<p className={'font-number pr-[1px]'}>{'-'}</p>
@@ -195,7 +195,7 @@ function ViewNewSafeOwners(props: TViewNewSafeOwnersProps): ReactElement {
 														{'Threshold'}
 													</p>
 													<span className={'tooltip'}>
-														<IconInfo className={'h-3 w-3 text-neutral-500 opacity-50'} />
+														<IconInfo className={'size-3 text-neutral-500 opacity-50'} />
 														<span className={'tooltipLight top-full mt-1'}>
 															<div
 																className={
@@ -218,12 +218,12 @@ function ViewNewSafeOwners(props: TViewNewSafeOwnersProps): ReactElement {
 												<button
 													type={'button'}
 													className={
-														'flex h-6 w-6 items-center justify-center rounded-md bg-primary-600 text-center text-neutral-0 outline outline-offset-2 transition-colors focus-within:outline-primary-600 hover:bg-primary-800 disabled:opacity-10'
+														'flex size-6 items-center justify-center rounded-md bg-primary-600 text-center text-neutral-0 outline outline-offset-2 transition-colors focus-within:outline-primary-600 hover:bg-primary-800 disabled:opacity-10'
 													}
 													disabled={threshold <= 1}
 													onClick={(): void => set_threshold(threshold - 1)}>
 													<svg
-														className={'h-3 w-3'}
+														className={'size-3'}
 														xmlns={'http://www.w3.org/2000/svg'}
 														height={'1em'}
 														viewBox={'0 0 448 512'}>
@@ -239,12 +239,12 @@ function ViewNewSafeOwners(props: TViewNewSafeOwnersProps): ReactElement {
 												<button
 													type={'button'}
 													className={
-														'flex h-6 w-6 items-center justify-center rounded-md bg-primary-600 text-center text-neutral-0 outline outline-offset-2 transition-colors focus-within:outline-primary-600 hover:bg-primary-800 disabled:opacity-10'
+														'flex size-6 items-center justify-center rounded-md bg-primary-600 text-center text-neutral-0 outline outline-offset-2 transition-colors focus-within:outline-primary-600 hover:bg-primary-800 disabled:opacity-10'
 													}
 													disabled={threshold >= owners.length}
 													onClick={(): void => set_threshold(threshold + 1)}>
 													<svg
-														className={'h-3 w-3'}
+														className={'size-3'}
 														xmlns={'http://www.w3.org/2000/svg'}
 														height={'1em'}
 														viewBox={'0 0 448 512'}>
@@ -272,7 +272,7 @@ function ViewNewSafeOwners(props: TViewNewSafeOwnersProps): ReactElement {
 										className={
 											'flex flex-row rounded-md border border-orange-200 !bg-orange-200/60 p-2 text-xs font-bold text-orange-600 md:whitespace-pre'
 										}>
-										<IconWarning className={'mr-2 h-4 w-4 min-w-[16px] text-orange-600'} />
+										<IconWarning className={'mr-2 size-4 min-w-[16px] text-orange-600'} />
 										{
 											'We recomend a threshold of at least 1/2.\nYou can use any other wallet or even the Safe app on your phone as another owner.'
 										}

@@ -20,15 +20,15 @@ type TApprovalWizardItemProps = {
 function ApprovalWizardItem({token, executeStatus, prefix = 'Send'}: TApprovalWizardItemProps): ReactElement {
 	function renderExecuteIndication(): ReactElement {
 		if (executeStatus === 'success') {
-			return <IconCircleCheck className={'h-4 w-4 text-[#16a34a]'} />;
+			return <IconCircleCheck className={'size-4 text-[#16a34a]'} />;
 		}
 		if (executeStatus === 'pending') {
 			return <IconSpinner />;
 		}
 		if (executeStatus === 'error') {
-			return <IconCircleCross className={'h-4 w-4 text-[#e11d48]'} />;
+			return <IconCircleCross className={'size-4 text-[#e11d48]'} />;
 		}
-		return <div className={'h-4 w-4 rounded-full bg-neutral-300'} />;
+		return <div className={'size-4 rounded-full bg-neutral-300'} />;
 	}
 
 	return (

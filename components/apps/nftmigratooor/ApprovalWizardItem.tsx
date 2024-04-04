@@ -30,28 +30,28 @@ function ApprovalWizardItem({
 
 	function renderApprovalIndication(): ReactElement {
 		if (collectionStatus?.approval === 'Approved' || collectionApprovalStatus === 'Approved') {
-			return <IconCircleCheck className={'h-4 w-4 text-[#16a34a]'} />;
+			return <IconCircleCheck className={'size-4 text-[#16a34a]'} />;
 		}
 		if (collectionStatus?.approval === 'Approving') {
 			return <IconSpinner />;
 		}
 		if (collectionStatus?.approval === 'Error') {
-			return <IconCircleCross className={'h-4 w-4 text-[#e11d48]'} />;
+			return <IconCircleCross className={'size-4 text-[#e11d48]'} />;
 		}
-		return <div className={'h-4 w-4 rounded-full bg-neutral-300'} />;
+		return <div className={'size-4 rounded-full bg-neutral-300'} />;
 	}
 
 	function renderExecuteIndication(): ReactElement {
 		if (collectionStatus?.execute === 'Executed') {
-			return <IconCircleCheck className={'h-4 w-4 text-[#16a34a]'} />;
+			return <IconCircleCheck className={'size-4 text-[#16a34a]'} />;
 		}
 		if (collectionStatus?.execute === 'Executing') {
 			return <IconSpinner />;
 		}
 		if (collectionStatus?.execute === 'Error') {
-			return <IconCircleCross className={'h-4 w-4 text-[#e11d48]'} />;
+			return <IconCircleCross className={'size-4 text-[#e11d48]'} />;
 		}
-		return <div className={'h-4 w-4 rounded-full bg-neutral-300'} />;
+		return <div className={'size-4 rounded-full bg-neutral-300'} />;
 	}
 
 	function renderReceipt(): ReactElement {
@@ -99,7 +99,7 @@ function ApprovalWizardItem({
 					</div>
 					<div className={'absolute right-2 top-2 px-2'}>
 						<IconChevronBoth
-							className={'h-4 w-4 text-neutral-500 transition-colors group-hover:text-neutral-900'}
+							className={'size-4 text-neutral-500 transition-colors group-hover:text-neutral-900'}
 						/>
 					</div>
 				</summary>
@@ -145,7 +145,7 @@ function ApprovalWizardItem({
 					</div>
 					<div className={'absolute right-2 top-2 px-2'}>
 						<IconChevronBoth
-							className={'h-4 w-4 text-neutral-500 transition-colors group-hover:text-neutral-900'}
+							className={'size-4 text-neutral-500 transition-colors group-hover:text-neutral-900'}
 						/>
 					</div>
 				</summary>

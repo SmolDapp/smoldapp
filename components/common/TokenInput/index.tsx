@@ -94,7 +94,7 @@ function TokenInput({
 					)}
 				</div>
 				<div className={'hidden items-center md:flex'}>
-					<IconChevronPlain className={'h-4 w-4 -rotate-90 text-neutral-900/30'} />
+					<IconChevronPlain className={'size-4 -rotate-90 text-neutral-900/30'} />
 				</div>
 				<label className={'flex h-[42px] w-full'}>
 					<div
@@ -126,7 +126,7 @@ function TokenInput({
 							ref={scope}
 							className={'ml-2 flex flex-row items-center space-x-2'}>
 							<span
-								className={'relative block h-4 w-4'}
+								className={'relative block size-4'}
 								style={{zIndex: index}}>
 								{shouldCheckBalance && (
 									<IconCircleCross
@@ -134,7 +134,7 @@ function TokenInput({
 											opacity: toBigInt(value?.raw) > balanceOf.raw ? 1 : 0,
 											pointerEvents: toBigInt(value?.raw) > balanceOf.raw ? 'auto' : 'none'
 										}}
-										className={'absolute inset-0 h-4 w-4 text-red-600 transition-opacity'}
+										className={'absolute inset-0 size-4 text-red-600 transition-opacity'}
 									/>
 								)}
 							</span>

@@ -14,7 +14,7 @@ function Option(props: TToken): ReactElement {
 
 	return (
 		<div className={'flex w-full flex-row items-center space-x-4'}>
-			<div className={'h-6 w-6'}>
+			<div className={'size-6'}>
 				<ImageWithFallback
 					alt={''}
 					unoptimized
@@ -55,7 +55,7 @@ function PossibleOption({option}: {option: TToken}): ReactElement {
 					{memorizedElement}
 					{isSelected ? (
 						<span className={'absolute inset-y-0 right-8 flex items-center'}>
-							<IconCircleCheck className={'absolute h-4 w-4 text-neutral-900'} />
+							<IconCircleCheck className={'absolute size-4 text-neutral-900'} />
 						</span>
 					) : null}
 				</div>

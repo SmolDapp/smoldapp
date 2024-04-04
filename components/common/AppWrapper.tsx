@@ -20,7 +20,7 @@ function Header(): ReactElement {
 					<div className={'flex items-center justify-start'}>
 						<Link href={'/'}>
 							<div className={'flex items-center justify-center rounded-full bg-white p-2'}>
-								<Logo className={'h-4 w-4'} />
+								<Logo className={'size-4'} />
 							</div>
 						</Link>
 					</div>

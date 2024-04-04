@@ -68,13 +68,13 @@ export function Calendar({
 				IconLeft: ({...props}) => (
 					<IconChevronBottom
 						{...props}
-						className={'h-4 w-4 rotate-90'}
+						className={'size-4 rotate-90'}
 					/>
 				),
 				IconRight: ({...props}) => (
 					<IconChevronBottom
 						{...props}
-						className={'h-4 w-4 -rotate-90 text-right'}
+						className={'size-4 -rotate-90 text-right'}
 					/>
 				),
 				Dropdown: ({...props}) => (

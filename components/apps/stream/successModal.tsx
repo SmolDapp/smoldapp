@@ -78,7 +78,7 @@ function SuccessModal({isOpen, onClose}: {isOpen: boolean; onClose: VoidFunction
 									</div>
 								</div>
 								<div className={'my-10 flex items-center justify-center'}>
-									<div className={'h-52 w-52'}>
+									<div className={'size-52'}>
 										<Lottie
 											loop={false}
 											animationData={SuccessAnimation}

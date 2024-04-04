@@ -10,7 +10,7 @@ import type {TToken} from '@utils/types/types';
 function ComboboxInput(props: TToken & {onChange: (event: ChangeEvent<HTMLInputElement>) => void}): ReactElement {
 	return (
 		<div className={'relative flex w-full flex-row items-center space-x-4'}>
-			<div className={'h-6 w-6'}>
+			<div className={'size-6'}>
 				<ImageWithFallback
 					alt={''}
 					unoptimized
@@ -73,13 +73,13 @@ function SelectedOption(props: {
 			{props.isFetchingNewToken && (
 				<div className={'absolute right-8'}>
 					<IconSpinner
-						className={'h-4 w-4 text-neutral-500 transition-colors group-hover:text-neutral-900'}
+						className={'size-4 text-neutral-500 transition-colors group-hover:text-neutral-900'}
 					/>
 				</div>
 			)}
 			<div className={'absolute right-2 md:right-3'}>
 				<IconChevronBoth
-					className={'h-4 w-4 text-neutral-500 transition-colors group-hover:text-neutral-900'}
+					className={'size-4 text-neutral-500 transition-colors group-hover:text-neutral-900'}
 				/>
 			</div>
 		</Combobox.Button>

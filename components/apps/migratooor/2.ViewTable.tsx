@@ -169,7 +169,7 @@ const ViewTable = memo(function ViewTable({onProceed}: {onProceed: VoidFunction}
 					<div
 						className={'absolute right-4 top-4 cursor-pointer'}
 						onClick={openTokenListModal}>
-						<IconSettings className={'transition-color h-4 w-4 text-neutral-400 hover:text-neutral-900'} />
+						<IconSettings className={'transition-color size-4 text-neutral-400 hover:text-neutral-900'} />
 					</div>
 					<div className={'w-full md:w-3/4'}>
 						<b>{'Which tokens do you want to dump?'}</b>
@@ -201,7 +201,7 @@ const ViewTable = memo(function ViewTable({onProceed}: {onProceed: VoidFunction}
 					) : balancesToDisplay.length === 0 ? (
 						<div className={'col-span-12 flex min-h-[200px] flex-col items-center justify-center'}>
 							<svg
-								className={'h-4 w-4 text-neutral-400'}
+								className={'size-4 text-neutral-400'}
 								xmlns={'http://www.w3.org/2000/svg'}
 								viewBox={'0 0 512 512'}>
 								<path

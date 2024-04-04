@@ -41,7 +41,7 @@ function PossibleSafe({
 					<>
 						<div className={'box-0 absolute right-2 top-2 hidden w-52 flex-row p-2 text-xs md:flex'}>
 							<button
-								className={'mr-1 mt-0.5 h-3 w-3 min-w-[16px]'}
+								className={'mr-1 mt-0.5 size-3 min-w-[16px]'}
 								disabled={owners.some((owner): boolean => !owner || isZeroAddress(owner))}
 								onClick={(e: React.MouseEvent<HTMLButtonElement>): void => {
 									e.currentTarget.blur();
@@ -49,7 +49,7 @@ function PossibleSafe({
 								}}>
 								<IconRefresh
 									className={
-										'h-3 w-3 min-w-[16px] cursor-pointer text-neutral-500 transition-colors hover:text-neutral-900'
+										'size-3 min-w-[16px] cursor-pointer text-neutral-500 transition-colors hover:text-neutral-900'
 									}
 								/>
 							</button>
@@ -57,7 +57,7 @@ function PossibleSafe({
 						</div>
 						<div className={'absolute right-2 top-2 block p-2 text-xs md:hidden'}>
 							<button
-								className={'mr-1 mt-0.5 h-3 w-3 min-w-[16px]'}
+								className={'mr-1 mt-0.5 size-3 min-w-[16px]'}
 								disabled={owners.some((owner): boolean => !owner || isZeroAddress(owner))}
 								onClick={(e: React.MouseEvent<HTMLButtonElement>): void => {
 									e.currentTarget.blur();
@@ -65,7 +65,7 @@ function PossibleSafe({
 								}}>
 								<IconRefresh
 									className={
-										'h-3 w-3 min-w-[16px] cursor-pointer text-neutral-500 transition-colors hover:text-neutral-900'
+										'size-3 min-w-[16px] cursor-pointer text-neutral-500 transition-colors hover:text-neutral-900'
 									}
 								/>
 							</button>

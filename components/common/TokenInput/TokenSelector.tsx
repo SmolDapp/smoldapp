@@ -13,7 +13,7 @@ import type {TToken} from '@utils/types/types';
 export function PlaceholderOption(): ReactElement {
 	return (
 		<div className={'flex flex-row items-center gap-3'}>
-			<div className={'h-6 w-6 min-w-[24px]'}>
+			<div className={'size-6 min-w-[24px]'}>
 				<ImageWithFallback
 					alt={''}
 					src={'https://assets.smold.app/not-found.png'}
@@ -35,7 +35,7 @@ export function SelectTokenOption({token}: {token: TToken}): ReactElement {
 
 	return (
 		<div className={'flex flex-row items-center gap-3'}>
-			<div className={'h-6 w-6 min-w-[24px]'}>
+			<div className={'size-6 min-w-[24px]'}>
 				<ImageWithFallback
 					alt={token.name || ''}
 					unoptimized={!token.logoURI?.includes('assets.smold.app') || true}

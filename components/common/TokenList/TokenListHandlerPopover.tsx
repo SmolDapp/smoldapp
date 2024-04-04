@@ -63,7 +63,7 @@ function TokenListHandlerPopover({
 									<div className={'group cursor-pointer rounded-full bg-white'}>
 										<IconCircleCross
 											className={
-												'h-6 w-6 text-neutral-600 transition-colors hover:text-neutral-900'
+												'size-6 text-neutral-600 transition-colors hover:text-neutral-900'
 											}
 											aria-hidden={'true'}
 										/>

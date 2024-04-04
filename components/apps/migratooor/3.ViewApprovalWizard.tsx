@@ -283,7 +283,7 @@ function ViewApprovalWizard(): ReactElement {
 			</div>
 			<button
 				id={'TRIGGER_ERC20_MIGRATOOOR_HIDDEN'}
-				className={'pointer-events-none invisible block h-0 w-0 opacity-0'}
+				className={'pointer-events-none invisible block size-0 opacity-0'}
 				disabled={Object.keys(selected).length === 0 || !provider || isApproving}
 				onClick={(): void => {
 					set_isApproving(true);

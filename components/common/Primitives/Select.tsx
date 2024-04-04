@@ -28,8 +28,8 @@ export const SelectTrigger = forwardRef<
 		{children}
 
 		<SelectPrimitive.Icon asChild>
-			<span className={'absolute right-2 flex h-3.5 w-3.5 items-center justify-center'}>
-				<IconChevronBoth className={'h-4 w-4 opacity-50'} />
+			<span className={'absolute right-2 flex size-3.5 items-center justify-center'}>
+				<IconChevronBoth className={'size-4 opacity-50'} />
 			</span>
 		</SelectPrimitive.Icon>
 	</SelectPrimitive.Trigger>
@@ -53,7 +53,7 @@ export const SelectContent = forwardRef<
 			)}
 			position={position}
 			{...props}>
-			<div className={'h-full w-full'}>
+			<div className={'size-full'}>
 				<SelectPrimitive.Viewport
 					className={cl(
 						'w-full h-full',
@@ -92,9 +92,9 @@ export const SelectItem = forwardRef<
 			className
 		)}
 		{...props}>
-		<span className={'absolute right-2 flex h-3.5 w-3.5 items-center justify-center'}>
+		<span className={'absolute right-2 flex size-3.5 items-center justify-center'}>
 			<SelectPrimitive.ItemIndicator>
-				<IconCircleCheck className={' h-3 w-3 text-green-600'} />
+				<IconCircleCheck className={' size-3 text-green-600'} />
 			</SelectPrimitive.ItemIndicator>
 		</span>
 

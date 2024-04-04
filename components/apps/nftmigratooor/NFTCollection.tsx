@@ -69,7 +69,7 @@ const NFTCollection = memo(function NFTCollection(props: TNFTCollectionProps): R
 								: `${collectionItems.length} token`}
 						</p>
 						<IconChevronBoth
-							className={'h-6 w-6 text-neutral-400 transition-colors group-hover:text-neutral-900'}
+							className={'size-6 text-neutral-400 transition-colors group-hover:text-neutral-900'}
 						/>
 					</div>
 				</div>

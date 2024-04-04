@@ -152,12 +152,12 @@ const ViewTableOpenSea = memo(function ViewTableOpenSea({onProceed}: {onProceed:
 				<div className={'grid gap-0 pt-4'}>
 					{isFetchingNFTs ? (
 						<div className={'flex h-48 flex-col items-center justify-center space-y-2'}>
-							<IconSpinner className={'h-4 w-4 text-neutral-500'} />
+							<IconSpinner className={'size-4 text-neutral-500'} />
 							<small>{'Retrieving your NFTs...'}</small>
 						</div>
 					) : Object.entries(groupedByCollection).length === 0 ? (
 						<div className={'flex h-48 flex-col items-center justify-center space-y-2'}>
-							<IconHeartBroken className={'h-4 w-4 text-neutral-500'} />
+							<IconHeartBroken className={'size-4 text-neutral-500'} />
 							<small>{'No NFTs found.'}</small>
 						</div>
 					) : (

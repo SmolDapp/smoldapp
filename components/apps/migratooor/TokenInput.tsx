@@ -85,7 +85,7 @@ function TokenInput({
 						width={40}
 						height={40}
 						quality={90}
-						className={'h-6 w-6 md:h-10 md:w-10 md:min-w-[40px]'}
+						className={'size-6 md:size-10 md:min-w-[40px]'}
 						unoptimized
 						src={`${process.env.SMOL_ASSETS_URL}/token/${token.chainID}/${token.address}/logo-128.png`}
 						altSrc={token.logoURI || ''}
@@ -139,7 +139,7 @@ function TokenInput({
 									ref={scope}
 									className={'absolute right-0 mx-2 flex flex-row items-center space-x-2'}>
 									<span
-										className={'relative block h-4 w-4'}
+										className={'relative block size-4'}
 										style={{zIndex: index}}>
 										{shouldCheckAllowance && (
 											<div className={'absolute inset-0'}>
@@ -151,7 +151,7 @@ function TokenInput({
 																	? 1
 																	: 0
 														}}
-														className={'h-4 w-4 text-neutral-400 transition-opacity'}
+														className={'size-4 text-neutral-400 transition-opacity'}
 													/>
 													<span className={'tooltipLight !-inset-x-24 top-full mt-2 !w-auto'}>
 														<div
@@ -175,7 +175,7 @@ function TokenInput({
 													opacity: value.raw > balanceOf.raw ? 1 : 0,
 													pointerEvents: value.raw > balanceOf.raw ? 'auto' : 'none'
 												}}
-												className={'absolute inset-0 h-4 w-4 text-red-900 transition-opacity'}
+												className={'absolute inset-0 size-4 text-red-900 transition-opacity'}
 											/>
 										)}
 									</span>

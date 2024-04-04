@@ -299,7 +299,7 @@ function ViewStreamSummary(): ReactElement {
 								<div className={'absolute right-4 top-4'}>
 									<IconChevronBoth
 										className={
-											'h-4 w-4 text-neutral-500 transition-colors group-hover:text-neutral-900'
+											'size-4 text-neutral-500 transition-colors group-hover:text-neutral-900'
 										}
 									/>
 								</div>

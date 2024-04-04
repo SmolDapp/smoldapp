@@ -34,7 +34,7 @@ function NewSafeExpertForm(props: TNewSafeForm): ReactElement {
 							<div className={'flex w-fit flex-row items-center space-x-1'}>
 								<small className={'font-semibold'}>{'Prefix'}</small>
 								<span className={'tooltip'}>
-									<IconInfo className={'h-3 w-3 text-neutral-500'} />
+									<IconInfo className={'size-3 text-neutral-500'} />
 									<span className={'tooltipLight top-full mt-1'}>
 										<div
 											className={
@@ -77,7 +77,7 @@ function NewSafeExpertForm(props: TNewSafeForm): ReactElement {
 							<div className={'flex w-fit flex-row items-center space-x-1'}>
 								<small className={'font-semibold'}>{'Suffix'}</small>
 								<span className={'tooltip'}>
-									<IconInfo className={'h-3 w-3 text-neutral-500'} />
+									<IconInfo className={'size-3 text-neutral-500'} />
 									<span className={'tooltipLight top-full mt-1'}>
 										<div
 											className={
@@ -117,7 +117,7 @@ function NewSafeExpertForm(props: TNewSafeForm): ReactElement {
 							<div className={'flex w-fit flex-row items-center space-x-1'}>
 								<small className={'font-semibold'}>{'Factory'}</small>
 								<span className={'tooltip'}>
-									<IconInfo className={'h-3 w-3 text-neutral-500'} />
+									<IconInfo className={'size-3 text-neutral-500'} />
 									<span className={'tooltipLight top-full mt-1'}>
 										<div
 											className={
@@ -157,7 +157,7 @@ function NewSafeExpertForm(props: TNewSafeForm): ReactElement {
 								className={
 									'flex flex-row whitespace-pre rounded-md border border-orange-200 !bg-orange-200/60 p-2 text-xs font-bold text-orange-600'
 								}>
-								<IconWarning className={'mr-2 h-4 w-4 text-orange-600'} />
+								<IconWarning className={'mr-2 size-4 text-orange-600'} />
 								{
 									'The more characters you add, the longer it will take to find a safe (which can be hours).'
 								}
@@ -167,7 +167,7 @@ function NewSafeExpertForm(props: TNewSafeForm): ReactElement {
 							<div className={'flex w-fit flex-row items-center space-x-1'}>
 								<small className={'font-semibold'}>{'Seed'}</small>
 								<span className={'tooltip'}>
-									<IconInfo className={'h-3 w-3 text-neutral-500'} />
+									<IconInfo className={'size-3 text-neutral-500'} />
 									<span className={'tooltipLight top-full mt-1'}>
 										<div
 											className={
@@ -237,7 +237,7 @@ function NewSafeStandardForm(props: TNewSafeForm): ReactElement {
 							<div className={'flex w-fit flex-row items-center space-x-1'}>
 								<small className={'font-semibold'}>{'Prefix'}</small>
 								<span className={'tooltip'}>
-									<IconInfo className={'h-3 w-3 text-neutral-500'} />
+									<IconInfo className={'size-3 text-neutral-500'} />
 									<span className={'tooltipLight top-full mt-1'}>
 										<div
 											className={
@@ -280,7 +280,7 @@ function NewSafeStandardForm(props: TNewSafeForm): ReactElement {
 							<div className={'flex w-fit flex-row items-center space-x-1'}>
 								<small className={'font-semibold'}>{'Suffix'}</small>
 								<span className={'tooltip'}>
-									<IconInfo className={'h-3 w-3 text-neutral-500'} />
+									<IconInfo className={'size-3 text-neutral-500'} />
 									<span className={'tooltipLight top-full mt-1'}>
 										<div
 											className={
@@ -348,7 +348,7 @@ function NewSafeStandardForm(props: TNewSafeForm): ReactElement {
 								className={
 									'flex flex-row whitespace-pre rounded-md border border-orange-200 !bg-orange-200/60 p-2 text-xs font-bold text-orange-600'
 								}>
-								<IconWarning className={'mr-2 h-4 w-4 text-orange-600'} />
+								<IconWarning className={'mr-2 size-4 text-orange-600'} />
 								{
 									'The more characters you add, the longer it will take to find a safe (which can be hours).'
 								}
