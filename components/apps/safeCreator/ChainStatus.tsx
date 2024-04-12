@@ -71,7 +71,7 @@ function ChainStatus({
 }: TChainStatusArgs): ReactElement {
 	const {chainCoinPrices} = useSafeCreator();
 	const gasCoinID = (getNetwork(chain.id) as TAppExtendedChain).coingeckoGasCoinID;
-	const coinPrice = chainCoinPrices?.[gasCoinID].usd;
+	const coinPrice = chainCoinPrices?.[gasCoinID]?.usd;
 	const {provider, address} = useWeb3();
 	const [isDeployedOnThatChain, set_isDeployedOnThatChain] = useState(false);
 	const [cloneStatus, set_cloneStatus] = useState(defaultTxStatus);
