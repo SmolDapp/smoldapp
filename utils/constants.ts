@@ -15,7 +15,8 @@ import {
 	polygon,
 	polygonZkEvm,
 	scroll,
-	zkSync
+	zkSync,
+	zora
 } from 'wagmi/chains';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {indexedWagmiChains} from '@yearn-finance/web-lib/utils/wagmi/utils';
@@ -48,6 +49,7 @@ export const SUPPORTED_CHAINS = [
 	linea,
 	scroll,
 	aurora,
+	zora,
 	//Testnets
 	goerli,
 	baseGoerli
@@ -72,7 +74,8 @@ export const SUPPORTED_SMOL_CHAINS = [
 	base,
 	arbitrum,
 	goerli,
-	baseGoerli
+	baseGoerli,
+	zora
 ];
 
 export const SAFE_UI_BASE_URI: TNDict<string> = {
@@ -90,7 +93,8 @@ export const SAFE_UI_BASE_URI: TNDict<string> = {
 	43114: 'https://app.safe.global/home?safe=avax:',
 	59144: 'https://safe.linea.build/home?safe=linea:',
 	534352: 'https://safe.scroll.xyz/home?safe=scr:',
-	1313161554: 'https://app.safe.global/home?safe=aurora:'
+	1313161554: 'https://app.safe.global/home?safe=aurora:',
+	7777777: 'https://safe.optimism.io/home?safe=zora:'
 };
 
 export const SUPPORTED_CHAIN_IDS: TNDict<string> = {
@@ -104,7 +108,8 @@ export const SUPPORTED_CHAIN_IDS: TNDict<string> = {
 	1101: 'Polygon ZKEVM',
 	8453: 'Base',
 	42161: 'Arbitrum',
-	43114: 'Avalanche'
+	43114: 'Avalanche',
+	7777777: 'Zora'
 };
 
 export const NFTMIGRATOOOR_CONTRACT_PER_CHAIN: TNDict<TAddress> = {
@@ -117,7 +122,8 @@ export const NFTMIGRATOOOR_CONTRACT_PER_CHAIN: TNDict<TAddress> = {
 	324: toAddress('0xe35Ce1fE716C2D4B677D7218eAdB0561E9b9fA90'),
 	1101: toAddress('0xA3a3C48F1d5191968D3dEF7A5aE4c860589Bf380'),
 	8453: toAddress('0x101CBC599d01e90D21fc925c8222248863e3b6eA'),
-	42161: toAddress('0x7E08735690028cdF3D81e7165493F1C34065AbA2')
+	42161: toAddress('0x7E08735690028cdF3D81e7165493F1C34065AbA2'),
+	7777777: toAddress('0x4EE0b0d630ad74b28e44e2caBc6C45582967f6c6')
 };
 
 export const DISPERSE_CONTRACT_PER_CHAIN: TNDict<TAddress> = {
@@ -136,7 +142,8 @@ export const DISPERSE_CONTRACT_PER_CHAIN: TNDict<TAddress> = {
 	43114: toAddress('0xD152f549545093347A162Dce210e7293f1452150'),
 	59144: toAddress('0xe025e5B1c61FD98e33F02caC811469664A81b4BD'),
 	534352: toAddress('0x38a9C84bAaf727F8E09deF72C4Dc224fEFf2028F'),
-	1313161554: toAddress('0xe025e5B1c61FD98e33F02caC811469664A81b4BD')
+	1313161554: toAddress('0xe025e5B1c61FD98e33F02caC811469664A81b4BD'),
+	7777777: toAddress('0xF7D540b9d4b94a24389802Bcf2f6f02013d08142')
 };
 
 const SAFE_API_URI: {[chainId: number]: string} = {
@@ -161,7 +168,8 @@ export const coingeckoGasCoinIDs: TNDict<string> = {
 	250: 'fantom',
 	324: 'ethereum',
 	8453: 'ethereum',
-	42161: 'ethereum'
+	42161: 'ethereum',
+	7777777: 'ethereum'
 };
 
 export type TAppExtendedChain = TExtendedChain & {
