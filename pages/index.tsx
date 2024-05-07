@@ -54,27 +54,6 @@ const apps = [
 		icon: <LogoDisperse className={'size-[80px]'} />
 	},
 	{
-		href: 'https://gib.to',
-		title: 'Gib',
-		description: (
-			<span>
-				{'The easiest way to '}
-				<span className={'font-semibold text-primary-500 transition-colors group-hover:text-primary-0'}>
-					{'donate'}
-				</span>
-				{' to the crypto projects you love.'}
-			</span>
-		),
-		icon: (
-			<Image
-				src={'https://gib.to/favicons/favicon.svg'}
-				width={80}
-				height={80}
-				alt={'gib'}
-			/>
-		)
-	},
-	{
 		href: 'https://dump.services',
 		title: 'Dump Services',
 		description: (
