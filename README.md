@@ -1,3 +1,6 @@
+# Please check Smol new repo: https://github.com/SmolDapp/SmolV2
+
+
 # Smoldapp
 
 ![./public/og.png](./public/og.png)
