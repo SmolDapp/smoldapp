@@ -188,7 +188,7 @@ export function VestingElement({vesting}: {vesting: TStreamArgs}): ReactElement 
 				<dl className={'mb-2 flex flex-col justify-between md:mb-0 md:flex-row'}>
 					<dt className={'text-xs font-medium text-neutral-900'}>{'Escrow'}</dt>
 					<a
-						href={`${getNetwork(vesting.chainID).blockExplorers}/address/${vesting.escrow}`}
+						href={`${getNetwork(vesting.chainID).blockExplorers?.default?.url}/address/${vesting.escrow}`}
 						target={'_blank'}
 						rel={'noreferrer'}>
 						<dd className={'font-number cursor-pointer text-xs text-neutral-900 hover:underline'}>
