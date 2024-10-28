@@ -100,7 +100,7 @@ function TokenInput({
 								'font-number mt-2 block !font-mono text-xxs text-neutral-600 transition-colors md:text-xs'
 							}>
 							<a
-								href={`${getNetwork(token.chainID).blockExplorers}/token/${token.address}`}
+								href={`${getNetwork(token.chainID).blockExplorers?.default?.url}/token/${token.address}`}
 								target={'_blank'}
 								rel={'noreferrer'}
 								className={'cursor-alias font-mono hover:text-neutral-900 hover:underline'}>
