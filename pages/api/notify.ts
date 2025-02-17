@@ -11,7 +11,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 			parse_mode: 'Markdown',
 			disable_notification: true,
 			message_thread_id: Number(process.env.TELEGRAM_NOTIF_CHAT_THREAD),
-			disable_web_page_preview: true
+			link_preview_options: {
+				is_disabled: true
+			}
 		});
 		return res.status(200).json(true);
 	} catch (error) {
