@@ -1,4 +1,4 @@
-import React from 'react';
+import {Fragment, type ReactElement} from 'react';
 import Link from 'next/link';
 import Meta from 'components/common/Meta';
 import Logo from 'components/icons/logo';
@@ -8,7 +8,6 @@ import {AnimatePresence, motion} from 'framer-motion';
 import {NetworkSelector, WalletSelector} from './HeaderElements';
 
 import type {AppProps} from 'next/app';
-import type {ReactElement} from 'react';
 
 function Header(): ReactElement {
 	return (
@@ -38,7 +37,7 @@ function AppWrapper(props: AppProps): ReactElement {
 	const {Component, pageProps, router} = props;
 
 	return (
-		<React.Fragment>
+		<Fragment>
 			<Meta />
 			<Header />
 			<div className={'relative mx-auto mb-0 flex min-h-screen w-full flex-row pt-0'}>
@@ -58,7 +57,7 @@ function AppWrapper(props: AppProps): ReactElement {
 					</motion.div>
 				</AnimatePresence>
 			</div>
-		</React.Fragment>
+		</Fragment>
 	);
 }
 

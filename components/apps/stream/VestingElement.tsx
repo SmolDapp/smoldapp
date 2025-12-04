@@ -92,7 +92,7 @@ export function VestingElement({vesting}: {vesting: TStreamArgs}): ReactElement 
 				chainId: vesting.chainID,
 				functionName: 'total_claimed'
 			}
-		],
+		] as any,
 		select(data) {
 			return [data?.[0]?.result || '', Number(toBigInt(data?.[1]?.result || 18)), toBigInt(data?.[2]?.result)];
 		}

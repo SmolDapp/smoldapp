@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react';
+import {useCallback} from 'react';
 import {DefaultSeo} from 'next-seo';
 import ViewTokenToSend from '@disperse/1.ViewTokenToSend';
 import ViewTable from '@disperse/2.ViewTable';

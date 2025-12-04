@@ -1,5 +1,3 @@
-import type {Chain} from 'wagmi';
-
 export const gnosis = {
 	id: 100,
 	name: 'Gnosis',
@@ -29,4 +27,4 @@ export const gnosis = {
 			blockCreated: 21022491
 		}
 	}
-} as const satisfies Chain;
+} as any;

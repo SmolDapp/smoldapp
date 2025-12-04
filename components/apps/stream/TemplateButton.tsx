@@ -1,4 +1,3 @@
-import React from 'react';
 import {IconCircleCheck} from '@icons/IconCircleCheck';
 import {cl} from '@yearn-finance/web-lib/utils/cl';
 

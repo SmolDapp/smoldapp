@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import {useMemo} from 'react';
 import useWallet from 'contexts/useWallet';
 import {Combobox} from '@headlessui/react';
 import {IconCircleCheck} from '@icons/IconCircleCheck';

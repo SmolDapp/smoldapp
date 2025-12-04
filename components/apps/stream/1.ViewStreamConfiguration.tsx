@@ -1,4 +1,4 @@
-import React, {Fragment, useCallback, useMemo, useState} from 'react';
+import {Fragment, useCallback, useMemo, useState} from 'react';
 import Link from 'next/link';
 import {useTokenList} from 'contexts/useTokenList';
 import useWallet from 'contexts/useWallet';

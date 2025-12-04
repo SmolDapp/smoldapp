@@ -1,4 +1,3 @@
-import React from 'react';
 import IconRefresh from 'components/icons/IconRefresh';
 import {SUPPORTED_CHAINS} from 'utils/constants';
 import {AddressLike} from '@yearn-finance/web-lib/components/AddressLike';

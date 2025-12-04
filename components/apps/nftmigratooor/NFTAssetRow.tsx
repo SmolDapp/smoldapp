@@ -1,4 +1,4 @@
-import React, {memo} from 'react';
+import {memo} from 'react';
 import Link from 'next/link';
 import LogoEtherscan from 'components/icons/LogoEtherscan';
 import LogoLooksRare from 'components/icons/LogoLooksRare';

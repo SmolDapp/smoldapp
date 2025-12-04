@@ -1,4 +1,4 @@
-import React, {forwardRef} from 'react';
+import {forwardRef} from 'react';
 import {IconLoader} from '@yearn-finance/web-lib/icons/IconLoader';
 
 import type {ReactElement, ReactNode} from 'react';

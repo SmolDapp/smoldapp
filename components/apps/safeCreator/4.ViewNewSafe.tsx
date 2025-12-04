@@ -1,4 +1,4 @@
-import React, {useCallback, useRef, useState} from 'react';
+import {useCallback, useRef, useState} from 'react';
 import {concat, encodePacked, getContractAddress, hexToBigInt, keccak256, toHex} from 'viem';
 import {useMountEffect, useUpdateEffect} from '@react-hookz/web';
 import {PopoverSettings} from '@common/PopoverSettings';

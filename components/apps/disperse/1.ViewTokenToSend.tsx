@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import {useState} from 'react';
 import ComboboxAddressInput from 'components/common/ComboboxAddressInput';
 import {useTokenList} from 'contexts/useTokenList';
 import {Step, useDisperse} from '@disperse/useDisperse';

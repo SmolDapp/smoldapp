@@ -1,4 +1,3 @@
-import React from 'react';
 import {IconCircleCheck} from 'components/icons/IconCircleCheck';
 import {IconCircleCross} from 'components/icons/IconCircleCross';
 import {IconSpinner} from 'components/icons/IconSpinner';

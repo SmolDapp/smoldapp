@@ -1,4 +1,3 @@
-import React from 'react';
 import IconSquarePlus from 'components/icons/IconSquarePlus';
 import {Step, useSafeCreator} from '@safeCreatooor/useSafeCreator';
 import CardWithIcon from '@common/CardWithIcon';

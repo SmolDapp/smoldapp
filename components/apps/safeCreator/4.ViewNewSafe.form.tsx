@@ -1,4 +1,3 @@
-import React from 'react';
 import assert from 'assert';
 import IconInfo from 'components/icons/IconInfo';
 import IconWarning from 'components/icons/IconWarning';

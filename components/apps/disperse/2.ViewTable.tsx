@@ -1,4 +1,4 @@
-import React, {Fragment, memo, useCallback, useMemo, useState} from 'react';
+import {Fragment, memo, useCallback, useMemo, useState} from 'react';
 import {IconCircleCheck} from 'components/icons/IconCircleCheck';
 import {IconCircleCross} from 'components/icons/IconCircleCross';
 import IconSquareMinus from 'components/icons/IconSquareMinus';

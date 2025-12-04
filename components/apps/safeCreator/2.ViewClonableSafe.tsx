@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import {useCallback, useState} from 'react';
 import AddressInput, {defaultInputAddressLike} from 'components/common/AddressInput';
 import IconWarning from 'components/icons/IconWarning';
 import {SUPPORTED_CHAINS} from 'utils/constants';

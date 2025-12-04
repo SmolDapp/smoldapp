@@ -1,4 +1,4 @@
-import React, {createContext, useCallback, useContext, useMemo, useState} from 'react';
+import {createContext, useCallback, useContext, useMemo, useState} from 'react';
 import Link from 'next/link';
 import {ModalMobileMenu} from '@yearn-finance/web-lib/components/ModalMobileMenu';
 

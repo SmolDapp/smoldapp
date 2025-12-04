@@ -1,4 +1,4 @@
-import React, {memo, useCallback, useMemo} from 'react';
+import {memo, useCallback, useMemo} from 'react';
 import IconHeartBroken from 'components/icons/IconHeartBroken';
 import {IconSpinner} from 'components/icons/IconSpinner';
 import {isLensNFT} from 'utils/tools.lens';

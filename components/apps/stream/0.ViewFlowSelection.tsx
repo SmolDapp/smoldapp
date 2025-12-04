@@ -1,4 +1,3 @@
-import React from 'react';
 import IconSquarePlus from 'components/icons/IconSquarePlus';
 import CardWithIcon from '@common/CardWithIcon';
 import ViewSectionHeading from '@common/ViewSectionHeading';

@@ -1,4 +1,3 @@
-import React from 'react';
 import {DefaultSeo} from 'next-seo';
 import ViewFlowSelection from 'components/apps/stream/0.ViewFlowSelection';
 import ViewVestingConfiguration from 'components/apps/stream/1.ViewStreamConfiguration';

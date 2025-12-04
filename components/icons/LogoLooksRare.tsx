@@ -1,5 +1,3 @@
-import React from 'react';
-
 import type {ReactElement} from 'react';
 
 function LogoLooksRare(props: React.SVGProps<SVGSVGElement>): ReactElement {

@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo, useRef} from 'react';
+import {useCallback, useEffect, useMemo, useRef} from 'react';
 import {useWallet} from 'contexts/useWallet';
 import handleInputChangeEventValue from 'utils/handleInputChangeEventValue';
 import {useAnimate} from 'framer-motion';

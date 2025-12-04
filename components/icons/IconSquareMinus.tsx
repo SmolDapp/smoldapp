@@ -1,5 +1,3 @@
-import React from 'react';
-
 import type {ReactElement} from 'react';
 
 function IconSquareMinus(props: React.SVGProps<SVGSVGElement>): ReactElement {

@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import {useCallback, useState} from 'react';
 import IconInfo from 'components/icons/IconInfo';
 import IconWarning from 'components/icons/IconWarning';
 import {useMountEffect} from '@react-hookz/web';

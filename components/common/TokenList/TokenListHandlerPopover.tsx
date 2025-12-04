@@ -1,4 +1,4 @@
-import React, {Fragment, useRef} from 'react';
+import {Fragment, useRef} from 'react';
 import {Dialog, Transition} from '@headlessui/react';
 import {IconCircleCross} from '@icons/IconCircleCross';
 import {ImageWithFallback} from '@common/ImageWithFallback';

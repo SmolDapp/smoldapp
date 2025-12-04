@@ -1,4 +1,3 @@
-import React from 'react';
 import useWallet from 'contexts/useWallet';
 import {toAddress} from '@yearn-finance/web-lib/utils/address';
 import {cl} from '@yearn-finance/web-lib/utils/cl';

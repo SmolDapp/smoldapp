@@ -1,4 +1,4 @@
-import React, {useCallback, useMemo, useRef, useState} from 'react';
+import {useCallback, useMemo, useRef, useState} from 'react';
 import axios from 'axios';
 import {IconCircleCheck} from '@icons/IconCircleCheck';
 import {IconCircleCross} from '@icons/IconCircleCross';
@@ -64,11 +64,11 @@ function TokenListAddBox({onAddTokenList, onAddToken}: TTokenListAddBox): React.
 						const {address, name, symbol, logoURI, chainID, decimals} = eachToken;
 						return Boolean(
 							address &&
-								name !== undefined &&
-								symbol !== undefined &&
-								logoURI !== undefined &&
-								chainID &&
-								decimals
+							name !== undefined &&
+							symbol !== undefined &&
+							logoURI !== undefined &&
+							chainID &&
+							decimals
 						);
 					});
 					if (currentLabel.current === label) {

@@ -1,4 +1,4 @@
-import React, {createContext, useContext, useEffect, useMemo, useReducer, useState} from 'react';
+import {createContext, useContext, useEffect, useMemo, useReducer, useState} from 'react';
 import {isBefore} from 'date-fns';
 import {scrollToTargetAdjusted} from 'utils/animations';
 import {HEADER_HEIGHT} from 'utils/constants';

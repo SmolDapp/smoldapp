@@ -1,4 +1,4 @@
-import React, {useCallback, useMemo, useState} from 'react';
+import {useCallback, useMemo, useState} from 'react';
 import {approveAllERC721, batchTransferERC721, listERC1155, transferERC721, transferERC1155} from 'utils/actions';
 import {NFTMIGRATOOOR_CONTRACT_PER_CHAIN} from 'utils/constants';
 import {getSafeBatchTransferFrom1155, getSafeTransferFrom721} from 'utils/tools.gnosis';

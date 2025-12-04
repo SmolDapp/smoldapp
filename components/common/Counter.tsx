@@ -1,4 +1,4 @@
-import React, {useLayoutEffect, useRef} from 'react';
+import {useLayoutEffect, useRef} from 'react';
 import {animate} from 'framer-motion';
 import {formatAmount} from '@yearn-finance/web-lib/utils/format.number';
 

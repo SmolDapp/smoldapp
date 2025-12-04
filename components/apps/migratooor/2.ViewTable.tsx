@@ -1,4 +1,4 @@
-import React, {Fragment, memo, useCallback, useMemo, useRef, useState} from 'react';
+import {Fragment, memo, useCallback, useMemo, useRef, useState} from 'react';
 import {IconSpinner} from 'components/icons/IconSpinner';
 import {useTokenList} from 'contexts/useTokenList';
 import {useWallet} from 'contexts/useWallet';

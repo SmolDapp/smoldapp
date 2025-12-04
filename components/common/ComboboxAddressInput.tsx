@@ -1,4 +1,4 @@
-import React, {Fragment, useCallback, useEffect, useMemo, useState} from 'react';
+import {Fragment, useCallback, useEffect, useMemo, useState} from 'react';
 import {ImageWithFallback} from 'components/common/ImageWithFallback';
 import {IconChevronBoth} from 'components/icons/IconChevronBoth';
 import {IconCircleCheck} from 'components/icons/IconCircleCheck';

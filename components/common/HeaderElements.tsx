@@ -1,4 +1,4 @@
-import React, {Fragment, useEffect, useMemo, useState} from 'react';
+import {Fragment, useEffect, useMemo, useState} from 'react';
 import Image from 'next/image';
 import {usePublicClient} from 'wagmi';
 import {Listbox, Transition} from '@headlessui/react';

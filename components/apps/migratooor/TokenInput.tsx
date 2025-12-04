@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo, useRef} from 'react';
+import {useCallback, useEffect, useMemo, useRef} from 'react';
 import {IconCircleCross} from 'components/icons/IconCircleCross';
 import IconInfo from 'components/icons/IconInfo';
 import useWallet from 'contexts/useWallet';

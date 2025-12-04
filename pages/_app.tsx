@@ -1,4 +1,3 @@
-import React from 'react';
 import {Inter} from 'next/font/google';
 import AppWrapper from 'components/common/AppWrapper';
 import {MenuContextApp} from 'contexts/useMenu';
@@ -38,7 +37,7 @@ function MyApp(props: AppProps): ReactElement {
 					}
 				`}
 			</style>
-			<WithYearn supportedChains={[...SUPPORTED_CHAINS, localhost]}>
+			<WithYearn supportedChains={[...SUPPORTED_CHAINS, localhost] as any}>
 				<TokenListContextApp>
 					<WalletContextApp>
 						<MenuContextApp>

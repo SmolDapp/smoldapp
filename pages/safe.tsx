@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import {useState} from 'react';
 import {DefaultSeo} from 'next-seo';
 import ViewFlowSelection from '@safeCreatooor/1.ViewFlowSelection';
 import ViewClonableSafe from '@safeCreatooor/2.ViewClonableSafe';

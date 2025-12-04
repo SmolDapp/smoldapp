@@ -1,5 +1,3 @@
-import React from 'react';
-
 import type {ReactElement} from 'react';
 
 function LogoOpensea(props: React.SVGProps<SVGSVGElement>): ReactElement {

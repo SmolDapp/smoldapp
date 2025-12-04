@@ -1,4 +1,3 @@
-import React from 'react';
 import {Combobox} from '@headlessui/react';
 import {IconChevronBoth} from '@icons/IconChevronBoth';
 import {IconSpinner} from '@icons/IconSpinner';
@@ -72,15 +71,11 @@ function SelectedOption(props: {
 			/>
 			{props.isFetchingNewToken && (
 				<div className={'absolute right-8'}>
-					<IconSpinner
-						className={'size-4 text-neutral-500 transition-colors group-hover:text-neutral-900'}
-					/>
+					<IconSpinner className={'size-4 text-neutral-500 transition-colors group-hover:text-neutral-900'} />
 				</div>
 			)}
 			<div className={'absolute right-2 md:right-3'}>
-				<IconChevronBoth
-					className={'size-4 text-neutral-500 transition-colors group-hover:text-neutral-900'}
-				/>
+				<IconChevronBoth className={'size-4 text-neutral-500 transition-colors group-hover:text-neutral-900'} />
 			</div>
 		</Combobox.Button>
 	);

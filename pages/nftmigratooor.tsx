@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react';
+import {useCallback} from 'react';
 import {DefaultSeo} from 'next-seo';
 import ViewDestination from '@nftmigratooor/1.ViewDestination';
 import ViewTable from '@nftmigratooor/2.ViewTable';

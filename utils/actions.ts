@@ -312,7 +312,7 @@ export async function transferEther(props: TTransferEther): Promise<TTxResponse>
 		} else if (receipt.status === 'reverted') {
 			props.statusHandler?.({...defaultTxStatus, error: true});
 		}
-		return {isSuccessful: receipt.status === 'success', receipt};
+		return {isSuccessful: receipt.status === 'success', receipt: receipt as any};
 	} catch (error) {
 		console.error(error);
 		const errorAsBaseError = error as BaseError;
