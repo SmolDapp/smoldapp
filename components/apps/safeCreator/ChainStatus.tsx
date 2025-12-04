@@ -6,6 +6,7 @@ import GNOSIS_SAFE_PROXY_FACTORY from 'utils/abi/gnosisSafeProxyFactory.abi';
 import {multicall} from 'utils/actions';
 import {DISPERSE_CONTRACT_PER_CHAIN, SAFE_UI_BASE_URI, type TAppExtendedChain} from 'utils/constants';
 import {encodeFunctionData, parseEther} from 'viem';
+import {baseGoerli, goerli} from 'viem/chains';
 import {
 	getNetwork as getWagmiNetwork,
 	prepareSendTransaction,
@@ -85,11 +86,18 @@ function ChainStatus({
 	 ** If the safe is already deployed on that chain, we don't need to do anything.
 	 ******************************************************************************************/
 	const checkIfDeployedOnThatChain = useCallback(async (): Promise<void> => {
-		const publicClient = getClient(chain.id);
-		const byteCode = await publicClient.getBytecode({address: safeAddress});
-		if (byteCode) {
-			set_isDeployedOnThatChain(true);
-		} else {
+		if (chain.id === goerli.id || chain.id === baseGoerli.id) {
+			return set_isDeployedOnThatChain(false);
+		}
+		try {
+			const publicClient = getClient(chain.id);
+			const byteCode = await publicClient.getBytecode({address: safeAddress});
+			if (byteCode) {
+				set_isDeployedOnThatChain(true);
+			} else {
+				set_isDeployedOnThatChain(false);
+			}
+		} catch (error) {
 			set_isDeployedOnThatChain(false);
 		}
 	}, [chain.id, safeAddress]);

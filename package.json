@@ -15,7 +15,10 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
+<<<<<<< HEAD
     "@builtbymom/web3": "^0.0.67",
+=======
+>>>>>>> 75324d3 (fix: bump dependencies to latest version)
     "@gnosis.pm/gp-v2-contracts": "^1.1.2",
     "@gnosis.pm/safe-apps-react-sdk": "^4.6.2",
     "@headlessui/react": "^1.7.17",
@@ -40,12 +43,21 @@
     "graphql-request": "^6.1.0",
     "html2canvas": "^1.4.1",
     "lottie-react": "^2.4.0",
+<<<<<<< HEAD
     "next": "^15.1.7",
     "next-pwa": "^5.6.0",
     "next-seo": "^6.1.0",
     "react": "^18.2.0",
     "react-day-picker": "^8.9.1",
     "react-dom": "^18.2.0",
+=======
+    "next": "^16.0.7",
+    "next-pwa": "^5.6.0",
+    "next-seo": "^6.1.0",
+    "react": "^19.2.1",
+    "react-day-picker": "^8.9.1",
+    "react-dom": "^19.2.1",
+>>>>>>> 75324d3 (fix: bump dependencies to latest version)
     "react-dom-confetti": "^0.2.0",
     "react-jazzicon": "^1.0.4",
     "react-popper": "^2.3.0",
@@ -97,8 +109,11 @@
   },
   "overrides": {
     "wagmi/connectors": "3.1.10"
+<<<<<<< HEAD
   },
   "resolutions": {
     "elliptic": "6.6.1"
+=======
+>>>>>>> 75324d3 (fix: bump dependencies to latest version)
   }
 }
