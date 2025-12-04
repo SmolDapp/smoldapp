@@ -27,7 +27,6 @@ Using Migratooor is simple. Here's a quick step-by-step guide to transferring to
 5. **Confirm the transactions** and wait for them to be processed by the Ethereum network
 6. **Transfer complete!** All tokens have been sent to the recipient's wallet
 
-
 ## Configuring
 
 In order to run migratooor, you need to set up the environment variables for the JSON-RPC URLs of the Ethereum networks you want to support. You also need to set up the receiver address and disperse address. These settings can be found in the `next.config.js` file:
@@ -68,8 +67,8 @@ Once you've set up the environment variables, you're ready to run the project us
 
 Before you proceed, make sure you have the following installed on your machine:
 
-- [Node.js](https://nodejs.org/)
-- [npm](https://www.npmjs.com/) (comes bundled with Node.js)
+-   [Node.js](https://nodejs.org/)
+-   [npm](https://www.npmjs.com/) (comes bundled with Node.js)
 
 ### Installing Dependencies
 
@@ -130,4 +129,3 @@ npm run lint
 ```
 
 This command will check all `.js`, `.jsx`, `.ts`, and `.tsx` files in the project for linting issues.
-
