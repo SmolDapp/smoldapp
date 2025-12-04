@@ -160,7 +160,10 @@ function ComboboxAddressInput({
 	);
 
 	const onChange = useCallback(
-		async (_selected: TToken): Promise<void> => {
+		async (_selected: TToken | null | undefined): Promise<void> => {
+			if (!_selected) {
+				return;
+			}
 			let _tokenData = _selected;
 			if (!_tokenData || (!_tokenData.name && !_tokenData.symbol && !_tokenData.decimals)) {
 				set_isLoadingTokenData(true);

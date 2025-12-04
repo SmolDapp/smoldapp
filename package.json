@@ -18,7 +18,7 @@
 		"@builtbymom/web3": "^0.0.67",
 		"@gnosis.pm/gp-v2-contracts": "^1.1.2",
 		"@gnosis.pm/safe-apps-react-sdk": "^4.6.2",
-		"@headlessui/react": "^1.7.17",
+		"@headlessui/react": "^2.2.0",
 		"@popperjs/core": "^2.11.8",
 		"@radix-ui/react-dialog": "^1.0.5",
 		"@radix-ui/react-popover": "^1.0.7",
@@ -97,5 +97,8 @@
 	},
 	"resolutions": {
 		"elliptic": "6.6.1"
+	},
+	"overrides": {
+		"@headlessui/react": "^2.2.0"
 	}
 }

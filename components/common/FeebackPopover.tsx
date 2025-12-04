@@ -42,7 +42,7 @@ export const getPosition = (element: HTMLElement): {x: number; y: number} => {
 
 export function FeebackPopover(): ReactElement {
 	const [referenceElement, set_referenceElement] = useState<HTMLButtonElement | null>(null);
-	const [popperElement, set_popperElement] = useState<HTMLDivElement | null>(null);
+	const [popperElement, set_popperElement] = useState<HTMLElement | null>(null);
 	const [type, set_type] = useState<TRequestType>('bug');
 	const [telegramHandle, set_telegramHandle] = useState<string>();
 	const [isSubmitDisabled, set_isSubmitDisabled] = useState<boolean>(false);

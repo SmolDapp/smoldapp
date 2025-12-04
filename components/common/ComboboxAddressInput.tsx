@@ -123,7 +123,10 @@ function ComboboxAddressInput({possibleValues, value, onChangeValue, onAddValue}
 	const [{result: tokenData}, fetchTokenData] = useAsync(fetchToken);
 
 	const onChange = useCallback(
-		async (_selected: TAddress): Promise<void> => {
+		async (_selected: TAddress | null): Promise<void> => {
+			if (!_selected) {
+				return;
+			}
 			let _tokenData = possibleValues[_selected];
 			if (!_tokenData || (!_tokenData.name && !_tokenData.symbol && !_tokenData.decimals)) {
 				set_isLoadingTokenData(true);
@@ -251,8 +254,8 @@ function ComboboxAddressInput({possibleValues, value, onChangeValue, onAddValue}
 					}}
 				/>
 			) : null}
-			<Combobox<unknown>
-				value={value}
+			<Combobox<TAddress | null>
+				value={value as TAddress}
 				onChange={onChange}>
 				<div className={'relative'}>
 					<Combobox.Button
