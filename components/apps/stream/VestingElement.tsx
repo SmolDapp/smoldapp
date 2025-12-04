@@ -1,4 +1,4 @@
-import React, {Fragment, useCallback, useMemo, useState} from 'react';
+import {Fragment, useCallback, useMemo, useState} from 'react';
 import {useTokenList} from 'contexts/useTokenList';
 import {addSeconds, differenceInSeconds, format} from 'date-fns';
 import {erc20ABI, useContractReads} from 'wagmi';
