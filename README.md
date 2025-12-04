@@ -1,6 +1,5 @@
 # Please check Smol new repo: https://github.com/SmolDapp/SmolV2
 
-
 # Smoldapp
 
 ![./public/og.png](./public/og.png)
@@ -11,8 +10,8 @@ Migratooor is an easy and secure way to move all your Ethereum and ERC20 tokens 
 
 ## Why Use Migratooor?
 
--   **Secure:** You don't need to trust any third-party smart contract! For maximum security, you can run the source code yourself and avoid any phishing risks!
--   **Easy to Use:** Our user-friendly interface allows you to quickly select all the tokens you want to migrate!
+- **Secure:** You don't need to trust any third-party smart contract! For maximum security, you can run the source code yourself and avoid any phishing risks!
+- **Easy to Use:** Our user-friendly interface allows you to quickly select all the tokens you want to migrate!
 
 Migratooor employs the [ethers](https://docs.ethers.org/v5/) library to transfer ERC20 tokens from one wallet to another. This generates all the transactions needed to securely move your tokens to the wallet of your choosing!
 
@@ -67,8 +66,8 @@ Once you've set up the environment variables, you're ready to run the project us
 
 Before you proceed, make sure you have the following installed on your machine:
 
--   [Node.js](https://nodejs.org/)
--   [npm](https://www.npmjs.com/) (comes bundled with Node.js)
+- [Node.js](https://nodejs.org/)
+- [npm](https://www.npmjs.com/) (comes bundled with Node.js)
 
 ### Installing Dependencies
 

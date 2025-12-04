@@ -94,7 +94,11 @@ export function VestingElement({vesting}: {vesting: TStreamArgs}): ReactElement 
 			}
 		] as any,
 		select(data) {
-			return [data?.[0]?.result || '', Number(toBigInt(data?.[1]?.result || 18)), toBigInt(data?.[2]?.result)];
+			return [
+				data?.[0]?.result || '',
+				Number(toBigInt((data as any)?.[1]?.result || 18)),
+				toBigInt((data as any)?.[2]?.result)
+			];
 		}
 	});
 	const [symbol, decimals, totalClaimed] = (data || ['', 18, 0n]) as [string, number, bigint];
